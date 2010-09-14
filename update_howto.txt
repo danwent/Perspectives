@@ -1,0 +1,14 @@
+Updating the XPI: 
+
+(Needed only to release official versions of perspectives)
+
+Dependencies: openssl, unzip, and the following perl modules: 
+Convert::ASN1, XML::Parser, RDF::Core
+
+To generate the update.rdf we use
+a gpl script found here.  http://www.softlights.net/projects/mexumgen/
+1) Make sure you have necessary dependencies.
+2) Update the version in the install.rdf and make the xpi as described above.
+3) Get hold of the private key
+4) sh genupdate.sh <private key> <perspectives.xpi>
+5) put the xpi and the update.rdf on the web servers

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<overlay id="perspectives-init"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="notaries.js" />
+  <script type="text/javascript">
+    window.addEventListener('load',evtLoad,false);
+    function evtLoad(evt){
+      Perspectives.initNotaries();
+      if(!root_prefs.getBoolPref("perspectives.show_label")){
+        document.getElementById("perspective-statusbar-label").hidden = true;
+      }
+    }
+  </script>
+</overlay>
+

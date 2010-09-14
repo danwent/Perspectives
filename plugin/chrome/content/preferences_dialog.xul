@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!DOCTYPE prefwindow SYSTEM "chrome://perspectives/locale/dialogs.dtd">
+
+<prefwindow id = "perspectives-properties" 
+	title          = "Perspectives Preferences"
+	xmlns          = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	buttons        = ","
+	onload         = "Pers_pref.load_preferences()" >
+
+<prefpane id="perspective-main-prefpane"> 
+<preferences> 
+  <preference 
+    id="quorum-thresh"   
+    name="perspectives.quorum_thresh" 
+    type="int"/>
+  <preference 
+    id="quorum-duration" 
+    name="perspectives.required_duration"
+    type="int"/>
+  <preference 
+    id="security-settings"
+    name="perspectives.security_settings"
+    type="int"/>
+  <preference 
+    id="exception-perm"
+    name="perspectives.exceptions.permanent"
+    type="bool"/>
+  <preference 
+    id="exception-enabled"
+    name="perspectives.exceptions.enabled"
+    type="bool"/>
+  <preference 
+    id="check-good"
+    name="perspectives.check_good_certificates"
+    type="bool"/>
+  <preference 
+    id="require-user-permission"
+    name="perspectives.require_user_permission"
+    type="bool"/>
+</preferences>
+
+<dialogheader title="Perspectives" />
+  <groupbox > 
+    <caption label="&SecuritySettings;" style="font-weight: bold"/>
+    <menulist id="secset"  
+      preference = "security-settings"
+      oncommand  = "Pers_pref.security_class_change()"> 
+      <menupopup>
+      <menuitem label="&HighSecurity;"        value="2"/> 
+      <menuitem label="&MediumSecurity;"      value="1"/>
+      <menuitem label="&HighAvailability;"    value="0"/>
+      <menuitem label="&ManualConfiguration;" value="-1"/>
+      </menupopup> 
+    </menulist>
+    <hbox align="right">
+      <label value="&Percentageofnotariesthatmustagree;"/>
+      <spacer flex="1"/>
+      <textbox preference="quorum-thresh" id="quorum-thresh-text" size="4"/>
+    </hbox>
+    <hbox align="right">
+      <label value="&Lengthoftimequorummustbeachieved;"/>
+      <spacer flex="1"/>
+      <textbox preference="quorum-duration" id="quorum-duration-text" size="4" />
+    </hbox> 
+  </groupbox> 
+  <vbox>
+  <groupbox>
+    <caption  label="&OverridingFirefoxSecurityErrors;" style="font-weight: bold"/>
+    <checkbox label="&AllowPerspectivestoautomaticallyoverridesecurityerrors;" 
+      preference="exception-enabled"/>
+    <checkbox label="&PermanentlytrustcertificatesvalidatedbyPerspectives;" 
+      preference="exception-perm"/>
+  </groupbox>
+
+  <groupbox>
+    <caption label="&WhentoContactNotaries;" style="font-weight: bold"/>
+    <radiogroup preference="check-good">
+      <radio label="&ContactNotariesforallHTTPSsites;" value="true"/>
+     <radio label="&ContactNotariesonlywhenawebsitescertificatecausesasecurityerror;" value="false"/>
+    </radiogroup>
+   <checkbox
+      label="&AlwaysasktheuserbeforecontactingNotaries;" 
+      preference="require-user-permission"/> 
+  </groupbox> 
+  </vbox>
+  <spacer flex="1"/>
+<hbox> 
+  <button label = "&OK;" onclick="acceptDialog(); window.close()"/>
+</hbox>
+
+</prefpane>
+
+<script type = "application/x-javascript" src="preferences_dialog.js" ></script>
+
+</prefwindow> 

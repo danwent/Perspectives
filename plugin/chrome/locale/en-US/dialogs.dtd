@@ -1,0 +1,25 @@
+﻿<!ENTITY NotaryResults "Notary Results">
+<!ENTITY Preferences "Preferences">
+<!ENTITY NoQuorumInformation "No Quorum Information">
+<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "There is no Perspectives information available for this location">
+<!ENTITY Timeline "Timeline">
+<!ENTITY NotaryResults "Notary Results">
+<!ENTITY SecuritySettings "Security Level">
+<!ENTITY HighSecurity "High Security">
+<!ENTITY MediumSecurity "Medium Security">
+<!ENTITY HighAvailability "High Availability">
+<!ENTITY ManualConfiguration "Manual Configuration">
+<!ENTITY Percentageofnotariesthatmustagree "Percentage of notaries that must agree (quorum percentage): ">
+<!ENTITY Lengthoftimequorummustbeachieved "Days of continuous agreement required (quorum duration): ">
+<!ENTITY OverridingFirefoxSecurityErrors "Overriding Firefox Security Errors">
+<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Allow Perspectives to automatically override security errors">
+<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Permanently trust certificates validated by Perspectives">
+<!ENTITY WhentoContactNotaries "When to Contact Notaries">
+<!ENTITY ContactNotariesforallHTTPSsites "Contact Notaries for all HTTPS sites">
+<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contact Notaries only when a website's certificate causes a security error">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Always ask the user before contacting Notaries">
+<!ENTITY Certificates "Certificates">
+<!ENTITY Servers "Notary Servers">
+<!ENTITY Help "Help">
+<!ENTITY OK "OK">
+<!ENTITY Close "Close">

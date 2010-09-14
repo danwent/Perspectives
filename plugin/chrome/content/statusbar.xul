@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<overlay id="persp-statusbar"  
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<stringbundleset id="stringbundleset">
+	<stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" insertbefore="1"/>
+</stringbundleset> 
+
+
+  <script type="application/x-javascript" src="common.js"/>
+  <script type="application/x-javascript" src="base64.js" />
+  <script type="application/x-javascript" src="client_policy.js" />
+  <script type="application/x-javascript" src="xml_notary_client.js" />
+  <script type="application/x-javascript" src="generate_svg.js" />
+  <script type="application/x-javascript" src="notaries.js" />
+  <script type="application/x-javascript" src="statusbar.js"/>
+	<statusbar id = "status-bar">
+	<statusbarpanel id="perspective-status"
+      			ondblclick="Pers_statusbar.statusbar_click(event);"
+			tooltiptext="Perspectives">
+      <image id="perspective-status-image"
+      src="chrome://perspectives/content/default.png" 
+      style="width:16px; height:16px;" 
+      context="perspective-contextmenu" />
+	</statusbarpanel>
+  <popupset>
+    <popup id="perspective-contextmenu" position="after_start">
+      <menuitem label="View Notary Results"   oncommand="Pers_statusbar.open_results_dialog()"/>
+      <menuseparator/>
+<!--      <menuitem label="Refresh All Notary Data"   oncommand="requery()"/> --> 
+      <menuitem label="Preferences" oncommand="Pers_statusbar.open_preferences_dialog()"/>
+      <menuitem label="View Notary List" oncommand="Pers_statusbar.openNotaries()"/>
+      <menuitem label="View Certificate Store" oncommand="Pers_statusbar.openCertificates()"/>
+      <menuitem label="Help" oncommand="Pers_statusbar.openHelp()"/>
+    </popup>
+  </popupset>
+ 
+	</statusbar>
+
+</overlay>
+
+

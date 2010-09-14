@@ -1,0 +1,26 @@
+<!ENTITY NotaryResults "Notary 结果">
+<!ENTITY Preferences "配置">
+<!ENTITY NoQuorumInformation "没有查询信息">
+<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "对于这个位置没有可用的Perspectives信息。">
+<!ENTITY Timeline "时间轴">
+<!ENTITY NotaryResults "Notary 结果">
+<!ENTITY SecuritySettings "安全设置">
+<!ENTITY HighSecurity "高级安全">
+<!ENTITY MediumSecurity "中级安全">
+<!ENTITY HighAvailability "低级安全（高度可用）">
+<!ENTITY ManualConfiguration "手工设置">
+<!ENTITY Percentageofnotariesthatmustagree "获得notary服务器同意的数目的百分比">
+<!ENTITY QuorumPercentage "群体数（百分比）">
+<!ENTITY Lengthoftimequorummustbeachieved "群体数被认证的时间长度">
+<!ENTITY DurationDays "时间长度（天）">
+<!ENTITY OverridingFirefoxSecurityErrors "跳过Firefox安全错误">
+<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "允许Perspectives自动跳过安全错误">
+<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "永远相信Perspectives认为安全的认证">
+<!ENTITY WhentoContactNotaries "何时联系Notary服务器">
+<!ENTITY ContactNotariesforallHTTPSsites "对所有的HTTPS站点都联系Notary服务器">
+<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "仅当一个站点的认证引起安全错误时联系Notary服务器">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "在联系Notary服务器前总是询问用户">
+<!ENTITY Certificates "认证">
+<!ENTITY Servers "Notary 服务器">
+<!ENTITY Help "帮助">
+<!ENTITY OK "完成">

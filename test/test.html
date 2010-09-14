@@ -1,0 +1,76 @@
+
+<script type="text/javascript" src="../plugin/chrome/content/common.js"></script> 
+<script type="text/javascript" src="../plugin/chrome/content/client_policy.js"></script> 
+<script type="text/javascript"> 
+
+d_print_all = true; 
+other_cache = { "debug" : "" }; // needed for common.js
+
+function clear() { 
+   var node = document.getElementById('results'); 
+   node.innerHTML = "";  
+}
+
+function write_string(str) { 
+   var node = document.getElementById('results'); 
+   var child = document.createElement('p'); 
+   child.innerHTML = str; 
+   node.appendChild(child); 
+} 
+
+function assert(test, case_name) { 
+	if(test)
+	  write_string(case_name + " : <b>FAILED</b>"); 
+        else
+	  write_string(case_name + " : passed"); 
+} 
+
+function test1() {
+ write_string("Starting test1...");   
+ var server_result_list = [ 
+   { "server" : "204.255.124.41:8080", 
+     "obs" : [  { "key" : "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00", 
+		  "timestamps" : [ { "start" : 0 , "end" : 10000  } ] } ] 
+   }, 
+   { "server" : "128.2.185.85:8080", 
+     "obs" : [  { "key" : "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00", 
+		  "timestamps" : [ { "start" : 9000 , "end" : 10000  } ] } ] 
+   } 
+ ];
+
+ var key = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00"; 
+ var cur_time = 10000;  
+ var max_stale_sec = 200;  
+ var quorum_duration = get_quorum_duration(key, server_result_list, 
+					1, max_stale_sec,cur_time); 
+ assert((quorum_duration == 10000), "case 1"); 
+ var quorum_duration = get_quorum_duration(key, server_result_list, 
+					2, max_stale_sec,cur_time); 
+ assert((quorum_duration == 1000), "case 2"); 
+ var quorum_duration = get_quorum_duration(key, server_result_list, 
+					-1, max_stale_sec,cur_time); 
+ assert((quorum_duration == -1), "case 3"); 
+ var quorum_duration = get_quorum_duration(key, server_result_list, 
+					-1, max_stale_sec,
+				cur_time + max_stale_sec + 1); 
+ assert((quorum_duration == -1), "case 4"); 
+
+ write_string("Finished test1");   
+} 
+
+
+function run_tests() { 
+  
+  try {
+    clear();  
+    test1(); 
+  } catch(e) { 
+	alert(e); 
+  } 
+} 
+
+</script>
+<input type="button" value="Run Tests" onclick="run_tests()">
+<p> Run with firebug to see detailed test output if something fails.  </p> 
+<h2> Results: </h2>  
+<div id="results"> 

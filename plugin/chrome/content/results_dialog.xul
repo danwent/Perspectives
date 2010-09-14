@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!DOCTYPE prefwindow SYSTEM "chrome://perspectives/locale/dialogs.dtd">
+
+<window id = "perspectives-notary-results" 
+	title          = "Perspectives Results"
+	xmlns          = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	buttons        = ","
+	onload         = "Pers_results.load_results_dialog()">
+
+<vbox> 
+  <groupbox minheight="235">
+    <caption 
+      id="perspective-information-caption" 
+      label="Detailed Information" 
+      style="font-weight: bold"/>
+	<label id="perspective-quorum-duration" value="&NoQuorumInformation;"/>
+    <textbox id = "perspective-description"
+      multiline = "true" 
+      readonly  = "true"
+      flex      = "1"
+      value     = "&ThereisnoPerspectivesinformationavailableforthislocation;"/>
+    <!-- svg goes into this box -->
+    <scrollbox id = "perspective-svg-box"/>
+  </groupbox>
+  <radiogroup 
+    id      = "info-radio" 
+    hidden  = "true"
+    orient  = "horizontal" 
+    onclick = 'Pers_results.switchResultForm()'>
+    <radio  label="&Timeline;" />
+    <radio  label="&NotaryResults;" selected="true"/>
+  </radiogroup>
+</vbox> 
+
+<hbox> 
+  <spacer flex  = "1"/>
+  <button label = "&Close;" onclick="window.close()"/>
+</hbox>
+
+
+<script type = "application/x-javascript" src="common.js"/>
+<script type = "application/x-javascript" src="results_dialog.js"/>
+
+</window> 

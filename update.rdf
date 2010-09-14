@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+    <rdf:Description rdf:about="urn:mozilla:extension:perspectives@cmu.edu">
+        <em:updates>
+            <rdf:Seq>
+                <rdf:li>
+                    <rdf:Description>
+                        <em:version>3.0.3</em:version>
+                        <em:targetApplication>
+                            <rdf:Description>
+                                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+                                <em:minVersion>3.0</em:minVersion>
+                                <em:maxVersion>3.*</em:maxVersion>
+                                <em:updateLink>http://www.cs.cmu.edu/~perspectives/Perspectives.xpi</em:updateLink>
+                                <em:updateHash>sha1:885730e966cfd8ffc8425dee18424d6c07434d8d</em:updateHash>
+                            </rdf:Description>
+                        </em:targetApplication>
+                    </rdf:Description>
+                </rdf:li>
+            </rdf:Seq>
+        </em:updates>
+        <em:signature>
+            MIIBEjALBgkqhkiG9w0BAQ0DggEBALpUvl0/CdxTtpon0ujvUTo4Nr/ng5eVeT8N
+            XQchClNUwWsuMIko7g7FxFXG4PMobCZqWFB0rvxKDvXcdl6SVgrSp82tGaqBEGRr
+            q2yGNws4gfXuQn+688HkD85npr+esI/UTYnGkoWz6ERQb9iW2bCMpW6lst1wa0Sf
+            juuo2JuzrEKPvb5aK5Xagp5NXS9sVl9xPBrCiU+2X6jG3WF9Ycz5VT1DsIZs6VWJ
+            Oz4mwWbBaI/3qDDBhofpo16h8Gh9505innQzAamR83CjfyeXpHB4bce9tXXxTBQ+
+            Mm0QtIpckyS6L6fLuGe4Vcs1d5ptTsOywdaU6XtaUs0XlU4jmdo=
+        </em:signature>
+    </rdf:Description>
+</rdf:RDF>

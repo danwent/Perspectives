@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<window id="persp-statusbar"  
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+
+  <textbox id="bbox" multiline ="true" cols="80" rows="30"/>
+
+  <script>
+      document.getElementById("bbox").value=window.arguments[0];
+  </script>
+</window>
+
+

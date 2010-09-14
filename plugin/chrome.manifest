@@ -1,0 +1,12 @@
+content perspectives chrome/content/
+locale perspectives en-US chrome/locale/en-US/
+locale perspectives zh-CN chrome/locale/zh-CN/
+
+content perspectives_main .
+
+overlay	chrome://browser/content/browser.xul chrome://perspectives/content/statusbar.xul
+overlay	chrome://browser/content/browser.xul chrome://perspectives/content/initialize.xul
+
+# these lines are needed to support seamonkey
+overlay chrome://navigator/content/navigator.xul chrome://perspectives/content/initialize.xul
+overlay  chrome://navigator/content/navigator.xul chrome://perspectives/content/statusbar.xul

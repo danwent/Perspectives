@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Perspectives Firewall/Proxy Help</title>
+</head>
+
+<body>
+<h1>Perspectives Firewall/Proxy Help</h1>
+
+<h3> What Protocol and Ports does Perspectives Use? </h3> 
+
+<p> 
+Perspectives uses the standard HTTP protocol to query network notary servers.
+However, some of these notary servers are unable to listen on the standard
+HTTP port (port 80) and instead listen on port 8080.  While most firewalls
+and proxies should allow this traffic, some may not.  
+You can contact your network administrator to find out whether 
+Perspectives traffic is likely being dropped by a proxy or firewall.  
+</p> 
+
+<h3> If I cannot contact any notaries, is it safe to  manually override the 
+browser security warning? </h3>
+<p> 
+NO.  When Perspectives is unable to reach the notary servers, 
+it does not receive the data necessary 
+to distinguish between a valid and an invalid certificate.  Accepting a
+certificate  without notary validation can be dangerous, because it may be 
+that an attacker is intentionally dropping your notary queries.  
+<p> 
+
+</html> 

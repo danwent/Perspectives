@@ -19,8 +19,7 @@ var Perspectives = {
 	overrideService : 
 					Components.classes["@mozilla.org/security/certoverride;1"]
 					.getService(Components.interfaces.nsICertOverrideService),
-	broken :false,
-
+	
 	// holds query reply data until all requests for a particular
 	// service_id have either completed or timed-out.  
 	// The key for this data is the service_id string.  
@@ -30,7 +29,7 @@ var Perspectives = {
 
 	state : {
 		STATE_IS_BROKEN : 
-			Components.interfaces.nsIWebProgressListener.STATE_IS_BROKE,
+			Components.interfaces.nsIWebProgressListener.STATE_IS_BROKEN,
 		STATE_IS_INSECURE :
 			Components.interfaces.nsIWebProgressListener.STATE_IS_INSECURE,
 		STATE_IS_SECURE :
@@ -620,7 +619,7 @@ var Perspectives = {
 			return;
 		} 
 
-		ti.broken         = false;
+		ti.insecure         = false;
 		ti.cert       = Perspectives.getCertificate(browser);
 		if(!ti.cert){
 			var text = Perspectives.strbundle.
@@ -631,7 +630,7 @@ var Perspectives = {
 		}
   
 		var md5        = ti.cert.md5Fingerprint;
-		var state      = browser.securityUI.state;
+		ti.state      = browser.securityUI.state;
 		var gSSLStatus = null;
 
 		ti.is_override_cert = Perspectives.overrideService.
@@ -641,7 +640,7 @@ var Perspectives = {
 		var check_good = Perspectives.root_prefs.
 			getBoolPref("perspectives.check_good_certificates"); 
 
-		if(state & Perspectives.state.STATE_IS_SECURE) { 
+		if(ti.state & Perspectives.state.STATE_IS_SECURE) { 
 			Pers_debug.d_print("main", 
 				"clearing any existing permission banners\n"); 
 			Perspectives.clear_existing_banner(browser, 
@@ -649,7 +648,7 @@ var Perspectives = {
 		}
 
 		// see if the browser has this cert installed prior to this browser session
-		ti.already_trusted = (state & Perspectives.state.STATE_IS_SECURE) && 
+		ti.already_trusted = (ti.state & Perspectives.state.STATE_IS_SECURE) && 
 			!(ti.is_override_cert && Perspectives.ssl_cache[uri.host]); 
 		if(!check_good && ti.already_trusted) {
 			var text = Perspectives.strbundle.
@@ -660,10 +659,10 @@ var Perspectives = {
 		} 
 
 		if(!ti.is_override_cert && 
-			state & Perspectives.state.STATE_IS_INSECURE){
+			ti.state & Perspectives.state.STATE_IS_INSECURE){
 			Pers_debug.d_print("main",
 				"state is STATE_IS_INSECURE, we need an override\n");
-			ti.broken = true; 
+			ti.insecure = true; 
 		}
 
 		//Update ssl cache cert
@@ -699,7 +698,7 @@ var Perspectives = {
 			var ti = Perspectives.tab_info_cache[uri.spec]; 
 			ti.notary_valid = false; // default 
 			cache_cert = Perspectives.ssl_cache[uri.host];
-			if(!ti.broken && !cache_cert.identityText &&
+			if(!ti.insecure && !cache_cert.identityText &&
 				Perspectives.getFaviconText().indexOf("Perspectives") < 0){
 				cache_cert.identityText = 
 					Perspectives.setFaviconText(Perspectives.getFaviconText() +
@@ -714,7 +713,7 @@ var Perspectives = {
 					Perspectives.strbundle.getString("noRepliesWarning");
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
 					cache_cert.tooltip);
-				if(ti.broken) { 
+				if(ti.insecure) { 
 					Perspectives.notifyNoReplies(browser); 
 				} 
 			} else if(!cache_cert.secure){
@@ -722,7 +721,7 @@ var Perspectives = {
 					Perspectives.strbundle.getString("inconsistentWarning");
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
 					cache_cert.tooltip);
-				if(ti.broken && ti.firstLook){
+				if(ti.insecure && ti.firstLook){
 					Perspectives.notifyFailed(browser);
 				}
 			} else if(cache_cert.duration < required_duration){
@@ -731,41 +730,55 @@ var Perspectives = {
 					[ cache_cert.duration, required_duration]);
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
 					cache_cert.tooltip);
-				if(ti.broken && ti.firstLook){
+				if(ti.insecure && ti.firstLook){
 					Perspectives.notifyFailed(browser);
 				}
 			}
 			else { //Its secure
-				ti.notary_valid = true; 
-				cache_cert.tooltip = Perspectives.strbundle.
-					getFormattedString("verifiedMessage", 
-					[ cache_cert.duration, required_duration]);
-				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, 
-					cache_cert.tooltip);
-				if (ti.broken){
-					ti.broken = false;
-					ti.exceptions_enabled = Perspectives.root_prefs.
-						getBoolPref("perspectives.exceptions.enabled")
-					if(ti.exceptions_enabled) { 
-						ti.isTemp = !Perspectives.root_prefs.
-							getBoolPref("perspectives.exceptions.permanent");
-						Perspectives.do_override(browser, ti.cert, ti.isTemp);
-						cache_cert.identityText = Perspectives.strbundle.
-							getString("exceptionAdded");  
-						// don't give drop-down if user gave explicit
-						// permission to query notaries
-						if(ti.firstLook && !has_user_permission){
-							Perspectives.notifyOverride(browser);
+
+
+				// Check if this site includes insecure embedded content.  If so, do not 
+				// show a green check mark, as we don't want people to incorrectly assume 
+				// that we imply that the site is secure.  Note: we still will query the 
+				// notary and will override an error page.  This is inline with the fact 
+				// that Firefox still shows an HTTPS page with insecure content, it
+				// just does not show positive security indicators.  
+				if(ti.state & Perspectives.state.STATE_IS_BROKEN) { 
+					Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, 
+					"HTTPS Certificate is trusted, but site contains insecure embedded content. ");
+				}  else { 
+
+					ti.notary_valid = true; 
+					cache_cert.tooltip = Perspectives.strbundle.
+						getFormattedString("verifiedMessage", 
+						[ cache_cert.duration, required_duration]);
+					Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, 
+						cache_cert.tooltip);
+					if (ti.insecure){
+						ti.insecure = false;
+						ti.exceptions_enabled = Perspectives.root_prefs.
+							getBoolPref("perspectives.exceptions.enabled")
+						if(ti.exceptions_enabled) { 
+							ti.isTemp = !Perspectives.root_prefs.
+								getBoolPref("perspectives.exceptions.permanent");
+							Perspectives.do_override(browser, ti.cert, ti.isTemp);
+							cache_cert.identityText = Perspectives.strbundle.
+								getString("exceptionAdded");  
+							// don't give drop-down if user gave explicit
+							// permission to query notaries
+							if(ti.firstLook && !has_user_permission){
+								Perspectives.notifyOverride(browser);
+							}
 						}
 					}
 				}
 			}
+		
 
 			if(cache_cert.identityText){
 				Perspectives.setFaviconText(cache_cert.identityText);
 			}
 
-			ti.broken = false;
  
 		} catch (err) {
 			alert("done_querying_notaries error: " + err);
@@ -794,10 +807,12 @@ var Perspectives = {
    		onLocationChange: function(aWebProgress, aRequest, aURI) {
       			try{
         			Pers_debug.d_print("main", "Location change " + aURI.spec + "\n");
-        			Perspectives.setStatus(aURI, STATE_NEUT, "Connecting to " + aURI.spec);
+        			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_NEUT, 
+							"Connecting to " + aURI.spec);
       			} catch(err){
         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
-        			Pers_statusbar.setStatus(aURI, STATE_ERROR, "Perspectives: an internal error occurred: " + err);
+        			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR, 
+					"Perspectives: an internal error occurred: " + err);
       			}
 
    		},
@@ -812,7 +827,8 @@ var Perspectives = {
          			Perspectives.updateStatus(gBrowser,false);
        			  } catch (err) {
          			Pers_debug.d_print("Perspectives had an internal exception: " + err);
-         			Pers_statusbar.setStatus(STATE_ERROR, "Perspectives: an internal error occurred: " + err);
+         			Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR, 
+					"Perspectives: an internal error occurred: " + err);
        			  }
      			}
   		},
@@ -828,9 +844,11 @@ var Perspectives = {
        			} catch(err){
          			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
          			if(uri) {
-          				Pers_statusbar.setStatus(uri, STATE_ERROR, "Perspectives: an internal error occurred: " + err);
+          				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR, 
+						"Perspectives: an internal error occurred: " + err);
          			}
        			}
+ 
   		},
 
 		onStatusChange:      function() { },

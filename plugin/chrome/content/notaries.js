@@ -2,7 +2,8 @@ var Perspectives = {
  	MY_ID: "perspectives@cmu.edu",
 	TIMEOUT_SEC: 8,
 	strbundle : null, // this isn't loaded when things are intialized
-	notary_debug : true,
+
+	// FIXME: these regexes should be less generous
 	nonrouted_ips : [ "^192\.168\.", "^10.", "^172\.1[6-9]\.", 
 			"^172\.2[0-9]\.", "172\.3[0-1]\.", "^169\.254\.", 
 			"^127\.0\.0\.1$"], // could add many more
@@ -46,32 +47,6 @@ var Perspectives = {
 		} 
 		return false; 
 	}, 
-
-	getdns: function() {
-		var cls = Components.classes['@mozilla.org/network/dns-service;1'];
-		var iface = Components.interfaces.nsIDNSService;
-		return cls.getService(iface);
-	},
-
-
-	// it is likely that all IPs are reachable, or none are,
-	// but we are conservative and continue even if a single 
-	// IP seems routable
-	host_is_unreachable: function(hostname) {  
-		var ip_str = "";
-		var ips = Array();  
-		var dns = this.getdns();
-		var nsrecord = dns.resolve(hostname,true); 
-		while (nsrecord && nsrecord.hasMore()) 
-			ips[ips.length] = nsrecord.getNextAddrAsString(); 
-		for each (ip_str in ips) { 
-			if(!this.is_nonrouted_ip(ip_str)) { 
-				return null; 
-			}
-			Pers_debug.d_print("main", "unreachable ip = " + ip_str + "\n");  
-		}
-		return ips; 
-	},
 
 
 	// flag to make sure we only show component load failed alert once
@@ -609,7 +584,11 @@ var Perspectives = {
 			Perspectives.other_cache["reason"] = text; 
 			return;
 		}
-		var unreachable = Perspectives.host_is_unreachable(uri.host); 
+		
+		// Note: we no longer do a DNS look-up to to see if a DNS name maps 
+		// to an RFC 1918 address, as this 'leaked' DNS info for users running
+		// anonymizers like Tor.  It was always just an insecure guess anyway.  
+		var unreachable = Perspectives.is_nonrouted_ip(uri.host); 
 		if(unreachable) { 
 			var text = Perspectives.strbundle.
 				getFormattedString("rfc1918Error", [ uri.host ])

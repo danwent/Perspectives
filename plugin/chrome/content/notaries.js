@@ -1,5 +1,5 @@
 var Perspectives = {
-	MY_ID: "perspectives@cmu.edu",
+ 	MY_ID: "perspectives@cmu.edu",
 	TIMEOUT_SEC: 8,
 	strbundle : null, // this isn't loaded when things are intialized
 	notary_debug : true,
@@ -8,11 +8,11 @@ var Perspectives = {
 			"^127\.0\.0\.1$"], // could add many more
 
 	// list of objects representing each notary server's name + port and public
-	// key this list is populated by init_notarylist() 
-	notaries : [],
+	// key this list is populated by fillNotaryList() based on a file shipped with the 
+	// extension
+	notaries : [],  
 
-	/* Data */
-	whitelist : new Array(),
+	// Data
 	ssl_cache : new Object(),
 	root_prefs : Components.classes["@mozilla.org/preferences-service;1"]
 					.getService(Components.interfaces.nsIPrefBranchInternal),
@@ -173,7 +173,7 @@ var Perspectives = {
 		 * 		alert("Do Stuff");
 		 *	}
 		 * }];
-		 */
+		 */ 
 		notificationBox.appendNotification(message, "Perspectives", null,
 										   priority, buttons);
 	},
@@ -289,22 +289,6 @@ var Perspectives = {
 		this.summary  = summary;
 		this.tooltip  = tooltip;
 		this.svg      = svg;
-	},
-
-	onWhitelist: function(host){
-		//heard a rumor that this is O(n) sometimes
-		var length = Perspectives.whitelist.length 
-		for(var i = 0; i < length; i++){
-			if(Perspectives.whitelist[i] == ""){//don't know why i need this
-				continue;
-			}
-			if(host.indexOf(Perspectives.whitelist[i]) >= 0){
-				Pers_debug.d_print("main",
-					"whitelist match: " + Perspectives.whitelist[i] + "\n");
-				return true;
-			}
-		}
-		return false;
 	},
 
 	get_invalid_cert_SSLStatus: function(uri){
@@ -439,6 +423,7 @@ var Perspectives = {
 
 	}, 
         
+ 
 	notaryAjaxCallback: function(uri, cert, req, notary_server,service_id,
 				browser,has_user_permission) {  
 	
@@ -540,8 +525,8 @@ var Perspectives = {
 	},
 
   
-	/* There is a bug here.  Sometimes it gets into a browser reload 
-	 * loop.  Come back to this later */
+	// There is a bug here.  Sometimes it gets into a browser reload 
+	// loop.  Come back to this later 
 
 	do_override: function(browser, cert,isTemp) { 
 		var uri = browser.currentURI;
@@ -565,7 +550,7 @@ var Perspectives = {
 	},
 
 
-	/* Updates the status of the current page */
+	// Updates the status of the current page 
 	//Make this a bit more efficient when I get a chance
 	// 'has_user_permission' indicates whether the user
 	// explicitly pressed a button to launch this query,
@@ -619,7 +604,7 @@ var Perspectives = {
 			return;
 		} 
 
-		if(Perspectives.onWhitelist(uri.host)){
+		if(whitelist.onWhitelist(uri.host)){
 			var text = Perspectives.strbundle.
 					getFormattedString("whitelistError", [uri.host] ); 
 			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
@@ -792,8 +777,8 @@ var Perspectives = {
 	//note can use request to suspend the loading
 	notaryListener : { 
 
-		/* Note can use state is broken to listen if we need to do special stuff
-		 * for redirecting */
+		// Note can use state is broken to listen if we need to do special stuff
+		// for redirecting 
 		onLocationChange: function(aWebProgress, aRequest, aURI) {
 			try{ 
 				Pers_debug.d_print("main", 
@@ -828,73 +813,7 @@ var Perspectives = {
 		onLinkIconAvailable: function() { }
 	},
 
-	init_whitelist: function(){
-		var req = XMLHttpRequest();
 
-		function parse(){ 
-			if (req.readyState != 4){ 
-				return;
-			}
-			Perspectives.whitelist = req.responseText.split("\n");
-			for(var i = 0; i < Perspectives.whitelist.length; i++){
-				Pers_debug.d_print("main", 
-					"(" + Perspectives.whitelist[i] + ")" + "\n");
-			}
-		} 
-
-		//Do it this way so we don't lag while our whitelist page loads
-		try{
-			req.open('GET', 'chrome://perspectives_main/content/whitelist.txt', 
-				true);
-			req.onreadystatechange = parse; 
-			req.send(null);
-		}
-		catch(e){
-			Pers_debug.d_print("error", e + "\n");
-			return;
-		}
-	},
-
-	init_notarylist: function(){
-		var em = Components.classes["@mozilla.org/extensions/manager;1"].
-			getService(Components.interfaces.nsIExtensionManager);
-		var file = em.getInstallLocation(Perspectives.MY_ID).
-			getItemFile(Perspectives.MY_ID, "http_notary_list.txt");
-		var istream = Components.
-			classes["@mozilla.org/network/file-input-stream;1"].
-			createInstance(Components.interfaces.nsIFileInputStream);
-		istream.init(file, 0x01, 0444, 0);
-		istream.QueryInterface(Components.interfaces.nsILineInputStream);
-
-		// read lines into array
-		var line = {}, lines = [], hasmore;
-		do {
-			hasmore = istream.readLine(line);
-			if (line.value.length > 0 && line.value[0] != "#") 
-			lines.push(line.value); 
-		} while(hasmore);
-
-		istream.close();
-   
-		var i = 0; 
-		while(i < lines.length) {  
-			var notary_server = { "host" : lines[i++] }; 
-			if(i >= lines.length || 
-				lines[i++].indexOf("BEGIN PUBLIC KEY") == -1) { 
-				alert("Perspectives: invalid notary_list.txt file: " + 
-					lines[i - 1]); 
-				return; 
-			}
-			var key = ""; 
-			while(i < lines.length && 
-				lines[i].indexOf("END PUBLIC KEY") == -1) { 
-				key += lines[i++]; 
-			}
-			i++; // consume the 'END PUBLIC KEY' line
-			notary_server["public_key"] = key; 
-			Perspectives.notaries.push(notary_server);  
-		} 
-	},
 
 	requeryAllTabs: function(b){
 		var num = b.browsers.length;
@@ -903,67 +822,47 @@ var Perspectives = {
 			Perspectives.updateStatus(browser, false);
 		}
 	},
+
+	fillNotaryList: function() { 
+
+       		var lines, i, notary_server, key;
+
+        	lines = Pers_util.readLocalFileLines("http_notary_list.txt");
  
-	// Use Ajax to update the notary_list.txt file stored in the extension 
-	// directory this is called on start-up  
-	//NOTE: disabling auto-update of the notary list
-	// b/c it could allow an attacker with a bogus root 
-	// cert to compromise the system.  We should have this
-	// update include a signature. 
-	update_notarylist: function() { 
-		try {
-			var request = new XMLHttpRequest();
-			request.open("GET","https://www.networknotary.org/notary_list.txt",
-				true);
-			request.onload = {
-				handleEvent : 
-				function(evt) {
-					var psv_id = "perspectives@cmu.edu"; 
-					var em = Components.
-						classes["@mozilla.org/extensions/manager;1"].
-						getService(Components.interfaces.nsIExtensionManager);
-					var file = em.getInstallLocation(psv_id).
-						getItemFile(psv_id, "notary_list.txt");
-					// file is nsIFile, data is a string
-					var t = request.responseText;
-					Pers_debug.d_print("main", "updating notary list to:"); 
-					Pers_debug.d_print("main", t);  
-					var foStream = Components.
-						classes["@mozilla.org/network/file-output-stream;1"].
-						createInstance(Components.interfaces.
-						nsIFileOutputStream);
+        	i = 0; 
+        	while (i < lines.length) {  
 
-					// use 0x02 | 0x10 to open file for appending.
-					foStream.init(file, 0x02 | 0x08 | 0x20, 0666, 0); 
-					foStream.write(t, t.length);
-					foStream.close();
-                }
-			};
-      
-			request.onerror = {
-				handleEvent : function(evt) {
-					Pers_debug.d_print("error", 
-						"failed to update notary_list.txt");
-				}
-			};
+            		notary_server = { "host" : lines[i] }; 
+            		i += 1;
 
-			request.send("");
+            		if (i >= lines.length || lines[i].indexOf("BEGIN PUBLIC KEY") === -1) { 
+                		alert("Perspectives: invalid notary_list.txt file: " + lines[i]); 
+                		return; 
+            		}
+            		i += 1;
 
-		} catch (e) {
-			Pers_debug.d_print("error", "error updating notary_list.txt: " + e);
-		}
-	}, 
+            		key = ""; 
+            		while (i < lines.length && lines[i].indexOf("END PUBLIC KEY") === -1) { 
+                		key += lines[i]; 
+                		i += 1;
+            		}
 
+            		i += 1; // consume the 'END PUBLIC KEY' line
+            		notary_server.public_key = key; 
+            		Perspectives.notaries.push(notary_server);  
+        	} 
+        	Pers_debug.d_print("main", Perspectives.notaries); 	
+	},  
+ 
 	initNotaries: function(){
 		Pers_debug.d_print("main", "\nPerspectives Initialization\n");
+		Perspectives.fillNotaryList(); 
 		Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
-		Perspectives.init_notarylist(); 
-		Perspectives.init_whitelist();
 		getBrowser().addProgressListener(Perspectives.notaryListener, 
 			Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
 		setTimeout(function (){ Perspectives.requeryAllTabs(gBrowser); }, 4000);
 		Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
-
+		alert("init done"); 
 	}
 
 }

@@ -7,7 +7,7 @@
     window.addEventListener('load',evtLoad,false);
     function evtLoad(evt){
       Perspectives.initNotaries();
-      if(!root_prefs.getBoolPref("perspectives.show_label")){
+      if(!Perspectives.root_prefs.getBoolPref("perspectives.show_label")){
         document.getElementById("perspective-statusbar-label").hidden = true;
       }
     }

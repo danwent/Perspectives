@@ -364,11 +364,10 @@ var Perspectives = {
 		var service_id = uri.host + ":" + port + ",2"; 
   
 		// send a request to each notary
-
+		
 		if(Perspectives.query_result_data[service_id] != null) { 
 			Pers_debug.d_print("main", 
-				"already querying '" + service_id + "'.  Do not requery"); 
-			return; 
+				"already queried for '" + service_id + "', but will query again"); 
 		}
 
 		Perspectives.query_result_data[service_id] = [];  
@@ -513,7 +512,7 @@ var Perspectives = {
 				unixtime,test_key);
 			Pers_debug.d_print("main", svg);			
 			Perspectives.ssl_cache[uri.host] = new Perspectives.SslCert(uri.host, 
-										uri.port,cert.md5Fingerprint, 
+										uri.port, test_key, 
 										str, null,svg, qd_days, 
 										is_consistent);
 			Perspectives.process_notary_results(uri,browser,has_user_permission); 
@@ -629,7 +628,7 @@ var Perspectives = {
 			return;
 		}
   
-		var md5        = ti.cert.md5Fingerprint;
+		var md5        = ti.cert.md5Fingerprint.toLowerCase();
 		ti.state      = browser.securityUI.state;
 		var gSSLStatus = null;
 
@@ -665,10 +664,16 @@ var Perspectives = {
 			ti.insecure = true; 
 		}
 
+		var cached_data = Perspectives.ssl_cache[uri.host];
+		if(cached_data && cached_data.md5 != md5) { 
+			Pers_debug.d_print("main", "Current and cached key disagree.  Re-evaluate security."); 
+			delete Perspectives.ssl_cache[uri.host]; 
+			cached_data = null; 
+		}   
+		
 		//Update ssl cache cert
 		ti.firstLook = false;
-		if(!Perspectives.ssl_cache[uri.host] || 
-			Perspectives.ssl_cache[uri.host].md5 != md5){
+		if(!cached_data) { 
 			ti.firstLook = true;
 			Pers_debug.d_print("main", uri.host + " needs a request\n"); 
 			var needs_perm = Perspectives.root_prefs
@@ -820,10 +825,10 @@ var Perspectives = {
    		// we only call updateStatus on STATE_STOP, as a catch all in case
    		// onSecurityChange was never called. 
    		onStateChange: function(aWebProgress, aRequest, aFlag, aStatus) {
-     			var uri = gBrowser.currentURI;
-     			Pers_debug.d_print("State change " + uri.spec + "\n");
      			if(aFlag & STATE_STOP){
        			  try {
+     				var uri = gBrowser.currentURI;
+     				Pers_debug.d_print("main", "State change " + uri.spec + "\n");
          			Perspectives.updateStatus(gBrowser,false);
        			  } catch (err) {
          			Pers_debug.d_print("Perspectives had an internal exception: " + err);

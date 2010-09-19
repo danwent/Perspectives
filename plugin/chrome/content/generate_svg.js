@@ -1,5 +1,5 @@
 var Pers_gen = {
-	colors : [ "blue","purple","yellow","orange","cyan","green", "red", 
+	colors : [ "blue","purple","yellow","orange","cyan", "red", 
 			"brown" ],
 
 	num_sort_desc: function(a,b) { 
@@ -36,7 +36,7 @@ var Pers_gen = {
 		most_recent_list.sort(most_recent_ts);
 		Pers_debug.d_print("main","most_recent_list");
 		Pers_debug.d_print("main", most_recent_list);
-		var color_count = 0; ; 
+		var color_count = 0;
 		for(var i = 0; i < most_recent_list.length && 
 			 i < Pers_gen.colors.length; i++) { 
 			color_count++; 
@@ -60,7 +60,8 @@ var Pers_gen = {
 							cutoff,color_info);
 		var height = color_count * 30 + server_result_list.length * 20 
 			 	+ y_offset + 60;
-	
+
+		color_info[browser_key] = "green"; 	
 		var tmp_x = x_offset + 70;  
 		var res =  '<?xml version="1.0"?>\n' 
 					+ '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" '

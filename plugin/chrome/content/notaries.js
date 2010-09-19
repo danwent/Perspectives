@@ -337,14 +337,16 @@ var Perspectives = {
 		if(port == -1) 
 			port = 443; 
 		var service_id = uri.host + ":" + port + ",2"; 
-  
-		// send a request to each notary
 		
 		if(Perspectives.query_result_data[service_id] != null) { 
 			Pers_debug.d_print("main", 
-				"already queried for '" + service_id + "', but will query again"); 
+				"already queried for '" + service_id + "', not querying again"); 
+			return; 
 		}
 
+  
+		// send a request to each notary
+		
 		Perspectives.query_result_data[service_id] = [];  
 		for(i = 0; i < Perspectives.notaries.length; i++) { 
 			var notary_server = Perspectives.notaries[i]; 
@@ -366,9 +368,15 @@ var Perspectives = {
 		}
     
 		Perspectives.query_timeoutid_data[service_id] = 
-			window.setTimeout(function () { 
-			Pers_debug.d_print("main", "timeout for " + service_id);
-			var server_result_list = Perspective.query_result_data[service_id]; 
+			window.setTimeout(function () {
+			try {  
+			Pers_debug.d_print("query", "timeout querying " + service_id + " with results");
+			var server_result_list = Perspectives.query_result_data[service_id];
+			Pers_debug.d_print("query", server_result_list); 
+ 
+			if (server_result_list == null) { 
+				server_result_list = []; // may have been deleted between now and then
+			}  
 			for(var i = 0; i < Perspectives.notaries.length; i++) { 
 				var found = false;
 				for(var j = 0; j < server_result_list.length; j++) { 
@@ -390,6 +398,10 @@ var Perspectives = {
 					server_result_list);
 			delete Perspectives.query_result_data[service_id]; 
 			delete Perspectives.query_timeoutid_data[service_id];  
+			} catch (e) { 
+				Pers_debug.d_print("query", "error handling timeout"); 
+				Pers_debug.d_print("query", e); 
+			} 
 			}, 
 			Perspectives.TIMEOUT_SEC * 1000 
 		); 
@@ -424,17 +436,31 @@ var Perspectives = {
 						return; 
 					}
 					server_result.server = notary_server.host; 
-					if(Perspectives.query_result_data[service_id] == null) { 
+					
+					var result_list = this.query_result_data[service_id]; 
+					if(result_list == null) { 
 						Pers_debug.d_print("query",
 							"Query reply for '" + service_id + 
 								"' has no query result data"); 
 						return; 
 					} 
+				 	var i; 
+					for(i = 0; i < result_list.length; i++) {
+						if(result_list[i].server == server_result.server) { 
+							Pers_debug.d_print("query", 
+							  "Ignoring duplicate reply for '" + 
+								service_id + "' from '" +
+								server_result.server + "'"); 
+							return; 
+						} 
+					}   
 					Pers_debug.d_print("query","adding result from: " + 
 							notary_server.host); 
-					this.query_result_data[service_id].push(server_result); 
- 
+					result_list.push(server_result); 
+  					 
 					var num_replies = this.query_result_data[service_id].length;
+					Pers_debug.d_print("query", "num_replies = " + num_replies + 
+								" total = " + Perspectives.notaries.length); 
 					if(num_replies == Perspectives.notaries.length) { 
 						Pers_debug.d_print("query","got all server replies"); 	
 						Perspectives.notaryQueriesComplete(uri,cert,service_id,browser,
@@ -444,7 +470,8 @@ var Perspectives = {
 						window.clearTimeout(Perspectives.
 							query_timeoutid_data[service_id]);
 						delete Perspectives.query_timeoutid_data[service_id];  
-					} 
+					}
+					  
 				} catch (e) { 
 					Pers_debug.d_print("error", "exception: " + e); 
 				} 
@@ -465,12 +492,11 @@ var Perspectives = {
 						getIntPref("perspectives.quorum_thresh") / 100;
 			var q_required = Math.round(this.notaries.length * q_thresh);
 			var unixtime = Pers_util.get_unix_time(); 
-			var quorum_duration = get_quorum_duration(test_key, 
+			var quorum_duration = Pers_client_policy.get_quorum_duration(test_key, 
 					server_result_list, q_required, max_stale_sec,unixtime);  
 			var is_consistent = quorum_duration != -1;
  
-			var qd_days =  Math.
-						round((quorum_duration / (3600 * 24)) * 1000) / 1000;
+			var qd_days =  Math.round((quorum_duration / (3600 * 24)) * 1000) / 1000;
 			var obs_text = ""; 
 			for(var i = 0; i < server_result_list.length; i++) {
 				obs_text += "\nNotary: " + server_result_list[i].server + "\n"; 

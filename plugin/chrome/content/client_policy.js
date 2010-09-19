@@ -1,16 +1,17 @@
 /* 
  This file implements a lot of the client side policy functionality 
- assuming JSON formatted data.  We will probably have to tweak this code
- to use XML, not JSON.  Also, we will need to add the signature checks.
+ assuming JSON formatted data.  
 */ 
 
-function sort_number_list_desc(list){ 
+var Pers_client_policy = { 
+
+sort_number_list_desc : function(list){ 
 	function sortNumber(a,b){ return b - a; }
 	list.sort(sortNumber); 
-} 
+}, 
 
 
-function find_key_at_time(server_results,desired_time) { 
+find_key_at_time : function(server_results,desired_time) { 
  for(i = 0; i < server_results.obs.length; i++) { 
 		var cur_obs = server_results.obs[i];
 		Pers_debug.d_print("policy", "key: " + cur_obs.key); 
@@ -25,9 +26,9 @@ function find_key_at_time(server_results,desired_time) {
 		} 
  }
  return null; 
-} 
+}, 
 
-function find_most_recent(server_results) { 
+find_most_recent : function(server_results) { 
  var most_recent_time = 0; 
  for(var i = 0; i < server_results.obs.length; i++) { 
 		var cur_obs = server_results.obs[i]; 
@@ -38,32 +39,32 @@ function find_most_recent(server_results) {
 		} 
  }
  return most_recent_time; 
-} 
+}, 
 
-function find_oldest_most_recent(results, stale_limit_secs,cur_time){
+find_oldest_most_recent : function(results, stale_limit_secs,cur_time){
 	var stale_limit = cur_time - stale_limit_secs; 
 	var oldest_most_recent = cur_time + stale_limit_secs;
 	for(var i = 0; i < results.length; i++) { 
-		var most_recent = find_most_recent(results[i]);
+		var most_recent = Pers_client_policy.find_most_recent(results[i]);
 		if(most_recent && (most_recent < oldest_most_recent)) { 
 			if(most_recent > stale_limit) 
 				oldest_most_recent = most_recent; 
 		}
 	}
 	return oldest_most_recent; 
-}
+}, 
 
 
-function get_num_valid_notaries(test_key,results,stale_limit_secs,cur_time){
+get_num_valid_notaries: function(test_key,results,stale_limit_secs,cur_time){
 	var stale_limit = cur_time - stale_limit_secs;
 	var num_valid = 0; 
 	for(var i = 0; i < results.length; i++) { 
-			var mr_time = find_most_recent(results[i]); 
+			var mr_time = Pers_client_policy.find_most_recent(results[i]); 
 			if(mr_time == 0 || mr_time < stale_limit) {  
 				Pers_debug.d_print("policy", "no non-stale keys"); 
 				continue;
 			}
-			var cur_key = find_key_at_time(results[i], mr_time);
+			var cur_key = Pers_client_policy.find_key_at_time(results[i], mr_time);
 			Pers_debug.d_print("policy", "cur_key : " + cur_key); 
 			Pers_debug.d_print("policy", "test_key : " + test_key);  
 			if(cur_key == test_key) {
@@ -75,9 +76,9 @@ function get_num_valid_notaries(test_key,results,stale_limit_secs,cur_time){
 			}
 	}
 	return num_valid; 
-}
+}, 
 
-function get_all_key_changes(results) { 
+get_all_key_changes : function(results) { 
 	var change_set = {}; 
 	for(var i = 0; i < results.length; i++) { 
 		for(var j = 0; j < results[i].obs.length; j++) { 
@@ -94,17 +95,17 @@ function get_all_key_changes(results) {
 		change_list.push(x); 
 	}
 	return change_list; 
-} 
+} , 
 
-function check_current_consistency(test_key,results,quorum_size,stale_limit_secs,cur_time) {
+check_current_consistency : function(test_key,results,quorum_size,stale_limit_secs,cur_time) {
   	//get_all_key_changes(results); 
-	var num_valid = get_num_valid_notaries(test_key,results,stale_limit_secs,cur_time);
+	var num_valid = Pers_client_policy.get_num_valid_notaries(test_key,results,stale_limit_secs,cur_time);
 	Pers_debug.d_print("policy", 
 		"cur_consistency: " + num_valid + " with q = " + quorum_size); 
 	return num_valid >= quorum_size; 
-}
+}, 
 
-function has_quorum_at_time(test_key, results, quorum_size, time) {
+has_quorum_at_time : function(test_key, results, quorum_size, time) {
 	Pers_debug.d_print("policy", "testing quorum for time " + time + 
 			" and key: " + test_key); 
 	var total_valid = 0; 
@@ -114,7 +115,7 @@ function has_quorum_at_time(test_key, results, quorum_size, time) {
 				results[i].server + " has no results"); 
 			continue; 
 		}
-		var cur_key = find_key_at_time(results[i],time); 
+		var cur_key = Pers_client_policy.find_key_at_time(results[i],time); 
 		if(cur_key == null) {
 			Pers_debug.d_print("policy", results[i].server + " has no key"); 
 			continue; 
@@ -128,21 +129,21 @@ function has_quorum_at_time(test_key, results, quorum_size, time) {
 		}
 	}
 	return total_valid >= quorum_size; 
-} 
+} , 
 
 
 
-function get_quorum_duration(test_key, results, quorum_size, stale_limit_secs, unixtime) { 
+get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs, unixtime) { 
 
-	if(! check_current_consistency(test_key,results,quorum_size,
+	if(! Pers_client_policy.check_current_consistency(test_key,results,quorum_size,
 					stale_limit_secs,unixtime)) { 
 		Pers_debug.d_print("policy","current_consistency_failed"); 
 		return -1; 
 	}
 	var oldest_valid_ts = unixtime; 	
-	var oldest_most_recent = find_oldest_most_recent(results,unixtime,stale_limit_secs); 
-  	var time_changes = get_all_key_changes(results); 
-	sort_number_list_desc(time_changes); 
+	var oldest_most_recent = Pers_client_policy.find_oldest_most_recent(results,unixtime,stale_limit_secs); 
+  	var time_changes = Pers_client_policy.get_all_key_changes(results); 
+	Pers_client_policy.sort_number_list_desc(time_changes); 
 	Pers_debug.d_print("policy", "sorted times: ", time_changes); 
   	var test_time = null; 
 	for(var i = 0; i < time_changes.length; i++) {
@@ -151,7 +152,7 @@ function get_quorum_duration(test_key, results, quorum_size, stale_limit_secs, u
 			Pers_debug.d_print("policy","skipping test_time = " + test_time); 
 			continue; 
 		}
-		if(!has_quorum_at_time(test_key,results,quorum_size,test_time)) { 
+		if(!Pers_client_policy.has_quorum_at_time(test_key,results,quorum_size,test_time)) { 
 			Pers_debug.d_print("policy", 
 				"quorum failed for time " + test_time); 
 			break; 
@@ -165,3 +166,5 @@ function get_quorum_duration(test_key, results, quorum_size, stale_limit_secs, u
 	return (diff > 0) ? diff : 0;  
 } 
  
+
+} 

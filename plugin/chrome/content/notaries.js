@@ -576,14 +576,6 @@ var Perspectives = {
 			Perspectives.other_cache["reason"] = text;
 			return;
 		} 
-
-		if(whitelist.onWhitelist(uri.host)){
-			var text = Perspectives.strbundle.
-					getFormattedString("whitelistError", [uri.host] ); 
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-			Perspectives.other_cache["reason"] = text; 
-			return;
-		}
 		
 		// Note: we no longer do a DNS look-up to to see if a DNS name maps 
 		// to an RFC 1918 address, as this 'leaked' DNS info for users running

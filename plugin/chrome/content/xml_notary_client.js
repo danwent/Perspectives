@@ -67,7 +67,7 @@ var Pers_xml = {
 	// see firefox-v2/xp_src/moz_crypto.cpp for details of header format
 	add_der_signature_header: function(sig_base64) { 
 
-		var base_str = Base64.decode(sig_base64); 
+		var base_str = Pers_Base64.decode(sig_base64); 
 		var der_header_md5 = [ "0x30", "0x81", "0xbf", "0x30", "0x0d", "0x06", 
 							"0x09", "0x2a", "0x86", "0x48", "0x86", "0xf7", 
 							"0x0d", "0x01", "0x01", "0x04", "0x05", "0x00", 
@@ -76,7 +76,7 @@ var Pers_xml = {
 		for (i = 0; i < der_header_md5.length; i++) { 
 			header_str += String.fromCharCode(parseInt(der_header_md5[i],16));
 		}
-		return Base64.encode(header_str + base_str) ; 
+		return Pers_Base64.encode(header_str + base_str) ; 
 	}, 
 
 

@@ -13,7 +13,7 @@
 // NOTE: I got rid of the utf8 encoding done by the original code, as we 
 // need to replicate base64 encoding/decoding of ASCII strings
 
-var Base64 = {
+var Pers_Base64 = {
 
     // private property
     _keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",

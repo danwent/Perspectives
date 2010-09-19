@@ -70,6 +70,10 @@ var Pers_statusbar = {
 			Pers_debug.d_print("main", "Neutral Status\n");
 			i.setAttribute("src", "chrome://perspectives/content/default.png");
 			break;
+		case Pers_statusbar.STATE_QUERY:
+			Pers_debug.d_print("main", "Querying Status\n");
+			i.setAttribute("src", "chrome://perspectives/content/progress.gif");
+			break;
 		case Pers_statusbar.STATE_ERROR:
 			Pers_debug.d_print("main", "Error Status\n");
 			i.setAttribute("src", "chrome://perspectives/content/error.png");

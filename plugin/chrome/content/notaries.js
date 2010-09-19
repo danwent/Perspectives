@@ -465,7 +465,7 @@ var Perspectives = {
 						Pers_debug.d_print("query","got all server replies"); 	
 						Perspectives.notaryQueriesComplete(uri,cert,service_id,browser,
 								has_user_permission, 
-						Perspectives.query_result_data[service_id]);
+								Perspectives.query_result_data[service_id]);
 						delete Perspectives.query_result_data[service_id];
 						window.clearTimeout(Perspectives.
 							query_timeoutid_data[service_id]);
@@ -809,7 +809,7 @@ var Perspectives = {
    		onLocationChange: function(aWebProgress, aRequest, aURI) {
       			try{
         			Pers_debug.d_print("main", "Location change " + aURI.spec + "\n");
-        			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_NEUT, 
+        			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_QUERY, 
 							"Connecting to " + aURI.spec);
       			} catch(err){
         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);

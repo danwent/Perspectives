@@ -205,7 +205,7 @@ var Perspectives = {
 					Pers_debug.d_print("main", 
 						"User gives probe permission\n"); 
 					var uri = b.currentURI;
-					Perspectives.updateStatus(b,true); 
+					Perspectives.updateStatus(b,true,false); 
 				}
 			},
 			{ 
@@ -554,7 +554,7 @@ var Perspectives = {
 	// 'has_user_permission' indicates whether the user
 	// explicitly pressed a button to launch this query,
 	// by default this is not the case
-	updateStatus: function(browser, has_user_permission){
+	updateStatus: function(browser, has_user_permission, is_forced){
 
 		if(Perspectives.strbundle == null) 
 			Perspectives.strbundle = document.getElementById("notary_strings");
@@ -646,7 +646,7 @@ var Perspectives = {
 		// see if the browser has this cert installed prior to this browser session
 		ti.already_trusted = (ti.state & Perspectives.state.STATE_IS_SECURE) && 
 			!(ti.is_override_cert && Perspectives.ssl_cache[uri.host]); 
-		if(!check_good && ti.already_trusted) {
+		if(!check_good && ti.already_trusted && !is_forced) {
 			var text = Perspectives.strbundle.
 				getString("noProbeRequestedError"); 
 			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
@@ -826,7 +826,7 @@ var Perspectives = {
        			  try {
      				var uri = gBrowser.currentURI;
      				Pers_debug.d_print("main", "State change " + uri.spec + "\n");
-         			Perspectives.updateStatus(gBrowser,false);
+         			Perspectives.updateStatus(gBrowser,false,false);
        			  } catch (err) {
          			Pers_debug.d_print("Perspectives had an internal exception: " + err);
          			Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR, 
@@ -842,7 +842,7 @@ var Perspectives = {
        			try{
          			uri = gBrowser.currentURI;
          			Pers_debug.d_print("main", "Security change " + uri.spec + "\n");
-         			Perspectives.updateStatus(gBrowser,false);
+         			Perspectives.updateStatus(gBrowser,false,false);
        			} catch(err){
          			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
          			if(uri) {
@@ -864,7 +864,7 @@ var Perspectives = {
 		var num = b.browsers.length;
 		for (var i = 0; i < num; i++) {
 			var browser = b.getBrowserAtIndex(i);
-			Perspectives.updateStatus(browser, false);
+			Perspectives.updateStatus(browser, false,false);
 		}
 	},
 
@@ -907,7 +907,18 @@ var Perspectives = {
 			Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
 		setTimeout(function (){ Perspectives.requeryAllTabs(gBrowser); }, 4000);
 		Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
-	}
+	}, 
+
+	forceStatusUpdate : function(browser) { 
+		var uri = browser.currentURI;
+		if(uri && uri.host) { 		
+			Pers_debug.d_print("main", "Forced request, clearing cache for '" + uri.host + "'"); 
+			delete Perspectives.ssl_cache[uri.host];  
+			Perspectives.updateStatus(browser, true, true); 
+		} else { 
+			Pers_debug.d_print("main", "Requested force check, but no URI is found"); 
+		} 
+	} 
 
 }
 

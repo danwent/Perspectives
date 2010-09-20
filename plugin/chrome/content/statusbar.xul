@@ -27,6 +27,7 @@
   <popupset>
     <popup id="perspective-contextmenu" position="after_start">
       <menuitem label="View Notary Results"   oncommand="Pers_statusbar.open_results_dialog()"/>
+      <menuitem label="Force Notary Check"   oncommand="Pers_statusbar.force_update()"/>
       <menuseparator/>
 <!--      <menuitem label="Refresh All Notary Data"   oncommand="requery()"/> --> 
       <menuitem label="Preferences" oncommand="Pers_statusbar.open_preferences_dialog()"/>

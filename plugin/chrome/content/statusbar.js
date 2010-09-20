@@ -8,9 +8,11 @@ var Pers_statusbar = {
 	STATE_STOP  : Components.interfaces.
 			nsIWebProgressListener.STATE_STOP,
 
+	force_update : function(event) {
+		Perspectives.forceStatusUpdate(window.gBrowser); 
+	}, 
+
 	statusbar_click: function(event) {
-		Pers_debug.d_print("main",event); 
-		Pers_debug.d_print("main", event.button); 
 		Pers_statusbar.open_results_dialog();
 	},
 

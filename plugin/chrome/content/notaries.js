@@ -810,7 +810,7 @@ var Perspectives = {
       			try{
         			Pers_debug.d_print("main", "Location change " + aURI.spec + "\n");
         			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_QUERY, 
-							"Connecting to " + aURI.spec);
+							"Contacting notaries about '" + aURI.host + "'");
       			} catch(err){
         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
         			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR, 

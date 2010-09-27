@@ -739,6 +739,24 @@ var Perspectives = {
 			var weak_trust = cache_cert.inconsistent_results && cache_cert.weakly_seen; 
 	
 			if(strong_trust) { 
+				ti.notary_valid = true; 
+				if (ti.insecure){
+					ti.insecure = false;
+					ti.exceptions_enabled = Perspectives.root_prefs.
+						getBoolPref("perspectives.exceptions.enabled")
+					if(ti.exceptions_enabled) { 
+						ti.isTemp = !Perspectives.root_prefs.
+							getBoolPref("perspectives.exceptions.permanent");
+						Perspectives.do_override(browser, ti.cert, ti.isTemp);
+						cache_cert.identityText = Perspectives.strbundle.
+							getString("exceptionAdded");  
+						// don't give drop-down if user gave explicit
+						// permission to query notaries
+						if(ti.firstLook && !has_user_permission){
+							Perspectives.notifyOverride(browser);
+						}
+					}
+				}
 
 				// Check if this site includes insecure embedded content.  If so, do not 
 				// show a green check mark, as we don't want people to incorrectly assume 
@@ -751,29 +769,11 @@ var Perspectives = {
 					"HTTPS Certificate is trusted, but site contains insecure embedded content. ");
 				}  else { 
 
-					ti.notary_valid = true; 
 					cache_cert.tooltip = Perspectives.strbundle.
 						getFormattedString("verifiedMessage", 
 						[ cache_cert.duration, required_duration]);
 					Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, 
 						cache_cert.tooltip);
-					if (ti.insecure){
-						ti.insecure = false;
-						ti.exceptions_enabled = Perspectives.root_prefs.
-							getBoolPref("perspectives.exceptions.enabled")
-						if(ti.exceptions_enabled) { 
-							ti.isTemp = !Perspectives.root_prefs.
-								getBoolPref("perspectives.exceptions.permanent");
-							Perspectives.do_override(browser, ti.cert, ti.isTemp);
-							cache_cert.identityText = Perspectives.strbundle.
-								getString("exceptionAdded");  
-							// don't give drop-down if user gave explicit
-							// permission to query notaries
-							if(ti.firstLook && !has_user_permission){
-								Perspectives.notifyOverride(browser);
-							}
-						}
-					}
 				}
 			} else if(!ti.insecure && weak_trust && pref_https_weak) { 
 				if(ti.state & Perspectives.state.STATE_IS_BROKEN) { 

@@ -266,6 +266,7 @@ var Perspectives = {
 		this.summary  = summary;
 		this.tooltip  = tooltip;
 		this.svg      = svg;
+		this.created = Pers_util.get_unix_time(); 
 	},
 
 	get_invalid_cert_SSLStatus: function(uri){
@@ -521,10 +522,9 @@ var Perspectives = {
     			str += "Results:\n"; 
     			str += "Quorum duration: " + qd_str + "\n"; 
     			str += "Notary Observations: \n" + obs_text + "\n"; 
-			Pers_debug.d_print("main","\n" + str + "\n");	
+			//Pers_debug.d_print("main","\n" + str + "\n");	
 			var svg = Pers_gen.get_svg_graph(service_id, server_result_list, 30,
 				unixtime,test_key);
-			Pers_debug.d_print("main", svg);			
 			Perspectives.ssl_cache[uri.host] = new Perspectives.SslCert(uri.host, 
 										uri.port, test_key, 
 										str, null,svg, qd_days, 
@@ -677,6 +677,13 @@ var Perspectives = {
 		}
 
 		var cached_data = Perspectives.ssl_cache[uri.host];
+		var unix_time = Pers_util.get_unix_time();
+		var max_cache_age_sec = Perspectives.root_prefs.getIntPref("perspectives.max_cache_age_sec");  
+		if(cached_data && cached_data.created < (unix_time - max_cache_age_sec)) {
+			Pers_debug.d_print("main", "Cached data is stale.  Re-evaluate security."); 
+			delete Perspectives.ssl_cache[uri.host]; 
+			cached_data = null; 
+		}  
 		if(cached_data && cached_data.md5 != md5) { 
 			Pers_debug.d_print("main", "Current and cached key disagree.  Re-evaluate security."); 
 			delete Perspectives.ssl_cache[uri.host]; 

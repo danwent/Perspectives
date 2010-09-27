@@ -164,7 +164,82 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 	} 
 	var diff = unixtime - oldest_valid_ts + 1; 
 	return (diff > 0) ? diff : 0;  
-} 
- 
+}, 
+
+// For sites that do not consistently use a single certificate, Perspectives supports
+// a weaker notion of whether a key is 'valid', called 'weak consistentcy'.  
+// This test checks that two things are BOTH true: 
+// 1) confirm that no notary has consistently seen any key for this website.  We do this
+// by checking that in the past 'check_length' days, no notary has seen the
+// same key for more than 'max_timespan' days.  The goal of this check is to make sure
+// weak consistency cannot be used by an attacker to undermine a site that regularly 
+// uses a single 'correct' key. 
+// 2) that 'test' key has been seen by at least 'qourum_size' notaries in the past 
+// 'check_length' days.  Note that this is MUCH weaker than standard perspectives 
+// requirement that notaries must have seen a key consistently over time.  Even a single
+// observation by all notaries could undermine this form of consistency.  
+
+// This technique is implemented by the functions 'key_weakly_seen_by_quorum' and 'inconsistency_check' 
+
+key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_length){ 
+ 	var cutoff_sec = Pers_util.get_unix_time() - Pers_util.DAY2SEC(check_length); 
+
+	for(var i = 0; i < results.length; i++) {
+		var seen = false;  
+		for(var j = 0; j < results[i].obs.length; j++) { 
+			if(results[i].obs[j].key != test_key) { 
+				continue; 
+			} 		
+			for(var k = 0; k < results[i].obs[j].timestamps.length; k++) { 
+				var ts = results[i].obs[j].timestamps[k]; 
+				if (ts.end >= cutoff_sec) { 
+					seen = true; 
+					break; 
+				}  
+			}
+		}
+		if(!seen) { 
+			return false; 
+		} 
+	}
+	return true; 
+}, 
+
+
+// returns true if 'results' contains replies that are all 'inconsistent', which 
+// according to our definition means that there was non timepsan longer than 
+// 'max_timespan' in the last 'check_length' days. 
+inconsistency_check : function(results, max_timespan, check_length) { 
+	
+	for(var i = 0; i < results.length; i++) { 
+		var max_ts_sec = this.calc_longest_timespan(results[i].obs, 
+									check_length); 
+		if(max_timespan < Pers_util.SEC2DAY(max_ts_sec)) { 
+			return false; 
+		} 
+	} 
+	return true; 
+},  
+
+// find the longest single timespan for the results from a single notary
+calc_longest_timespan : function(obs_list, check_length) {  
+ 	var cutoff_sec = Pers_util.get_unix_time() - Pers_util.DAY2SEC(check_length); 
+	var max_diff = 0; 
+	for(var j = 0; j < obs_list.length; j++) { 
+		for(var k = 0; k <  obs_list[j].timestamps.length; k++) { 
+			var ts = obs_list[j].timestamps[k];
+			// be generous.  count it if timespan at least ended in 
+			// the last 'check_length' days
+			if(ts.end < cutoff_sec) { 
+				continue; 
+			} 
+			var diff = ts.end - ts.start; 
+			if (diff > max_diff) { 
+				max_diff = diff; 
+			}  
+		}
+	}
+	return max_diff; 
+}
 
 } 

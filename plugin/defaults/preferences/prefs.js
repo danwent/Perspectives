@@ -8,3 +8,6 @@ pref("perspectives.check_good_certificates", false);
 pref("perspectives.require_user_permission", false);
 pref("perspectives.show_label", true);
 pref("perspectives.svg", "");
+pref("perspectives.max_timespan_for_inconsistency_test", 7);
+pref("perspectives.weak_consistency_time_limit", 30);
+pref("perspectives.trust_https_with_weak_consistency", true);

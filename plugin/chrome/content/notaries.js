@@ -254,11 +254,14 @@ var Perspectives = {
 	},
 
 	//certificate used in caching
-	SslCert: function(host, port, md5, summary, tooltip, svg, duration, secure){
+	SslCert: function(host, port, md5, summary, tooltip, svg, duration, cur_consistent, 
+					inconsistent_results,weakly_seen){
 		this.host     = host;
 		this.port     = port;
 		this.md5      = md5;
-		this.secure   = secure;
+		this.cur_consistent   = cur_consistent;
+		this.inconsistent_results = inconsistent_results; 
+		this.weakly_seen = weakly_seen, 
 		this.duration = duration;
 		this.summary  = summary;
 		this.tooltip  = tooltip;
@@ -494,15 +497,25 @@ var Perspectives = {
 			var unixtime = Pers_util.get_unix_time(); 
 			var quorum_duration = Pers_client_policy.get_quorum_duration(test_key, 
 					server_result_list, q_required, max_stale_sec,unixtime);  
-			var is_consistent = quorum_duration != -1;
- 
+			var is_cur_consistent = quorum_duration != -1;
+		
+	
+			var weak_check_time_limit = Perspectives.root_prefs.
+						getIntPref("perspectives.weak_consistency_time_limit");
+			var inconsistent_check_max = Perspectives.root_prefs.
+					getIntPref("perspectives.max_timespan_for_inconsistency_test");
+			var is_inconsistent = Pers_client_policy.inconsistency_check(server_result_list,
+							inconsistent_check_max, weak_check_time_limit);
+			var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(test_key, 
+						server_result_list, q_required, weak_check_time_limit); 
+				 
 			var qd_days =  Math.round((quorum_duration / (3600 * 24)) * 1000) / 1000;
 			var obs_text = ""; 
 			for(var i = 0; i < server_result_list.length; i++) {
 				obs_text += "\nNotary: " + server_result_list[i].server + "\n"; 
 				obs_text += Pers_xml.resultToString(server_result_list[i]); 
 			}  
-			var qd_str = (is_consistent) ? qd_days + " days" : "none";
+			var qd_str = (is_cur_consistent) ? qd_days + " days" : "none";
 			var str = "Notary Lookup for: " + service_id + "\n";
     			str += "Browser's Key = '" + test_key + "'\n"; 
     			str += "Results:\n"; 
@@ -515,7 +528,9 @@ var Perspectives = {
 			Perspectives.ssl_cache[uri.host] = new Perspectives.SslCert(uri.host, 
 										uri.port, test_key, 
 										str, null,svg, qd_days, 
-										is_consistent);
+										is_cur_consistent, 
+										is_inconsistent, 
+										weakly_seen);
 			Perspectives.process_notary_results(uri,browser,has_user_permission); 
 
 		} catch (e) { 
@@ -710,34 +725,13 @@ var Perspectives = {
 				Perspectives.root_prefs.
 					getIntPref("perspectives.required_duration");
 
-			if (cache_cert.summary.indexOf("ssl key") == -1) { 
-				cache_cert.tooltip = 
-					Perspectives.strbundle.getString("noRepliesWarning");
-				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
-					cache_cert.tooltip);
-				if(ti.insecure) { 
-					Perspectives.notifyNoReplies(browser); 
-				} 
-			} else if(!cache_cert.secure){
-				cache_cert.tooltip = 
-					Perspectives.strbundle.getString("inconsistentWarning");
-				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
-					cache_cert.tooltip);
-				if(ti.insecure && ti.firstLook){
-					Perspectives.notifyFailed(browser);
-				}
-			} else if(cache_cert.duration < required_duration){
-				cache_cert.tooltip = Perspectives.strbundle.
-					getFormattedString("thresholdWarning", 
-					[ cache_cert.duration, required_duration]);
-				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
-					cache_cert.tooltip);
-				if(ti.insecure && ti.firstLook){
-					Perspectives.notifyFailed(browser);
-				}
-			}
-			else { //Its secure
-
+			var strong_trust = cache_cert.cur_consistent && 
+						(cache_cert.duration >= required_duration); 
+			var pref_https_weak = Perspectives.root_prefs.
+					getBoolPref("perspectives.trust_https_with_weak_consistency");
+			var weak_trust = cache_cert.inconsistent_results && cache_cert.weakly_seen; 
+	
+			if(strong_trust) { 
 
 				// Check if this site includes insecure embedded content.  If so, do not 
 				// show a green check mark, as we don't want people to incorrectly assume 
@@ -774,7 +768,53 @@ var Perspectives = {
 						}
 					}
 				}
-			}
+			} else if(!ti.insecure && weak_trust && pref_https_weak) { 
+				if(ti.state & Perspectives.state.STATE_IS_BROKEN) { 
+					Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, 
+					"HTTPS Certificate is trusted, but site contains insecure embedded content. ");
+				}  else { 
+					Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, 
+					"This site uses multiple certificates, including the certificate received and trusted by your browser.");
+
+				} 
+			} else if (cache_cert.summary.indexOf("ssl key") == -1) { 
+				cache_cert.tooltip = 
+					Perspectives.strbundle.getString("noRepliesWarning");
+				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
+					cache_cert.tooltip);
+				if(ti.insecure) { 
+					Perspectives.notifyNoReplies(browser); 
+				} 
+			} else if(cache_cert.inconsistent_results && !cache_cert.weakly_seen) { 
+				cache_cert.tooltip = "This site regularly uses multiples certificates, and most Notaries have not recently seen the certificate received by the browser";
+				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
+					cache_cert.tooltip);
+			} else if(cache_cert.inconsistent_results) { 
+				cache_cert.tooltip = "Perspectives is unable to validate this site, because the site regularly uses multiples certificates"; 
+				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
+					cache_cert.tooltip);
+			} else if(!cache_cert.cur_consistent){
+				cache_cert.tooltip = 
+					Perspectives.strbundle.getString("inconsistentWarning");
+				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
+					cache_cert.tooltip);
+				if(ti.insecure && ti.firstLook){
+					Perspectives.notifyFailed(browser);
+				}
+			} else if(cache_cert.duration < required_duration){
+				cache_cert.tooltip = Perspectives.strbundle.
+					getFormattedString("thresholdWarning", 
+					[ cache_cert.duration, required_duration]);
+				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
+					cache_cert.tooltip);
+				if(ti.insecure && ti.firstLook){
+					Perspectives.notifyFailed(browser);
+				}
+			} else { 
+				cache_cert.tooltip = "An unknown Error occurred processing Notary results";
+				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR, 
+					cache_cert.tooltip);
+			} 
 		
 
 			if(cache_cert.identityText){

@@ -947,13 +947,17 @@ var Perspectives = {
 	},  
  
 	initNotaries: function(){
-		Pers_debug.d_print("main", "\nPerspectives Initialization\n");
-		Perspectives.fillNotaryList(); 
-		Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
-		getBrowser().addProgressListener(Perspectives.notaryListener, 
+		try { 
+			Pers_debug.d_print("main", "\nPerspectives Initialization\n");
+			Perspectives.fillNotaryList(); 
+			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
+			getBrowser().addProgressListener(Perspectives.notaryListener, 
 			Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
-		setTimeout(function (){ Perspectives.requeryAllTabs(gBrowser); }, 4000);
-		Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
+			setTimeout(function (){ Perspectives.requeryAllTabs(gBrowser); }, 4000);
+			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
+		} catch(e) { 
+			alert("Error in initNotaries: " + e); 
+		} 
 	}, 
 
 	forceStatusUpdate : function(browser) { 

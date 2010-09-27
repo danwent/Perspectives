@@ -6,7 +6,7 @@
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>perspectives@cmu.edu</em:id>
 		<em:name>Perspectives</em:name>
-		<em:version>3.1.0</em:version>
+		<em:version>3.2.0</em:version>
     		<em:type>2</em:type>
     		<em:optionsURL>chrome://perspectives/content/preferences_dialog.xul</em:optionsURL>
 

@@ -39,7 +39,8 @@
     		<em:homepageURL>http://www.cs.cmu.edu/~perspectives/
 		</em:homepageURL>
 	 </Description> 
-    </em:localized> 
+    </em:localized>
+    <em:unpack>true</em:unpack> 
  </Description>
 
 </RDF>

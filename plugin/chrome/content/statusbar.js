@@ -10,7 +10,7 @@ var Pers_statusbar = {
 
 	force_update : function(event) {
 		Perspectives.forceStatusUpdate(window.gBrowser); 
-	}, 
+	},
 
 	statusbar_click: function(event) {
 		Pers_statusbar.open_results_dialog();

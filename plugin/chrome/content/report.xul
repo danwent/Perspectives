@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://perspectives/locale/dialogs.dtd">
+
+<window
+    id    = "perspectives-report-attack"
+    title          = "Perspectives: Report Possible Attack"
+    onload         = "Pers_report.load_report_dialog()"
+    xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <label value="Attack Report"/>
+
+    <groupbox>
+        <caption label="Request Data" />
+        <grid>
+            <rows>
+                <row>
+                    <label value="Host" />
+                    <label id="host" />
+                </row>
+                <row>
+                    <label value="URI" />
+                    <label id="uri" />
+                </row>
+                <row>
+                    <label value="IP" />
+                    <label id="ips" />
+                </row>
+            </rows>
+        </grid>
+    </groupbox>
+
+    <groupbox>
+        <caption label="Certificate"/>
+        <grid>
+            <rows>
+
+                <row> <label value="Issued To"/> </row>
+                <row>
+                    <label value="Common Name (CN)"/>
+                    <label id="commonName"/>
+                </row>
+                <row>
+                    <label value="Organization (O)"/>
+                    <label id="organization"/>
+                </row>
+                <row>
+                    <label value="Organizational Unit (OU)"/>
+                    <label id="organizationalUnit"/>
+                </row>
+                <row>
+                    <label value="Serial Number"/>
+                    <label id="serialNumber"/>
+                </row>
+
+                <row> <label value="Issued By"/> </row>
+                <row>
+                    <label value="Issuer Common Name (CN)"/>
+                    <label id="issuerCommonName"/>
+                </row>
+                <row>
+                    <label value="Organization (O)"/>
+                    <label id="issuerOrganization"/>
+                </row>
+                <row>
+                    <label value="Organizational Unit (OU)"/>
+                    <label id="issuerOrganizationUnit"/>
+                </row>
+
+                <row> <label value="Validity"/> </row>
+                <row>
+                    <label value="Issued On"/>
+                    <label id="notBeforeLocalDay"/>
+                </row>
+                <row>
+                    <label value="Expires On"/>
+                    <label id="notAfterLocalDay"/>
+                </row>
+
+                <row> <label value="Fingerprints"/> </row>
+                <row>
+                    <label value="SHA1 Fingerprint"/>
+                    <label id="sha1Fingerprint"/>
+                </row>
+                <row>
+                    <label value="MD5 Fingerprint"/>
+                    <label id="md5Fingerprint"/>
+                </row>
+            </rows>
+        </grid>
+    </groupbox>
+
+    <hbox>
+        <button label="Cancel" onclick="window.close()"/>
+        <button label="Submit" onclick="Pers_report.submit_data()"/>
+    </hbox>
+
+    <script type = "application/x-javascript" src="notaries.js"/>
+    <script type = "application/x-javascript" src="report.js"/>
+
+</window>
+
+
+

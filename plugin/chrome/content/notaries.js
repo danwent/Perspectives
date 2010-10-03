@@ -138,16 +138,13 @@ var Perspectives = {
 
 		var priority = notificationBox.PRIORITY_CRITICAL_LOW;
 		var message = Perspectives.strbundle.getString("unableToVerify");  
-		var buttons = null;
-		/* Uncomment when we have some sort of system
-		 * var buttons = [{
-		 *	label: Perspectives.strbundle.getString("reportThis"), 
-		 *	accessKey : "", 
-		 *	callback: function() {
-		 * 		alert("Do Stuff");
-		 *	}
-		 * }];
-		 */ 
+		var buttons = [{
+		 	label: Perspectives.strbundle.getString("reportThis"), 
+		 	accessKey : "", 
+		 	callback: function() {
+		  		Pers_report.report_attack(b, Perspectives.getCertificate(b)); 
+		 	}
+		  }]; 
 		notificationBox.appendNotification(message, "Perspectives", null,
 										   priority, buttons);
 	},
@@ -225,7 +222,7 @@ var Perspectives = {
 	// this is the drop down which is shown if the repsonse
 	// receive no notary replies.  
 	notifyNoReplies: function(b){
-
+		try { 
 		//Happens on requeryAllTabs 
 		try {
 			var notificationBox = b.getNotificationBox();
@@ -248,14 +245,29 @@ var Perspectives = {
 					"chrome://perspectives_main/content/firewall.html", 
 					null, null, null, false);
 			} 
-		}];
+		}, 
+		{
+		 	label: "foo", 
+		 	accessKey : "", 
+		 	callback: function() {
+				try { 
+		  		 Pers_report.report_attack(b, Perspectives.getCertificate(b)); 
+				} catch(e) { 
+					alert("error reporting attack: " + e); 
+				}
+		 	}
+		  }
+		];
 		notificationBox.appendNotification(message, "Perspectives", null,
 				priority, buttons);
+		} catch(e) { 
+			alert("notifyNoReplies error: " + e); 
+		}
 	},
 
 	//certificate used in caching
 	SslCert: function(host, port, md5, summary, tooltip, svg, duration, cur_consistent, 
-					inconsistent_results,weakly_seen){
+					inconsistent_results,weakly_seen, server_result_list){
 		this.host     = host;
 		this.port     = port;
 		this.md5      = md5;
@@ -266,6 +278,7 @@ var Perspectives = {
 		this.summary  = summary;
 		this.tooltip  = tooltip;
 		this.svg      = svg;
+		this.server_result_list = server_result_list; 
 		this.created = Pers_util.get_unix_time(); 
 	},
 
@@ -530,7 +543,8 @@ var Perspectives = {
 										str, null,svg, qd_days, 
 										is_cur_consistent, 
 										is_inconsistent, 
-										weakly_seen);
+										weakly_seen, 
+										server_result_list);
 			Perspectives.process_notary_results(uri,browser,has_user_permission); 
 
 		} catch (e) { 

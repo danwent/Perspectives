@@ -14,6 +14,7 @@
   <script type="application/x-javascript" src="xml_notary_client.js" />
   <script type="application/x-javascript" src="generate_svg.js" />
   <script type="application/x-javascript" src="notaries.js" />
+  <script type="application/x-javascript" src="report.js" />
   <script type="application/x-javascript" src="statusbar.js"/>
 	<statusbar id = "status-bar">
 	<statusbarpanel id="perspective-status"
@@ -28,6 +29,7 @@
     <popup id="perspective-contextmenu" position="after_start">
       <menuitem label="View Notary Results"   oncommand="Pers_statusbar.open_results_dialog()"/>
       <menuitem label="Force Notary Check"   oncommand="Pers_statusbar.force_update()"/>
+      <menuitem label="Report Attack"   oncommand="Pers_report.report_attack()"/>
       <menuseparator/>
 <!--      <menuitem label="Refresh All Notary Data"   oncommand="requery()"/> --> 
       <menuitem label="Preferences" oncommand="Pers_statusbar.open_preferences_dialog()"/>

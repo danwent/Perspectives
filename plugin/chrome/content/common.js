@@ -65,7 +65,6 @@ var Pers_util = {
     		istream.close();
 
     		return lines;
-<<<<<<< HEAD:plugin/chrome/content/common.js
 	}, 
 
 	readLocalFile: function(path){

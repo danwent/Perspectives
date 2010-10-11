@@ -1,22 +1,6 @@
 
 var Pers_report = { 
 
-
-/*
-   cert.commonName
-   cert.organization
-   cert.organizationalUnit
-   cert.serialNumber
-   cert.sha1Fingerprint
-   cert.md5Fingerprint
-   cert.validity.notBeforeLocalDay
-   cert.validity.notAfterLocalDay
-   cert.issuerCommonName
-   cert.issuerOrganization
-   cert.issuerOrganizationUnit
-*/
-
-
      REPORT_URI : "https://www.networknotary.org/report.php", 
 
      // An attack may have happened due to an DNS attack.  Thus, it is 
@@ -59,9 +43,19 @@ var Pers_report = {
     get_report_json : function() {
 	var b = window.opener.gBrowser; 
 	var cert = window.arguments[0];  
-	var host = b.currentURI.host;	
+	var res = window.arguments[1]; 
+	var host = b.currentURI.host;
+	var additional_text = document.getElementById("additional-info").value;
+	var email_address = document.getElementById("email-address").value;
+	var full_report = !document.getElementById("full-radio").selectedIndex;
+	var ip_str = ""; 
+	if(full_report) { 
+		ip_str = this.get_ip_str(host); 
+	} 	
         report_data      = {
-		"host" : host,  
+		"host" : host, 
+		"port" : b.currentURI.port,  
+		"record_ip" : full_report, 
 		"cert" :  { 
         		"commanName" 		 : cert.commonName, 
 		        "organization"           : cert.organization, 
@@ -75,23 +69,37 @@ var Pers_report = {
 		        "issuerOrganization"     : cert.issuerOrganization,
 		        "issuerOrganizationUnit" : cert.issuerOrganizationUnit,
 		}, 
-		"ips" : this.get_ip_str(host) 
-	} 
+		"ips" : ip_str,  
+		"results" : { 
+			"cur_consistent" : res.cur_consistent, 
+			"inconsistent_results" : res.inconsistent_results, 
+			"weakly_seen" : res.weakly_seen, 
+			"duration" : res.duration,
+			"server_result_list" : res.server_result_list, 
+			"created" : res.created  
+		}, 
+		"addition_text" : additional_text, 
+		"email_address" : email_address
+		
+	}; 
 	return report_data; 
     }, 
 
     submit_data : function() {
-	try { 
-		var obj = this.get_report_json(); 
-        	var report_json_str = JSON.stringify(obj);
+	try {
+        	var report_json_str = JSON.stringify(this.get_report_json());
+		var full_report = !document.getElementById("full-radio").selectedIndex;
 
 		window.close(); 
 
 		// no feedback if request fails. 
         	var req = new XMLHttpRequest();
-        	req.open("POST", this.REPORT_URI + "?report=" + report_json_str);
-        	req.send(null);
-		alert("done sending data"); 
+		// synchronous request
+        	req.open("POST", this.REPORT_URI + "?record_ip=" + full_report, false);
+        	req.send(report_json_str);
+		if(req.status != 200) { 
+			alert("Failed to report attack to '" + this.REPORT_URI + "'.  Error code = " + req.status); 
+		} 
 	} catch(e) { 
 		alert("Error submitting report: " + e); 
 	} 
@@ -99,35 +107,35 @@ var Pers_report = {
 
     // note: this function is called in the scope of the main window, which is able to grab the cert
     report_attack : function() {
-	var cert = Perspectives.getCertificate(window.gBrowser); 
-        window.openDialog("chrome://perspectives/content/report.xul", "", "", cert).focus();
+	try {
+		var cert = Perspectives.getCertificate(window.gBrowser);
+		var cached_results = Perspectives.ssl_cache[window.gBrowser.currentURI.host];
+		if(!cert || !cached_results) { 
+			throw("no results to generate report"); 
+		} 	
+        	window.openDialog("chrome://perspectives/content/report.xul", "", "", 
+			cert, cached_results).focus();
+	} catch(e) { 
+		alert("Unable to generate a report for this website");
+	} 
     }, 
 
     // this function is called by the 'report attack' window once it is open. 
-    load_report_dialog : function() { 
-/*
-        function dgid(a) {
-            return document.getElementById(a);
-        }
+    // or when one of the controls was toggled. 
+    refresh_report_dialog : function() {
+	var show_full = document.getElementById("show_full").checked;
+	document.getElementById("full-text").hidden = !show_full; 
+	document.getElementById("full-text-label").hidden = !show_full; 
+	var label = "Full Report Text (IP address will be recorded)"; 
+	if(document.getElementById("full-radio").selectedIndex) { 
+		label = "Privacy-Sensitive Report Text (IP address will NOT be recorded)"; 
+	}
+	if(show_full) {  
+		document.getElementById("full-text-label").value = label;
+		var txt = Pers_util.pretty_print_json(this.get_report_json());  
+		document.getElementById("full-text").value = txt;  	
+	}
+    } 
 
-        var attack_data                      = window.arguments[0];
-        var cert                             = attack_data.cert;
-        var uri                              = attack_data.uri;
-        dgid("commonName").value             = cert.commonName;
-        dgid("organization").value           = cert.organization;
-        dgid("organizationalUnit").value     = cert.organizationalUnit;
-        dgid("serialNumber").value           = cert.serialNumber;
-        dgid("sha1Fingerprint").value        = cert.sha1Fingerprint;
-        dgid("md5Fingerprint").value         = cert.md5Fingerprint;
-        dgid("notBeforeLocalDay").value      = cert.validity.notBeforeLocalDay;
-        dgid("notAfterLocalDay").value       = cert.validity.notAfterLocalDay;
-        dgid("issuerCommonName").value       = cert.issuerCommonName;
-        dgid("issuerOrganization").value     = cert.issuerOrganization;
-        dgid("issuerOrganizationUnit").value = cert.issuerOrganizationUnit;
-        dgid("uri").value                    = attack_data.uri;
-        dgid("host").value                   = attack_data.host;
-        dgid("ips").value                    = attack_data.ips;
-	*/ 
-    }
 }
 

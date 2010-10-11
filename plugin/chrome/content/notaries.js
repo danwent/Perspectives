@@ -142,7 +142,7 @@ var Perspectives = {
 		 	label: Perspectives.strbundle.getString("reportThis"), 
 		 	accessKey : "", 
 		 	callback: function() {
-		  		Pers_report.report_attack(b, Perspectives.getCertificate(b)); 
+				Pers_report.report_attack(); 
 		 	}
 		  }]; 
 		notificationBox.appendNotification(message, "Perspectives", null,
@@ -247,14 +247,10 @@ var Perspectives = {
 			} 
 		}, 
 		{
-		 	label: "foo", 
+		 	label: Perspectives.strbundle.getString("reportThis"), 
 		 	accessKey : "", 
 		 	callback: function() {
-				try { 
-		  		 Pers_report.report_attack(b, Perspectives.getCertificate(b)); 
-				} catch(e) { 
-					alert("error reporting attack: " + e); 
-				}
+				Pers_report.report_attack(); 
 		 	}
 		  }
 		];

@@ -72,7 +72,46 @@ var Pers_util = {
     		}
 
     		return text;
+	}, 
+
+	// stolen from: http://stackoverflow.com/questions/130404/javascript-data-formatting-pretty-printer
+	pretty_print_json : function(obj, indent) {
+ 
+		function IsArray(array) { return !( !array || (!array.length || array.length == 0) || typeof array !== 'object' || !array.constructor || array.nodeType || array.item ); } 
+
+  		var result = "";
+  		if (indent == null) indent = "";
+
+  		for (var property in obj){
+    			var value = obj[property];
+			var txt = "<unknown type>"; 
+			var t = typeof value; 
+    			if (t == 'string' || t == 'boolean' || t == 'number')
+      				txt = "'" + value + "'";
+    			else if (t == 'object'){
+      			/*	if (IsArray(value)){
+        				txt = "[ \n";
+					//alert("array " + property + " has length " + obj[property].length);  
+					for(i = 0; i < obj[property].length; i++) { 
+					     //txt = txt + this.pretty_print_json(obj[property][i],indent) + ",\n"; 
+					     txt = txt + obj[property][i] + ",\n"; 
+					} 
+					txt = txt + "]\n"; 
+      				} else */ if(true) {
+        				// Recursive dump
+        				// (replace "  " by "\t" or something else if you prefer)
+        				var od = this.pretty_print_json(value, indent + "  ");
+        				// If you like { on the same line as the key
+        				//value = "{\n" + od + "\n" + indent + "}";
+        				// If you prefer { and } to be aligned
+        				txt = "\n" + indent + "{\n" + od + "\n" + indent + "}";
+      				}
+    			}
+    			result += indent + "'" + property + "' : " + txt + ",\n";
+  		}
+  		return result.replace(/,\n$/, "");
 	}
 
+ 
  
 }

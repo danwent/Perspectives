@@ -37,13 +37,17 @@ var Pers_util = {
 	SEC2DAY: function(sec) { return sec / (3600 * 24); },
 	DAY2SEC: function(day) { return day * (3600 * 24); }, 
 
-  	readLocalFileLines: function(path){
+  	readLocalFileLines: function(fname){
     		var MY_ID = "perspectives@cmu.edu";
-    		var em = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager);
-    		var file = em.getInstallLocation(MY_ID).getItemFile(MY_ID, path);
+    		var directoryService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    		var profileFolder = directoryService.get("ProfD",Components.interfaces.nsIFile); 
+		profileFolder.append("extensions"); 
+		profileFolder.append(MY_ID); 
+		profileFolder.append(fname); 
+
     		var istream = Components.classes["@mozilla.org/network/file-input-stream;1"].
     		createInstance(Components.interfaces.nsIFileInputStream);
-    		istream.init(file, 0x01, 0444, 0);
+    		istream.init(profileFolder, 0x01, 0444, 0);
     		istream.QueryInterface(Components.interfaces.nsILineInputStream);
 
     		// read lines into array
@@ -61,6 +65,7 @@ var Pers_util = {
     		istream.close();
 
     		return lines;
+<<<<<<< HEAD:plugin/chrome/content/common.js
 	}, 
 
 	readLocalFile: function(path){
@@ -111,7 +116,5 @@ var Pers_util = {
   		}
   		return result.replace(/,\n$/, "");
 	}
-
- 
  
 }

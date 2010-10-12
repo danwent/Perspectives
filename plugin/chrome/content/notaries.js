@@ -958,7 +958,8 @@ var Perspectives = {
    		// we only call updateStatus on STATE_STOP, as a catch all in case
    		// onSecurityChange was never called. 
    		onStateChange: function(aWebProgress, aRequest, aFlag, aStatus) {
-     			if(aFlag & STATE_STOP){
+     			
+			if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP){
        			  try {
      				var uri = gBrowser.currentURI;
      				Pers_debug.d_print("main", "State change " + uri.spec + "\n");

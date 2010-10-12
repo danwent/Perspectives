@@ -38,6 +38,10 @@
     id="require-user-permission"
     name="perspectives.require_user_permission"
     type="bool"/>
+  <preference 
+    id="whitelist"
+    name="perspectives.whitelist"
+    type="string"/>
 </preferences>
 
 <dialogheader title="Perspectives" />
@@ -71,6 +75,8 @@
       preference="exception-enabled"/>
     <checkbox label="&PermanentlytrustcertificatesvalidatedbyPerspectives;" 
       preference="exception-perm"/>
+     <label value="Automatically trust certificates for the following sites:" /> 
+      <textbox preference="whitelist" id="whitelist" size="40" />
   </groupbox>
 
   <groupbox>

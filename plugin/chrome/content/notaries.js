@@ -120,6 +120,35 @@ var Perspectives = {
 		notificationBox.appendNotification(message, "Perspectives", null,
 										   priority, buttons);
 	},
+	
+	notifyWhitelist: function(b){
+		//Happens on requeryAllTabs
+
+		try{
+			var notificationBox = b.getNotificationBox();
+		}
+		catch(e){
+			return;
+		}
+		var notificationBox = b.getNotificationBox();
+		Perspectives.clear_existing_banner(b, "Perspectives"); 
+
+		var priority = notificationBox.PRIORITY_INFO_LOW;
+		var message = "You have configured Perspectives to whitelist connections to this website"; 
+		var buttons = [
+			{
+			accessKey : "", 
+			label: "Remove from Whitelist", 
+			accessKey : "", 
+			callback: function() {
+				Pers_whitelist_dialog.remove_from_whitelist(b); 
+			}
+			}
+		];
+    
+		notificationBox.appendNotification(message, "Perspectives", null,
+										   priority, buttons);
+	},
 
 	notifyFailed: function(b){
 
@@ -144,7 +173,15 @@ var Perspectives = {
 		 	callback: function() {
 				Pers_report.report_attack(); 
 		 	}
-		  }]; 
+		  }, 
+		  {
+		 	label: "Whitelist", 
+		 	accessKey : "", 
+		 	callback: function() {
+				Pers_whitelist_dialog.add_to_whitelist(); 
+		 	}
+		  }
+		]; 
 		notificationBox.appendNotification(message, "Perspectives", null,
 										   priority, buttons);
 	},
@@ -237,7 +274,14 @@ var Perspectives = {
 		var message = Perspectives.strbundle.getString("noRepliesReceived");  
 		var buttons = null;
 		var buttons = [
-		{ 
+		 {
+		 	label: Perspectives.strbundle.getString("reportThis"), 
+		 	accessKey : "", 
+		 	callback: function() {
+				Pers_report.report_attack(); 
+		 	}
+		  }, 
+		  { 
 			label: Perspectives.strbundle.getString("firewallHelp"),
 			accessKey : "", 
 			callback: function() {
@@ -245,12 +289,12 @@ var Perspectives = {
 					"chrome://perspectives_main/content/firewall.html", 
 					null, null, null, false);
 			} 
-		}, 
-		{
-		 	label: Perspectives.strbundle.getString("reportThis"), 
+		  }, 
+		  {
+		 	label: "Whitelist", 
 		 	accessKey : "", 
 		 	callback: function() {
-				Pers_report.report_attack(); 
+				Pers_whitelist_dialog.add_to_whitelist(); 
 		 	}
 		  }
 		];
@@ -296,18 +340,14 @@ var Perspectives = {
 		return gSSLStatus;
 	},
 
-	cert_from_SSLStatus: function(gSSLStatus){
-		return gSSLStatus.QueryInterface(Components.interfaces.nsISSLStatus)
-				.serverCert;
-	},
-
 	// gets current certificat, if it FAILED the security check 
 	psv_get_invalid_cert: function(uri) { 
 		var gSSLStatus = Perspectives.get_invalid_cert_SSLStatus(uri);
 		if(!gSSLStatus){
 			return null;
 		}
-		return this.cert_from_SSLStatus(gSSLStatus);
+		return gSSLStatus.QueryInterface(Components.interfaces.nsISSLStatus)
+				.serverCert;
 	}, 
 
 	// gets current certificate, if it PASSED the browser check 
@@ -549,14 +589,14 @@ var Perspectives = {
 	},
 
   
-	// There is a bug here.  Sometimes it gets into a browser reload 
-	// loop.  Come back to this later 
-
 	do_override: function(browser, cert,isTemp) { 
 		var uri = browser.currentURI;
 		Pers_debug.d_print("main", "Do Override\n");
 
-		gSSLStatus = Perspectives.get_invalid_cert_SSLStatus(uri);
+		var gSSLStatus = Perspectives.get_invalid_cert_SSLStatus(uri);
+		if(gSSLStatus == null) { 
+			return false; 
+		} 
 		var flags = 0;
 		if(gSSLStatus.isUntrusted)
 			flags |= Perspectives.overrideService.ERROR_UNTRUSTED;
@@ -568,9 +608,8 @@ var Perspectives = {
 		Perspectives.overrideService.rememberValidityOverride(
 			uri.asciiHost, uri.port, cert, flags, isTemp);
 
-		setTimeout(function (){ 
-			browser.loadURIWithFlags(uri.spec, flags);}, 25);
-			return true;
+		setTimeout(function (){ browser.loadURIWithFlags(uri.spec, flags);}, 25);
+		return true;
 	},
 
 
@@ -628,18 +667,6 @@ var Perspectives = {
 			return;
 		} 
 		
-		// Note: we no longer do a DNS look-up to to see if a DNS name maps 
-		// to an RFC 1918 address, as this 'leaked' DNS info for users running
-		// anonymizers like Tor.  It was always just an insecure guess anyway.  
-		var unreachable = Perspectives.is_nonrouted_ip(uri.host); 
-		if(unreachable) { 
-			var text = Perspectives.strbundle.
-				getFormattedString("rfc1918Error", [ uri.host ])
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-			Perspectives.other_cache["reason"] = text; 
-			return;
-		} 
-
 		ti.insecure         = false;
 		ti.cert       = Perspectives.getCertificate(browser);
 		if(!ti.cert){
@@ -652,7 +679,6 @@ var Perspectives = {
   
 		var md5        = ti.cert.md5Fingerprint.toLowerCase();
 		ti.state      = browser.securityUI.state;
-		var gSSLStatus = null;
 
 		ti.is_override_cert = Perspectives.overrideService.
 			isCertUsedForOverrides(ti.cert, true, true);
@@ -667,10 +693,12 @@ var Perspectives = {
 			Perspectives.clear_existing_banner(browser, 
 				"Perspecives-Permission"); 
 		}
-
+		
 		// see if the browser has this cert installed prior to this browser session
 		ti.already_trusted = (ti.state & Perspectives.state.STATE_IS_SECURE) && 
 			!(ti.is_override_cert && Perspectives.ssl_cache[uri.host]); 
+		
+
 		if(!check_good && ti.already_trusted && !is_forced) {
 			var text = Perspectives.strbundle.
 				getString("noProbeRequestedError"); 
@@ -685,8 +713,25 @@ var Perspectives = {
 				"state is STATE_IS_INSECURE, we need an override\n");
 			ti.insecure = true; 
 		}
+		
+
+		// Note: we no longer do a DNS look-up to to see if a DNS name maps 
+		// to an RFC 1918 address, as this 'leaked' DNS info for users running
+		// anonymizers like Tor.  It was always just an insecure guess anyway.  
+		var unreachable = Perspectives.is_nonrouted_ip(uri.host); 
+		if(unreachable) { 
+			var text = Perspectives.strbundle.
+				getFormattedString("rfc1918Error", [ uri.host ])
+			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+			Perspectives.other_cache["reason"] = text; 
+			return;
+		}
+		
 
 		var cached_data = Perspectives.ssl_cache[uri.host];
+		ti.firstLook = !cached_data;
+
+		// clear cache if it is stale 
 		var unix_time = Pers_util.get_unix_time();
 		var max_cache_age_sec = Perspectives.root_prefs.getIntPref("perspectives.max_cache_age_sec");  
 		if(cached_data && cached_data.created < (unix_time - max_cache_age_sec)) {
@@ -700,9 +745,27 @@ var Perspectives = {
 			cached_data = null; 
 		}   
 		
+
+		if(Perspectives.is_whitelisted_by_user(uri.host)) {
+			if(!ti.already_trusted) { 		
+				var isTemp = !Perspectives.root_prefs.
+					getBoolPref("perspectives.exceptions.permanent");
+				if(Perspectives.do_override(browser, ti.cert, isTemp) && ti.firstLook) { 
+					Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); 
+					Perspectives.notifyWhitelist(browser);
+				}
+			} 
+			var text = "You have configured Perspectives to whitelist connections to '" + 
+									uri.host  + "'";
+			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, text); 
+			Perspectives.other_cache["reason"] = text; 
+			return; 
+		}  
+
 		//Update ssl cache cert
-		ti.firstLook = false;
-		if(!cached_data) { 
+		if(cached_data) { 
+			Perspectives.process_notary_results(uri,browser,has_user_permission,false);
+		} else {  
 			ti.firstLook = true;
 			Pers_debug.d_print("main", uri.host + " needs a request\n"); 
 			var needs_perm = Perspectives.root_prefs
@@ -721,8 +784,6 @@ var Perspectives = {
 			// notaries, the logic picks up again with the function 
 			// 'done_querying_notaries()' below
 			this.queryNotaries(ti.cert, uri,browser,has_user_permission);
-		}else {
-			Perspectives.process_notary_results(uri,browser,has_user_permission); 
 		}
 	},
 
@@ -755,9 +816,9 @@ var Perspectives = {
 					ti.exceptions_enabled = Perspectives.root_prefs.
 						getBoolPref("perspectives.exceptions.enabled")
 					if(ti.exceptions_enabled) { 
-						ti.isTemp = !Perspectives.root_prefs.
+						var isTemp = !Perspectives.root_prefs.
 							getBoolPref("perspectives.exceptions.permanent");
-						Perspectives.do_override(browser, ti.cert, ti.isTemp);
+						Perspectives.do_override(browser, ti.cert, isTemp);
 						cache_cert.identityText = Perspectives.strbundle.
 							getString("exceptionAdded");  
 						// don't give drop-down if user gave explicit
@@ -844,6 +905,24 @@ var Perspectives = {
 		}
 	},
 
+	is_whitelisted_by_user : function(host) {
+		try { 
+			/* be cautious in case we got a bad user edit to the whitelist */  
+			var whitelist = Perspectives.root_prefs.
+				    getCharPref("perspectives.whitelist").split(",");
+			for(var entry in whitelist) {
+				var e = whitelist[entry]; 
+				if(e.length == 0) { 
+					continue; 
+				} 
+				var r = RegExp(e);
+				if (host.match(r)) {
+					return true; 
+				} 
+			} 
+		} catch(e) { /* ignore */ } 
+		return false; 
+	}, 
 
 	// See Documentation for nsIWebProgressListener at: 
 	// https://developer.mozilla.org/en/nsIWebProgressListener

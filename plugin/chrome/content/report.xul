@@ -43,8 +43,7 @@
   </groupbox>
 
     <hbox>
-        <button label="Cancel" onclick="window.close()"/>
-        <button label="Submit" onclick="Pers_report.submit_data()"/>
+        <button label="Submit Report" onclick="Pers_report.submit_data()"/>
     </hbox>
   </groupbox>
 

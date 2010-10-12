@@ -12,3 +12,4 @@ pref("perspectives.max_timespan_for_inconsistency_test", 7);
 pref("perspectives.weak_consistency_time_limit", 30);
 pref("perspectives.trust_https_with_weak_consistency", true);
 pref("perspectives.max_cache_age_sec", 10000);
+pref("perspectives.whitelist", "");

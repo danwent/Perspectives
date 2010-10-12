@@ -965,8 +965,41 @@ var Perspectives = {
 		} else { 
 			Pers_debug.d_print("main", "Requested force check, but no URI is found"); 
 		} 
-	} 
+	}, 
 
+	prompt_update: function() {
+		var ask_update = Perspectives.root_prefs.
+                getBoolPref("perspectives.prompt_update_all_https_setting");
+		if (ask_update == true) {
+			var check_good = Perspectives.root_prefs.
+					getBoolPref("perspectives.check_good_certificates");
+			if (!check_good) {
+				var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+						.getService(Components.interfaces.nsIPromptService);
+				var check = {value:false};
+				var buttons = 
+						prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_IS_STRING
+						+ prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING;
+
+				var answer = prompts.confirmEx(null, "Perspectives update", 
+					"Thank you for using Perspectives. The default settings " +
+					"have been updated to query the notary server for all " + 
+					"HTTPS sites. Do you want to update this setting to use " +
+					"the default or keep your current settings?", buttons, 
+					"Update Settings", "Keep current settings", "", null, 
+					check);
+				if (answer == 0) {
+					Perspectives.root_prefs.
+						setBoolPref("perspectives.check_good_certificates", 
+									true); 
+				}
+			}
+			Perspectives.root_prefs.
+					setBoolPref("perspectives.prompt_update_all_https_setting",
+								false);
+		}
+	}
+			
 }
 
 Perspectives.other_cache["debug"] = ""; 

@@ -67,11 +67,24 @@ var Perspectives = {
 
 	//Sets the tooltip and the text of the favicon popup on https sites
 	setFaviconText: function(str){
-		document.getElementById("identity-box").tooltipText = str;
+        var box = document.getElementById("identity-box");
+        if(box)
+            box.tooltipText = str;
+        else { // SeaMonkey
+            box = document.getElementById("security-button");
+            if(box)
+                box.tooltipText = str;
+        }
 	},
 
 	getFaviconText: function(){
-		return document.getElementById("identity-box").tooltipText;
+        var box = document.getElementById("identity-box");
+        if(box)
+            return box.tooltipText;
+        // SeaMonkey
+        box = document.getElementById("security-button");
+        if(box)
+            return box.tooltipText;
 	},
 
 	clear_existing_banner: function(b, value_text) { 
@@ -788,8 +801,7 @@ var Perspectives = {
 	},
 
 	process_notary_results: function(uri,browser,has_user_permission) {  
-		try { 
- 
+		try {
 			var ti = Perspectives.tab_info_cache[uri.spec]; 
 			ti.notary_valid = false; // default 
 			cache_cert = Perspectives.ssl_cache[uri.host];

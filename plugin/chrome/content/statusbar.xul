@@ -27,7 +27,7 @@
       context="perspective-contextmenu" />
 	</statusbarpanel>
   <popupset>
-    <popup id="perspective-contextmenu" position="after_start">
+    <menupopup id="perspective-contextmenu" position="after_start">
       <menuitem label="View Notary Results"   oncommand="Pers_statusbar.open_results_dialog()"/>
       <menuitem label="Force Notary Check"   oncommand="Pers_statusbar.force_update()"/>
       <menuitem label="Report Attack"   oncommand="Pers_report.report_attack()"/>
@@ -38,7 +38,7 @@
       <menuitem label="View Notary List" oncommand="Pers_statusbar.openNotaries()"/>
       <menuitem label="View Certificate Store" oncommand="Pers_statusbar.openCertificates()"/>
       <menuitem label="Help" oncommand="Pers_statusbar.openHelp()"/>
-    </popup>
+    </menupopup>
   </popupset>
  
 	</statusbar>

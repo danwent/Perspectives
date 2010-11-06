@@ -14,11 +14,16 @@ var Pers_whitelist_dialog = {
 		try {  
 		var host = window.arguments[0];
 		var is_domain = document.getElementById("whitelist-radio-2").selected; 
+		var is_ip = this.is_ip_address(host); 
 	
 		window.close(); 
 	
-		if(is_domain) { 	
-			var regex = ".*\\." + this.get_domain(host).replace(".","\\.","g") + "$"; 
+		if(is_domain) { 
+			if(is_ip) { 
+				var regex = this.get_ip_domain_regex(host); 
+			} else { 
+				var regex = this.get_dns_domain_regex(host); 
+			} 	
 		} else { 
 			var regex = "^" + host.replace(".","\\.","g") + "$"; 
 		}  
@@ -33,25 +38,61 @@ var Pers_whitelist_dialog = {
 		} catch(e) { alert("confirm_add: " + e); } 
 	}, 
 
-	get_domain: function(host) { 
+	is_ip_address: function(host) { 
 		var host_arr = host.split("\.");   
-		if(host_arr.length < 3) {
-			return null; 
-		}  
+		return host_arr[host_arr.length - 1].match(RegExp("[0-9]+")); 
+	}, 
+
+	// 'host' could be a domain name or an ip address
+	get_dns_domain_text: function(host) { 
+		var host_arr = host.split("\.");   
 		var l = host_arr.length;
-		return  host_arr[l - 2] + "." + host_arr[l - 1]; 
+		if(host_arr.length > 1) {
+			return  host_arr[l - 2] + "." + host_arr[l - 1]; 
+		}
+		return null; 
+	},
+
+	get_dns_domain_regex: function(host) {
+		return ".*\\." + this.get_dns_domain_text(host).replace(".","\\.","g") + "$"; 
+	},  
+	
+	get_ip_domain_text: function(host) { 
+		var host_arr = host.split("\.");   
+		var l = host_arr.length;
+		var prefix =  host_arr[0] + "." + host_arr[1] + "." + host_arr[2] + ".";  
+		if(host_arr.length == 4) {
+			return prefix + "0" + " - " + prefix + "255"; 
+		}
+		return null; 
+	}, 
+
+	get_ip_domain_regex: function(host) { 
+		var host_arr = host.split("\.");   
+		var l = host_arr.length;
+		var prefix =  host_arr[0] + "." + host_arr[1] + "." + host_arr[2] + ".";  
+		return "^" + prefix.replace(".","\\.","g") + "[0-9]+$"; 
 	}, 
 
 	fill_dialog: function(){
 		try {
 			var host = window.arguments[0];
 			document.getElementById("whitelist-radio-1").label = "Whitelist website '" + host + "'"; 
-			var domain = this.get_domain(host); 
-			if(domain) {  
-				document.getElementById("whitelist-radio-2").label = "Whitelist all websites in the domain '" + domain + "'"; 
-			} else { 
-				document.getElementById("whitelist-radio-2").hidden = true; 
-			} 
+				
+			document.getElementById("whitelist-radio-2").hidden = true; 
+			if(this.is_ip_address(host)) { 
+				var host_text = this.get_ip_domain_text(host); 
+				if(host_text) { 
+					document.getElementById("whitelist-radio-2").label = "Whitelist all websites in IP range '" + host_text + "'"; 
+					document.getElementById("whitelist-radio-2").hidden = false; 
+				} 
+			} else {  
+				var dns_text = this.get_dns_domain_text(host); 
+				if(dns_text) { 
+					document.getElementById("whitelist-radio-2").label = "Whitelist all websites in the domain '" + dns_text + "'"; 
+					document.getElementById("whitelist-radio-2").hidden = false; 
+				} 
+			}	
 
 		} catch(e) { alert("fill_dialog: " + e); } 
 	}, 

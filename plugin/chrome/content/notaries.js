@@ -680,6 +680,7 @@ var Perspectives = {
 			return;
 		} 
 		
+		
 		ti.insecure         = false;
 		ti.cert       = Perspectives.getCertificate(browser);
 		if(!ti.cert){
@@ -711,6 +712,35 @@ var Perspectives = {
 		ti.already_trusted = (ti.state & Perspectives.state.STATE_IS_SECURE) && 
 			!(ti.is_override_cert && Perspectives.ssl_cache[uri.host]); 
 		
+		if(Perspectives.is_whitelisted_by_user(uri.host)) {
+			if(!ti.already_trusted) { 		
+				var isTemp = !Perspectives.root_prefs.getBoolPref("perspectives.exceptions.permanent");
+				setTimeout(function() {  
+					if(Perspectives.do_override(browser, ti.cert, isTemp)) { 
+						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); 
+						Perspectives.notifyWhitelist(browser);
+					}
+				}, 1000); 
+			} 
+			var text = "You have configured Perspectives to whitelist connections to '" + 
+									uri.host  + "'";
+			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, text); 
+			Perspectives.other_cache["reason"] = text; 
+			return; 
+		} else { 
+
+			// Note: we no longer do a DNS look-up to to see if a DNS name maps 
+			// to an RFC 1918 address, as this 'leaked' DNS info for users running
+			// anonymizers like Tor.  It was always just an insecure guess anyway.  
+			var unreachable = Perspectives.is_nonrouted_ip(uri.host); 
+			if(unreachable) { 
+				var text = Perspectives.strbundle.
+					getFormattedString("rfc1918Error", [ uri.host ])
+				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+				Perspectives.other_cache["reason"] = text; 
+				return;
+			}
+		}   
 
 		if(!check_good && ti.already_trusted && !is_forced) {
 			var text = Perspectives.strbundle.
@@ -725,19 +755,6 @@ var Perspectives = {
 			Pers_debug.d_print("main",
 				"state is STATE_IS_INSECURE, we need an override\n");
 			ti.insecure = true; 
-		}
-		
-
-		// Note: we no longer do a DNS look-up to to see if a DNS name maps 
-		// to an RFC 1918 address, as this 'leaked' DNS info for users running
-		// anonymizers like Tor.  It was always just an insecure guess anyway.  
-		var unreachable = Perspectives.is_nonrouted_ip(uri.host); 
-		if(unreachable) { 
-			var text = Perspectives.strbundle.
-				getFormattedString("rfc1918Error", [ uri.host ])
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-			Perspectives.other_cache["reason"] = text; 
-			return;
 		}
 		
 
@@ -758,22 +775,6 @@ var Perspectives = {
 			cached_data = null; 
 		}   
 		
-
-		if(Perspectives.is_whitelisted_by_user(uri.host)) {
-			if(!ti.already_trusted) { 		
-				var isTemp = !Perspectives.root_prefs.
-					getBoolPref("perspectives.exceptions.permanent");
-				if(Perspectives.do_override(browser, ti.cert, isTemp) && ti.firstLook) { 
-					Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); 
-					Perspectives.notifyWhitelist(browser);
-				}
-			} 
-			var text = "You have configured Perspectives to whitelist connections to '" + 
-									uri.host  + "'";
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, text); 
-			Perspectives.other_cache["reason"] = text; 
-			return; 
-		}  
 
 		//Update ssl cache cert
 		if(cached_data) { 

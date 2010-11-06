@@ -3,10 +3,7 @@ var Pers_statusbar = {
 	STATE_SEC   : 0,
 	STATE_NSEC  : 1,
 	STATE_NEUT  : 2,
-	STATE_START : Components.interfaces.
-		nsIWebProgressListener.STATE_START,
-	STATE_STOP  : Components.interfaces.
-			nsIWebProgressListener.STATE_STOP,
+	STATE_QUERY  : 3,
 
 	force_update : function(event) {
 		Perspectives.forceStatusUpdate(window.gBrowser); 

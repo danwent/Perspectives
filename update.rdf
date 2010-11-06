@@ -6,14 +6,14 @@
             <rdf:Seq>
                 <rdf:li>
                     <rdf:Description>
-                        <em:version>3.0.3</em:version>
+                        <em:version>3.9.1</em:version>
                         <em:targetApplication>
                             <rdf:Description>
                                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
                                 <em:minVersion>3.0</em:minVersion>
-                                <em:maxVersion>3.*</em:maxVersion>
+                                <em:maxVersion>4.0b8pre</em:maxVersion>
                                 <em:updateLink>http://www.cs.cmu.edu/~perspectives/Perspectives.xpi</em:updateLink>
-                                <em:updateHash>sha1:885730e966cfd8ffc8425dee18424d6c07434d8d</em:updateHash>
+                                <em:updateHash>sha1:0bdca7c043d6a882e7064fa1b01c1011359adfe5</em:updateHash>
                             </rdf:Description>
                         </em:targetApplication>
                     </rdf:Description>
@@ -21,12 +21,12 @@
             </rdf:Seq>
         </em:updates>
         <em:signature>
-            MIIBEjALBgkqhkiG9w0BAQ0DggEBALpUvl0/CdxTtpon0ujvUTo4Nr/ng5eVeT8N
-            XQchClNUwWsuMIko7g7FxFXG4PMobCZqWFB0rvxKDvXcdl6SVgrSp82tGaqBEGRr
-            q2yGNws4gfXuQn+688HkD85npr+esI/UTYnGkoWz6ERQb9iW2bCMpW6lst1wa0Sf
-            juuo2JuzrEKPvb5aK5Xagp5NXS9sVl9xPBrCiU+2X6jG3WF9Ycz5VT1DsIZs6VWJ
-            Oz4mwWbBaI/3qDDBhofpo16h8Gh9505innQzAamR83CjfyeXpHB4bce9tXXxTBQ+
-            Mm0QtIpckyS6L6fLuGe4Vcs1d5ptTsOywdaU6XtaUs0XlU4jmdo=
+            MIIBEjALBgkqhkiG9w0BAQ0DggEBAJ1wsFQ/r8a+1FMs2vbKbFHp86XFLNvTJRxO
+            IxwRNJbx5CmlZWOYGYBMRDPEhCtWCUZc9JNNR4OrDtwaZJ71pAjZzNn6md4yOxN3
+            Tc806zjp/tVORvOpI+fse0MaaAodbFeyfcOia+vEV/W5RneqXDrF4Uwk4jSuE27A
+            XjaE8w0Prk53IO22xSCC8BjM3sXOivg5waGJnwGO7/YI2encffeUo68Dzg+WsYIe
+            03vgSZ6t3zlhqcr0hcYQxvfHpmk5f/EgdLqv7ITM/mBy+yYFMVgCWMb3Uu9r1fF7
+            ESQqZqmjl1zZ/wOjuvpmc7ePdspcfD1mKESE1yyrjB9JggGlJlg=
         </em:signature>
     </rdf:Description>
 </rdf:RDF>

@@ -650,19 +650,27 @@ var Perspectives = {
 			Perspectives.other_cache["reason"] = text;
 			return;
 		}
-
+		
+		// sometimes things blow up because accessing uri.host throws an exception
 		try { 
-			var ignore = uri.host; 
+			var ignore = uri.host;
+			if(!uri.host) throw "";  
 		} catch(e) {
 			var text = "URL is not a valid remote server"; 
 			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
 			Perspectives.other_cache["reason"] = text;
 			return;
 		}
- 
-		if(!uri.host){
+		
+		if(uri.scheme != "https"){
+			var text = Perspectives.strbundle.
+				getFormattedString("nonHTTPSError", [ uri.host, uri.scheme ]);
+			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+			Perspectives.other_cache["reason"] = text;
 			return;
-		}
+		} 
+		
+
   
 		var ti = Perspectives.tab_info_cache[uri.spec]; 
 		if(!ti) { 
@@ -672,14 +680,6 @@ var Perspectives = {
   
 		Pers_debug.d_print("main", "Update Status: " + uri.spec + "\n");
 
-		if(uri.scheme != "https"){
-			var text = Perspectives.strbundle.
-				getFormattedString("nonHTTPSError", [ uri.host, uri.scheme ]);
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-			Perspectives.other_cache["reason"] = text;
-			return;
-		} 
-		
 		
 		ti.insecure         = false;
 		ti.cert       = Perspectives.getCertificate(browser);
@@ -936,7 +936,9 @@ var Perspectives = {
 			} 
 		} catch(e) { /* ignore */ } 
 		return false; 
-	}, 
+	},
+
+	 
 
 	// See Documentation for nsIWebProgressListener at: 
 	// https://developer.mozilla.org/en/nsIWebProgressListener

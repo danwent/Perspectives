@@ -701,6 +701,7 @@ var Perspectives = {
 		var check_good = Perspectives.root_prefs.
 			getBoolPref("perspectives.check_good_certificates"); 
 
+		// is this the right thing to be checking?  
 		if(ti.state & Perspectives.state.STATE_IS_SECURE) { 
 			Pers_debug.d_print("main", 
 				"clearing any existing permission banners\n"); 
@@ -709,7 +710,7 @@ var Perspectives = {
 		}
 		
 		// see if the browser has this cert installed prior to this browser session
-		ti.already_trusted = (ti.state & Perspectives.state.STATE_IS_SECURE) && 
+		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && 
 			!(ti.is_override_cert && Perspectives.ssl_cache[uri.host]); 
 		
 		if(Perspectives.is_whitelisted_by_user(uri.host)) {

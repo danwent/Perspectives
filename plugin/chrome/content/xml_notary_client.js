@@ -117,7 +117,7 @@ var Pers_xml = {
 	// FIXME: The different keys actually need to be in the same order as 
 	// they were on the server, in order to compute the signature correctly.
 	// The xml seems to be parsed in a consistent way, but I don't know if
-	// that is guarenteed to be the case.  
+	// that is guaranteed to be the case.  
 	pack_result_as_binary: function(server_res,service_id) { 
 		var bin_str = service_id;
 		bin_str += String.fromCharCode(0); // NULL-terminate

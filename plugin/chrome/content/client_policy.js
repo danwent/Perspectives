@@ -207,7 +207,7 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 
 
 // returns true if 'results' contains replies that are all 'inconsistent', which 
-// according to our definition means that there was non timepsan longer than 
+// according to our definition means that there was no timepsans longer than 
 // 'max_timespan' in the last 'check_length' days. 
 inconsistency_check : function(results, max_timespan, check_length) { 
 	

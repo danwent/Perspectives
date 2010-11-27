@@ -1,6 +1,6 @@
 var Perspectives = {
  	MY_ID: "perspectives@cmu.edu",
-	TIMEOUT_SEC: 8,
+	TIMEOUT_SEC: 8, 
 	strbundle : null, // this isn't loaded when things are intialized
 
 	// FIXME: these regexes should be less generous
@@ -14,7 +14,6 @@ var Perspectives = {
 	notaries : [],  
 
 	// Data
-	ssl_cache : new Object(),
 	root_prefs : Components.classes["@mozilla.org/preferences-service;1"]
 					.getService(Components.interfaces.nsIPrefBranchInternal),
 	overrideService : 
@@ -53,16 +52,10 @@ var Perspectives = {
 	// per firefox session.  Otherwise, the user gets flooded with it.  
 	show_component_failed : true,
 
-	// if the tab changes to a webpage that has no notary
-	// results, set the 'reason' property of this object to explain why.  
-	// I use this hack b/c ssl_cache only caches info for sites we have
-	// probed, wherease we want to communicate info to the status pop-up
-	// about sites we haven't probed. 
 	tab_info_cache : {}, 
-	other_cache : {},
 
 	clear_cache: function(){
-		Perspectives.ssl_cache = new Object();
+		alert("FIXME: can't clear ssl_cache"); 
 	},
 
 	//Sets the tooltip and the text of the favicon popup on https sites
@@ -587,7 +580,7 @@ var Perspectives = {
 			//Pers_debug.d_print("main","\n" + str + "\n");	
 			var svg = Pers_gen.get_svg_graph(service_id, server_result_list, 30,
 				unixtime,test_key);
-			Perspectives.ssl_cache[uri.host] = new Perspectives.SslCert(uri.host, 
+			Perspectives.tab_info_cache[browser].query_results = new Perspectives.SslCert(uri.host, 
 										uri.port, test_key, 
 										str, null,svg, qd_days, 
 										is_cur_consistent, 
@@ -641,13 +634,20 @@ var Perspectives = {
 			Pers_debug.d_print("error","No Browser!!\n");
 			return;
 		}
-  
+		
+		var ti = Perspectives.tab_info_cache[browser]; 
+		if(!ti) { 
+			ti = {}; 
+			Perspectives.tab_info_cache[browser] = ti; 
+		}
+		ti.reason_str = "";
+ 
 		var uri = browser.currentURI;
   
 		if(!uri) { 
 			var text = Perspectives.strbundle.getString("noDataError"); 
 			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-			Perspectives.other_cache["reason"] = text;
+			ti.reason_str = text;
 			return;
 		}
 		
@@ -658,7 +658,7 @@ var Perspectives = {
 		} catch(e) {
 			var text = "URL is not a valid remote server"; 
 			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-			Perspectives.other_cache["reason"] = text;
+			ti.reason_str = text;
 			return;
 		}
 		
@@ -666,20 +666,11 @@ var Perspectives = {
 			var text = Perspectives.strbundle.
 				getFormattedString("nonHTTPSError", [ uri.host, uri.scheme ]);
 			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-			Perspectives.other_cache["reason"] = text;
+			ti.reason_str = text;
 			return;
 		} 
 		
-
-  
-		var ti = Perspectives.tab_info_cache[uri.spec]; 
-		if(!ti) { 
-			ti = {}; 
-			Perspectives.tab_info_cache[uri.spec] = ti; 
-		}
-  
 		Pers_debug.d_print("main", "Update Status: " + uri.spec + "\n");
-
 		
 		ti.insecure         = false;
 		ti.cert       = Perspectives.getCertificate(browser);
@@ -687,7 +678,7 @@ var Perspectives = {
 			var text = Perspectives.strbundle.
 				getFormattedString("noCertError", [ uri.host ])
 			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-			Perspectives.other_cache["reason"] = text; 
+			ti.reason_str = text;
 			return;
 		}
   
@@ -711,7 +702,7 @@ var Perspectives = {
 		
 		// see if the browser has this cert installed prior to this browser session
 		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && 
-			!(ti.is_override_cert && Perspectives.ssl_cache[uri.host]); 
+			!(ti.is_override_cert && ti.query_results); 
 		
 		if(Perspectives.is_whitelisted_by_user(uri.host)) {
 			if(!ti.already_trusted) { 		
@@ -726,7 +717,7 @@ var Perspectives = {
 			var text = "You have configured Perspectives to whitelist connections to '" + 
 									uri.host  + "'";
 			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, text); 
-			Perspectives.other_cache["reason"] = text; 
+			ti.reason_str = text;
 			return; 
 		} else { 
 
@@ -738,7 +729,7 @@ var Perspectives = {
 				var text = Perspectives.strbundle.
 					getFormattedString("rfc1918Error", [ uri.host ])
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-				Perspectives.other_cache["reason"] = text; 
+				ti.reason_str = text;
 				return;
 			}
 		}   
@@ -747,7 +738,7 @@ var Perspectives = {
 			var text = Perspectives.strbundle.
 				getString("noProbeRequestedError"); 
 			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-			Perspectives.other_cache["reason"] = text; 
+			ti.reason_str = text;
 			return;
 		} 
 
@@ -759,26 +750,22 @@ var Perspectives = {
 		}
 		
 
-		var cached_data = Perspectives.ssl_cache[uri.host];
-		ti.firstLook = !cached_data;
+		ti.firstLook = !ti.query_results;
 
 		// clear cache if it is stale 
 		var unix_time = Pers_util.get_unix_time();
 		var max_cache_age_sec = Perspectives.root_prefs.getIntPref("perspectives.max_cache_age_sec");  
-		if(cached_data && cached_data.created < (unix_time - max_cache_age_sec)) {
-			Pers_debug.d_print("main", "Cached data is stale.  Re-evaluate security."); 
-			delete Perspectives.ssl_cache[uri.host]; 
-			cached_data = null; 
+		if(ti.query_results && ti.query_results.created < (unix_time - max_cache_age_sec)) {
+			Pers_debug.d_print("main", "Cached query results are stale.  Re-evaluate security."); 
+			delete ti.query_results; 
 		}  
-		if(cached_data && cached_data.md5 != md5) { 
+		if(ti.query_results && ti.query_results.md5 != md5) { 
 			Pers_debug.d_print("main", "Current and cached key disagree.  Re-evaluate security."); 
-			delete Perspectives.ssl_cache[uri.host]; 
-			cached_data = null; 
+			delete ti.query_results; 
 		}   
 		
-
 		//Update ssl cache cert
-		if(cached_data) { 
+		if(ti.query_results) { 
 			Perspectives.process_notary_results(uri,browser,has_user_permission,false);
 		} else {  
 			ti.firstLook = true;
@@ -790,7 +777,7 @@ var Perspectives = {
 				Perspectives.notifyNeedsPermission(browser);
 				var text = Perspectives.strbundle.getString("needsPermission"); 
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
-				Perspectives.other_cache["reason"] = text;  
+				ti.reason_str = text;
 				return; 
 			} 
     
@@ -804,12 +791,11 @@ var Perspectives = {
 
 	process_notary_results: function(uri,browser,has_user_permission) {  
 		try {
-			var ti = Perspectives.tab_info_cache[uri.spec]; 
+			var ti = Perspectives.tab_info_cache[browser]; 
 			ti.notary_valid = false; // default 
-			cache_cert = Perspectives.ssl_cache[uri.host];
-			if(!ti.insecure && !cache_cert.identityText &&
+			if(!ti.insecure && !ti.query_results.identityText &&
 				Perspectives.getFaviconText().indexOf("Perspectives") < 0){
-				cache_cert.identityText = 
+				ti.query_results.identityText = 
 					Perspectives.setFaviconText(Perspectives.getFaviconText() +
 					"\n\n" + "Perspectives has validated this site");
 			}
@@ -817,11 +803,11 @@ var Perspectives = {
 				Perspectives.root_prefs.
 					getIntPref("perspectives.required_duration");
 
-			var strong_trust = cache_cert.cur_consistent && 
-						(cache_cert.duration >= required_duration); 
+			var strong_trust = ti.query_results.cur_consistent && 
+						(ti.query_results.duration >= required_duration); 
 			var pref_https_weak = Perspectives.root_prefs.
 					getBoolPref("perspectives.trust_https_with_weak_consistency");
-			var weak_trust = cache_cert.inconsistent_results && cache_cert.weakly_seen; 
+			var weak_trust = ti.query_results.inconsistent_results && ti.query_resuts.weakly_seen; 
 	
 			if(strong_trust) { 
 				ti.notary_valid = true; 
@@ -833,7 +819,7 @@ var Perspectives = {
 						var isTemp = !Perspectives.root_prefs.
 							getBoolPref("perspectives.exceptions.permanent");
 						Perspectives.do_override(browser, ti.cert, isTemp);
-						cache_cert.identityText = Perspectives.strbundle.
+						ti.query_results.identityText = Perspectives.strbundle.
 							getString("exceptionAdded");  
 						// don't give drop-down if user gave explicit
 						// permission to query notaries
@@ -854,11 +840,11 @@ var Perspectives = {
 					"HTTPS Certificate is trusted, but site contains insecure embedded content. ");
 				}  else { 
 
-					cache_cert.tooltip = Perspectives.strbundle.
+					ti.query_results.tooltip = Perspectives.strbundle.
 						getFormattedString("verifiedMessage", 
-						[ cache_cert.duration, required_duration]);
+						[ ti.query_results.duration, required_duration]);
 					Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, 
-						cache_cert.tooltip);
+						ti.query_results.tooltip);
 				}
 			} else if(!ti.insecure && weak_trust && pref_https_weak) { 
 				if(ti.state & Perspectives.state.STATE_IS_BROKEN) { 
@@ -869,48 +855,48 @@ var Perspectives = {
 					"This site uses multiple certificates, including the certificate received and trusted by your browser.");
 
 				} 
-			} else if (cache_cert.summary.indexOf("ssl key") == -1) { 
-				cache_cert.tooltip = 
+			} else if (ti.query_results.summary.indexOf("ssl key") == -1) { 
+				ti.query_results.tooltip = 
 					Perspectives.strbundle.getString("noRepliesWarning");
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
-					cache_cert.tooltip);
+					ti.query_results.tooltip);
 				if(ti.insecure) { 
 					Perspectives.notifyNoReplies(browser); 
 				} 
-			} else if(cache_cert.inconsistent_results && !cache_cert.weakly_seen) { 
-				cache_cert.tooltip = "This site regularly uses multiples certificates, and most Notaries have not recently seen the certificate received by the browser";
+			} else if(ti.query_results.inconsistent_results && !ti.query_results.weakly_seen) { 
+				ti.query_results.tooltip = "This site regularly uses multiples certificates, and most Notaries have not recently seen the certificate received by the browser";
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
-					cache_cert.tooltip);
-			} else if(cache_cert.inconsistent_results) { 
-				cache_cert.tooltip = "Perspectives is unable to validate this site, because the site regularly uses multiples certificates"; 
+					ti.query_results.tooltip);
+			} else if(ti.query_results.inconsistent_results) { 
+				ti.query_results.tooltip = "Perspectives is unable to validate this site, because the site regularly uses multiples certificates"; 
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
-					cache_cert.tooltip);
-			} else if(!cache_cert.cur_consistent){
-				cache_cert.tooltip = 
+					ti.query_results.tooltip);
+			} else if(!ti.query_results.cur_consistent){
+				ti.query_results.tooltip = 
 					Perspectives.strbundle.getString("inconsistentWarning");
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
-					cache_cert.tooltip);
+					ti.query_results.tooltip);
 				if(ti.insecure && ti.firstLook){
 					Perspectives.notifyFailed(browser);
 				}
-			} else if(cache_cert.duration < required_duration){
-				cache_cert.tooltip = Perspectives.strbundle.
+			} else if(ti.query_results.duration < required_duration){
+				ti.query_results.tooltip = Perspectives.strbundle.
 					getFormattedString("thresholdWarning", 
-					[ cache_cert.duration, required_duration]);
+					[ ti.query_results.duration, required_duration]);
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NSEC, 
-					cache_cert.tooltip);
+					ti.query_results.tooltip);
 				if(ti.insecure && ti.firstLook){
 					Perspectives.notifyFailed(browser);
 				}
 			} else { 
-				cache_cert.tooltip = "An unknown Error occurred processing Notary results";
+				ti.query_results.tooltip = "An unknown Error occurred processing Notary results";
 				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR, 
-					cache_cert.tooltip);
+					ti.query_results.tooltip);
 			} 
 		
 
-			if(cache_cert.identityText){
-				Perspectives.setFaviconText(cache_cert.identityText);
+			if(ti.query_results.identityText){
+				Perspectives.setFaviconText(ti.query_results.identityText);
 			}
 
  
@@ -1067,13 +1053,14 @@ var Perspectives = {
 	}, 
 
 	forceStatusUpdate : function(browser) { 
+		var ti = Perspectives.tab_info_cache[browser];
 		var uri = browser.currentURI;
-		if(uri && uri.host) { 		
+		if(ti) { 		
 			Pers_debug.d_print("main", "Forced request, clearing cache for '" + uri.host + "'"); 
-			delete Perspectives.ssl_cache[uri.host];  
+			delete ti.query_results;  
 			Perspectives.updateStatus(browser, true, true); 
 		} else { 
-			Pers_debug.d_print("main", "Requested force check, but no URI is found"); 
+			Pers_debug.d_print("main", "Requested force check, but no tab_info is found"); 
 		} 
 	}, 
 
@@ -1112,4 +1099,3 @@ var Perspectives = {
 			
 }
 
-Perspectives.other_cache["debug"] = ""; 

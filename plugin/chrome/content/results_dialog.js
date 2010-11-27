@@ -38,17 +38,15 @@ var Pers_results = {
 	load_results_dialog: function(){
 
 		try {
-  
 			var info  = document.getElementById("perspective-description");
 			var liner = document.getElementById("perspective-quorum-duration");
-			var host  = document.
-						getElementById("perspective-information-caption");
-
-			if(!window.opener) { 
+			var host  = document.getElementById("perspective-information-caption");
+			if(!window.opener.gBrowser) { 
 				Pers_debug.d_print("error",
-					"window.opener is null in results dialog"); 
+					"window.opener.browser is null in results dialog"); 
 				return; 
 			} 
+			var browser = window.opener.gBrowser; 
 			var uri = window.opener.gBrowser.currentURI; 
 			if(!uri) { 
 				Pers_debug.d_print("error","null URI in results dialog"); 
@@ -59,10 +57,8 @@ var Pers_results = {
 			} catch(e) { 
 				return;
 			}
-
-			var other_cache = window.opener.Perspectives.other_cache; 	
-			var cert  = window.opener.Perspectives.ssl_cache[uri.host];
-			var ti = window.opener.Perspectives.tab_info_cache[uri.spec]; 
+			var ti = window.opener.Perspectives.tab_info_cache[browser]; 
+			var cert  = ti.query_results; 
 			host.label = uri.host;
 			if(ti) { 
 				host.label += ": " + Pers_results.getActionStr(uri, ti); 
@@ -77,9 +73,10 @@ var Pers_results = {
 					radio.hidden=false;
 					radio.selectedIndex = 0;
 				}
-			} else if (other_cache["reason"]) {
-				info.value = other_cache["reason"]; 
+			} else if (ti.reason_str) {
+				info.value = ti.reason_str; 
 			} 
+			 
 		} catch(e) { 
 			Pers_debug.d_print("error", "Error loading results dialog"); 
 			Pers_debug.d_print("error", e); 

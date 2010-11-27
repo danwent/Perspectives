@@ -39,7 +39,7 @@
 </hbox>
 
 
-<script type = "application/x-javascript" src="common.js"/>
 <script type = "application/x-javascript" src="results_dialog.js"/>
+<script type = "application/x-javascript" src="common.js"/>
 
 </window> 

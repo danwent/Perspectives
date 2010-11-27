@@ -109,7 +109,7 @@ var Pers_report = {
     report_attack : function() {
 	try {
 		var cert = Perspectives.getCertificate(window.gBrowser);
-		var cached_results = Perspectives.ssl_cache[window.gBrowser.currentURI.host];
+		var cached_results = Perspectives.tab_info_cache[window.gBrowser].query_results; 
 		if(!cert || !cached_results) { 
 			throw("no results to generate report"); 
 		} 	

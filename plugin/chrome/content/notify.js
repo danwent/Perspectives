@@ -19,8 +19,9 @@ var Pers_notify = {
 			Pers_debug.d_print("error","clear_existing_banner error: " + err); 	
 		} 
 	}, 
-
-	notifyOverride: function(b,mixed_security){
+	
+	// generic notify function used by all other notify functions
+	notifyGeneric: function(b, priority, message, buttons){
 		//Happens on requeryAllTabs
 
 		try{
@@ -32,7 +33,12 @@ var Pers_notify = {
 		var notificationBox = b.getNotificationBox();
 		this.clear_existing_banner(b, "Perspectives"); 
 
-		var priority = notificationBox.PRIORITY_INFO_LOW;
+		notificationBox.appendNotification(message, "Perspectives", null, notificationBox[priority], buttons);
+	},
+
+	notifyOverride: function(b,mixed_security){
+
+		var priority = "PRIORITY_INFO_LOW";
 		var message = mixed_security ? "Perspectives has validated this website's certificate and bypassed Firefox's security error page.  However, this page contains insecure embedded content" :  Perspectives.strbundle.getString("verificationSuccess");
 		var buttons = [{
 			accessKey : "", 
@@ -43,24 +49,12 @@ var Pers_notify = {
 							 null, null, false);
 			}
 		}];
-    
-		notificationBox.appendNotification(message, "Perspectives", null,
-										   priority, buttons);
+   		this.notifyGeneric(b, priority, message, buttons);  
 	},
 	
 	notifyWhitelist: function(b){
-		//Happens on requeryAllTabs
 
-		try{
-			var notificationBox = b.getNotificationBox();
-		}
-		catch(e){
-			return;
-		}
-		var notificationBox = b.getNotificationBox();
-		this.clear_existing_banner(b, "Perspectives"); 
-
-		var priority = notificationBox.PRIORITY_INFO_LOW;
+		var priority = "PRIORITY_INFO_LOW";
 		var message = "You have configured Perspectives to whitelist connections to this website"; 
 		var buttons = [
 			{
@@ -72,27 +66,11 @@ var Pers_notify = {
 			}
 			}
 		];
-    
-		notificationBox.appendNotification(message, "Perspectives", null,
-										   priority, buttons);
+   		this.notifyGeneric(b, priority, message, buttons);  
 	},
 
 	notifyFailed: function(b){
-
-		//Happens on requeryAllTabs
-
-		try{
-			var notificationBox = b.getNotificationBox();
-		}
-		catch(e){
-			return;
-		}
-	
-		var notificationBox = b.getNotificationBox();
-
-		this.clear_existing_banner(b, "Perspectives"); 
-
-		var priority = notificationBox.PRIORITY_CRITICAL_LOW;
+		var priority = "PRIORITY_CRITICAL_LOW";
 		var message = Perspectives.strbundle.getString("unableToVerify");  
 		var buttons = [{
 		 	label: Perspectives.strbundle.getString("reportThis"), 
@@ -109,24 +87,13 @@ var Pers_notify = {
 		 	}
 		  }
 		]; 
-		notificationBox.appendNotification(message, "Perspectives", null,
-										   priority, buttons);
+   		this.notifyGeneric(b, priority, message, buttons);  
 	},
 
 	// this is the drop down which is shown if preferences indicate
 	// that notaries should only be queried with user permission
 	notifyNeedsPermission: function(b){
-
-		//Happens on requeryAllTabs 
-		try{
-			var notificationBox = b.getNotificationBox();
-		}
-		catch(e){
-			return;
-		}
-
-		this.clear_existing_banner(b, "Perspectives-Permission"); 
-		var priority = notificationBox.PRIORITY_WARNING_HIGH;
+		var priority = "PRIORITY_WARNING_HIGH";
 		var message = Perspectives.strbundle.getString("needsPermission");  
 		var buttons = null;
 		var buttons = [
@@ -178,28 +145,14 @@ var Pers_notify = {
 				} 
 			}
 		];
-  
-		notificationBox.appendNotification(message, "Perspectives-Permission", 
-										   null, priority, buttons);
+   		this.notifyGeneric(b, priority, message, buttons);  
 	},
 
 	// this is the drop down which is shown if the repsonse
 	// receive no notary replies.  
 	notifyNoReplies: function(b){
-		try { 
-		//Happens on requeryAllTabs 
-		try {
-			var notificationBox = b.getNotificationBox();
-		}
-		catch(e){
-			return;
-		}
-
-		this.clear_existing_banner(b, "Perspectives-Permission"); 
-		this.clear_existing_banner(b, "Perspectives"); 
-		var priority = notificationBox.PRIORITY_CRITICAL_LOW;
+		var priority = "PRIORITY_CRITICAL_LOW";
 		var message = Perspectives.strbundle.getString("noRepliesReceived");  
-		var buttons = null;
 		var buttons = [
 		 {
 		 	label: Perspectives.strbundle.getString("reportThis"), 
@@ -225,11 +178,7 @@ var Pers_notify = {
 		 	}
 		  }
 		];
-		notificationBox.appendNotification(message, "Perspectives", null,
-				priority, buttons);
-		} catch(e) { 
-			alert("notifyNoReplies error: " + e); 
-		}
+   		this.notifyGeneric(b, priority, message, buttons);  
 	}
 
 }

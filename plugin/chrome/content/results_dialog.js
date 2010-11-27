@@ -19,9 +19,9 @@ var Pers_results = {
 
 	// returns a string that describes whether perspectives installed a 
 	// security exception 
-	getActionStr: function(uri,ti) {
-		if(uri.scheme != "https") {  
-			return "Perspectives only queries 'https' sites. This site uses '" + uri.scheme + "'"; 
+	getActionStr: function(ti) {
+		if(ti.uri.scheme != "https") {  
+			return "Perspectives only queries 'https' sites. This site uses '" + ti.uri.scheme + "'"; 
 		} else if(ti.is_override_cert && ti.already_trusted) { 
 			return  "Perspectives has previously installed a security exception for this site."; 
 		} else if(ti.already_trusted) { 
@@ -41,27 +41,18 @@ var Pers_results = {
 			var info  = document.getElementById("perspective-description");
 			var liner = document.getElementById("perspective-quorum-duration");
 			var host  = document.getElementById("perspective-information-caption");
-			if(!window.opener.gBrowser) { 
-				Pers_debug.d_print("error",
-					"window.opener.browser is null in results dialog"); 
+		
+			var win = window.opener; 
+			var error_text = win.Perspectives.detectInvalidURI(win);  
+			if(error_text) { 
+				info.value = "Perspectives: Invalid URI (" + error_text + ")"; 
 				return; 
 			} 
-			var browser = window.opener.gBrowser; 
-			var uri = window.opener.gBrowser.currentURI; 
-			if(!uri) { 
-				Pers_debug.d_print("error","null URI in results dialog"); 
-				return; 
-			} 
-			try { 
-				var ignore = uri.host; 
-			} catch(e) { 
-				return;
-			}
-			var ti = window.opener.Perspectives.tab_info_cache[browser]; 
+			var ti = win.Perspectives.getCurrentTabInfo(win);
 			var cert  = ti.query_results; 
-			host.label = uri.host;
+			host.label = ti.uri.host;
 			if(ti) { 
-				host.label += ": " + Pers_results.getActionStr(uri, ti); 
+				host.label += ": " + Pers_results.getActionStr(ti); 
 			} 
 			if(cert){
 				info.value  = cert.summary;

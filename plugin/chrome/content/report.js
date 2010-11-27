@@ -108,8 +108,15 @@ var Pers_report = {
     // note: this function is called in the scope of the main window, which is able to grab the cert
     report_attack : function() {
 	try {
-		var cert = Perspectives.getCertificate(window.gBrowser);
-		var cached_results = Perspectives.tab_info_cache[window.gBrowser].query_results; 
+		var error_text = Perspectives.detectInvalidURI(window);  
+		if(error_text) { 
+			alert("Perspectives: Invalid URI (" + error_text + ")"); 
+			return; 
+		} 
+		var ti = Perspectives.getCurrentTabInfo(window);
+		var cached_results = ti.query_results;
+
+		var cert = Perspectives.getCertificate(window.gBrowser); 
 		if(!cert || !cached_results) { 
 			throw("no results to generate report"); 
 		} 	

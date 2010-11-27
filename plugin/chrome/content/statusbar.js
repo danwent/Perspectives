@@ -6,7 +6,7 @@ var Pers_statusbar = {
 	STATE_QUERY  : 3,
 
 	force_update : function(event) {
-		Perspectives.forceStatusUpdate(window.gBrowser); 
+		Perspectives.forceStatusUpdate(window); 
 	},
 
 	statusbar_click: function(event) {

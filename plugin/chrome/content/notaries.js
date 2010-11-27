@@ -45,10 +45,6 @@ var Perspectives = {
 
 	tab_info_cache : {}, 
 
-	clear_cache: function(){
-		Perspectives.tab_info_cache = {};  
-	},
-
 	//Sets the tooltip and the text of the favicon popup on https sites
 	setFaviconText: function(str){
         	var box = document.getElementById("identity-box");
@@ -71,19 +67,21 @@ var Perspectives = {
             		return box.tooltipText;
 	},
 
-	//certificate used in caching
+	// cached result data 
+	// FIXME: this should be merged with TabInfo, once TabInfo is made into a 
+	// real object
 	SslCert: function(host, port, md5, summary, tooltip, svg, duration, cur_consistent, 
 					inconsistent_results,weakly_seen, server_result_list){
-		this.host     = host;
-		this.port     = port;
+		this.host     = host;  // now saved with ti, so remove this?
+		this.port     = port;  // now saved with ti, so remove this? 
 		this.md5      = md5;
 		this.cur_consistent   = cur_consistent;
 		this.inconsistent_results = inconsistent_results; 
 		this.weakly_seen = weakly_seen, 
 		this.duration = duration;
-		this.summary  = summary;
+		this.summary  = summary;  // this doesn't really need to be cached
 		this.tooltip  = tooltip;
-		this.svg      = svg;
+		this.svg      = svg;  // this doesn't really need to be cached
 		this.server_result_list = server_result_list; 
 		this.created = Pers_util.get_unix_time(); 
 	},
@@ -143,7 +141,7 @@ var Perspectives = {
 	},
 
 
-	queryNotaries: function(ti,has_user_permission){
+	queryNotaries: function(ti){
 		if(!ti.cert) { 
 			Pers_debug.d_print("error","No certificate found for: " + ti.uri.host); 
 			return null; 
@@ -172,7 +170,7 @@ var Perspectives = {
 			// the callback will only see the values for the final server
 			req.onreadystatechange = (function(r,ns) { 
 				return function(evt) { 
-					Perspectives.notaryAjaxCallback(ti, r, ns, has_user_permission); 
+					Perspectives.notaryAjaxCallback(ti, r, ns, ti.has_user_permission); 
 				}
 			})(req,notary_server);  
 			req.send(null);
@@ -180,42 +178,39 @@ var Perspectives = {
     
 		ti.timeout_id = window.setTimeout(function () {
 			try {  
-			Pers_debug.d_print("query", "timeout querying for '" + ti.uri.host + "' port " + port);
-			var server_result_list = ti.partial_query_results;
-			Pers_debug.d_print("query", server_result_list); 
+				Pers_debug.d_print("query", "timeout querying for '" + ti.uri.host + "' port " + port);
+				Pers_debug.d_print("query", ti.partial_query_results); 
  
-			if (server_result_list == null) { 
-				server_result_list = []; // may have been deleted between now and then
-			}  
-			for(var i = 0; i < Perspectives.notaries.length; i++) { 
-				var found = false;
-				for(var j = 0; j < server_result_list.length; j++) { 
-					if(Perspectives.notaries[i].host == 
-									server_result_list[j].server) { 
-						found = true; 
-						break; 
-					}
-				} 
-				if(!found) { 
-					// add empty result for this notary
-					var res = { "server" : Perspectives.notaries[i].host, 
+				if (ti.partial_query_results == null) { 
+					ti.partial_query_results = []; // may have been deleted between now and then
+				}  
+				for(var i = 0; i < Perspectives.notaries.length; i++) { 
+					var found = false;
+					for(var j = 0; j < ti.partial_query_results.length; j++) { 
+						if(Perspectives.notaries[i].host == 
+								ti.partial_query_results[j].server) { 
+							found = true; 
+							break; 
+						}
+					} 
+					if(!found) { 
+						// add empty result for this notary
+						var res = { "server" : Perspectives.notaries[i].host, 
 								"obs" : [] }; 
-					server_result_list.push(res); 
+						ti.partial_query_results.push(res); 
+					} 
 				} 
-			} 
-			Perspectives.notaryQueriesComplete(ti, has_user_permission, server_result_list);
+				Perspectives.notaryQueriesComplete(ti);
 			} catch (e) { 
 				Pers_debug.d_print("query", "error handling timeout"); 
 				Pers_debug.d_print("query", e); 
 			} 
-			}, 
-			Perspectives.TIMEOUT_SEC * 1000 
-		); 
+		}, Perspectives.TIMEOUT_SEC * 1000 ); 
 
 	}, 
         
  
-	notaryAjaxCallback: function(ti, req, notary_server, has_user_permission) {  
+	notaryAjaxCallback: function(ti, req, notary_server) {  
 	
 		if (req.readyState == 4) {  
 			if(req.status == 200){
@@ -269,9 +264,7 @@ var Perspectives = {
 					if(num_replies == Perspectives.notaries.length) { 
 						Pers_debug.d_print("query","got all server replies"); 	
 						window.clearTimeout(ti.timeout_id);
-						Perspectives.notaryQueriesComplete(ti,
-								has_user_permission, 
-								ti.partial_query_results);
+						Perspectives.notaryQueriesComplete(ti);
 					}
 					  
 				} catch (e) { 
@@ -284,8 +277,9 @@ var Perspectives = {
 		}  
 	},  
 
-	notaryQueriesComplete: function(ti, has_user_permission,server_result_list) {
+	notaryQueriesComplete: function(ti) {
 		try {
+			var server_result_list = ti.partial_query_results; 
 			delete ti.partial_query_results; 
 			delete ti.timeout_id; 
 			
@@ -332,7 +326,7 @@ var Perspectives = {
 										is_inconsistent, 
 										weakly_seen, 
 										server_result_list);
-			Perspectives.process_notary_results(ti,has_user_permission); 
+			Perspectives.process_notary_results(ti); 
 
 		} catch (e) { 
 			alert(e); 
@@ -365,11 +359,7 @@ var Perspectives = {
 
 
 	// Updates the status of the current page 
-	//Make this a bit more efficient when I get a chance
-	// 'has_user_permission' indicates whether the user
-	// explicitly pressed a button to launch this query,
-	// by default this is not the case
-	updateStatus: function(win, has_user_permission, is_forced){
+	updateStatus: function(win, is_forced){
 
 		if(Perspectives.strbundle == null) 
 			Perspectives.strbundle = document.getElementById("notary_strings");
@@ -378,7 +368,7 @@ var Perspectives = {
 		
 		var error_text = Perspectives.detectInvalidURI(win); 
 		if(error_text) { 	
-			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_QUERY, error_text);
+			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_QUERY, "Waiting on data from Firefox (" + error_text + ")");
 			return; 
 		} 
 		var ti = Perspectives.getCurrentTabInfo(win);
@@ -413,10 +403,9 @@ var Perspectives = {
 
 		
 		// see if the browser has this cert installed prior to this browser session
-		// seems like we can't tell the difference between an exception we installed permemently 
-		// during a previous browser run.  
-		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && 
-			!(ti.is_override_cert && ti.query_results); 
+		// seems like we can't tell the difference between an exception added by the user 
+		// manually and one we installed permemently during a previous browser run.  
+		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && !(ti.is_override_cert); 
 		
 		if(Perspectives.is_whitelisted_by_user(ti.uri.host)) {
 			if(!ti.already_trusted) { 		
@@ -424,7 +413,7 @@ var Perspectives = {
 				setTimeout(function() {  
 					if(Perspectives.do_override(ti.browser, ti.cert, isTemp)) { 
 						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); 
-						Pers_notify.notifyWhitelist(ti.browser);
+						Pers_notify.do_notify(ti, Pers_notify.TYPE_WHITELIST);
 					}
 				}, 1000); 
 			} 
@@ -469,14 +458,14 @@ var Perspectives = {
 		}   
 		
 		if(ti.query_results) { 
-			Perspectives.process_notary_results(ti,has_user_permission,false);
+			Perspectives.process_notary_results(ti);
 		} else {  
 			Pers_debug.d_print("main", ti.uri.host + " needs a request\n"); 
 			var needs_perm = Perspectives.root_prefs
 					.getBoolPref("perspectives.require_user_permission"); 
-			if(needs_perm && !has_user_permission) {
+			if(needs_perm && !ti.has_user_permission) {
 				Pers_debug.d_print("main", "needs user permission\n");  
-				Pers_notify.notifyNeedsPermission(ti.browser);
+				Pers_notify.do_notify(ti, Pers_notify.TYPE_NEEDS_PERMISSION);
 				var text = Perspectives.strbundle.getString("needsPermission"); 
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
 				ti.reason_str = text;
@@ -487,11 +476,11 @@ var Perspectives = {
 			// this call is asynchronous.  after hearing from the 
 			// notaries, the logic picks up again with the function 
 			// 'process_notary_results()' below
-			this.queryNotaries(ti,has_user_permission);
+			this.queryNotaries(ti);
 		}
 	},
 
-	process_notary_results: function(ti,has_user_permission) {  
+	process_notary_results: function(ti) {  
 		try {
 			if(!ti.already_trusted && !ti.query_results.identityText &&
 				Perspectives.getFaviconText().indexOf("Perspectives") < 0){
@@ -524,8 +513,8 @@ var Perspectives = {
 							getString("exceptionAdded");  
 						// don't give drop-down if user gave explicit
 						// permission to query notaries
-						if(ti.firstLook && !has_user_permission){
-							Pers_notify.notifyOverride(ti.browser, mixed_security);
+						if(ti.firstLook && !ti.has_user_permission){
+							Pers_notify.do_notify(ti, Pers_notify.TYPE_OVERRIDE);
 						}
 					}
 				}
@@ -543,7 +532,7 @@ var Perspectives = {
 					// this will flicker, as we can't rely on just doing it on 'firstLook'
 					// due to firefox oddness
 					if(ti.override_used) { 	
-						Pers_notify.notifyOverride(ti.browser, mixed_security);
+						Pers_notify.do_notify(ti, Pers_notify.TYPE_OVERRIDE_MIXED);
 					}
 				}  else { 
 
@@ -570,7 +559,7 @@ var Perspectives = {
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, 
 					ti.query_results.tooltip);
 				if(!ti.already_trusted) { 
-					Pers_notify.notifyNoReplies(ti.browser); 
+					Pers_notify.do_notify(ti, Pers_notify.TYPE_NO_REPLIES);
 				} 
 			} else if(ti.query_results.inconsistent_results && !ti.query_results.weakly_seen) { 
 				// FIXME: need to clear any contrary banners
@@ -591,7 +580,7 @@ var Perspectives = {
 				// we may reconsider this in the future, but currently we don't do a 
 				// drop-down if things aren't consistent but the browser already trusts the cert. 
 				if(!ti.already_trusted && ti.firstLook){
-					Pers_notify.notifyFailed(ti.browser);
+					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
 				}
 			} else if(ti.query_results.duration < required_duration){
 				// FIXME: need to clear any contrary banners
@@ -601,7 +590,7 @@ var Perspectives = {
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, 
 					ti.query_results.tooltip);
 				if(!ti.already_trusted && ti.firstLook){
-					Pers_notify.notifyFailed(ti.browser);
+					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
 				}
 			} else { 
 				// FIXME: need to clear any contrary banners
@@ -681,7 +670,7 @@ var Perspectives = {
        			  try {
      				var uri = window.gBrowser.currentURI;
      				Pers_debug.d_print("main", "State change " + uri.spec + "\n");
-         			Perspectives.updateStatus(window,false,false);
+         			Perspectives.updateStatus(window,false);
        			  } catch (err) {
          			Pers_debug.d_print("Perspectives had an internal exception: " + err);
          			Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR, 
@@ -697,7 +686,7 @@ var Perspectives = {
        			try{
          			uri = window.gBrowser.currentURI;
          			Pers_debug.d_print("main", "Security change " + uri.spec + "\n");
-         			Perspectives.updateStatus(window,false,false);
+         			Perspectives.updateStatus(window,false);
        			} catch(err){
          			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
          			if(uri) {
@@ -721,7 +710,7 @@ var Perspectives = {
 		var num = b.browsers.length;
 		for (var i = 0; i < num; i++) {
 			var browser = b.getBrowserAtIndex(i);
-			Perspectives.updateStatus(window, false,false);
+			Perspectives.updateStatus(window,false);
 		}
 		*/ 
 	},
@@ -799,9 +788,12 @@ var Perspectives = {
 
 		var ti = Perspectives.tab_info_cache[service_id]; 
 		if(!ti) {
-			ti = {}; 
+			ti = {};
+			// defaults 
 			ti.firstLook = true; 
-			ti.override_used = false; 
+			ti.override_used = false;
+			ti.has_user_permission = false; 
+			ti.last_banner_type = null; 
 			Perspectives.tab_info_cache[service_id] = ti; 
 		}
 		ti.uri = uri;
@@ -821,8 +813,10 @@ var Perspectives = {
 		var ti = Perspectives.getCurrentTabInfo(win);
 		if(ti) { 		
 			Pers_debug.d_print("main", "Forced request, clearing cache for '" + ti.uri.host + "'"); 
-			delete ti.query_results;  
-			Perspectives.updateStatus(win, true, true); 
+			delete ti.query_results; 
+			ti.has_user_permission = true; // forcing a check is implicit permission  
+			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY, "Contacting notaries about '" + ti.uri.host + "'");
+			Perspectives.updateStatus(win, true); 
 		} else { 
 			Pers_debug.d_print("main", "Requested force check with valid URI, but no tab_info is found"); 
 		} 

@@ -1,25 +1,41 @@
 
 var Pers_notify = {
-	
-	clear_existing_banner: function(b, value_text) { 
-		try { 
-			//Happens on requeryAllTabs
 
-			try{
-				var notificationBox = b.getNotificationBox();
-			}
-			catch(e){
-				return;
-			}
-			var oldNotification = 
-				notificationBox.getNotificationWithValue(value_text);
-			if(oldNotification != null)
-				notificationBox.removeNotification(oldNotification);
-		} catch(err) { 
-			Pers_debug.d_print("error","clear_existing_banner error: " + err); 	
+	// unique identifier for each notification
+	// this is used to determine whether we need to 
+	// show a notification, or whether it is a duplication
+	// of the last notification we showed the user for that
+	// website.  
+	TYPE_OVERRIDE : 1, 
+	TYPE_OVERRIDE_MIXED : 2, 
+	TYPE_WHITELIST : 3, 
+	TYPE_FAILED : 4, 
+	TYPE_NEEDS_PERMISSION : 5,  
+	TYPE_NO_REPLY : 6, 
+
+	do_notify : function(ti, type) {
+		if(ti.last_banner_type == type) { 
+			return; 
+		}
+		ti.last_banner_type = type; 
+		switch(type) { 
+			case this.TYPE_OVERRIDE :
+				this.notifyOverride(ti.browser, false); break; 
+			case this.TYPE_OVERRIDE_MIXED :  
+				this.notifyOverride(ti.browser, true); break; 
+			case this.TYPE_WHITELIST : 
+				this.notifyWhitelist(ti.browser); break; 
+			case this.TYPE_FAILED : 
+				this.notifyFailed(ti.browser); break; 
+			case this.TYPE_NEEDS_PERMISSION : 
+				this.notifyNeedsPermission(ti); break; 
+			case this.TYPE_NO_REPLY : 
+				this.notifyNoReply(ti.browser); break; 
+			default: 
+				Pers_debug.d_print("error", "Unknown notify type: " + type); 
 		} 
 	}, 
-	
+
 	// generic notify function used by all other notify functions
 	notifyGeneric: function(b, priority, message, buttons){
 		//Happens on requeryAllTabs
@@ -92,7 +108,7 @@ var Pers_notify = {
 
 	// this is the drop down which is shown if preferences indicate
 	// that notaries should only be queried with user permission
-	notifyNeedsPermission: function(b){
+	notifyNeedsPermission: function(ti){
 		var priority = "PRIORITY_WARNING_HIGH";
 		var message = Perspectives.strbundle.getString("needsPermission");  
 		var buttons = null;
@@ -105,13 +121,13 @@ var Pers_notify = {
 
 						//Happens on requeryAllTabs
 						try{
-							var notificationBox = b.getNotificationBox();
+							var notificationBox = ti.browser.getNotificationBox();
 							}
 						catch(e){
 							return;
 						}
 	
-						var nbox = b.getNotificationBox();
+						var nbox = ti.browser.getNotificationBox();
 						nbox.removeCurrentNotification();
 					} 
 					catch (err) {
@@ -128,12 +144,17 @@ var Pers_notify = {
 						} 
 						Pers_debug.d_print("error",
 								"probe_permission error1: " + err + "\n"); 
+					}
+					try {  
+						// run probe
+						Pers_debug.d_print("main", "User gives probe permission\n"); 
+						ti.has_user_permission = true;
+        					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY, 
+							"Contacting notaries about '" + ti.uri.host + "'");
+						Perspectives.updateStatus(window,false); 
+					} catch (e) { 
+						Pers_debug.d_print("main", "Error on UpdateStatus: " + e); 
 					} 
-					// run probe
-					Pers_debug.d_print("main", 
-						"User gives probe permission\n"); 
-					var uri = b.currentURI;
-					Perspectives.updateStatus(window,true,false); 
 				}
 			},
 			{ 
@@ -145,7 +166,7 @@ var Pers_notify = {
 				} 
 			}
 		];
-   		this.notifyGeneric(b, priority, message, buttons);  
+   		this.notifyGeneric(ti.browser, priority, message, buttons);  
 	},
 
 	// this is the drop down which is shown if the repsonse
@@ -179,7 +200,26 @@ var Pers_notify = {
 		  }
 		];
    		this.notifyGeneric(b, priority, message, buttons);  
-	}
+	}, 
+
+	clear_existing_banner: function(b, value_text) { 
+		try { 
+			//Happens on requeryAllTabs
+
+			try{
+				var notificationBox = b.getNotificationBox();
+			}
+			catch(e){
+				return;
+			}
+			var oldNotification = 
+				notificationBox.getNotificationWithValue(value_text);
+			if(oldNotification != null)
+				notificationBox.removeNotification(oldNotification);
+		} catch(err) { 
+			Pers_debug.d_print("error","clear_existing_banner error: " + err); 	
+		} 
+	} 
 
 }
 

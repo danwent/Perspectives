@@ -51,255 +51,24 @@ var Perspectives = {
 
 	//Sets the tooltip and the text of the favicon popup on https sites
 	setFaviconText: function(str){
-        var box = document.getElementById("identity-box");
-        if(box)
-            box.tooltipText = str;
-        else { // SeaMonkey
-            box = document.getElementById("security-button");
-            if(box)
-                box.tooltipText = str;
-        }
+        	var box = document.getElementById("identity-box");
+        	if(box)
+            		box.tooltipText = str;
+        	else { // SeaMonkey
+            		box = document.getElementById("security-button");
+            		if(box)
+               		box.tooltipText = str;
+        	}
 	},
 
 	getFaviconText: function(){
-        var box = document.getElementById("identity-box");
-        if(box)
-            return box.tooltipText;
-        // SeaMonkey
-        box = document.getElementById("security-button");
-        if(box)
-            return box.tooltipText;
-	},
-
-	clear_existing_banner: function(b, value_text) { 
-		try { 
-			//Happens on requeryAllTabs
-
-			try{
-				var notificationBox = b.getNotificationBox();
-			}
-			catch(e){
-				return;
-			}
-			var oldNotification = 
-				notificationBox.getNotificationWithValue(value_text);
-			if(oldNotification != null)
-				notificationBox.removeNotification(oldNotification);
-		} catch(err) { 
-			Pers_debug.d_print("error","clear_existing_banner error: " + err); 	
-		} 
-	}, 
-
-	notifyOverride: function(b,mixed_security){
-		//Happens on requeryAllTabs
-
-		try{
-			var notificationBox = b.getNotificationBox();
-		}
-		catch(e){
-			return;
-		}
-		var notificationBox = b.getNotificationBox();
-		Perspectives.clear_existing_banner(b, "Perspectives"); 
-
-		var priority = notificationBox.PRIORITY_INFO_LOW;
-		var message = mixed_security ? "Perspectives has validated this website's certificate and bypassed Firefox's security error page.  However, this page contains insecure embedded content" :  Perspectives.strbundle.getString("verificationSuccess");
-		var buttons = [{
-			accessKey : "", 
-			label: Perspectives.strbundle.getString("learnMore"), 
-			accessKey : "", 
-			callback: function() {
-				b.loadOneTab("chrome://perspectives/locale/help.html", null, 
-							 null, null, false);
-			}
-		}];
-    
-		notificationBox.appendNotification(message, "Perspectives", null,
-										   priority, buttons);
-	},
-	
-	notifyWhitelist: function(b){
-		//Happens on requeryAllTabs
-
-		try{
-			var notificationBox = b.getNotificationBox();
-		}
-		catch(e){
-			return;
-		}
-		var notificationBox = b.getNotificationBox();
-		Perspectives.clear_existing_banner(b, "Perspectives"); 
-
-		var priority = notificationBox.PRIORITY_INFO_LOW;
-		var message = "You have configured Perspectives to whitelist connections to this website"; 
-		var buttons = [
-			{
-			accessKey : "", 
-			label: "Remove from Whitelist", 
-			accessKey : "", 
-			callback: function() {
-				Pers_whitelist_dialog.remove_from_whitelist(b); 
-			}
-			}
-		];
-    
-		notificationBox.appendNotification(message, "Perspectives", null,
-										   priority, buttons);
-	},
-
-	notifyFailed: function(b){
-
-		//Happens on requeryAllTabs
-
-		try{
-			var notificationBox = b.getNotificationBox();
-		}
-		catch(e){
-			return;
-		}
-	
-		var notificationBox = b.getNotificationBox();
-
-		Perspectives.clear_existing_banner(b, "Perspectives"); 
-
-		var priority = notificationBox.PRIORITY_CRITICAL_LOW;
-		var message = Perspectives.strbundle.getString("unableToVerify");  
-		var buttons = [{
-		 	label: Perspectives.strbundle.getString("reportThis"), 
-		 	accessKey : "", 
-		 	callback: function() {
-				Pers_report.report_attack(); 
-		 	}
-		  }, 
-		  {
-		 	label: "Whitelist", 
-		 	accessKey : "", 
-		 	callback: function() {
-				Pers_whitelist_dialog.add_to_whitelist(); 
-		 	}
-		  }
-		]; 
-		notificationBox.appendNotification(message, "Perspectives", null,
-										   priority, buttons);
-	},
-
-	// this is the drop down which is shown if preferences indicate
-	// that notaries should only be queried with user permission
-	notifyNeedsPermission: function(b){
-
-		//Happens on requeryAllTabs 
-		try{
-			var notificationBox = b.getNotificationBox();
-		}
-		catch(e){
-			return;
-		}
-
-		Perspectives.clear_existing_banner(b, "Perspectives-Permission"); 
-		var priority = notificationBox.PRIORITY_WARNING_HIGH;
-		var message = Perspectives.strbundle.getString("needsPermission");  
-		var buttons = null;
-		var buttons = [
-			{
-				label: Perspectives.strbundle.getString("yesContactNotaries"), 
-				accessKey : "", 
-				callback: function() {
-					try { 
-
-						//Happens on requeryAllTabs
-						try{
-							var notificationBox = b.getNotificationBox();
-							}
-						catch(e){
-							return;
-						}
-	
-						var nbox = b.getNotificationBox();
-						nbox.removeCurrentNotification();
-					} 
-					catch (err) {
-						// sometimes, this doesn't work.  why?
-						// well, we'll just have to remove them all
-						try { 
-							nbox.removeAllNotifications();
-							Pers_debug.d_print("main", 
-									"successfully removed all notifications\n");
-						} 
-						catch (err2) { 
-							Pers_debug.d_print("error",
-									"probe_permission error2:" + err2 + "\n"); 
-						} 
-						Pers_debug.d_print("error",
-								"probe_permission error1: " + err + "\n"); 
-					} 
-					// run probe
-					Pers_debug.d_print("main", 
-						"User gives probe permission\n"); 
-					var uri = b.currentURI;
-					Perspectives.updateStatus(window,true,false); 
-				}
-			},
-			{ 
-				label: Perspectives.strbundle.getString("learnMore"),
-				accessKey : "", 
-				callback: function() {
-					b.loadOneTab("chrome://perspectives/locale/help.html", 
-								 null, null, null, false);
-				} 
-			}
-		];
-  
-		notificationBox.appendNotification(message, "Perspectives-Permission", 
-										   null, priority, buttons);
-	},
-
-	// this is the drop down which is shown if the repsonse
-	// receive no notary replies.  
-	notifyNoReplies: function(b){
-		try { 
-		//Happens on requeryAllTabs 
-		try {
-			var notificationBox = b.getNotificationBox();
-		}
-		catch(e){
-			return;
-		}
-
-		Perspectives.clear_existing_banner(b, "Perspectives-Permission"); 
-		Perspectives.clear_existing_banner(b, "Perspectives"); 
-		var priority = notificationBox.PRIORITY_CRITICAL_LOW;
-		var message = Perspectives.strbundle.getString("noRepliesReceived");  
-		var buttons = null;
-		var buttons = [
-		 {
-		 	label: Perspectives.strbundle.getString("reportThis"), 
-		 	accessKey : "", 
-		 	callback: function() {
-				Pers_report.report_attack(); 
-		 	}
-		  }, 
-		  { 
-			label: Perspectives.strbundle.getString("firewallHelp"),
-			accessKey : "", 
-			callback: function() {
-				b.loadOneTab(
-					"chrome://perspectives_main/content/firewall.html", 
-					null, null, null, false);
-			} 
-		  }, 
-		  {
-		 	label: "Whitelist", 
-		 	accessKey : "", 
-		 	callback: function() {
-				Pers_whitelist_dialog.add_to_whitelist(); 
-		 	}
-		  }
-		];
-		notificationBox.appendNotification(message, "Perspectives", null,
-				priority, buttons);
-		} catch(e) { 
-			alert("notifyNoReplies error: " + e); 
-		}
+        	var box = document.getElementById("identity-box");
+        	if(box)
+            		return box.tooltipText;
+        	// SeaMonkey
+        	box = document.getElementById("security-button");
+        	if(box)
+            		return box.tooltipText;
 	},
 
 	//certificate used in caching
@@ -655,7 +424,7 @@ var Perspectives = {
 				setTimeout(function() {  
 					if(Perspectives.do_override(ti.browser, ti.cert, isTemp)) { 
 						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); 
-						Perspectives.notifyWhitelist(ti.browser);
+						Pers_notify.notifyWhitelist(ti.browser);
 					}
 				}, 1000); 
 			} 
@@ -707,7 +476,7 @@ var Perspectives = {
 					.getBoolPref("perspectives.require_user_permission"); 
 			if(needs_perm && !has_user_permission) {
 				Pers_debug.d_print("main", "needs user permission\n");  
-				Perspectives.notifyNeedsPermission(ti.browser);
+				Pers_notify.notifyNeedsPermission(ti.browser);
 				var text = Perspectives.strbundle.getString("needsPermission"); 
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
 				ti.reason_str = text;
@@ -741,6 +510,7 @@ var Perspectives = {
 			var weak_trust = ti.query_results.inconsistent_results && ti.query_results.weakly_seen; 
 	
 			if(strong_trust) {
+				// FIXME: need to clear any contrary banners
 				var mixed_security =  ti.state & Perspectives.state.STATE_IS_BROKEN; 
 				if(!ti.is_override_cert && (ti.state & Perspectives.state.STATE_IS_INSECURE)){
 					ti.exceptions_enabled = Perspectives.root_prefs.
@@ -755,7 +525,7 @@ var Perspectives = {
 						// don't give drop-down if user gave explicit
 						// permission to query notaries
 						if(ti.firstLook && !has_user_permission){
-							Perspectives.notifyOverride(ti.browser, mixed_security);
+							Pers_notify.notifyOverride(ti.browser, mixed_security);
 						}
 					}
 				}
@@ -767,12 +537,13 @@ var Perspectives = {
 				// that Firefox still shows an HTTPS page with insecure content, it
 				// just does not show positive security indicators.  
 				if(mixed_security) { 
+					// FIXME: need to clear any contrary banners
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, 
 					"HTTPS Certificate is trusted, but site contains insecure embedded content. ");
 					// this will flicker, as we can't rely on just doing it on 'firstLook'
 					// due to firefox oddness
 					if(ti.override_used) { 	
-						Perspectives.notifyOverride(ti.browser, mixed_security);
+						Pers_notify.notifyOverride(ti.browser, mixed_security);
 					}
 				}  else { 
 
@@ -783,6 +554,7 @@ var Perspectives = {
 						ti.query_results.tooltip);
 				}
 			} else if(ti.already_trusted && weak_trust && pref_https_weak) { 
+				// FIXME: need to clear any contrary banners
 				if(ti.state & Perspectives.state.STATE_IS_BROKEN) { 
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, 
 					"HTTPS Certificate is weakly trusted, but site contains insecure embedded content. ");
@@ -792,22 +564,26 @@ var Perspectives = {
 
 				} 
 			} else if (ti.query_results.summary.indexOf("ssl key") == -1) { 
+				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = 
 					Perspectives.strbundle.getString("noRepliesWarning");
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, 
 					ti.query_results.tooltip);
 				if(!ti.already_trusted) { 
-					Perspectives.notifyNoReplies(ti.browser); 
+					Pers_notify.notifyNoReplies(ti.browser); 
 				} 
 			} else if(ti.query_results.inconsistent_results && !ti.query_results.weakly_seen) { 
+				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = "This site regularly uses multiples certificates, and most Notaries have not recently seen the certificate received by the browser";
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, 
 					ti.query_results.tooltip);
 			} else if(ti.query_results.inconsistent_results) { 
+				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = "Perspectives is unable to validate this site, because the site regularly uses multiples certificates"; 
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, 
 					ti.query_results.tooltip);
 			} else if(!ti.query_results.cur_consistent){
+				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = 
 					Perspectives.strbundle.getString("inconsistentWarning");
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, 
@@ -815,18 +591,20 @@ var Perspectives = {
 				// we may reconsider this in the future, but currently we don't do a 
 				// drop-down if things aren't consistent but the browser already trusts the cert. 
 				if(!ti.already_trusted && ti.firstLook){
-					Perspectives.notifyFailed(ti.browser);
+					Pers_notify.notifyFailed(ti.browser);
 				}
 			} else if(ti.query_results.duration < required_duration){
+				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = Perspectives.strbundle.
 					getFormattedString("thresholdWarning", 
 					[ ti.query_results.duration, required_duration]);
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, 
 					ti.query_results.tooltip);
 				if(!ti.already_trusted && ti.firstLook){
-					Perspectives.notifyFailed(ti.browser);
+					Pers_notify.notifyFailed(ti.browser);
 				}
 			} else { 
+				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = "An unknown Error occurred processing Notary results";
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_ERROR, 
 					ti.query_results.tooltip);

@@ -378,7 +378,7 @@ var Perspectives = {
 		
 		var error_text = Perspectives.detectInvalidURI(win); 
 		if(error_text) { 	
-			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, error_text);
+			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_QUERY, error_text);
 			return; 
 		} 
 		var ti = Perspectives.getCurrentTabInfo(win);

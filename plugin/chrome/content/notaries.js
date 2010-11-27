@@ -20,13 +20,6 @@ var Perspectives = {
 					Components.classes["@mozilla.org/security/certoverride;1"]
 					.getService(Components.interfaces.nsICertOverrideService),
 	
-	// holds query reply data until all requests for a particular
-	// service_id have either completed or timed-out.  
-	// The key for this data is the service_id string.  
-	// The data is a list of 'notary data' objects.  The object will be
-	// empty in the case of an invalid signature or timeout
-	query_result_data : {},
-
 	state : {
 		STATE_IS_BROKEN : 
 			Components.interfaces.nsIWebProgressListener.STATE_IS_BROKEN,
@@ -36,8 +29,6 @@ var Perspectives = {
 			Components.interfaces.nsIWebProgressListener.STATE_IS_SECURE
 	},
 
-	query_timeoutid_data : {},
- 
 	is_nonrouted_ip: function(ip_str) { 
 		for each (regex in Perspectives.nonrouted_ips) { 
 			if(ip_str.match(RegExp(regex))) { 
@@ -335,9 +326,7 @@ var Perspectives = {
 		if (!recentCertsSvc)
 			return null;
 
-		var port = uri.port; 
-		if(port == -1) 
-			port = 443; 
+		var port = (uri.port == -1) ? 443 : uri.port;  
 
 		var hostWithPort = uri.host + ":" + port;
 		var gSSLStatus = recentCertsSvc.getRecentBadCert(hostWithPort);
@@ -392,21 +381,18 @@ var Perspectives = {
 			return null; 
 		} 
 
-		var port = uri.port; 
-		if(port == -1) 
-			port = 443; 
-		var service_id = uri.host + ":" + port + ",2"; 
-		
-		if(Perspectives.query_result_data[service_id] != null) { 
+		var ti = Perspectives.tab_info_cache[browser]; 	
+		if(ti.partial_query_results != null) { 
 			Pers_debug.d_print("main", 
-				"already queried for '" + service_id + "', not querying again"); 
+				"Query already in progress for '" + uri.host + "' not querying again"); 
 			return; 
 		}
 
+		var port = (uri.port == -1) ? 443 : uri.port;  
   
 		// send a request to each notary
 		
-		Perspectives.query_result_data[service_id] = [];  
+		ti.partial_query_results = [];  
 		for(i = 0; i < Perspectives.notaries.length; i++) { 
 			var notary_server = Perspectives.notaries[i]; 
 			var full_url = "http://" + notary_server.host + 
@@ -419,18 +405,16 @@ var Perspectives = {
 			// the callback will only see the values for the final server
 			req.onreadystatechange = (function(r,ns) { 
 				return function(evt) { 
-					Perspectives.notaryAjaxCallback(uri,cert, r, ns,service_id,
-								browser,has_user_permission); 
+					Perspectives.notaryAjaxCallback(uri,cert, r, ns,browser,has_user_permission); 
 				}
 			})(req,notary_server);  
 			req.send(null);
 		}
     
-		Perspectives.query_timeoutid_data[service_id] = 
-			window.setTimeout(function () {
+		ti.timeout_id = window.setTimeout(function () {
 			try {  
-			Pers_debug.d_print("query", "timeout querying " + service_id + " with results");
-			var server_result_list = Perspectives.query_result_data[service_id];
+			Pers_debug.d_print("query", "timeout querying for '" + uri.host + "' port " + port);
+			var server_result_list = ti.partial_query_results;
 			Pers_debug.d_print("query", server_result_list); 
  
 			if (server_result_list == null) { 
@@ -452,11 +436,7 @@ var Perspectives = {
 					server_result_list.push(res); 
 				} 
 			} 
-			Perspectives.notaryQueriesComplete(uri,cert,service_id,browser,
-					has_user_permission, 
-					server_result_list);
-			delete Perspectives.query_result_data[service_id]; 
-			delete Perspectives.query_timeoutid_data[service_id];  
+			Perspectives.notaryQueriesComplete(uri,cert, browser, has_user_permission, server_result_list);
 			} catch (e) { 
 				Pers_debug.d_print("query", "error handling timeout"); 
 				Pers_debug.d_print("query", e); 
@@ -468,19 +448,19 @@ var Perspectives = {
 	}, 
         
  
-	notaryAjaxCallback: function(uri, cert, req, notary_server,service_id,
-				browser,has_user_permission) {  
+	notaryAjaxCallback: function(uri, cert, req, notary_server, browser,has_user_permission) {  
 	
 		if (req.readyState == 4) {  
 			if(req.status == 200){
-				try { 
-		 
+				try { 							
+					var ti = Perspectives.tab_info_cache[browser]; 
+ 
 					Pers_debug.d_print("query", req.responseText); 
 					var server_node = req.responseXML.documentElement;
 					var server_result = Pers_xml.
 							parse_server_node(server_node,1);
 					var bin_result = Pers_xml.
-							pack_result_as_binary(server_result,service_id);
+							pack_result_as_binary(server_result,ti.service_id);
 					Pers_debug.d_print("query", 
 						Pers_xml.resultToString(server_result,false)); 
 					var verifier = 
@@ -495,11 +475,12 @@ var Perspectives = {
 						return; 
 					}
 					server_result.server = notary_server.host; 
-					
-					var result_list = this.query_result_data[service_id]; 
+				
+					var ti = Perspectives.tab_info_cache[browser]; 	
+					var result_list = ti.partial_query_results; 
 					if(result_list == null) { 
 						Pers_debug.d_print("query",
-							"Query reply for '" + service_id + 
+							"Query reply for '" + ti.service_id + 
 								"' has no query result data"); 
 						return; 
 					} 
@@ -508,7 +489,7 @@ var Perspectives = {
 						if(result_list[i].server == server_result.server) { 
 							Pers_debug.d_print("query", 
 							  "Ignoring duplicate reply for '" + 
-								service_id + "' from '" +
+								ti.service_id + "' from '" +
 								server_result.server + "'"); 
 							return; 
 						} 
@@ -517,18 +498,15 @@ var Perspectives = {
 							notary_server.host); 
 					result_list.push(server_result); 
   					 
-					var num_replies = this.query_result_data[service_id].length;
+					var num_replies = ti.partial_query_results.length;
 					Pers_debug.d_print("query", "num_replies = " + num_replies + 
 								" total = " + Perspectives.notaries.length); 
 					if(num_replies == Perspectives.notaries.length) { 
 						Pers_debug.d_print("query","got all server replies"); 	
-						Perspectives.notaryQueriesComplete(uri,cert,service_id,browser,
+						Perspectives.notaryQueriesComplete(uri,cert,browser,
 								has_user_permission, 
-								Perspectives.query_result_data[service_id]);
-						delete Perspectives.query_result_data[service_id];
-						window.clearTimeout(Perspectives.
-							query_timeoutid_data[service_id]);
-						delete Perspectives.query_timeoutid_data[service_id];  
+								ti.partial_query_results);
+						window.clearTimeout(ti.timeout_id);
 					}
 					  
 				} catch (e) { 
@@ -541,9 +519,13 @@ var Perspectives = {
 		}  
 	},  
 
-	notaryQueriesComplete: function(uri,cert,service_id,browser,
+	notaryQueriesComplete: function(uri,cert,browser,
 				has_user_permission,server_result_list) {
 		try {
+			var ti = Perspectives.tab_info_cache[browser]; 	
+			delete ti.partial_query_results; 
+			delete ti.timeout_id; 
+			
 			var test_key = cert.md5Fingerprint.toLowerCase();
 			// 2 days (FIXME: make this a pref)
 			var max_stale_sec = 2 * 24 * 3600; 
@@ -572,13 +554,13 @@ var Perspectives = {
 				obs_text += Pers_xml.resultToString(server_result_list[i]); 
 			}  
 			var qd_str = (is_cur_consistent) ? qd_days + " days" : "none";
-			var str = "Notary Lookup for: " + service_id + "\n";
+			var str = "Notary Lookup for: " + ti.service_id + "\n";
     			str += "Browser's Key = '" + test_key + "'\n"; 
     			str += "Results:\n"; 
     			str += "Quorum duration: " + qd_str + "\n"; 
     			str += "Notary Observations: \n" + obs_text + "\n"; 
 			//Pers_debug.d_print("main","\n" + str + "\n");	
-			var svg = Pers_gen.get_svg_graph(service_id, server_result_list, 30,
+			var svg = Pers_gen.get_svg_graph(ti.service_id, server_result_list, 30,
 				unixtime,test_key);
 			Perspectives.tab_info_cache[browser].query_results = new Perspectives.SslCert(uri.host, 
 										uri.port, test_key, 
@@ -641,43 +623,45 @@ var Perspectives = {
 			Perspectives.tab_info_cache[browser] = ti; 
 		}
 		ti.reason_str = "";
- 
-		var uri = browser.currentURI;
-  
-		if(!uri) { 
+		ti.uri = browser.currentURI; 
+
+		var port = (ti.uri.port == -1) ? 443 : ti.uri.port;  
+		ti.service_id = ti.uri.host + ":" + port + ",2"; 
+
+		if(!ti.uri) { 
 			var text = Perspectives.strbundle.getString("noDataError"); 
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
 			ti.reason_str = text;
 			return;
 		}
 		
 		// sometimes things blow up because accessing uri.host throws an exception
 		try { 
-			var ignore = uri.host;
-			if(!uri.host) throw "";  
+			var ignore = ti.uri.host;
+			if(!ti.uri.host) throw "";  
 		} catch(e) {
 			var text = "URL is not a valid remote server"; 
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
 			ti.reason_str = text;
 			return;
 		}
 		
-		if(uri.scheme != "https"){
+		if(ti.uri.scheme != "https"){
 			var text = Perspectives.strbundle.
-				getFormattedString("nonHTTPSError", [ uri.host, uri.scheme ]);
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+				getFormattedString("nonHTTPSError", [ ti.uri.host, ti.uri.scheme ]);
+			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
 			ti.reason_str = text;
 			return;
 		} 
 		
-		Pers_debug.d_print("main", "Update Status: " + uri.spec + "\n");
+		Pers_debug.d_print("main", "Update Status: " + ti.uri.spec + "\n");
 		
 		ti.insecure         = false;
 		ti.cert       = Perspectives.getCertificate(browser);
 		if(!ti.cert){
 			var text = Perspectives.strbundle.
-				getFormattedString("noCertError", [ uri.host ])
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+				getFormattedString("noCertError", [ ti.uri.host ])
+			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
 			ti.reason_str = text;
 			return;
 		}
@@ -704,7 +688,7 @@ var Perspectives = {
 		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && 
 			!(ti.is_override_cert && ti.query_results); 
 		
-		if(Perspectives.is_whitelisted_by_user(uri.host)) {
+		if(Perspectives.is_whitelisted_by_user(ti.uri.host)) {
 			if(!ti.already_trusted) { 		
 				var isTemp = !Perspectives.root_prefs.getBoolPref("perspectives.exceptions.permanent");
 				setTimeout(function() {  
@@ -715,8 +699,8 @@ var Perspectives = {
 				}, 1000); 
 			} 
 			var text = "You have configured Perspectives to whitelist connections to '" + 
-									uri.host  + "'";
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_SEC, text); 
+									ti.uri.host  + "'";
+			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC, text); 
 			ti.reason_str = text;
 			return; 
 		} else { 
@@ -724,11 +708,11 @@ var Perspectives = {
 			// Note: we no longer do a DNS look-up to to see if a DNS name maps 
 			// to an RFC 1918 address, as this 'leaked' DNS info for users running
 			// anonymizers like Tor.  It was always just an insecure guess anyway.  
-			var unreachable = Perspectives.is_nonrouted_ip(uri.host); 
+			var unreachable = Perspectives.is_nonrouted_ip(ti.uri.host); 
 			if(unreachable) { 
 				var text = Perspectives.strbundle.
-					getFormattedString("rfc1918Error", [ uri.host ])
-				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+					getFormattedString("rfc1918Error", [ ti.uri.host ])
+				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
 				ti.reason_str = text;
 				return;
 			}
@@ -737,7 +721,7 @@ var Perspectives = {
 		if(!check_good && ti.already_trusted && !is_forced) {
 			var text = Perspectives.strbundle.
 				getString("noProbeRequestedError"); 
-			Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
 			ti.reason_str = text;
 			return;
 		} 
@@ -764,19 +748,18 @@ var Perspectives = {
 			delete ti.query_results; 
 		}   
 		
-		//Update ssl cache cert
 		if(ti.query_results) { 
-			Perspectives.process_notary_results(uri,browser,has_user_permission,false);
+			Perspectives.process_notary_results(ti.uri,browser,has_user_permission,false);
 		} else {  
 			ti.firstLook = true;
-			Pers_debug.d_print("main", uri.host + " needs a request\n"); 
+			Pers_debug.d_print("main", ti.uri.host + " needs a request\n"); 
 			var needs_perm = Perspectives.root_prefs
 					.getBoolPref("perspectives.require_user_permission"); 
 			if(needs_perm && !has_user_permission) {
 				Pers_debug.d_print("main", "needs user permission\n");  
 				Perspectives.notifyNeedsPermission(browser);
 				var text = Perspectives.strbundle.getString("needsPermission"); 
-				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_NEUT, text); 
+				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
 				ti.reason_str = text;
 				return; 
 			} 
@@ -784,14 +767,15 @@ var Perspectives = {
 			Pers_debug.d_print("main", "Contacting notaries\n"); 
 			// this call is asynchronous.  after hearing from the 
 			// notaries, the logic picks up again with the function 
-			// 'done_querying_notaries()' below
-			this.queryNotaries(ti.cert, uri,browser,has_user_permission);
+			// 'process_notary_results()' below
+			this.queryNotaries(ti.cert, ti.uri,browser,has_user_permission);
 		}
 	},
 
 	process_notary_results: function(uri,browser,has_user_permission) {  
 		try {
-			var ti = Perspectives.tab_info_cache[browser]; 
+			var ti = Perspectives.tab_info_cache[browser];
+			Pers_debug.d_print("ti = ", ti);  
 			ti.notary_valid = false; // default 
 			if(!ti.insecure && !ti.query_results.identityText &&
 				Perspectives.getFaviconText().indexOf("Perspectives") < 0){
@@ -807,7 +791,7 @@ var Perspectives = {
 						(ti.query_results.duration >= required_duration); 
 			var pref_https_weak = Perspectives.root_prefs.
 					getBoolPref("perspectives.trust_https_with_weak_consistency");
-			var weak_trust = ti.query_results.inconsistent_results && ti.query_resuts.weakly_seen; 
+			var weak_trust = ti.query_results.inconsistent_results && ti.query_results.weakly_seen; 
 	
 			if(strong_trust) { 
 				ti.notary_valid = true; 
@@ -901,7 +885,7 @@ var Perspectives = {
 
  
 		} catch (err) {
-			alert("done_querying_notaries error: " + err);
+			alert("process_notary_results error: " + err);
 		}
 	},
 

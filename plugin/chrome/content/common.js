@@ -37,46 +37,54 @@ var Pers_util = {
 	SEC2DAY: function(sec) { return sec / (3600 * 24); },
 	DAY2SEC: function(day) { return day * (3600 * 24); }, 
 
-  	readLocalFileLines: function(fname){
-    		var MY_ID = "perspectives@cmu.edu";
-    		var directoryService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    		var profileFolder = directoryService.get("ProfD",Components.interfaces.nsIFile); 
-		profileFolder.append("extensions"); 
-		profileFolder.append(MY_ID); 
-		profileFolder.append(fname); 
+	// stolen from: http://forums.mozillazine.org/viewtopic.php?p=921150
+	readFileFromURI: function(uri){
 
-    		var istream = Components.classes["@mozilla.org/network/file-input-stream;1"].
-    		createInstance(Components.interfaces.nsIFileInputStream);
-    		istream.init(profileFolder, 0x01, 0444, 0);
-    		istream.QueryInterface(Components.interfaces.nsILineInputStream);
+  		var ioService=Components.classes["@mozilla.org/network/io-service;1"]
+				.getService(Components.interfaces.nsIIOService);
+  		var scriptableStream=Components.classes["@mozilla.org/scriptableinputstream;1"]
+    				.getService(Components.interfaces.nsIScriptableInputStream);
+  		var channel=ioService.newChannel(uri,null,null);
+  		var input=channel.open();
+  		scriptableStream.init(input);
+  		var str=scriptableStream.read(input.available());
+  		scriptableStream.close();
+  		input.close();
+  		return str;
+	},
 
-    		// read lines into array
-    		var hasmore;
-    		var text = "";
-    		var line = {};
+	loadNotaryListFromURI: function(uri) { 
+		var start_arr = this.readFileFromURI(uri).split("\n"); 
+		var filtered_arr = []; 
+		for(var i = 0; i < start_arr.length; i++) { 
+        		if (start_arr[i].length > 0 && start_arr[i][0] != "#")
+        			filtered_arr.push(start_arr[i]); 
+		} 
+       		var i = 0;
+		var notary_list = [];  
+        	while (i < filtered_arr.length) {  
 
-    		var line = {}, lines = [], hasmore;
-    		do {
-        		hasmore = istream.readLine(line)
-        		if (line.value.length > 0 && line.value[0] != "#")
-        		lines.push(line.value);
-    		} while(hasmore);
+            		var notary_server = { "host" : filtered_arr[i] }; 
+            		i += 1;
 
-    		istream.close();
+            		if (i >= filtered_arr.length || filtered_arr[i].indexOf("BEGIN PUBLIC KEY") === -1) { 
+                		alert("Perspectives: invalid notary_list.txt file: " + filtered_arr[i]); 
+                		return; 
+            		}
+            		i += 1;
 
-    		return lines;
-	}, 
+            		var key = ""; 
+            		while (i < filtered_arr.length && filtered_arr[i].indexOf("END PUBLIC KEY") === -1) { 
+                		key += filtered_arr[i]; 
+                		i += 1;
+            		}
 
-	readLocalFile: function(path){
-    		var arr = Pers_util.readLocalFileLines(path);
-    		var text = "";
-
-    		for (i = 0; i < arr.length; i++){
-        		text += arr[i] + "\n";
-    		}
-
-    		return text;
-	}, 
+            		i += 1; // consume the 'END PUBLIC KEY' line
+            		notary_server.public_key = key; 
+            		notary_list.push(notary_server);  
+        	} 
+		return notary_list; 
+	},  
 
 	// stolen from: http://stackoverflow.com/questions/130404/javascript-data-formatting-pretty-printer
 	pretty_print_json : function(obj, indent) {

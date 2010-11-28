@@ -714,41 +714,11 @@ var Perspectives = {
 		*/ 
 	},
 
-	fillNotaryList: function() { 
-
-       		var lines, i, notary_server, key;
-
-        	lines = Pers_util.readLocalFileLines("http_notary_list.txt");
- 
-        	i = 0; 
-        	while (i < lines.length) {  
-
-            		notary_server = { "host" : lines[i] }; 
-            		i += 1;
-
-            		if (i >= lines.length || lines[i].indexOf("BEGIN PUBLIC KEY") === -1) { 
-                		alert("Perspectives: invalid notary_list.txt file: " + lines[i]); 
-                		return; 
-            		}
-            		i += 1;
-
-            		key = ""; 
-            		while (i < lines.length && lines[i].indexOf("END PUBLIC KEY") === -1) { 
-                		key += lines[i]; 
-                		i += 1;
-            		}
-
-            		i += 1; // consume the 'END PUBLIC KEY' line
-            		notary_server.public_key = key; 
-            		Perspectives.notaries.push(notary_server);  
-        	} 
-        	Pers_debug.d_print("main", Perspectives.notaries); 	
-	},  
- 
 	initNotaries: function(){
 		try { 
 			Pers_debug.d_print("main", "\nPerspectives Initialization\n");
-			Perspectives.fillNotaryList(); 
+ 			Perspectives.notaries = Pers_util.loadNotaryListFromURI("chrome://perspectives_main/content/http_notary_list.txt"); 
+        		Pers_debug.d_print("main", Perspectives.notaries); 	
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
 			getBrowser().addProgressListener(Perspectives.notaryListener, 
 			Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);

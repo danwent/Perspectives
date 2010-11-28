@@ -33,8 +33,8 @@ var Pers_whitelist_dialog = {
 		} else { 
 			whitelist = whitelist + "," + regex; 
 		} 	
-		this.root_prefs.setCharPref("perspectives.whitelist",whitelist); 
-		window.opener.Perspectives.forceStatusUpdate(window.opener.gBrowser); 
+		this.root_prefs.setCharPref("perspectives.whitelist",whitelist);
+		window.opener.Perspectives.forceStatusUpdate(window.opener); 
 		} catch(e) { alert("confirm_add: " + e); } 
 	}, 
 
@@ -108,8 +108,9 @@ var Pers_whitelist_dialog = {
 					continue; 
 				} 
 				var r = RegExp(e);
+				var display_str = e.replace(/\\/g,"").replace("$","").replace("^",""); 
 				if (host.match(r)) {
-					var answer = confirm("Remove '" + e + "' from whitelist?");  
+					var answer = confirm("Remove '" + display_str + "' from whitelist?");  
 					if(answer) { 
 						continue; 
 					} 
@@ -117,8 +118,8 @@ var Pers_whitelist_dialog = {
 				new_whitelist.push(e); 
 			} 
 			Perspectives.root_prefs.setCharPref("perspectives.whitelist",new_whitelist.join(",")); 
-			window.Perspectives.forceStatusUpdate(window.gBrowser);  
-		} catch(e) { alert("remove_from_whitelist"); } 
+			window.Perspectives.forceStatusUpdate(window);  
+		} catch(e) { alert("remove_from_whitelist:" + e); } 
 	} 
 		
 }

@@ -394,8 +394,7 @@ var Perspectives = {
 		var md5        = ti.cert.md5Fingerprint.toLowerCase();
 		ti.state      = ti.browser.securityUI.state;
 
-		ti.is_override_cert = Perspectives.overrideService.
-			isCertUsedForOverrides(ti.cert, true, true);
+		ti.is_override_cert = Perspectives.overrideService.isCertUsedForOverrides(ti.cert, true, true);
 		Pers_debug.d_print("main", 
 			"is_override_cert = " + ti.is_override_cert + "\n"); 
 		var check_good = Perspectives.root_prefs.
@@ -408,7 +407,7 @@ var Perspectives = {
 		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && !(ti.is_override_cert); 
 		
 		if(Perspectives.is_whitelisted_by_user(ti.uri.host)) {
-			if(!ti.already_trusted) { 		
+			if(! (ti.already_trusted || ti.is_override_cert)) { 		
 				var isTemp = !Perspectives.root_prefs.getBoolPref("perspectives.exceptions.permanent");
 				setTimeout(function() {  
 					if(Perspectives.do_override(ti.browser, ti.cert, isTemp)) { 

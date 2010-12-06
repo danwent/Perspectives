@@ -207,10 +207,25 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 
 
 // returns true if 'results' contains replies that are all 'inconsistent', which 
-// according to our definition means that there was no timepsans longer than 
-// 'max_timespan' in the last 'check_length' days. 
+// according to our definition means that there was no timespans longer than 
+// 'max_timespan' in the last 'check_length' days.  Only return 'true' if 
+// there is more than one key that has been seen though. 
 inconsistency_check : function(results, max_timespan, check_length) { 
-	
+
+	var unique_keys = {}; 	
+	for(var i = 0; i < results.length; i++) {
+		for(var j = 0; j < results[i].obs.length; j++) { 
+			var k = results[i].obs[j].key; 
+			unique_keys[k] = ""; 
+		} 
+	}
+	var key_count = 0; 
+	for( var k in unique_keys) { 
+		key_count++; 
+	}  
+	if(key_count <= 1) 
+		return false; 
+
 	for(var i = 0; i < results.length; i++) { 
 		var max_ts_sec = this.calc_longest_timespan(results[i].obs, 
 									check_length); 

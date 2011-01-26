@@ -304,7 +304,12 @@ var Perspectives = {
 			var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(test_key, 
 						server_result_list, q_required, weak_check_time_limit); 
 				 
-			var qd_days =  Math.round((quorum_duration / (3600 * 24)) * 1000) / 1000;
+			var qd_days =  quorum_duration / (3600 * 24);
+			if(qd_days > 5 || qd_days == 0) {
+				qd_days = Math.round(qd_days); 
+			} else { 
+				qd_days.toFixed(1); 
+			}  
 			var obs_text = ""; 
 			for(var i = 0; i < server_result_list.length; i++) {
 				obs_text += "\nNotary: " + server_result_list[i].server + "\n"; 

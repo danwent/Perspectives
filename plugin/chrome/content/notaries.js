@@ -1,6 +1,7 @@
 var Perspectives = {
  	MY_ID: "perspectives@cmu.edu",
-	TIMEOUT_SEC: 8, 
+	TIMEOUT_SEC: 3,  // this is timeout for each query to the server
+	NUM_TRIES_PER_SERVER: 2, // number of times we query a server before giving up 
 	strbundle : null, // this isn't loaded when things are intialized
 
 	// FIXME: these regexes should be less generous
@@ -152,38 +153,46 @@ var Perspectives = {
 				"Query already in progress for '" + ti.uri.host + "' not querying again"); 
 			return; 
 		}
-
-		var port = (ti.uri.port == -1) ? 443 : ti.uri.port;  
   
 		// send a request to each notary
-		
-		ti.partial_query_results = [];  
-		for(i = 0; i < Perspectives.notaries.length; i++) { 
-			var notary_server = Perspectives.notaries[i]; 
-			var full_url = "http://" + notary_server.host + 
-				"?host=" + ti.uri.host + "&port=" + port + "&service_type=2&";
-			Pers_debug.d_print("query", "sending query: '" + full_url + "'");
-			var req  = XMLHttpRequest();
-			req.open("GET", full_url, true);
-
-			//NOTE: ugly, but we need to create a closure here, otherwise
-			// the callback will only see the values for the final server
-			req.onreadystatechange = (function(r,ns) { 
-				return function(evt) { 
-					Perspectives.notaryAjaxCallback(ti, r, ns, ti.has_user_permission); 
-				}
-			})(req,notary_server);  
-			req.send(null);
+		ti.partial_query_results = []; 
+		for(i = 0; i < Perspectives.notaries.length; i++) {
+			Pers_debug.d_print("main", "Sending query to notary " + Perspectives.notaries[i].host);  
+			this.querySingleNotary(Perspectives.notaries[i],ti); 
 		}
     
-		ti.timeout_id = window.setTimeout(function () {
+		ti.timeout_id = window.setTimeout(function() { 
+			Perspectives.notaryQueryTimeout(ti,0); 		
+		}, Perspectives.TIMEOUT_SEC * 1000 ); 
+
+	},
+
+	querySingleNotary: function(notary_server, ti) { 
+		var port = (ti.uri.port == -1) ? 443 : ti.uri.port;  
+		var full_url = "http://" + notary_server.host + 
+				"?host=" + ti.uri.host + "&port=" + port + "&service_type=2&";
+		Pers_debug.d_print("query", "sending query: '" + full_url + "'");
+		var req  = XMLHttpRequest();
+		req.open("GET", full_url, true);
+		req.onreadystatechange = (function(evt) { 
+					Perspectives.notaryAjaxCallback(ti, req, notary_server, ti.has_user_permission); 
+		}); 
+		req.send(null);
+	}, 
+ 
+       
+	notaryQueryTimeout: function(ti, num_timeouts) {  
 			try {  
-				Pers_debug.d_print("query", "timeout querying for '" + ti.uri.host + "' port " + port);
+				Pers_debug.d_print("query", "timeout #" + num_timeouts + 
+						" querying for '" + ti.service_id + "'");
 				Pers_debug.d_print("query", ti.partial_query_results); 
  
 				if (ti.partial_query_results == null) { 
 					ti.partial_query_results = []; // may have been deleted between now and then
-				}  
+				} 
+			 
+				// find out which notaries we still need a reply from 
+				var missing_replies = [];  
 				for(var i = 0; i < Perspectives.notaries.length; i++) { 
 					var found = false;
 					for(var j = 0; j < ti.partial_query_results.length; j++) { 
@@ -194,21 +203,39 @@ var Perspectives = {
 						}
 					} 
 					if(!found) { 
+						missing_replies.push(Perspectives.notaries[i])
+					} 
+				} 
+
+				var is_final_timeout = (num_timeouts == Perspectives.NUM_TRIES_PER_SERVER); 
+				if(is_final_timeout) { 
+					// time is up, so just add empty results for missing
+					// notaries and begin processing results 
+					for(var i = 0; i < missing_replies.length; i++) { 
 						// add empty result for this notary
-						var res = { "server" : Perspectives.notaries[i].host, 
+						var res = { "server" : missing_replies[i].host, 
 								"obs" : [] }; 
 						ti.partial_query_results.push(res); 
 					} 
+					Perspectives.notaryQueriesComplete(ti);
+				} else {
+					// send another query to any of the servers we are missing
+					// reset the timeout, incrementing the count of the number
+					// of timeouts we have seen  
+					for(var i = 0; i < missing_replies.length; i++) { 
+						this.querySingleNotary(Perspectives.notaries[i],ti); 
+					}
+    
+					ti.timeout_id = window.setTimeout(function() { 
+						Perspectives.notaryQueryTimeout(ti, num_timeouts + 1); 		
+					}, Perspectives.TIMEOUT_SEC * 1000 ); 
 				} 
-				Perspectives.notaryQueriesComplete(ti);
+				
 			} catch (e) { 
 				Pers_debug.d_print("query", "error handling timeout"); 
 				Pers_debug.d_print("query", e); 
 			} 
-		}, Perspectives.TIMEOUT_SEC * 1000 ); 
-
 	}, 
-        
  
 	notaryAjaxCallback: function(ti, req, notary_server) {  
 	
@@ -272,7 +299,7 @@ var Perspectives = {
 				} 
 			} else { // HTTP ERROR CODE
 				Pers_debug.d_print("error", 
-					"HTTP Error code when querying notary");  
+					"HTTP Error code '" + req.status + "' when querying notary");  
 			}
 		}  
 	},  
@@ -308,7 +335,7 @@ var Perspectives = {
 			if(qd_days > 5 || qd_days == 0) {
 				qd_days = Math.round(qd_days); 
 			} else { 
-				qd_days.toFixed(1); 
+				qd_days = qd_days.toFixed(1); 
 			}  
 			var obs_text = ""; 
 			for(var i = 0; i < server_result_list.length; i++) {

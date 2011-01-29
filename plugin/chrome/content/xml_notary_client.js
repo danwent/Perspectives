@@ -12,9 +12,9 @@
 var Pers_xml = {
 	parse_server_node: function(reply, expected_version) { 
 
-        if(reply.nodeName != "notary_reply"){
+        	if(reply.nodeName != "notary_reply"){
 			return null;
-        }
+        	}
 		var version = reply.attributes.getNamedItem("version").value; 
 		if(version != expected_version) { 
 			Pers_debug.d_print("error","Expected version '" + expected_version

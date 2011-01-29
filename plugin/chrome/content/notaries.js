@@ -749,7 +749,7 @@ var Perspectives = {
 	initNotaries: function(){
 		try { 
 			Pers_debug.d_print("main", "\nPerspectives Initialization\n");
- 			Perspectives.notaries = Pers_util.loadNotaryListFromURI("chrome://perspectives_main/content/http_notary_list.txt"); 
+ 			Perspectives.notaries = Pers_util.loadNotaryListFromURI("chrome://perspectives/content/http_notary_list.txt"); 
         		Pers_debug.d_print("main", Perspectives.notaries); 	
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
 			getBrowser().addProgressListener(Perspectives.notaryListener, 

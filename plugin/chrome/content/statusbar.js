@@ -89,7 +89,7 @@ var Pers_statusbar = {
 
 	//Should open new window because the dialog prevents them from seeing it
 	openNotaries: function(){
-		openDialog("chrome://perspectives_main/content/http_notary_list.txt", 
+		openDialog("chrome://perspectives/content/http_notary_list.txt", 
 			"", "width=600,height=600,resizable=yes");
 	},
 

@@ -400,7 +400,7 @@ var Perspectives = {
 		
 		var error_text = Perspectives.detectInvalidURI(win); 
 		if(error_text) { 	
-			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_QUERY, "Waiting on data from Firefox (" + error_text + ")");
+			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "Waiting on URL data from Firefox (" + error_text + ")");
 			return; 
 		} 
 		var ti = Perspectives.getCurrentTabInfo(win);

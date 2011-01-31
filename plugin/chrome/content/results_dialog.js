@@ -17,7 +17,7 @@ var Pers_results = {
 		after.appendChild(svg);
 	},
 
-	// returns a string that describes whether perspectives installed a 
+	// returns a string that describes whether Perspectives installed a 
 	// security exception 
 	getActionStr: function(ti) {
 		if(ti.uri.scheme != "https") {  

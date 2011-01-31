@@ -1,7 +1,7 @@
 
 
 // convert an xml '<server>' node to a javascript object
-// In JSON synatax, this object has the following format: 
+// In JSON syntax, this object has the following format: 
 /* { "signature" : "XXXX", 
      "obs" : [  { "key" : "XXX", 
  		  "timestamps" : [ { "start" : XXX, "end" : YYY } ]

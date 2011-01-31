@@ -14,7 +14,7 @@ var Pers_statusbar = {
 	},
 
 	// note: when debugging, it is useful to open this dialog as a 
-	// window, so we get a firebug console, etc
+	// window, so we get a Firebug console, etc
 	open_results_dialog: function() { 
 		window.openDialog(
 	//	window.open( // for debug

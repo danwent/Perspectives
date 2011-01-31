@@ -41,7 +41,7 @@ var Perspectives = {
 
 
 	// flag to make sure we only show component load failed alert once
-	// per firefox session.  Otherwise, the user gets flooded with it.  
+	// per Firefox session.  Otherwise, the user gets flooded with it.  
 	show_component_failed : true,
 
 	tab_info_cache : {}, 
@@ -103,7 +103,7 @@ var Perspectives = {
 		return gSSLStatus;
 	},
 
-	// gets current certificat, if it FAILED the security check 
+	// gets current certificate, if it FAILED the security check 
 	psv_get_invalid_cert: function(uri) { 
 		var gSSLStatus = Perspectives.get_invalid_cert_SSLStatus(uri);
 		if(!gSSLStatus){
@@ -435,7 +435,7 @@ var Perspectives = {
 		
 		// see if the browser has this cert installed prior to this browser session
 		// seems like we can't tell the difference between an exception added by the user 
-		// manually and one we installed permemently during a previous browser run.  
+		// manually and one we installed permanently during a previous browser run.  
 		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && !(ti.is_override_cert); 
 		
 		if(Perspectives.is_whitelisted_by_user(ti.uri.host)) {
@@ -561,7 +561,7 @@ var Perspectives = {
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, 
 					"HTTPS Certificate is trusted, but site contains insecure embedded content. ");
 					// this will flicker, as we can't rely on just doing it on 'firstLook'
-					// due to firefox oddness
+					// due to Firefox oddness
 					if(ti.override_used) { 	
 						Pers_notify.do_notify(ti, Pers_notify.TYPE_OVERRIDE_MIXED);
 					}

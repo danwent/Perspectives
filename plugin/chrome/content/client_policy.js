@@ -167,15 +167,15 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 }, 
 
 // For sites that do not consistently use a single certificate, Perspectives supports
-// a weaker notion of whether a key is 'valid', called 'weak consistentcy'.  
+// a weaker notion of whether a key is 'valid', called 'weak consistency'.  
 // This test checks that two things are BOTH true: 
 // 1) confirm that no notary has consistently seen any key for this website.  We do this
 // by checking that in the past 'check_length' days, no notary has seen the
 // same key for more than 'max_timespan' days.  The goal of this check is to make sure
 // weak consistency cannot be used by an attacker to undermine a site that regularly 
 // uses a single 'correct' key. 
-// 2) that 'test' key has been seen by at least 'qourum_size' notaries in the past 
-// 'check_length' days.  Note that this is MUCH weaker than standard perspectives 
+// 2) that 'test' key has been seen by at least 'quorum_size' notaries in the past 
+// 'check_length' days.  Note that this is weaker than Perspectives' standard 
 // requirement that notaries must have seen a key consistently over time.  Even a single
 // observation by all notaries could undermine this form of consistency.  
 
@@ -207,7 +207,7 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 
 
 // returns true if 'results' contains replies that are all 'inconsistent', which 
-// according to our definition means that there was no timespans longer than 
+// according to our definition means that there was no timespan longer than 
 // 'max_timespan' in the last 'check_length' days.  Only return 'true' if 
 // there is more than one key that has been seen though. 
 inconsistency_check : function(results, max_timespan, check_length) { 

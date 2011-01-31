@@ -169,8 +169,7 @@ var Pers_notify = {
    		this.notifyGeneric(ti.browser, priority, message, buttons);  
 	},
 
-	// this is the drop down which is shown if the repsonse
-	// receive no notary replies.  
+	// this is the drop down which is shown if we receive no notary replies.  
 	notifyNoReplies: function(b){
 		var priority = "PRIORITY_CRITICAL_LOW";
 		var message = Perspectives.strbundle.getString("noRepliesReceived");  

@@ -350,7 +350,7 @@ var Perspectives = {
     			str += "Notary Observations: \n" + obs_text + "\n"; 
 			//Pers_debug.d_print("main","\n" + str + "\n");	
 			var svg = Pers_gen.get_svg_graph(ti.service_id, server_result_list, 30,
-				unixtime,test_key);
+				unixtime,test_key, max_stale_sec);
 			ti.query_results = new Perspectives.SslCert(ti.uri.host, 
 										ti.uri.port, test_key, 
 										str, null,svg, qd_days, 

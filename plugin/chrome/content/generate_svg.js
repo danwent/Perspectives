@@ -47,7 +47,7 @@ var Pers_gen = {
  
 
 	get_svg_graph: function(service_id, server_result_list, len_days,cur_secs, 
-							browser_key) {
+							browser_key, max_stale_sec) {
 		var x_offset = 200, y_offset = 40; 
 		var width = 700;
 		var y_cord = y_offset; 
@@ -60,6 +60,7 @@ var Pers_gen = {
 							cutoff,color_info);
 		var height = color_count * 30 + server_result_list.length * 20 
 			 	+ y_offset + 60;
+		var stale_cutoff = cur_secs - max_stale_sec; 
 
 		color_info[browser_key] = "green"; 	
 		var tmp_x = x_offset + 70;  
@@ -122,7 +123,14 @@ var Pers_gen = {
 				} // end per-timespan
  
 			} // end per-key  
-	    
+
+			// if the most recent key is stale and thus
+			// will be ignored by the client, don't show
+			// it as the "current key"
+	    		if(most_recent_end < stale_cutoff) { 
+				most_recent_color = "white"; 
+			} 
+
 			// print "current key" circle      
 			res += '<rect x="' + (x_offset - 30) + '" y="' + y_cord 
 				+ '" width="10" height="10" fill="' + most_recent_color 

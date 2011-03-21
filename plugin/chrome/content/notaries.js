@@ -12,7 +12,8 @@ var Perspectives = {
 	// list of objects representing each notary server's name + port and public
 	// key this list is populated by fillNotaryList() based on a file shipped with the 
 	// extension
-	notaries : [],  
+	all_notaries : [],  
+	default_notaries : [], 
 
 	// Data
 	root_prefs : Components.classes["@mozilla.org/preferences-service;1"]
@@ -141,6 +142,17 @@ var Perspectives = {
 		return cert;
 	},
 
+	getNotaryList: function() { 
+		var additional_notaries = []; 
+		try {
+			var list_txt = Perspectives.root_prefs.getCharPref("perspectives.additional_notary_list");
+			additional_notaries = Pers_util.loadNotaryListFromString(list_txt); 
+		} catch(e) { 
+			Pers_debug.d_print("error", "Error parsing additional notaries: " + e); 
+		} 		
+		return Perspectives.default_notaries.concat(additional_notaries); 
+	}, 
+
 
 	queryNotaries: function(ti){
 		if(!ti.cert) { 
@@ -153,12 +165,16 @@ var Perspectives = {
 				"Query already in progress for '" + ti.uri.host + "' not querying again"); 
 			return; 
 		}
-  
+ 
+		// make sure we're using the most recent notary list
+		Perspectives.all_notaries = this.getNotaryList(); 
+
+ 
 		// send a request to each notary
 		ti.partial_query_results = []; 
-		for(i = 0; i < Perspectives.notaries.length; i++) {
-			Pers_debug.d_print("main", "Sending query to notary " + Perspectives.notaries[i].host);  
-			this.querySingleNotary(Perspectives.notaries[i],ti); 
+		for(i = 0; i < Perspectives.all_notaries.length; i++) {
+			Pers_debug.d_print("main", "Sending query to notary " + Perspectives.all_notaries[i].host);  
+			this.querySingleNotary(Perspectives.all_notaries[i],ti); 
 		}
     
 		ti.timeout_id = window.setTimeout(function() { 
@@ -193,17 +209,17 @@ var Perspectives = {
 			 
 				// find out which notaries we still need a reply from 
 				var missing_replies = [];  
-				for(var i = 0; i < Perspectives.notaries.length; i++) { 
+				for(var i = 0; i < Perspectives.all_notaries.length; i++) { 
 					var found = false;
 					for(var j = 0; j < ti.partial_query_results.length; j++) { 
-						if(Perspectives.notaries[i].host == 
+						if(Perspectives.all_notaries[i].host == 
 								ti.partial_query_results[j].server) { 
 							found = true; 
 							break; 
 						}
 					} 
 					if(!found) { 
-						missing_replies.push(Perspectives.notaries[i])
+						missing_replies.push(Perspectives.all_notaries[i])
 					} 
 				} 
 
@@ -223,7 +239,7 @@ var Perspectives = {
 					// reset the timeout, incrementing the count of the number
 					// of timeouts we have seen  
 					for(var i = 0; i < missing_replies.length; i++) { 
-						this.querySingleNotary(Perspectives.notaries[i],ti); 
+						this.querySingleNotary(Perspectives.all_notaries[i],ti); 
 					}
     
 					ti.timeout_id = window.setTimeout(function() { 
@@ -287,8 +303,8 @@ var Perspectives = {
   					 
 					var num_replies = ti.partial_query_results.length;
 					Pers_debug.d_print("query", "num_replies = " + num_replies + 
-								" total = " + Perspectives.notaries.length); 
-					if(num_replies == Perspectives.notaries.length) { 
+								" total = " + Perspectives.all_notaries.length); 
+					if(num_replies == Perspectives.all_notaries.length) { 
 						Pers_debug.d_print("query","got all server replies"); 	
 						window.clearTimeout(ti.timeout_id);
 						Perspectives.notaryQueriesComplete(ti);
@@ -315,7 +331,7 @@ var Perspectives = {
 			var max_stale_sec = 2 * 24 * 3600; 
 			var q_thresh = Perspectives.root_prefs.
 						getIntPref("perspectives.quorum_thresh") / 100;
-			var q_required = Math.round(this.notaries.length * q_thresh);
+			var q_required = Math.round(this.all_notaries.length * q_thresh);
 			var unixtime = Pers_util.get_unix_time(); 
 			var quorum_duration = Pers_client_policy.get_quorum_duration(test_key, 
 					server_result_list, q_required, max_stale_sec,unixtime);  
@@ -749,7 +765,7 @@ var Perspectives = {
 	initNotaries: function(){
 		try { 
 			Pers_debug.d_print("main", "\nPerspectives Initialization\n");
- 			Perspectives.notaries = Pers_util.loadNotaryListFromURI("chrome://perspectives/content/http_notary_list.txt"); 
+ 			Perspectives.default_notaries = Pers_util.loadNotaryListFromURI("chrome://perspectives/content/http_notary_list.txt"); 
         		Pers_debug.d_print("main", Perspectives.notaries); 	
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
 			getBrowser().addProgressListener(Perspectives.notaryListener, 

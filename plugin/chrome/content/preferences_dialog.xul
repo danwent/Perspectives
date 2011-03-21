@@ -6,8 +6,9 @@
 	title          = "Perspectives Preferences"
 	xmlns          = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	buttons        = ","
-	onload         = "Pers_pref.load_preferences()" >
-
+	onload         = "Pers_pref.load_preferences()" 
+	ondialogaccept = "return Pers_pref.save_button_clicked();"
+>
 <prefpane id="perspective-main-prefpane"> 
 <preferences> 
   <preference 
@@ -42,9 +43,23 @@
     id="whitelist"
     name="perspectives.whitelist"
     type="string"/>
+  <preference 
+    id="additional_notary_list"
+    name="perspectives.additional_notary_list"
+    type="string"/>
 </preferences>
 
 <dialogheader title="Perspectives" />
+
+<tabbox id="tablist"> 
+ <tabs> 
+  <tab label="Security"/> 
+  <tab label="Notary Servers"/> 
+ </tabs>
+ <tabpanels> 
+  <tabpanel id="securitytab"> 
+
+  <vbox>
   <groupbox > 
     <caption label="&SecuritySettings;" style="font-weight: bold"/>
     <menulist id="secset"  
@@ -68,7 +83,6 @@
       <textbox preference="quorum-duration" id="quorum-duration-text" size="4" />
     </hbox> 
   </groupbox> 
-  <vbox>
   <groupbox>
     <caption  label="&OverridingFirefoxSecurityErrors;" style="font-weight: bold"/>
     <checkbox label="&AllowPerspectivestoautomaticallyoverridesecurityerrors;" 
@@ -79,6 +93,13 @@
       <textbox preference="whitelist" id="whitelist" size="40" />
   </groupbox>
 
+  </vbox>
+  <spacer flex="1"/>
+</tabpanel>
+
+<tabpanel id="notarytab"> 
+
+<vbox>  
   <groupbox>
     <caption label="&WhentoContactNotaries;" style="font-weight: bold"/>
     <radiogroup preference="check-good">
@@ -88,15 +109,24 @@
    <checkbox
       label="&AlwaysasktheuserbeforecontactingNotaries;" 
       preference="require-user-permission"/> 
+  </groupbox>
+  
+  <groupbox> 
+    <caption label="Additional Notaries" style="font-weight: bold"/>
+    <textbox id="additional_notary_list" multiline="true" rows="10" cols="70" preference="additional_notary_list" /> 
   </groupbox> 
-  </vbox>
-  <spacer flex="1"/>
+</vbox> 
+
+</tabpanel> 
+</tabpanels> 
+</tabbox> 
 <hbox> 
-  <button label = "&OK;" onclick="acceptDialog(); window.close()"/>
+  <button label = "&OK;" onclick="acceptDialog()"/>
 </hbox>
 
 </prefpane>
 
 <script type = "application/x-javascript" src="preferences_dialog.js" ></script>
+<script type = "application/x-javascript" src="common.js" ></script>
 
 </prefwindow> 

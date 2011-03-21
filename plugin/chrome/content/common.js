@@ -54,7 +54,11 @@ var Pers_util = {
 	},
 
 	loadNotaryListFromURI: function(uri) { 
-		var start_arr = this.readFileFromURI(uri).split("\n"); 
+		return this.loadNotaryListFromString(this.readFileFromURI(uri));
+	}, 
+ 
+	loadNotaryListFromString: function(str_data) { 
+		var start_arr = str_data.split("\n"); 
 		var filtered_arr = []; 
 		for(var i = 0; i < start_arr.length; i++) { 
         		if (start_arr[i].length > 0 && start_arr[i][0] != "#")
@@ -63,13 +67,13 @@ var Pers_util = {
        		var i = 0;
 		var notary_list = [];  
         	while (i < filtered_arr.length) {  
-
-            		var notary_server = { "host" : filtered_arr[i] }; 
+			var host = filtered_arr[i]; 
+            		var notary_server = { "host" : host }; 
             		i += 1;
 
             		if (i >= filtered_arr.length || filtered_arr[i].indexOf("BEGIN PUBLIC KEY") === -1) { 
-                		alert("Perspectives: invalid notary_list.txt file: " + filtered_arr[i]); 
-                		return; 
+                		throw("Error parsing notary entry for '" + host + "'" + 
+					". Could not fine 'BEGIN PUBLIC KEY' line."); 
             		}
             		i += 1;
 
@@ -77,6 +81,10 @@ var Pers_util = {
             		while (i < filtered_arr.length && filtered_arr[i].indexOf("END PUBLIC KEY") === -1) { 
                 		key += filtered_arr[i]; 
                 		i += 1;
+				if(i == filtered_arr.length) { 
+					throw("Error parsing notary entry for '" + host + "'" + 
+						". No 'END PUBLIC KEY' line found."); 
+				}
             		}
 
             		i += 1; // consume the 'END PUBLIC KEY' line

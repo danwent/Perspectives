@@ -32,6 +32,18 @@ var Pers_pref = {
 		}
 
 	},
+
+        save_button_clicked: function() {
+	   try {  
+		var add_list = document.getElementById("additional_notary_list");
+		var l = Pers_util.loadNotaryListFromString(add_list.value); 
+		window.close()
+		return true; 
+	   } catch (e) { 
+		alert("Perspectives Error: " + e);
+		return false;  
+	   } 
+	}, 
   
 	load_preferences: function(){
 		Pers_pref.security_class_change();  

@@ -35,7 +35,6 @@
       <menuseparator/>
 <!--      <menuitem label="Refresh All Notary Data"   oncommand="requery()"/> --> 
       <menuitem label="Preferences" oncommand="Pers_statusbar.open_preferences_dialog()"/>
-      <menuitem label="View Notary List" oncommand="Pers_statusbar.openNotaries()"/>
       <menuitem label="View Certificate Store" oncommand="Pers_statusbar.openCertificates()"/>
       <menuitem label="Help" oncommand="Pers_statusbar.openHelp()"/>
     </menupopup>
@@ -52,7 +51,6 @@
       			<menuitem label="Add to Whitelist"   oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
       			<menuseparator/>
       			<menuitem label="Preferences" oncommand="Pers_statusbar.open_preferences_dialog()"/>
-      			<menuitem label="View Notary List" oncommand="Pers_statusbar.openNotaries()"/>
       			<menuitem label="View Certificate Store" oncommand="Pers_statusbar.openCertificates()"/>
       			<menuitem label="Help" oncommand="Pers_statusbar.openHelp()"/>
 		</menupopup> 
@@ -68,7 +66,6 @@
       			<menuitem label="Add to Whitelist"   oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
       			<menuseparator/>
       			<menuitem label="Preferences" oncommand="Pers_statusbar.open_preferences_dialog()"/>
-      			<menuitem label="View Notary List" oncommand="Pers_statusbar.openNotaries()"/>
       			<menuitem label="View Certificate Store" oncommand="Pers_statusbar.openCertificates()"/>
       			<menuitem label="Help" oncommand="Pers_statusbar.openHelp()"/>
 		</menupopup> 

@@ -47,13 +47,15 @@
     id="additional_notary_list"
     name="perspectives.additional_notary_list"
     type="string"/>
+  <preference 
+    id="use-default-notary-list"
+    name="perspectives.use_default_notary_list"
+    type="bool"/>
 </preferences>
-
-<dialogheader title="Perspectives" />
 
 <tabbox id="tablist"> 
  <tabs> 
-  <tab label="Security"/> 
+  <tab label="Certificate Validation"/> 
   <tab label="Notary Servers"/> 
  </tabs>
  <tabpanels> 
@@ -112,8 +114,13 @@
   </groupbox>
   
   <groupbox> 
-    <caption label="Additional Notaries" style="font-weight: bold"/>
-    <textbox id="additional_notary_list" multiline="true" rows="10" cols="70" preference="additional_notary_list" /> 
+    <caption label="Default Notary Servers" style="font-weight: bold"/>
+    <textbox id="default_notary_list" multiline="true" rows="8" cols="70" readonly="true" /> 
+    <checkbox label="Use default notary server list." preference="use-default-notary-list"/>
+  </groupbox> 
+  <groupbox> 
+    <caption label="Additional Notary Servers" style="font-weight: bold"/>
+    <textbox id="additional_notary_list" multiline="true" rows="8" cols="70" preference="additional_notary_list" /> 
   </groupbox> 
 </vbox> 
 

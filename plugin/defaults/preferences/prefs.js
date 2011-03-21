@@ -14,4 +14,6 @@ pref("perspectives.trust_https_with_weak_consistency", true);
 pref("perspectives.max_cache_age_sec", 10000);
 pref("perspectives.whitelist", "");
 pref("perspectives.prompt_update_all_https_setting", true);
-pref("perspectives.additional_notary_list", ""); 
+pref("perspectives.additional_notary_list", "");
+pref("perspectives.use_default_notary_list",true); 
+ 

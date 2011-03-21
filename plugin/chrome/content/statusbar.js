@@ -87,12 +87,6 @@ var Pers_statusbar = {
 			"Certificate Manager");
 	},
 
-	//Should open new window because the dialog prevents them from seeing it
-	openNotaries: function(){
-		openDialog("chrome://perspectives/content/http_notary_list.txt", 
-			"", "width=600,height=600,resizable=yes");
-	},
-
 	openHelp: function(){
 		openDialog("chrome://perspectives_main/content/help.html","",
 			"width=600,height=600,resizable=yes");

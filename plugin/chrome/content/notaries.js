@@ -143,14 +143,19 @@ var Perspectives = {
 	},
 
 	getNotaryList: function() { 
-		var additional_notaries = []; 
+		var all_notaries = []; 
 		try {
 			var list_txt = Perspectives.root_prefs.getCharPref("perspectives.additional_notary_list");
 			additional_notaries = Pers_util.loadNotaryListFromString(list_txt); 
+			all_notaries = all_notaries.concat(additional_notaries); 
 		} catch(e) { 
 			Pers_debug.d_print("error", "Error parsing additional notaries: " + e); 
 		} 		
-		return Perspectives.default_notaries.concat(additional_notaries); 
+		var use_default_notaries = Perspectives.root_prefs.getBoolPref("perspectives.use_default_notary_list"); 
+		if(use_default_notaries) { 
+			all_notaries = all_notaries.concat(Perspectives.default_notaries); 
+		} 
+		return all_notaries; 
 	}, 
 
 
@@ -165,10 +170,6 @@ var Perspectives = {
 				"Query already in progress for '" + ti.uri.host + "' not querying again"); 
 			return; 
 		}
- 
-		// make sure we're using the most recent notary list
-		Perspectives.all_notaries = this.getNotaryList(); 
-
  
 		// send a request to each notary
 		ti.partial_query_results = []; 
@@ -518,7 +519,15 @@ var Perspectives = {
 				ti.reason_str = text;
 				return; 
 			} 
-    
+   
+
+			// make sure we're using the most recent notary list
+			Perspectives.all_notaries = this.getNotaryList(); 
+			if(Perspectives.all_notaries.length == 0) { 
+				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, "List of notary servers is empty."); 
+				return; 
+			} 
+ 
 			Pers_debug.d_print("main", "Contacting notaries\n"); 
 			// this call is asynchronous.  after hearing from the 
 			// notaries, the logic picks up again with the function 

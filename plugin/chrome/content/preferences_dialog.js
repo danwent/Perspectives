@@ -13,7 +13,7 @@ var Pers_pref = {
 		document.getElementById("quorum-duration").value = du;
 	},
 
-	security_class_change: function() { 
+	security_class_change: function() {
 		var setting  = document.getElementById("secset").value;
 
 		switch (parseInt(setting)){
@@ -46,7 +46,13 @@ var Pers_pref = {
 	}, 
   
 	load_preferences: function(){
-		Pers_pref.security_class_change();  
+		try { 
+			Pers_pref.security_class_change(); 
+			var default_notary_text = Pers_util.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");  
+			document.getElementById("default_notary_list").value = default_notary_text;
+		} catch(e) { 
+			alert("Perspectives Error: " + e); 
+		} 
 	}
 }
 

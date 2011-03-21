@@ -48,7 +48,7 @@ var Pers_gen = {
 
 	get_svg_graph: function(service_id, server_result_list, len_days,cur_secs, 
 							browser_key, max_stale_sec) {
-		var x_offset = 200, y_offset = 40; 
+		var x_offset = 230, y_offset = 40; 
 		var width = 700;
 		var y_cord = y_offset; 
 		var pixels_per_day = (width - x_offset - 20) / len_days; 

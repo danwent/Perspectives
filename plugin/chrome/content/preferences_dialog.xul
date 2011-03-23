@@ -51,6 +51,10 @@
     id="use-default-notary-list"
     name="perspectives.use_default_notary_list"
     type="bool"/>
+  <preference 
+    id="enable-default-list-auto-update"
+    name="perspectives.enable_default_list_auto_update"
+    type="bool"/>
 </preferences>
 
 <tabbox id="tablist"> 
@@ -117,6 +121,8 @@
     <caption label="Default Notary Servers" style="font-weight: bold"/>
     <textbox id="default_notary_list" multiline="true" rows="8" cols="70" readonly="true" /> 
     <checkbox label="Use default notary server list." preference="use-default-notary-list"/>
+    <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()" 
+	       id="enable_default_list_auto_update" preference="enable-default-list-auto-update"/>
   </groupbox> 
   <groupbox> 
     <caption label="Additional Notary Servers" style="font-weight: bold"/>
@@ -135,5 +141,6 @@
 
 <script type = "application/x-javascript" src="preferences_dialog.js" ></script>
 <script type = "application/x-javascript" src="common.js" ></script>
+<script type="application/x-javascript" src="base64.js" />
 
 </prefwindow> 

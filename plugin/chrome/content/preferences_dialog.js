@@ -43,12 +43,29 @@ var Pers_pref = {
 		alert("Perspectives Error: " + e);
 		return false;  
 	   } 
-	}, 
+	},
+
+	auto_update_changed: function() {
+		try {
+			// Preferences are not necessarily updated at this point, so determine which 
+			// list to show based on whether the checkbox is selected.  
+			var auto_update = document.getElementById("enable_default_list_auto_update").checked;
+			if(auto_update) { 
+				Pers_util.update_default_notary_list_from_web(this.root_prefs);
+			} else {  
+				Pers_util.update_default_notary_list_from_file(this.root_prefs); 
+			} 
+			this.load_preferences(); 
+		} catch(e) { 
+			alert("Perspectives Error: " + e); 
+		}
+
+	},  
   
 	load_preferences: function(){
 		try { 
 			Pers_pref.security_class_change(); 
-			var default_notary_text = Pers_util.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");  
+			var default_notary_text = this.root_prefs.getCharPref("perspectives.default_notary_list");
 			document.getElementById("default_notary_list").value = default_notary_text;
 		} catch(e) { 
 			alert("Perspectives Error: " + e); 

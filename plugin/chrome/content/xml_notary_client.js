@@ -31,7 +31,7 @@ var Pers_xml = {
 			return null; 
 		} 
 		var sig_base64 = reply.attributes.getNamedItem("sig").value; 
-		res.signature = Pers_xml.add_der_signature_header(sig_base64); 
+		res.signature = Pers_util.add_der_signature_header(sig_base64); 
 		res.obs     = new Array();
 		for (var j = 0; j < reply.childNodes.length; j++){
 			var keynode = reply.childNodes[j];
@@ -58,26 +58,6 @@ var Pers_xml = {
         }
 		return res; 
 	},
-
-	// Mozilla's verification API assumes a DER header describing the 
-	// signature's cryptographic parameters.  The openssl-generated signatures 
-	// returned by the notary server do not have this.  Since the header is the
-	// same for all notary responses, we just statically prepend the data 
-	// here, and re-encode the signature in base64.  
-	// see firefox-v2/xp_src/moz_crypto.cpp for details of header format
-	add_der_signature_header: function(sig_base64) { 
-
-		var base_str = Pers_Base64.decode(sig_base64); 
-		var der_header_md5 = [ "0x30", "0x81", "0xbf", "0x30", "0x0d", "0x06", 
-							"0x09", "0x2a", "0x86", "0x48", "0x86", "0xf7", 
-							"0x0d", "0x01", "0x01", "0x04", "0x05", "0x00", 
-							"0x03", "0x81", "0xad", "0x00"];
-		var header_str = '';
-		for (i = 0; i < der_header_md5.length; i++) { 
-			header_str += String.fromCharCode(parseInt(der_header_md5[i],16));
-		}
-		return Pers_Base64.encode(header_str + base_str) ; 
-	}, 
 
 
 	// Dumps all data in a server response to a string for easy debugging

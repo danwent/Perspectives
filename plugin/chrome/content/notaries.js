@@ -4,6 +4,7 @@ var Perspectives = {
 	NUM_TRIES_PER_SERVER: 2, // number of times we query a server before giving up 
 	strbundle : null, // this isn't loaded when things are intialized
 
+
 	// FIXME: these regexes should be less generous
 	nonrouted_ips : [ "^192\.168\.", "^10.", "^172\.1[6-9]\.", 
 			"^172\.2[0-9]\.", "172\.3[0-1]\.", "^169\.254\.", 
@@ -13,7 +14,6 @@ var Perspectives = {
 	// key this list is populated by fillNotaryList() based on a file shipped with the 
 	// extension
 	all_notaries : [],  
-	default_notaries : [], 
 
 	// Data
 	root_prefs : Components.classes["@mozilla.org/preferences-service;1"]
@@ -152,8 +152,11 @@ var Perspectives = {
 			Pers_debug.d_print("error", "Error parsing additional notaries: " + e); 
 		} 		
 		var use_default_notaries = Perspectives.root_prefs.getBoolPref("perspectives.use_default_notary_list"); 
-		if(use_default_notaries) { 
-			all_notaries = all_notaries.concat(Perspectives.default_notaries); 
+		if(use_default_notaries) {
+ 
+			default_notaries = Pers_util.loadNotaryListFromString(
+						this.root_prefs.getCharPref("perspectives.default_notary_list")); 
+			all_notaries = all_notaries.concat(default_notaries); 
 		} 
 		return all_notaries; 
 	}, 
@@ -271,7 +274,6 @@ var Perspectives = {
 					var verifier = 
 						Cc["@mozilla.org/security/datasignatureverifier;1"].
 							createInstance(Ci.nsIDataSignatureVerifier);
-					var sig = server_result.signature; 		  
 					var result = verifier.verifyData(bin_result, 
 							server_result.signature, notary_server.public_key);
 					if(!result) { 
@@ -772,9 +774,15 @@ var Perspectives = {
 	},
 
 	initNotaries: function(){
-		try { 
+		try {
 			Pers_debug.d_print("main", "\nPerspectives Initialization\n");
- 			Perspectives.default_notaries = Pers_util.loadNotaryListFromURI("chrome://perspectives/content/http_notary_list.txt"); 
+
+			var auto_update = this.root_prefs.getBoolPref("perspectives.enable_default_list_auto_update");
+			if(auto_update) { 
+				Pers_util.update_default_notary_list_from_web(this.root_prefs);
+			} else {  
+				Pers_util.update_default_notary_list_from_file(this.root_prefs); 
+			} 
         		Pers_debug.d_print("main", Perspectives.notaries); 	
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
 			getBrowser().addProgressListener(Perspectives.notaryListener, 

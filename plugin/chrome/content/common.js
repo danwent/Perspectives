@@ -130,6 +130,58 @@ var Pers_util = {
     			result += indent + "'" + property + "' : " + txt + ",\n";
   		}
   		return result.replace(/,\n$/, "");
-	}
- 
+	}, 
+	
+	// Mozilla's verification API assumes a DER header describing the 
+	// signature's cryptographic parameters.  The openssl-generated signatures 
+	// returned by the notary server do not have this.  Since the header is the
+	// same for all notary responses, we just statically prepend the data 
+	// here, and re-encode the signature in base64.  
+	// see firefox-v2/xp_src/moz_crypto.cpp for details of header format
+	add_der_signature_header: function(sig_base64) { 
+
+		var base_str = Pers_Base64.decode(sig_base64); 
+		var der_header_md5 = [ "0x30", "0x81", "0xbf", "0x30", "0x0d", "0x06", 
+							"0x09", "0x2a", "0x86", "0x48", "0x86", "0xf7", 
+							"0x0d", "0x01", "0x01", "0x04", "0x05", "0x00", 
+							"0x03", "0x81", "0xad", "0x00"];
+		var header_str = '';
+		for (i = 0; i < der_header_md5.length; i++) { 
+			header_str += String.fromCharCode(parseInt(der_header_md5[i],16));
+		}
+		return Pers_Base64.encode(header_str + base_str) ; 
+	}, 
+
+	
+	update_public_key : "MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAF16BJZAsESZnEq6MeCYsntL1233FVdz/6dNXptTwoKACOcnoae+/S5d9Ms2kmQMTMWkW5NdRV2/iKIdQx14Y7GZojPYvL85ZjwlTXRblqwoxnwdE+Vd2V5itxV0Okcu2+E66tvtr6aeBVt7hwtowyQPgiWz2rDgV6RsohbetiaHUMZKDdoQFzu/5CAW+7QtbFoJjNMqez6pz80xFWrIJzRC+fXlues1Af37+cCAwEAAQ==", 
+	update_list_uri : "http://www.networknotary.org/http_notary_list.txt", 
+	update_sig_uri : "http://www.networknotary.org/http_notary_list.sig", 
+	update_default_notary_list_from_web: function(root_prefs) {
+		try { 
+		 
+			var notary_list_data = Pers_util.readFileFromURI(this.update_list_uri); 
+			var sig_no_header = Pers_util.readFileFromURI(this.update_sig_uri); 
+			var sig = this.add_der_signature_header(sig_no_header); 
+			var verifier = Components.classes["@mozilla.org/security/datasignatureverifier;1"].
+							createInstance(Components.interfaces.nsIDataSignatureVerifier);
+			var result = verifier.verifyData(notary_list_data, sig, this.update_public_key);  
+			if(!result) { 
+        			Pers_debug.d_print("error", "Signature verification failed on notary list update");
+				return; 	
+			}
+			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
+		} catch(e) { 
+			alert("Unexpected error updating default notary_list from web: " + e); 
+		} 
+
+	}, 
+
+	update_default_notary_list_from_file : function(root_prefs) { 
+		try { 
+			var notary_list_data = this.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");  
+			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
+		} catch(e) { 
+			alert("Unexpected error updating default notary_list from web: " + e); 
+		} 
+	}  
 }

@@ -22,6 +22,7 @@
       			ondblclick="Pers_statusbar.statusbar_click(event);"
 			tooltiptext="Perspectives">
     <image id="perspective-status-image"
+      class="perspective-status-image-class"
       src="chrome://perspectives/content/default.png" 
       style="width:16px; height:16px;" 
       context="perspective-contextmenu" />
@@ -41,6 +42,33 @@
   </popupset>
  
  </statusbar>
+ 
+ <toolbarpalette id="BrowserToolbarPalette">
+ 	<toolbarbutton 	class="perspective-status"
+ 					tooltiptext="Perspectives"
+ 					id="perspectives-status-button"
+ 					type="menu"
+ 					validate="always"
+ 					label="Perspectives">
+		<!-- <image id="perspective-status-image" /> -->
+		<image 	id="perspective-button-image"
+				class="perspective-status-image-class"
+				src="chrome://perspectives/content/default.png" 
+				style="width:16px; height:16px;" />
+		<menupopup id="perspective-contextmenu-button" position="after_start">
+		  <menuitem label="View Notary Results"   oncommand="Pers_statusbar.open_results_dialog()"/>
+		  <menuitem label="Force Notary Check"   oncommand="Pers_statusbar.force_update()"/>
+		  <menuitem label="Report Attack"   oncommand="Pers_report.report_attack()"/>
+		  <menuitem label="Add to Whitelist"   oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
+		  <menuseparator/>
+	<!--      <menuitem label="Refresh All Notary Data"   oncommand="requery()"/> --> 
+		  <menuitem label="Preferences" oncommand="Pers_statusbar.open_preferences_dialog()"/>
+		  <menuitem label="View Certificate Store" oncommand="Pers_statusbar.openCertificates()"/>
+		  <menuitem label="Help" oncommand="Pers_statusbar.openHelp()"/>
+		</menupopup>
+	</toolbarbutton>
+ </toolbarpalette>
+ 
 
  <menupopup id="menu_ToolsPopup"> 
 	<menu id="menu_pers_tools" label="Perspectives" insertbefore="javascriptConsole"> 

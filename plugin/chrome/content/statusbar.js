@@ -67,16 +67,14 @@ var Pers_statusbar = {
 		}
 
 		var imgList = document.querySelectorAll("image.perspective-status-image-class");
-
-		var t = document.getElementById("perspective-status");
-		if(!t || !imgList){ //happens when called from a dialog
+		
+		if(!imgList){ //happens when called from a dialog
 			imgList = window.opener.document.
 				querySelectorAll("image.perspective-status-image-class");
-			t = window.opener.document.getElementById("perspective-status");
 		}
 
-		t.setAttribute("tooltiptext", tooltip);
 		for (var j = 0; j < imgList.length; ++j) {
+			imgList[j].parentNode.setAttribute("tooltiptext", tooltip); 
 			switch(state){
 			case Pers_statusbar.STATE_SEC:
 				Pers_debug.d_print("main", "Secure Status\n");
@@ -99,9 +97,9 @@ var Pers_statusbar = {
 				imgList[j].setAttribute("src", "chrome://perspectives/content/error.png");
 				continue;
 			}
-			Pers_debug.d_print("main", "changing tooltip to: " + tooltip + "\n"); 
-			return true;
 		}
+		Pers_debug.d_print("main", "changing tooltip to: " + tooltip + "\n"); 
+		return true;
 	},
 
 	openCertificates: function(){

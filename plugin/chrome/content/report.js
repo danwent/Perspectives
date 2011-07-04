@@ -19,7 +19,7 @@
 
 var Pers_report = { 
 
-     REPORT_URI : "https://www.networknotary.org/report.php", 
+     REPORT_URI : "https://report.networknotary.org/report.php", 
 
      // An attack may have happened due to an DNS attack.  Thus, it is 
      // useful to gather this data.  

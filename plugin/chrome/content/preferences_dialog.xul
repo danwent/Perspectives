@@ -121,8 +121,9 @@
     <caption label="Default Notary Servers" style="font-weight: bold"/>
     <textbox id="default_notary_list" multiline="true" rows="8" cols="70" readonly="true" /> 
     <checkbox label="Use default notary server list." preference="use-default-notary-list"/>
-    <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()" 
+<!--    <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()" 
 	       id="enable_default_list_auto_update" preference="enable-default-list-auto-update"/>
+-->
   </groupbox> 
   <groupbox> 
     <caption label="Additional Notary Servers" style="font-weight: bold"/>

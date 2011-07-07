@@ -29,7 +29,7 @@ var Pers_notify = {
 	TYPE_WHITELIST : 3, 
 	TYPE_FAILED : 4, 
 	TYPE_NEEDS_PERMISSION : 5,  
-	TYPE_NO_REPLY : 6, 
+	TYPE_NO_REPLIES : 6, 
 
 	do_notify : function(ti, type) {
 		if(ti.last_banner_type == type) { 
@@ -47,11 +47,11 @@ var Pers_notify = {
 				this.notifyFailed(ti.browser); break; 
 			case this.TYPE_NEEDS_PERMISSION : 
 				this.notifyNeedsPermission(ti); break; 
-			case this.TYPE_NO_REPLY : 
-				this.notifyNoReply(ti.browser); break; 
+			case this.TYPE_NO_REPLIES : 
+				this.notifyNoReplies(ti.browser); break; 
 			default: 
 				Pers_debug.d_print("error", "Unknown notify type: " + type); 
-		} 
+		}
 	}, 
 
 	// generic notify function used by all other notify functions

@@ -96,7 +96,7 @@ var Pers_util = {
 
             		if (i >= filtered_arr.length || filtered_arr[i].indexOf("BEGIN PUBLIC KEY") === -1) { 
                 		throw("Error parsing notary entry for '" + host + "'" + 
-					". Could not fine 'BEGIN PUBLIC KEY' line."); 
+					". Could not find 'BEGIN PUBLIC KEY' line."); 
             		}
             		i += 1;
 

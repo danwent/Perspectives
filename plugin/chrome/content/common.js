@@ -79,8 +79,13 @@ var Pers_util = {
 		var start_arr = str_data.split("\n"); 
 		var filtered_arr = []; 
 		for(var i = 0; i < start_arr.length; i++) { 
-        		if (start_arr[i].length > 0 && start_arr[i][0] != "#")
-        			filtered_arr.push(start_arr[i]); 
+        		if (start_arr[i].length > 0 && start_arr[i][0] != "#") {
+        			// ignore lines that contain only whitespace -
+        			// makes the file easier to parse cross-platform
+        			if (/^\s+$/g.test(start_arr[i]) === false) {
+        				filtered_arr.push(start_arr[i]);
+        			}
+        		}
 		} 
        		var i = 0;
 		var notary_list = [];  

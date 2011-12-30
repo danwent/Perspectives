@@ -93,5 +93,22 @@ var Pers_results = {
 		}  
   
 		return true;
+	},
+
+	parse_keypress: function(event){
+
+		if (event.keyCode) {
+
+			var key = event.keyCode;
+			var ESC_KEYCODE = 27;
+
+			// let the Esc key close the window
+			if (key === ESC_KEYCODE) {
+				window.close();
+			}
+		}
+		return true;
 	}
+
+
 }

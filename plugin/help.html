@@ -5,6 +5,33 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title>Perspectives Help</title>
+
+<script type="text/javascript">
+
+	function parse_keypress(event){
+
+		var key = (event.keyCode ? event.keyCode : event.which);
+		if (key) {
+
+			var ESC_KEYCODE = 27;
+
+			// let the Esc key close the window
+			if (key === ESC_KEYCODE) {
+				window.close();
+			}
+		}
+		return true;
+	}
+
+	if (window.addEventListener) {
+		window.addEventListener("keypress", parse_keypress, false);
+	}
+	else if (window.attachEvent) {
+		window.attachEvent("onkeypress", parse_keypress)
+	}
+	// TODO: do we need window.keypress = parse_keypress(event); ?
+
+</script>
 </head>
 
 <body>

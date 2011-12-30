@@ -97,9 +97,9 @@ var Pers_results = {
 
 	parse_keypress: function(event){
 
-		if (event.keyCode) {
+		var key = (event.keyCode ? event.keyCode : event.which);
+		if (key) {
 
-			var key = event.keyCode;
 			var ESC_KEYCODE = 27;
 
 			// let the Esc key close the window

@@ -34,10 +34,10 @@
 		<em:name>Perspectives</em:name>
     		<em:description>Securely bypasses Firefox HTTPS security 
 		 errors by verifying certificates using a collection of 
-		 Network Notaries.  See http://www.cs.cmu.edu/~perspectives/ 
+		 Network Notaries.  See http://www.perspectives-project.org 
 		</em:description>
     		<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
-    		<em:homepageURL>http://www.cs.cmu.edu/~perspectives/</em:homepageURL>
+    		<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
 	 </Description> 
     </em:localized> 
     <em:localized> 
@@ -46,7 +46,7 @@
 	 <em:locale>zh-CN</em:locale> 
     		<em:description>一种验证安全编码站点并跳过Firefox安全警告的安全方法 </em:description>
     		<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
-    		<em:homepageURL>http://www.cs.cmu.edu/~perspectives/
+    		<em:homepageURL>http://www.perspectives-project.org
 		</em:homepageURL>
 	 </Description> 
     </em:localized>

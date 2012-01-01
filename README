@@ -1,6 +1,6 @@
 This directory includes the code for the Perspectives Firefox client.  
 
-For more information on Perspectives, see: http://www.cs.cmu.edu/~perspectives
+For more information on Perspectives, see: http://www.perspectives-project.org
 
 To build, just type "make" (assuming of course you have make installed!)
 

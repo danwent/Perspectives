@@ -6,7 +6,9 @@
 	title          = "Perspectives Results"
 	xmlns          = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	buttons        = ","
-	onload         = "Pers_results.load_results_dialog()">
+	onload         = "Pers_results.load_results_dialog()"
+  onkeypress     = "Pers_results.parse_keypress(event)"
+>
 
 <vbox> 
   <groupbox minheight="235">

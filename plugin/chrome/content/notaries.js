@@ -18,7 +18,7 @@
 
 var Perspectives = {
  	MY_ID: "perspectives@cmu.edu",
-	TIMEOUT_SEC: 3,  // this is timeout for each query to the server
+	TIMEOUT_SEC: 5,  // this is timeout for each query to the server
 	NUM_TRIES_PER_SERVER: 2, // number of times we query a server before giving up 
 	strbundle : null, // this isn't loaded when things are intialized
 
@@ -304,7 +304,8 @@ var Perspectives = {
 					var result_list = ti.partial_query_results; 
 					if(result_list == null) { 
 						Pers_debug.d_print("query",
-							"Query reply for '" + ti.service_id + 
+							"Query reply from '" + notary_server.host + 
+							"' for '" + ti.service_id + 
 								"' has no query result data"); 
 						return; 
 					} 

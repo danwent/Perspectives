@@ -91,6 +91,7 @@ var Pers_xml = {
 				var end_d = new Date(1000 * end_t).toDateString();  
 				out += "start:\t" + start_t + " - " + start_d + "\n"; 
 				out += "end:  \t" + end_t + " - " + end_d + "\n"; 
+				out += "(" + parseInt((end_t - start_t) / (3600 * 24)) + " days)\n\n";
 			}   
 		} 
 		if(server_result.obs.length == 0) { 

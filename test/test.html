@@ -43,6 +43,7 @@ function quorum_basics() {
 
 
  var key = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+ var key2 = "bd:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
  var cur_time = 10000;
  var max_stale_sec = 200;
 
@@ -95,6 +96,20 @@ function quorum_basics() {
           server_result_list, 1, max_stale_sec,
         cur_time + max_stale_sec + 1);
  assert((quorum_duration == -1), "Being over the quorum duration time limit fails");
+
+
+ quorum_duration = Pers_client_policy.get_quorum_duration(key2,
+          server_result_list, 1, max_stale_sec,cur_time);
+ assert((quorum_duration == -1), "Looking for a key that has no results fails");
+
+
+ var empty_result_list = [];
+
+  quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          empty_result_list, 1, max_stale_sec,cur_time);
+ assert((quorum_duration == -1), "Passing an empty results list fails");
+
+
 
  write_string("Finished");
 } 

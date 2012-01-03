@@ -22,50 +22,81 @@ function write_string(str) {
    node.appendChild(child); 
 } 
 
+function write_string_to_other_element(str, elname) {
+   var node = document.getElementById('results');
+   var child = document.createElement(elname);
+   child.innerHTML = str;
+   node.appendChild(child);
+}
+
 function assert(test, case_name) { 
 	if(test) {
-	  write_string(case_name + " : <font color='green'>passed</font>");
+	  write_string_to_other_element(case_name + " : <font color='green'>passed</font>", 'li');
   }
   else {
-	  write_string(case_name + " : <b><font color='red'>FAILED</font></b>");
+	  write_string_to_other_element(case_name + " : <b><font color='red'>FAILED</font></b>", 'li');
   }
 } 
 
-function test1() {
- write_string("Starting test1...");   
+function quorum_basics() {
+ write_string("Starting basic quorum tests...");
+
+
+ var key = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+ var cur_time = 10000;
+ var max_stale_sec = 200;
+
+ var key_start_diff = 1000;
+ var key_start_time = (cur_time - key_start_diff);
+
  var server_result_list = [ 
    { "server" : "204.255.124.41:8080", 
-     "obs" : [  { "key" : "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00",
-		  "timestamps" : [ { "start" : 0 , "end" : 10000  } ] } ] 
+     "obs" : [  { "key" : key,
+		  "timestamps" : [ { "start" : 0 , "end" : cur_time  } ] } ]
    }, 
-   { "server" : "128.2.185.85:8080", 
-     "obs" : [  { "key" : "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00", 
-		  "timestamps" : [ { "start" : 9000 , "end" : 10000  } ] } ] 
+   { "server" : "128.2.185.85:8080",
+     "obs" : [  { "key" : key,
+		  "timestamps" : [ { "start" : key_start_time , "end" : cur_time  } ] } ]
    } 
  ];
 
- var key = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00"; 
- var cur_time = 10000;  
- var max_stale_sec = 200;
 
- var quorum_duration = Pers_client_policy.get_quorum_duration(key,
+
+ var quorum_duration = 0;
+
+
+ quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list,	1, max_stale_sec,cur_time);
- assert((quorum_duration == 10000), "case 1");
+ assert((quorum_duration == cur_time + 1), "Requiring smaller quorum gets us longer duration");
+
 
  var quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list,	2, max_stale_sec,cur_time);
- assert((quorum_duration == 1000), "case 2");
+ assert((quorum_duration == (cur_time - key_start_time) + 1), "Requiring larger quorum gets us shorter duration");
 
- var quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list, -1, max_stale_sec,cur_time);
- assert((quorum_duration == -1), "case 3");
 
- var quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list,	-1, max_stale_sec,
-				cur_time + max_stale_sec + 1);
- assert((quorum_duration == -1), "case 4");
+ quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          server_result_list, 1, max_stale_sec, cur_time);
+ assert((quorum_duration > (cur_time - max_stale_sec)), "Getting enough quorum voters passes");
 
- write_string("Finished test1");   
+
+ quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          server_result_list, 10, max_stale_sec, cur_time);
+ assert((quorum_duration == -1), "Getting fewer quorum voters than required fails");
+
+
+ quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          server_result_list,	1, max_stale_sec,
+				cur_time + max_stale_sec);
+ assert((quorum_duration == (cur_time + max_stale_sec) + 1), "Being at the edge of the quorum duration time limit passes");
+
+
+ quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          server_result_list, 1, max_stale_sec,
+        cur_time + max_stale_sec + 1);
+ assert((quorum_duration == -1), "Being over the quorum duration time limit fails");
+
+ write_string("Finished");
 } 
 
 
@@ -74,7 +105,7 @@ function test1() {
 // parameters to oldest_most_recent() in the wrong order,
 // making certain valid keys show up as not trusted.
 
-function test_oldkey() {
+function quorum_oldkey() {
 
  var keybc = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00"; //the key we're looking for
  var keybd = "bd:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
@@ -128,7 +159,7 @@ function test_oldkey() {
  ];
 
 
- write_string("Starting oldkey test...");
+ write_string("Starting oldkey quorum tests...");
  var quorum_duration = 0;
 
 
@@ -155,7 +186,7 @@ function test_oldkey() {
  assert((quorum_duration > q_duration_required),
   "4) Same as (1), but an unrelated key result ends the day before target key begins");
 
- write_string("Finished oldkey test");
+ write_string("Finished");
 }
 
 
@@ -163,8 +194,8 @@ function run_tests() {
   
   try {
     clear();  
-    test1();
-    test_oldkey();
+    quorum_basics();
+    quorum_oldkey();
   } catch(e) { 
 	alert(e); 
   } 

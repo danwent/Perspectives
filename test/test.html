@@ -22,14 +22,11 @@ function clear() {
    fail_count = 0;
 }
 
-function write_string(str) { 
-   var node = document.getElementById('results'); 
-   var child = document.createElement('p'); 
-   child.innerHTML = str; 
-   node.appendChild(child); 
+function write_string(str) {
+   write_string_to_element(str, 'p');
 } 
 
-function write_string_to_other_element(str, elname) {
+function write_string_to_element(str, elname) {
    var node = document.getElementById('results');
    var child = document.createElement(elname);
    child.innerHTML = str;
@@ -39,12 +36,12 @@ function write_string_to_other_element(str, elname) {
 function assert(test, case_name) {
   test_count++;
 	if(test) {
-	  write_string_to_other_element("[" + test_count +
+	  write_string_to_element("[" + test_count +
       "] <font color='green'>passed</font> : " + case_name, 'li');
     pass_count++;
   }
   else {
-	  write_string_to_other_element("[" + test_count +
+	  write_string_to_element("[" + test_count +
       "] <b><font color='red'>FAILED</font></b> : " + case_name, 'li');
     fail_count++;
   }

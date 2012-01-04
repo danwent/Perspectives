@@ -59,6 +59,8 @@ find_most_recent : function(server_results) {
  return most_recent_time; 
 }, 
 
+// returns the date (in seconds since the epoch) of the oldest possible valid key we should use.
+// any keys older than that won't be trusted.
 find_oldest_most_recent : function(results, stale_limit_secs,cur_time){
 	var stale_limit = cur_time - stale_limit_secs; 
 	var oldest_most_recent = cur_time + stale_limit_secs;
@@ -150,7 +152,7 @@ has_quorum_at_time : function(test_key, results, quorum_size, time) {
 } , 
 
 
-
+// returns duration in seconds - i.e. days * 24 * 3600.
 get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs, unixtime) { 
 
 	if(! Pers_client_policy.check_current_consistency(test_key,results,quorum_size,
@@ -159,7 +161,7 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 		return -1; 
 	}
 	var oldest_valid_ts = unixtime; 	
-	var oldest_most_recent = Pers_client_policy.find_oldest_most_recent(results,unixtime,stale_limit_secs); 
+	var oldest_most_recent = Pers_client_policy.find_oldest_most_recent(results,stale_limit_secs,unixtime);
   	var time_changes = Pers_client_policy.get_all_key_changes(results); 
 	Pers_client_policy.sort_number_list_desc(time_changes); 
 	Pers_debug.d_print("policy", "sorted times: ", time_changes); 
@@ -172,7 +174,7 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 		}
 		if(!Pers_client_policy.has_quorum_at_time(test_key,results,quorum_size,test_time)) { 
 			Pers_debug.d_print("policy", 
-				"quorum failed for time " + test_time); 
+				"quorum failed for time " + test_time + ", key " + test_key);
 			break; 
 		}
 		oldest_valid_ts = test_time;  

@@ -66,18 +66,14 @@ function quorum_basics() {
  var quorum_duration = 0;
 
 
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list,	1, max_stale_sec,cur_time);
- assert((quorum_duration == cur_time + 1), "Requiring smaller quorum gets us longer duration");
-
-
  var quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list,	2, max_stale_sec,cur_time);
- assert((quorum_duration == (cur_time - key_start_time) + 1), "Requiring larger quorum gets us shorter duration");
+ assert((quorum_duration == (cur_time - key_start_time) + 1), "Requiring larger quorum gives a shorter duration");
 
 
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list, 1, max_stale_sec, cur_time);
+ assert((quorum_duration == cur_time + 1), "Requiring smaller quorum gives a longer duration");
  assert((quorum_duration > (cur_time - max_stale_sec)), "Getting enough quorum voters passes");
 
 

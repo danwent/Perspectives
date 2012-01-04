@@ -85,7 +85,7 @@ function quorum_basics() {
  var quorum_duration = 0;
 
 
- var quorum_duration = Pers_client_policy.get_quorum_duration(key,
+ quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list,	2, max_stale_sec,cur_time);
  assert((quorum_duration == (cur_time - key_start_time) + 1), "Requiring larger quorum gives a shorter duration");
 
@@ -120,7 +120,7 @@ function quorum_basics() {
 
  var empty_result_list = [];
 
-  quorum_duration = Pers_client_policy.get_quorum_duration(key,
+ quorum_duration = Pers_client_policy.get_quorum_duration(key,
           empty_result_list, 1, max_stale_sec,cur_time);
  assert((quorum_duration == -1), "Passing an empty results list fails");
 

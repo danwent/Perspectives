@@ -10,9 +10,16 @@
 d_print_all = true; 
 other_cache = { "debug" : "" }; // needed for common.js
 
+var test_count = 0;
+var pass_count = 0;
+var fail_count = 0;
+
 function clear() { 
    var node = document.getElementById('results'); 
-   node.innerHTML = "";  
+   node.innerHTML = "";
+   test_count = 0;
+   pass_count = 0;
+   fail_count = 0;
 }
 
 function write_string(str) { 
@@ -29,12 +36,24 @@ function write_string_to_other_element(str, elname) {
    node.appendChild(child);
 }
 
-function assert(test, case_name) { 
+function assert(test, case_name) {
+  test_count++;
 	if(test) {
-	  write_string_to_other_element(case_name + " : <font color='green'>passed</font>", 'li');
+	  write_string_to_other_element("[" + test_count +
+      "] <font color='green'>passed</font> : " + case_name, 'li');
+    pass_count++;
   }
   else {
-	  write_string_to_other_element(case_name + " : <b><font color='red'>FAILED</font></b>", 'li');
+	  write_string_to_other_element("[" + test_count +
+      "] <b><font color='red'>FAILED</font></b> : " + case_name, 'li');
+    fail_count++;
+  }
+
+  // if people are looking through the console to debug,
+  // give them some help tracing the action.
+  if (window.console != undefined) {
+        console.log("------- Finished test " +
+          test_count + ": " + case_name);
   }
 } 
 
@@ -202,13 +221,22 @@ function quorum_oldkey() {
 
 
 function run_tests() { 
+
+  // print debug info to console by default
+  Pers_debug.d_print_flags["error"] = true;
   
   try {
-    clear();  
+    clear();
     quorum_basics();
     quorum_oldkey();
+    write_string("Finished: " + pass_count + "/" + test_count + " successes, "
+      + fail_count + " failures. ");
+    if (test_count != (pass_count + fail_count)) {
+      write_line("<b>ERROR:</b> Count totals did not match!");
+    }
   } catch(e) { 
-	alert(e); 
+    alert(e);
+    write_string("<b>ERROR</b> - tests did not finish: '" + e + "'.");
   } 
 } 
 

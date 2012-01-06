@@ -4,7 +4,8 @@
 <title>Perspectives - Test cases</title>
 
 <script type="text/javascript" src="../plugin/chrome/content/common.js"></script> 
-<script type="text/javascript" src="../plugin/chrome/content/client_policy.js"></script> 
+<script type="text/javascript" src="../plugin/chrome/content/client_policy.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/notaries.js"></script>
 <script type="text/javascript"> 
 
 d_print_all = true; 
@@ -216,6 +217,109 @@ function quorum_oldkey() {
  write_string("Finished");
 }
 
+function notary_parsing() {
+
+  var pref_string_extra_notaries = "perspectives.additional_notary_list";
+  var pref_string_use_def_notary = "perspectives.use_default_notary_list";
+  var orig_extra_notaries = null;
+  var orig_use_default_notaries = null;
+
+
+  write_string("Starting notary parsing tests. <b>Note:</b> These tests require Perspectives to be installed.");
+
+
+  // ask for permission to initialize data variables,
+  // so calls to Perspectives.x properties work properly.
+  // see README for details
+  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+  Perspectives.init_data();
+
+
+  // check if Perspectives is installed and we're able to read its preferences
+  try {
+    // save preferences so we can restore state afterward
+    orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
+    orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
+  }
+  catch (e) {
+    write_string("<b>ERROR:</b> Perspectives must be installed to run these tests. Skipping notary parse tests.");
+    test_count++;
+    fail_count++;
+    return;
+  }
+
+  if (orig_extra_notaries == null || orig_use_default_notaries == null) {
+    write_string("<b>ERROR:</b> Could not read preferences from Perspectives plugin. Skipping notary parse tests.");
+    test_count++;
+    fail_count++;
+    return;
+  }
+
+
+  // set preferences to known state so we can run our tests in a controlled env
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
+
+  var notaries = "";
+  var initial_notary_count = 8; // Note: update if we change the default file
+
+  notaries = Perspectives.getNotaryList();
+  assert(notaries.length == initial_notary_count,
+    "Default notary list gets us " + initial_notary_count + " notaries ");
+
+
+  var nonsense_notary = "aaaaaaaa";
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, nonsense_notary);
+  notaries = Perspectives.getNotaryList();
+  assert(notaries.length == initial_notary_count,
+    "Trying to save a garbled notary string doesn't work.");
+
+
+
+  // TODO bad method of declaration?
+  // We need newlines after the server name and 'BEGIN PUBLIC KEY' lines
+  // for the string to parse properly
+  var notary_dupe = "perspectives1.networknotary.org:8080\n\
+-----BEGIN PUBLIC KEY-----\n\
+MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGXsegzE6E/6j4vgzi3NqGSn2dz\
+W6gRxkuAL7PB8QmRqtG9ieSQjFB6cTYvkmp7x/LtHqlr9Fa6+/mT4Ma5oKU0RpgY\
+MyfYnEk0iiNWG2fj4mRpTscHfcEJfKP13OGAYP1ZuHksTXSYsaKfIwiVKMLgQ/hA\
+FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\
+JaJ2Lw7kRVMCAwEAAQ==\
+-----END PUBLIC KEY-----";
+
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, notary_dupe);
+  notaries = Perspectives.getNotaryList();
+  assert(notaries.length == initial_notary_count,
+    "Trying to add a duplicate notary doesn't work.");
+  //FIXME - note: this currently fails. We want to write code to prevent dupes.
+
+
+
+  var sparse_notary = "perspectivesFAKETEST.networknotary.org:8080\n\n\n\n\
+-----BEGIN PUBLIC KEY-----\n\n\n\n\n\
+MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGXsegzE6E/6j4vgzi3NqGSn2dz\n\n\n\n\
+W6gRxkuAL7PB8QmRqtG9ieSQjFB6cTYvkmp7x/LtHqlr9Fa6+/mT4Ma5oKU0RpgY\n\n\n\n\
+MyfYnEk0iiNWG2fj4mRpTscHfcEJfKP13OGAYP1ZuHksTXSYsaKfIwiVKMLgQ/hA\n\n\n\n\
+FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\n\n\n\n\
+JaJ2Lw7kRVMCAwEAAQ==\n\n\n\n\
+-----END PUBLIC KEY-----\n\n\n\n";
+
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, sparse_notary);
+  notaries = Perspectives.getNotaryList();
+  assert(notaries.length == (initial_notary_count + 1),
+    "Trying to add a notary with many blank lines works.");
+
+
+
+  // -------------
+  // restore state once we're finished all of the tests
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, orig_extra_notaries);
+  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, orig_use_default_notaries);
+
+  write_string("Finished");
+}
+
 
 function run_tests() { 
 
@@ -226,6 +330,9 @@ function run_tests() {
     clear();
     quorum_basics();
     quorum_oldkey();
+    notary_parsing();
+
+
     write_string("Finished: " + pass_count + "/" + test_count + " successes, "
       + fail_count + " failures. ");
     if (test_count != (pass_count + fail_count)) {
@@ -233,7 +340,7 @@ function run_tests() {
     }
   } catch(e) { 
     alert(e);
-    write_string("<b>ERROR</b> - tests did not finish: '" + e + "'.");
+    write_string("<b><font color='red'>ERROR</font></b> - tests did not finish: '" + e + "'.");
   } 
 } 
 

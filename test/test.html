@@ -8,19 +8,19 @@
 <script type="text/javascript" src="../plugin/chrome/content/notaries.js"></script>
 <script type="text/javascript"> 
 
-d_print_all = true; 
+d_print_all = true;
 other_cache = { "debug" : "" }; // needed for common.js
 
-var test_count = 0;
-var pass_count = 0;
-var fail_count = 0;
+var g_test_count = 0;
+var g_pass_count = 0;
+var g_fail_count = 0;
 
 function clear() { 
    var node = document.getElementById('results'); 
    node.innerHTML = "";
-   test_count = 0;
-   pass_count = 0;
-   fail_count = 0;
+   g_test_count = 0;
+   g_pass_count = 0;
+   g_fail_count = 0;
 }
 
 function write_string(str) {
@@ -35,23 +35,23 @@ function write_string_to_element(str, elname) {
 }
 
 function assert(test, case_name) {
-  test_count++;
+  g_test_count++;
 	if(test) {
-	  write_string_to_element("[" + test_count +
+	  write_string_to_element("[" + g_test_count +
       "] <font color='green'>passed</font> : " + case_name, 'li');
-    pass_count++;
+    g_pass_count++;
   }
   else {
-	  write_string_to_element("[" + test_count +
+	  write_string_to_element("[" + g_test_count +
       "] <b><font color='red'>FAILED</font></b> : " + case_name, 'li');
-    fail_count++;
+    g_fail_count++;
   }
 
   // if people are looking through the console to debug,
   // give them some help tracing the action.
   if (window.console != undefined) {
         console.log("------- Finished test " +
-          test_count + ": " + case_name);
+          g_test_count + ": " + case_name);
   }
 } 
 
@@ -243,15 +243,15 @@ function notary_parsing() {
   }
   catch (e) {
     write_string("<b>ERROR:</b> Perspectives must be installed to run these tests. Skipping notary parse tests.");
-    test_count++;
-    fail_count++;
+    g_test_count++;
+    g_fail_count++;
     return;
   }
 
   if (orig_extra_notaries == null || orig_use_default_notaries == null) {
     write_string("<b>ERROR:</b> Could not read preferences from Perspectives plugin. Skipping notary parse tests.");
-    test_count++;
-    fail_count++;
+    g_test_count++;
+    g_fail_count++;
     return;
   }
 
@@ -333,9 +333,9 @@ function run_tests() {
     notary_parsing();
 
 
-    write_string("Finished: " + pass_count + "/" + test_count + " successes, "
-      + fail_count + " failures. ");
-    if (test_count != (pass_count + fail_count)) {
+    write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "
+      + g_fail_count + " failures. ");
+    if (g_test_count != (g_pass_count + g_fail_count)) {
       write_line("<b>ERROR:</b> Count totals did not match!");
     }
   } catch(e) { 

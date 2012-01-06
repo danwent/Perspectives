@@ -208,3 +208,21 @@ var Pers_util = {
 		} 
 	}  
 }
+
+var Pers_keypress = {
+
+    ESC_KEYCODE: 27,
+
+    press_esc_to_close: function(event) {
+
+        var key = (event.keyCode ? event.keyCode : event.which);
+        if (key) {
+
+            // let the Esc key close the window
+            if (key == Pers_keypress.ESC_KEYCODE) {
+                window.close();
+            }
+        }
+        return true;
+    }
+}

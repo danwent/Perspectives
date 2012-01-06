@@ -34,11 +34,56 @@ var Perspectives = {
 	all_notaries : [],  
 
 	// Data
-	root_prefs : Components.classes["@mozilla.org/preferences-service;1"]
-					.getService(Components.interfaces.nsIPrefBranchInternal),
-	overrideService : 
-					Components.classes["@mozilla.org/security/certoverride;1"]
-					.getService(Components.interfaces.nsICertOverrideService),
+
+	// See init_data().
+	// Always call init_data() before working with these variables!
+	root_prefs : null,
+	overrideService : null,
+
+	/*
+	Note: calls to Components.classes.getService() require special permissions.
+	If we set the value of data properties at object creation time,
+	(i.e. as part of the variable definition statements, above)
+	anything that doesn't have permission, such as an HTML file including
+	notaries.js as a script, will fail and not be able to use this object.
+	Thus, we initialize data properties inside a function instead,
+	so the caller can have control over when that happens
+	and ask for permission beforehand if necessary.
+	This helps to ensure Perspectives can be properly parsed and used
+	in many situations.
+	*/
+	init_data: function() {
+		var success = true;
+
+		if (Perspectives.root_prefs == null) {
+			var prefstr = "@mozilla.org/preferences-service;1";
+			if (prefstr in Components.classes) {
+				Perspectives.root_prefs = Components.classes[prefstr].
+					getService(Components.interfaces.nsIPrefBranchInternal);
+			}
+			else {
+				Pers_debug.d_print("error",
+					"Could not define Perspectives.root_prefs!");
+				success = false;
+			}
+		}
+
+		if (Perspectives.overrideService == null) {
+			var servstr = "@mozilla.org/security/certoverride;1";
+			if (servstr in Components.classes) {
+				Perspectives.overrideService = Components.classes[servstr].
+					getService(Components.interfaces.nsICertOverrideService);
+			}
+			else {
+				Pers_debug.d_print("error",
+					"Could not define Perspectives.overrideServices!");
+				success = false;
+			}
+		}
+		//TODO: initialize data from other objects here too
+
+		return success;
+	},
 	
 	state : {
 		STATE_IS_BROKEN : 

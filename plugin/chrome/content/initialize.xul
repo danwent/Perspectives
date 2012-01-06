@@ -4,6 +4,7 @@
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="notaries.js" />
   <script type="text/javascript">
+	Perspectives.init_data();
 	Perspectives.prompt_update();
 				
     window.addEventListener('load',evtLoad,false);

@@ -3,9 +3,20 @@
 <link rel="SHORTCUT ICON" href="../plugin/chrome/content/default.png">
 <title>Perspectives - Test cases</title>
 
-<script type="text/javascript" src="../plugin/chrome/content/common.js"></script> 
+<!-- Include every file so we can verify that all of the objects are testable in meta_test() -->
+<script type="text/javascript" src="../plugin/chrome/content/base64.js"></script>
 <script type="text/javascript" src="../plugin/chrome/content/client_policy.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/common.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/generate_svg.js"></script>
 <script type="text/javascript" src="../plugin/chrome/content/notaries.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/notify.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/preferences_dialog.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/report.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/results_dialog.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/statusbar.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/whitelist_dialog.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/xml_notary_client.js"></script>
+
 <script type="text/javascript"> 
 
 d_print_all = true;
@@ -53,7 +64,34 @@ function assert(test, case_name) {
         console.log("------- Finished test " +
           g_test_count + ": " + case_name);
   }
-} 
+}
+
+
+function meta_tests() {
+
+  // make sure we can include and parse every object
+  // so we'll be able to run tests on them.
+  // if you add objects, add a test here
+
+  write_string("Starting object creation tests");
+
+  assert(typeof Pers_Base64 === 'object', "Pers_Base64 is type '" + typeof Pers_Base64 + "'.");
+  assert(typeof Pers_client_policy === 'object', "Pers_client_policy is type '" + typeof Pers_client_policy + "'."); //client_policy.js
+  assert(typeof Pers_debug === 'object', "Pers_debug is type '" + typeof Pers_debug + "'."); //common.js
+  assert(typeof Pers_util === 'object', "Pers_util is type '" + typeof Pers_util + "'.");
+  assert(typeof Pers_keypress === 'object', "Pers_keypress is type '" + typeof Pers_keypress + "'.");
+  assert(typeof Pers_gen === 'object', "Pers_gen is type '" + typeof Pers_gen + "'."); //generate_svg.js
+  assert(typeof Perspectives === 'object', "Perspectives is type '" + typeof Perspectives + "'."); //notaries.js
+  assert(typeof Pers_notify === 'object', "Pers_notify is type '" + typeof Pers_notify + "'."); //notify.js
+  assert(typeof Pers_pref === 'object', "Pers_pref is type '" + typeof Pers_pref + "'."); //preferences_dialog.js FIXME
+  assert(typeof Pers_report === 'object', "Pers_report is type '" + typeof Pers_report + "'."); //report.js
+  assert(typeof Pers_results === 'object', "Pers_results is type '" + typeof Pers_results + "'."); //results_dialog.js FIXME
+  assert(typeof Pers_statusbar === 'object', "Pers_statusbar is type '" + typeof Pers_statusbar + "'."); //statusbar.js
+  assert(typeof Pers_whitelist_dialog === 'object', "Pers_whitelist_dialog is type '" + typeof Pers_whitelist_dialog + "'."); //whitelist_dialog.js FIXME
+  assert(typeof Pers_xml === 'object', "Pers_xml is type '" + typeof Pers_xml + "'."); //xml_notary_client.js
+
+  write_string("Finished");
+}
 
 function quorum_basics() {
  write_string("Starting basic quorum tests...");
@@ -328,6 +366,7 @@ function run_tests() {
   
   try {
     clear();
+    meta_tests();
     quorum_basics();
     quorum_oldkey();
     notary_parsing();

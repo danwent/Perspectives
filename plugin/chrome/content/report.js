@@ -131,13 +131,21 @@ var Pers_report = {
 			Pers_util.pers_alert("Invalid URI (" + error_text + ")"); 
 			return; 
 		} 
+
 		var ti = Perspectives.getCurrentTabInfo(window);
-		var cached_results = ti.query_results;
 
 		var cert = Perspectives.getCertificate(window.gBrowser); 
-		if(!cert || !cached_results) { 
+		if(!cert) {
+			// FIXME - if we decide to do this, the string should be localized
+			Pers_util.pers_alert(ti.uri.host + " is not an encrypted website - there is no point in sending a report.");
+			return;
+		}
+
+		var cached_results = ti.query_results;
+		if(!cached_results) {
 			throw("no results to generate report"); 
-		} 	
+		}
+
         	window.openDialog("chrome://perspectives/content/report.xul", "", "", 
 			cert, cached_results).focus();
 	} catch(e) { 

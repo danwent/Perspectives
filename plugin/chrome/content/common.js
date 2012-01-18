@@ -213,6 +213,7 @@ var Pers_util = {
 	// this way the user knows the messages are from Perspectives.
 	// Note: most strings passed here should still be localized strings
 	// taken from dialogs.dtd or notaries.properties files, not hard-coded.
+	// FIXME - existing alerts should be changed to use this. Make sure to test them!
 	pers_alert: function(msg) {
 	       alert("Perspectives: " + msg);
 	// TODO we could include contact info here too

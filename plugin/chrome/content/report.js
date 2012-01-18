@@ -128,7 +128,7 @@ var Pers_report = {
 	try {
 		var error_text = Perspectives.detectInvalidURI(window);  
 		if(error_text) { 
-			alert("Perspectives: Invalid URI (" + error_text + ")"); 
+			Pers_util.pers_alert("Invalid URI (" + error_text + ")"); 
 			return; 
 		} 
 		var ti = Perspectives.getCurrentTabInfo(window);
@@ -141,7 +141,7 @@ var Pers_report = {
         	window.openDialog("chrome://perspectives/content/report.xul", "", "", 
 			cert, cached_results).focus();
 	} catch(e) { 
-		alert("Unable to generate a report for this website");
+		Pers_util.pers_alert("Unable to generate a report for this website");
 	} 
     }, 
 

@@ -141,7 +141,7 @@ var Pers_report = {
         	window.openDialog("chrome://perspectives/content/report.xul", "", "", 
 			cert, cached_results).focus();
 	} catch(e) { 
-		Pers_util.pers_alert("Unable to generate a report for this website");
+		Pers_util.pers_alert("Unable to generate a report for this website - " + e);
 	} 
     }, 
 

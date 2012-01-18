@@ -6,6 +6,7 @@
     id    = "perspectives-report-attack"
     title          = "Perspectives: Report Possible Attack"
     onload         = "Pers_report.refresh_report_dialog()"
+    onkeypress     = "Pers_keypress.press_esc_to_close(event)"
     xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <groupbox minheight="400">

@@ -66,6 +66,17 @@ function assert(test, case_name) {
   }
 }
 
+// placeholder function to note future tests we should implement.
+// here so you can easily set up tests and enable/disable them
+// by renaming the function they call.
+function assert_fixme(test, case_name) {
+  write_string_to_element("[-] <font color='grey'>not implemented</font> : "
+  + case_name, 'li');
+}
+
+
+///////
+
 
 function meta_tests() {
 
@@ -358,6 +369,18 @@ JaJ2Lw7kRVMCAwEAAQ==\n\n\n\n\
   write_string("Finished");
 }
 
+function notary_replies() {
+
+  write_string("Starting notary reply tests");
+
+  //TODO: overwrite, or ignore?
+  assert_fixme(false, "Don't accept multiple responses from the same server");
+  //we can test this by temporarily allowing duplicates and sending out two responses.
+  //but it's even better if we can just do it in code.
+
+  write_string("Finished");
+}
+
 
 function run_tests() { 
 
@@ -370,6 +393,7 @@ function run_tests() {
     quorum_basics();
     quorum_oldkey();
     notary_parsing();
+    notary_replies();
 
 
     write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "

@@ -206,7 +206,16 @@ var Pers_util = {
 		} catch(e) { 
 			alert("Unexpected error updating default notary_list from web: " + e); 
 		} 
-	}  
+	},
+
+	// wrap all calls to alert() so we show a common title.
+	// this way the user knows the messages are from Perspectives.
+	// Note: most strings passed here should still be localized strings
+	// taken from dialogs.dtd or notaries.properties files, not hard-coded.
+	pers_alert: function(msg) {
+	       alert("Perspectives: " + msg);
+	// TODO we could include contact info here too
+	}
 }
 
 var Pers_keypress = {

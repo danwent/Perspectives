@@ -1,0 +1,30 @@
+Here is a list of manual tests you can check when making changes to the Perspectives Firefox extension. If any of these are easily automatable feel free to add cases for them in test.html instead.
+
+
+
+UI
+--
+- Each of the Perspectives dialog windows can be opened:
+	- 'View Notary Results'
+	- 'Report Attack'
+	- 'Add to Whitelist'
+	- 'Preferences'
+	- 'View Certificate Store'
+	- 'Help'
+
+- Each of the above winows closes without saving changes if the user clicks on the Cancel button
+- Each of the above winows closes without saving changes if the user presses the Esc key
+
+
+
+
+Toolbar Button
+--------------
+- If the profile/user has never had Perspectives installed before, installing it adds a toolbar button left of the location bar on restart
+- After installing, the toolbar button is movable
+- If the profile/user uninstalls and then reinstalls Perspectives, it remembers their toolbar button location
+- If the profile/user upgrades Perspectives without uninstalling, it remembers their toolbar button location
+x If the profile/user changes their Toolbar to show Text or Icons and Text, the toolbar changes appropriately (FIXME - doesn't currently display text; 
+	https://github.com/danwent/Perspectives/issues/44 )
+
+

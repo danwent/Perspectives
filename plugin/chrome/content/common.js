@@ -32,6 +32,7 @@ var Pers_debug = {
 		if(!Pers_debug.d_print_flags[flag] && !Pers_debug.d_print_all) { 
 			return; 
 		} 
+		line = "Perspectives: " + line;
 		dump(line); 
 		try { 
 			Firebug.Console.log(line); // this line works in extensions

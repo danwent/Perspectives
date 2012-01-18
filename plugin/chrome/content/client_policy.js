@@ -75,6 +75,7 @@ find_oldest_most_recent : function(results, stale_limit_secs,cur_time){
 }, 
 
 
+// counts the number of notaries that have results within the allowed time range
 get_num_valid_notaries: function(test_key,results,stale_limit_secs,cur_time){
 	var stale_limit = cur_time - stale_limit_secs;
 	var num_valid = 0; 

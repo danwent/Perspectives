@@ -12,9 +12,9 @@ UI
 	- 'View Certificate Store'
 	- 'Help'
 
-- Each of the above winows closes without saving changes if the user clicks on the Cancel button
-- Each of the above winows closes without saving changes if the user presses the Esc key
-
+- Each winow closes without saving changes if the user clicks on the Cancel button
+- Each winow closes without saving changes if the user presses the Esc key
+- Each window is centered on the screen (except 'View Certificate Store')
 
 
 

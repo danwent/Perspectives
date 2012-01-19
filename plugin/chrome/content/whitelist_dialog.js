@@ -24,7 +24,7 @@ var Pers_whitelist_dialog = {
 	add_to_whitelist : function() { 	
 		try {
 			var host = window.gBrowser.currentURI.host;
-        		window.openDialog("chrome://perspectives/content/whitelist_dialog.xul", "", "", host).focus();
+        		window.openDialog("chrome://perspectives/content/whitelist_dialog.xul", "", "centerscreen", host).focus();
 		} catch (e) { alert("add_to_whitelist: " + e); } 
 
 	},

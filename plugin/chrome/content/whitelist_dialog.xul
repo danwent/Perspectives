@@ -4,29 +4,31 @@
 
 <window
     id    = "perspectives-whitelist"
-    title          = "Perspectives: Add Site to Whitelist"
+    title          = "Perspectives: &Addsitetowhitelist;"
     onload         = "Pers_whitelist_dialog.fill_dialog()"
     onkeypress     = "Pers_keypress.press_esc_to_close(event)"
     xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+    <stringbundleset id="stringbundleset">
+      <stringbundle id="whitelist_strings" src="chrome://perspectives/locale/whitelist.properties" />
+    </stringbundleset>
+
   <groupbox minheight="150">
-  <description> 
-  Experts only: By adding a website to your whitelist, Perspectives automatically trusts all connections to it
+  <description style="width: 500px">
+  &Whitelistmessage;
  </description>
-  <description> 
- without contacting notaries.  Do this only if you understand the risks.  
-  </description>
   <radiogroup 
     id      = "whitelist-radio" 
     orient  = "vertical" >
+    <!-- label text is set via code -->
     <radio  id="whitelist-radio-1" label="" selected="true" />
     <radio  id="whitelist-radio-2" label="" />
   </radiogroup>
 
     <spacer flex  = "1"/>
     <hbox>
-        <button label="Cancel" onclick="window.close()"/>
-        <button label="Add to Whitelist" onclick="Pers_whitelist_dialog.confirm_add()"/>
+        <button label="&Cancel;" onclick="window.close()"/>
+        <button label="&Addtowhitelist;" onclick="Pers_whitelist_dialog.confirm_add()"/>
     </hbox>
   </groupbox>
 

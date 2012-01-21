@@ -1,3 +1,4 @@
+<!-- This file contains localized strings for Perspectives .xul files. -->
 <!ENTITY NotaryResults "Notary 结果">
 <!ENTITY Preferences "配置">
 <!ENTITY NoQuorumInformation "没有查询信息">
@@ -24,3 +25,9 @@
 <!ENTITY Servers "Notary 服务器">
 <!ENTITY Help "帮助">
 <!ENTITY OK "完成">
+<!-- TODO: Please translate! -->
+<!ENTITY Close "Close">
+<!ENTITY Cancel "Cancel">
+<!ENTITY Addtowhitelist "Add to Whitelist">
+<!ENTITY Addsitetowhitelist "Add Site to Whitelist">
+<!ENTITY Whitelistmessage "Experts only: By adding a website to your whitelist, Perspectives automatically trusts all connections to it without contacting notaries. Do this only if you understand the risks.">

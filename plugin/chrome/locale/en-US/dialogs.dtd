@@ -1,4 +1,5 @@
-﻿<!ENTITY NotaryResults "Notary Results">
+﻿<!-- This file contains localized strings for Perspectives .xul files. -->
+<!ENTITY NotaryResults "Notary Results">
 <!ENTITY Preferences "Preferences">
 <!ENTITY NoQuorumInformation "No Quorum Information">
 <!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "There is no Perspectives information available for this location">
@@ -23,3 +24,7 @@
 <!ENTITY Help "Help">
 <!ENTITY OK "OK">
 <!ENTITY Close "Close">
+<!ENTITY Cancel "Cancel">
+<!ENTITY Addtowhitelist "Add to Whitelist">
+<!ENTITY Addsitetowhitelist "Add Site to Whitelist">
+<!ENTITY Whitelistmessage "Experts only: By adding a website to your whitelist, Perspectives automatically trusts all connections to it without contacting notaries. Do this only if you understand the risks.">

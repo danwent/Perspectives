@@ -23,8 +23,18 @@ var Pers_whitelist_dialog = {
 
 	add_to_whitelist : function() { 	
 		try {
+			// use Perspectives.strbundle because whitelist_dialog.xul isn't loaded yet
+			if(Perspectives.strbundle == null) {
+					Perspectives.strbundle = document.getElementById("notary_strings");
+			}
+			var error_text = Perspectives.detectInvalidURI(window);
+			if(error_text) {
+				Pers_util.pers_alert(Perspectives.strbundle.getString("couldNotAddToWhitelist")
+					+ ": " + error_text);
+				return;
+			}
 			var host = window.gBrowser.currentURI.host;
-        		window.openDialog("chrome://perspectives/content/whitelist_dialog.xul", "", "centerscreen", host).focus();
+			window.openDialog("chrome://perspectives/content/whitelist_dialog.xul", "", "centerscreen", host).focus();
 		} catch (e) { alert("add_to_whitelist: " + e); } 
 
 	},

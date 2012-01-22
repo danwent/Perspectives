@@ -24,6 +24,10 @@ UI
 - HTTPS website, before Perspectives has finished querying
 - HTTPS website, after Perspectives has finished querying
 - Invalid URL, such as 'aaa' or blank
+- file:// URL
+
+'Add To Whitelist' tests:
+- Same as above; all but https should be rejected as invalid URLs
 
 
 

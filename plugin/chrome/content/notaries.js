@@ -858,10 +858,14 @@ var Perspectives = {
 		} 
 	},
 
-	detectInvalidURI : function(win) { 
+	detectInvalidURI : function(win) {
+		if(Perspectives.strbundle == null) {
+			Perspectives.strbundle = document.getElementById("notary_strings");
+		}
+
 		if(!win.gBrowser){
 			Pers_debug.d_print("error","No Browser!!\n");
-			return "No browser object found for this window";
+			return Perspectives.strbundle.getString("noBrowserObject");
 		}
 		
 		var uri = win.gBrowser.currentURI; 
@@ -874,7 +878,7 @@ var Perspectives = {
 			var ignore = uri.host;
 			if(!uri.host) throw "";  
 		} catch(e) {
-			return "URL is not a valid remote server"; 
+			return Perspectives.strbundle.getString("notValidRemoteServer");
 		}
 		return null; 
 	}, 
@@ -903,9 +907,13 @@ var Perspectives = {
 	},  
 
 	forceStatusUpdate : function(win) {
+		if(Perspectives.strbundle == null) {
+			Perspectives.strbundle = document.getElementById("notary_strings");
+		}
 		var error_text = Perspectives.detectInvalidURI(win);  
 		if(error_text) { 
-			alert("Perspectives: Invalid URI (" + error_text + ")"); 
+			Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI")
+				+ "(" + error_text + ")");
 			return; 
 		} 
 		var ti = Perspectives.getCurrentTabInfo(win);

@@ -4,7 +4,6 @@
 <!ENTITY NoQuorumInformation "没有查询信息">
 <!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "对于这个位置没有可用的Perspectives信息。">
 <!ENTITY Timeline "时间轴">
-<!ENTITY NotaryResults "Notary 结果">
 <!ENTITY SecuritySettings "安全设置">
 <!ENTITY HighSecurity "高级安全">
 <!ENTITY MediumSecurity "中级安全">

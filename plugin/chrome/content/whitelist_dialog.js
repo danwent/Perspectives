@@ -35,7 +35,7 @@ var Pers_whitelist_dialog = {
 			}
 			var host = window.gBrowser.currentURI.host;
 			window.openDialog("chrome://perspectives/content/whitelist_dialog.xul", "", "centerscreen", host).focus();
-		} catch (e) { alert("add_to_whitelist: " + e); } 
+		} catch (e) { Pers_util.pers_alert("add_to_whitelist: " + e); }
 
 	},
 

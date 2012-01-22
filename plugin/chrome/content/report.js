@@ -123,52 +123,74 @@ var Pers_report = {
 	} 
     }, 
 
-    // note: this function is called in the scope of the main window, which is able to grab the cert
+    // note: this function is called in the scope of the main window, which is able to grab the cert.
+    // that also means we use Perspectives.strbundle rather than Pers_report.strbundle.
     report_attack : function() {
-	try {
-		var error_text = Perspectives.detectInvalidURI(window);  
-		if(error_text) { 
-			Pers_util.pers_alert("Invalid URI (" + error_text + ")"); 
-			return; 
-		} 
-
-		var ti = Perspectives.getCurrentTabInfo(window);
-
-		var cert = Perspectives.getCertificate(window.gBrowser); 
-		if(!cert) {
-			// FIXME - if we decide to do this, the string should be localized
-			Pers_util.pers_alert(ti.uri.host + " is not an encrypted website - there is no point in sending a report.");
-			return;
+		if(Perspectives.strbundle == null) {
+			Perspectives.strbundle = document.getElementById("notary_strings");
 		}
+		try {
+			var error_text = Perspectives.detectInvalidURI(window);
+			if(error_text) {
+				Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI")
+					+ " (" + error_text + ")");
+				return;
+			}
 
-		var cached_results = ti.query_results;
-		if(!cached_results) {
-			throw("no results to generate report"); 
-		}
+			var ti = Perspectives.getCurrentTabInfo(window);
+
+			var cert = Perspectives.getCertificate(window.gBrowser);
+			if(!cert) {
+				// FIXME - is this check correct?
+				Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("notEncryptedNoReport",
+					[ ti.uri.host ]));
+				return;
+			}
+
+			var cached_results = ti.query_results;
+			if(!cached_results) {
+				throw(Perspectives.strbundle.getString("noResultsNoReport"));
+			}
 
 			window.openDialog("chrome://perspectives/content/report.xul", "", "centerscreen",
 			cert, cached_results).focus();
-	} catch(e) { 
-		Pers_util.pers_alert("Unable to generate a report for this website - " + e);
-	} 
+
+		} catch(e) {
+			var text = "";
+			if (Perspectives.strbundle != null) {
+				text = Perspectives.strbundle.getString("unableToMakeReport") + " - ";
+			}
+			Pers_util.pers_alert(text + e);
+		}
     }, 
 
-    // this function is called by the 'report attack' window once it is open. 
+    // this function is called by the 'report attack' window once it is opened
     // or when one of the controls was toggled. 
     refresh_report_dialog : function() {
-	var show_full = document.getElementById("show_full").checked;
-	document.getElementById("full-text").hidden = !show_full; 
-	document.getElementById("full-text-label").hidden = !show_full; 
-	var label = "Full Report Text (IP address will be recorded)"; 
-	if(document.getElementById("full-radio").selectedIndex) { 
-		label = "Privacy-Sensitive Report Text (IP address will NOT be recorded)"; 
-	}
-	if(show_full) {  
-		document.getElementById("full-text-label").value = label;
-		var txt = Pers_util.pretty_print_json(this.get_report_json());  
-		document.getElementById("full-text").value = txt;  	
-	}
-    } 
+		if(Pers_report.strbundle == null) {
+			Pers_report.strbundle = document.getElementById("report_strings");
+		}
+		try {
+			var show_full = document.getElementById("show_full").checked;
+			document.getElementById("full-text").hidden = !show_full;
+			document.getElementById("full-text-label").hidden = !show_full;
+			var label = Pers_report.strbundle.getString("FullReportText");
+			if(document.getElementById("full-radio").selectedIndex) {
+				label = Pers_report.strbundle.getString("PrivateReportText");
+			}
+			if(show_full) {
+				document.getElementById("full-text-label").value = label;
+				var txt = Pers_util.pretty_print_json(this.get_report_json());
+				document.getElementById("full-text").value = txt;
+			}
+		} catch(e) {
+			var text = "";
+			if (Perspectives.strbundle != null) {
+				text = Perspectives.strbundle.getString("unableToMakeReport") + " - ";
+			}
+			Pers_util.pers_alert(text + e);
+		}
+    }
 
 }
 

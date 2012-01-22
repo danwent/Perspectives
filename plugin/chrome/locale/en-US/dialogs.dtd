@@ -28,3 +28,12 @@
 <!ENTITY Addtowhitelist "Add to Whitelist">
 <!ENTITY Addsitetowhitelist "Add Site to Whitelist">
 <!ENTITY Whitelistmessage "Experts only: By adding a website to your whitelist, Perspectives automatically trusts all connections to it without contacting notaries. Do this only if you understand the risks.">
+<!ENTITY ReportPossibleAttack "Report Possible Attack">
+<!ENTITY ReportAttackMessage "By reporting an attack, the Perspectives project can improve this extension and detect Internet vulernabilities.">
+<!ENTITY SendFullReport "Send full report">
+<!ENTITY SendPrivacyReport "Send privacy-sensitive report">
+<!ENTITY Optional "Optional">
+<!ENTITY EmailDescription "Email Address for follow-up questions">
+<!ENTITY AdditionalInfoMessage "Any additional information describing the circumstances of this possible attack">
+<!ENTITY ShowDetailedReportText "Show Detailed Report Text">
+<!ENTITY SubmitReport "Submit Report">

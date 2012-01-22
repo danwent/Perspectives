@@ -4,36 +4,42 @@
 
 <window
     id    = "perspectives-report-attack"
-    title          = "Perspectives: Report Possible Attack"
+    title          = "Perspectives: &ReportPossibleAttack;"
     onload         = "Pers_report.refresh_report_dialog()"
     onkeypress     = "Pers_keypress.press_esc_to_close(event)"
     xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+  <!-- Note: some strings used before this .xul has loaded are stored in
+  notaries.properties instead. -->
+  <stringbundleset id="stringbundleset">
+      <stringbundle id="report_strings" src="chrome://perspectives/locale/report.properties" />
+  </stringbundleset>
+
   <groupbox minheight="400">
   <description> 
-  By reporting an attack, the Perspectives project can improve this extension and detect Internet vulernabilities.
+    &ReportAttackMessage;
  </description>
   <radiogroup 
     id      = "full-radio" 
     orient  = "horizontal" 
     onclick = 'Pers_report.refresh_report_dialog()'>
-    <radio  label="Send full report" selected="true" />
-    <radio  label="Send privacy-sensitive report" />
+    <radio  label="&SendFullReport;" selected="true" />
+    <radio  label="&SendPrivacyReport;" />
   </radiogroup>
 
-    <label value="Optional: Email Address for follow-up questions" /> 
+    <label value="&Optional;: &EmailDescription;" />
     <textbox id = "email-address"
       multiline = "false"
       onblur    = "Pers_report.refresh_report_dialog()"
       value     = ""/>
-    <label value="Optional: Any additional information describing the circumstances of this possible attack" /> 
+    <label value="&Optional;: &AdditionalInfoMessage;" />
     <textbox id = "additional-info"
       multiline = "true" 
       flex      = "1"
       onblur    = "Pers_report.refresh_report_dialog()"
       value     = ""/>
     <groupbox minheight="200">
-    <checkbox hidden="true" label="Show Detailed Report Text" id="show_full" checked="true" 
+    <checkbox hidden="true" label="&ShowDetailedReportText;" id="show_full" checked="true"
 	oncommand="Pers_report.refresh_report_dialog()" /> 
     <label id="full-text-label" /> 
     <textbox id = "full-text"
@@ -44,7 +50,7 @@
   </groupbox>
 
     <hbox>
-        <button label="Submit Report" onclick="Pers_report.submit_data()"/>
+        <button label="&SubmitReport;" onclick="Pers_report.submit_data()"/>
     </hbox>
   </groupbox>
 

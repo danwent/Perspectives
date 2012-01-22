@@ -19,6 +19,13 @@ UI
 	- Except 'View Certificate Store', which displays the Firefox icon
 
 
+'Report Attack' tests:
+- HTTP website
+- HTTPS website, before Perspectives has finished querying
+- HTTPS website, after Perspectives has finished querying
+- Invalid URL, such as 'aaa' or blank
+
+
 
 Toolbar Button
 --------------

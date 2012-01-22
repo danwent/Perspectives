@@ -38,22 +38,34 @@ var Pers_results = {
 	// returns a string that describes whether Perspectives installed a 
 	// security exception 
 	getActionStr: function(ti) {
+		if(Pers_results.strbundle == null) {
+ 			Pers_results.strbundle = document.getElementById("results_strings");
+ 		}
+
 		if(ti.uri.scheme != "https") {  
-			return "Perspectives only queries 'https' sites. This site uses '" + ti.uri.scheme + "'"; 
+			return Pers_results.strbundle.getFormattedString("notHTTPS", [ ti.uri.scheme ]);
 		} else if(ti.is_override_cert && ti.already_trusted) { 
-			return  "Perspectives has previously installed a security exception for this site."; 
+			return Pers_results.strbundle.getString("previouslyInstalledCert");
 		} else if(ti.already_trusted) { 
-			return "The browser trusts this site and requires no security exception";  
+			return Pers_results.strbundle.getString("browserTrusts");
 		} else if(ti.is_override_cert && ti.notary_valid && ti.exceptions_enabled && ti.isTemp) { 
-			return  "Perspectives installed a temporary security exception for this site."; 
+			return Pers_results.strbundle.getString("tempSecurityException");
 		} else if(ti.is_override_cert && ti.notary_valid && ti.exceptions_enabled && !ti.isTemp){ 
-			return "Perspectives installed a permanent security exception for this site."; 
+			return Pers_results.strbundle.getString("permanentSecurityException");
 		} else { 
-			return "No security exception has been installed"; 
+			return Pers_results.strbundle.getString("noException");
 		} 
 	},
 
 	load_results_dialog: function(){
+
+		if(Pers_results.notaryStrings == null) {
+ 			Pers_results.notaryStrings = document.getElementById("notary_strings");
+ 		}
+
+ 		if(Pers_results.strbundle == null) {
+ 			Pers_results.strbundle = document.getElementById("results_strings");
+ 		}
 
 		try {
 			var info  = document.getElementById("perspective-description");
@@ -63,7 +75,8 @@ var Pers_results = {
 			var win = window.opener; 
 			var error_text = win.Perspectives.detectInvalidURI(win);  
 			if(error_text) { 
-				info.value = "Perspectives: Invalid URI (" + error_text + ")"; 
+				info.value = "Perspectives: " +
+					Pers_results.notaryStrings.getString("invalidURI") + " (" + error_text + ")";
 				return; 
 			} 
 			var ti = win.Perspectives.getCurrentTabInfo(win);
@@ -85,11 +98,15 @@ var Pers_results = {
 			} else if (ti.reason_str) {
 				info.value = ti.reason_str; 
 			} 
-			 
+
 		} catch(e) { 
 			Pers_debug.d_print("error", "Error loading results dialog"); 
 			Pers_debug.d_print("error", e); 
-			alert("Error loading Perspectives dialog: " + e); 
+			var errmsg = "";
+			if (Pers_results.strbundle != null) {
+				errmsg = Pers_results.strbundle.getString("errorLoadingResultsDialog") + ": ";
+			}
+			Pers_util.pers_alert(errmsg + e);
 		}  
   
 		return true;

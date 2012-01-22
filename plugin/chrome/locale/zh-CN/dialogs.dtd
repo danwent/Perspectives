@@ -1,5 +1,6 @@
 <!-- This file contains localized strings for Perspectives .xul files. -->
 <!ENTITY NotaryResults "Notary 结果">
+<!ENTITY ViewNotaryResults "View Notary 结果"> <!-- TODO -->
 <!ENTITY Preferences "配置">
 <!ENTITY NoQuorumInformation "没有查询信息">
 <!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "对于这个位置没有可用的Perspectives信息。">
@@ -45,3 +46,6 @@
 <!ENTITY DefaultNotaryServers "Default Notary Servers">
 <!ENTITY UseDefaultNotaries "Use default notary server list">
 <!ENTITY AdditionalNotaryServers "Additional Notary Servers">
+<!ENTITY ForceNotaryCheck "cccForce Notary Check">
+<!ENTITY ReportAttack "cccReport Attack">
+<!ENTITY ViewCertificateStore "cccView Certificate Store">

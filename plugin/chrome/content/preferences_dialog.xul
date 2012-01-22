@@ -3,7 +3,7 @@
 <!DOCTYPE prefwindow SYSTEM "chrome://perspectives/locale/dialogs.dtd">
 
 <prefwindow id = "perspectives-properties" 
-	title          = "Perspectives Preferences"
+	title          = "Perspectives &Preferences;"
 	xmlns          = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	buttons        = ","
 	onload         = "Pers_pref.load_preferences()" 
@@ -59,8 +59,8 @@
 
 <tabbox id="tablist"> 
  <tabs> 
-  <tab label="Certificate Validation"/> 
-  <tab label="Notary Servers"/> 
+  <tab label="&CertificateValidation;"/>
+  <tab label="&Servers;"/>
  </tabs>
  <tabpanels> 
   <tabpanel id="securitytab"> 
@@ -95,7 +95,7 @@
       preference="exception-enabled"/>
     <checkbox label="&PermanentlytrustcertificatesvalidatedbyPerspectives;" 
       preference="exception-perm"/>
-     <label value="Automatically trust certificates for the following sites:" /> 
+     <label value="&AutoTrust;:" />
       <textbox preference="whitelist" id="whitelist" size="40" />
   </groupbox>
 
@@ -118,15 +118,15 @@
   </groupbox>
   
   <groupbox> 
-    <caption label="Default Notary Servers" style="font-weight: bold"/>
+    <caption label="&DefaultNotaryServers;" style="font-weight: bold"/>
     <textbox id="default_notary_list" multiline="true" rows="8" cols="70" readonly="true" /> 
-    <checkbox label="Use default notary server list." preference="use-default-notary-list"/>
+    <checkbox label="&UseDefaultNotaries;" preference="use-default-notary-list"/>
 <!--    <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()" 
 	       id="enable_default_list_auto_update" preference="enable-default-list-auto-update"/>
 -->
   </groupbox> 
   <groupbox> 
-    <caption label="Additional Notary Servers" style="font-weight: bold"/>
+    <caption label="&AdditionalNotaryServers;" style="font-weight: bold"/>
     <textbox id="additional_notary_list" multiline="true" rows="8" cols="70" preference="additional_notary_list" /> 
   </groupbox> 
 </vbox> 

@@ -40,3 +40,8 @@
 <!ENTITY ShowDetailedReportText "Show Detailed Report Text">
 <!ENTITY SubmitReport "Submit Report">
 <!ENTITY DetailedInformation "Detailed Information">
+<!ENTITY CertificateValidation "Certificate Validation">
+<!ENTITY AutoTrust "Automatically trust certificates for the following sites">
+<!ENTITY DefaultNotaryServers "Default Notary Servers">
+<!ENTITY UseDefaultNotaries "Use default notary server list">
+<!ENTITY AdditionalNotaryServers "Additional Notary Servers">

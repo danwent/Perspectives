@@ -58,7 +58,7 @@ var Pers_pref = {
 		window.close()
 		return true; 
 	   } catch (e) { 
-		alert("Perspectives Error: " + e);
+		Pers_util.pers_alert(e);
 		return false;  
 	   } 
 	},
@@ -75,18 +75,18 @@ var Pers_pref = {
 			} 
 			this.load_preferences(); 
 		} catch(e) { 
-			alert("Perspectives Error: " + e); 
+			Pers_util.pers_alert(e);
 		}
 
 	},  
   
 	load_preferences: function(){
-		try { 
+		try {
 			Pers_pref.security_class_change(); 
 			var default_notary_text = this.root_prefs.getCharPref("perspectives.default_notary_list");
 			document.getElementById("default_notary_list").value = default_notary_text;
 		} catch(e) { 
-			alert("Perspectives Error: " + e); 
+			Pers_util.pers_alert(e);
 		} 
 	}
 }

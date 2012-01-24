@@ -26,6 +26,8 @@ var g_test_count = 0;
 var g_pass_count = 0;
 var g_fail_count = 0;
 
+
+/******* Helper Functions *******/
 function clear() { 
    var node = document.getElementById('results'); 
    node.innerHTML = "";
@@ -74,9 +76,135 @@ function assert_fixme(test, case_name) {
   + case_name, 'li');
 }
 
+// if you're lazy and want to print some text while debugging
+function debug(string) {
+  if (window.console != undefined) {
+      console.log("DEBUG: " + string);
+  }
+  // strip out < so strings always appear on the page
+  write_string_to_element("<font color='grey'>DEBUG: " +
+    string.replace(/</, '&lt;') + "</font>", 'li');
+}
 
-///////
 
+// find all of the .dtd and .properties files in a directory
+function get_loc_files(dir) {
+
+  if (!dir) {
+    assert(false, "Directory passed to get_loc_files() is undefined. This is bad.");
+    return;
+  }
+
+  var entries = dir.directoryEntries;
+  var filearray = [];
+
+  if (entries != null) {
+    while(entries.hasMoreElements()) {
+      var entry = entries.getNext();
+      entry.QueryInterface(Components.interfaces.nsIFile);
+      if (entry.isFile()) {
+        var ext = entry.leafName.substring(entry.leafName.lastIndexOf(".")+1).toLowerCase();
+        if(ext === "dtd" || ext === "properties") {
+          filearray[entry.leafName] = entry;
+        }
+      }
+    }
+  }
+  else {
+    assert(false, "Localization directory '" + dir + "' has no files. This is bad.");
+  }
+
+  return filearray;
+}
+
+
+// read a file and find all of the localization string names.
+// we read synchronously and don't care about performance because
+// this code isn't part of the extension.
+function get_loc_keys(filelist, locdirname) {
+
+  var keys = [];
+  var dtdline = /<!ENTITY ([A-Za-z]+) /;
+  var propline = /([A-Za-z]+)=/;
+
+  for (filename in filelist) {
+    if (filelist.hasOwnProperty(filename)) {
+
+      if (filename != null) {
+
+        var data = "";
+
+        var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
+                createInstance(Components.interfaces.nsIFileInputStream);
+        var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].
+                      createInstance(Components.interfaces.nsIConverterInputStream);
+        fstream.init(filelist[filename], -1, 0, 0);
+        cstream.init(fstream, "UTF-8", 0, 0);
+
+        var str = {};
+        var readmore = 0;
+        do {
+          read = cstream.readString(0xffffffff, str); // read as much as we can
+          data += str.value;
+        } while (readmore != 0);
+
+        cstream.close(); // also closes fstream
+
+        var ext = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
+        if(ext === "dtd") {
+          keys = get_keys_from_stream(data, dtdline, keys, filename, locdirname);
+        }
+        else if (ext === "properties") {
+          keys = get_keys_from_stream(data, propline, keys, filename,locdirname);
+        }
+        else {
+          assert(false, locdirname + ": File '" + file.path
+            + "' is neither .dtd or .properties. We shouldn't be looking for keys inside!");
+        }
+      }
+      else {
+        assert(false, "File " + filelist.indexOf(filename) + " in " + filelist +
+          " is null.");
+      }
+    }
+  }
+
+  return keys;
+}
+
+// extract localization string names/keys from a datastream,
+// using the appropriate regex passed by the caller.
+function get_keys_from_stream(datastream, lineregex, keys, sourcefilename, locdirname) {
+
+  var lines = datastream.split('\n');
+  for (var i = 0; i < lines.length; i++) {
+    // note: if printing for debug, <> don't show up in HTML docs.
+    // they must be replaced. e.g.
+    // write_string_to_element("line: '" + lines[i].replace(/</, '&lt;') + "'", 'li');
+    // or just use console.log().
+    var match = lineregex.exec(lines[i]);
+    if (match != null) {
+      // grab the first stored match, match[1], not the entire match array.
+      if (keys.hasOwnProperty(match[1])) {
+        if (keys[match[1]] == sourcefilename) {
+          assert(false, locdirname + ": Duplicate key '" + match[1] + "' found twice in " + sourcefilename);
+        }
+        else {
+          assert(false, locdirname + ": Duplicate key '" + match[1] + "' found in " + sourcefilename +
+          ", but already defined in " + keys[match[1]]);
+        }
+      }
+      else {
+        keys[match[1]] = sourcefilename;
+      }
+    }
+  }
+  return keys;
+}
+
+
+
+/******* Tests *******/
 
 function meta_tests() {
 
@@ -382,6 +510,179 @@ function notary_replies() {
 }
 
 
+// make sure our localizations all have the same keys in the same places.
+// test cases:
+//
+//  - Loc has no files
+//  - Loc has extra files
+//  - Loc is missing files
+//  - Loc has no keys
+//  - Loc has extra keys
+//  - Loc is missing keys
+//  - Loc has a key defined in a different file
+//  - Loc has a duplicate key defined in the same file
+//  - Loc has a duplicate key defined in a different file
+//
+// if you think of more tests, try them and update the code if necessary
+function loc_tests() {
+
+  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+
+  // get the current directory without the filename
+  var curpath = document.location.pathname;
+  var filename = curpath.substring(curpath.lastIndexOf("/")+1);
+  var dir = curpath.substring(0, curpath.length - filename.length)
+
+  // localization folders should be a relative path away from this file.
+  var ioService = Components.classes["@mozilla.org/network/io-service;1"]
+    .getService(Components.interfaces.nsIIOService);
+
+  //TODO: does this work on all platforms?
+  var locURI = ioService.newURI("file://" + dir + "../plugin/chrome/locale", null, null);
+  var locdir = locURI.QueryInterface(Components.interfaces.nsIFileURL).file;
+  assert(locdir.isDirectory(), "Found loc dir " + locdir.path + ", and it's a directory.");
+
+  // get all of the loc directories
+  var entries = locdir.directoryEntries;
+  var locdirs = [];
+  while(entries.hasMoreElements())
+  {
+    var entry = entries.getNext();
+    entry.QueryInterface(Components.interfaces.nsIFile);
+    if (entry.isDirectory()) {
+      //write_string_to_element("found '" + entry.leafName + "'", 'li');
+      locdirs[entry.leafName] = entry;
+    }
+  }
+
+  // en-US is probably our most robust localization, so start with it as a base
+  // we should still find everything regardless.
+  var baseline = [];
+  if ('en-US' in locdirs) {
+    baseline['files'] = get_loc_files(locdirs['en-US']);
+    baseline['name'] = 'en-US';
+  }
+  else {
+    // just use the first one
+    var basedir = null;
+    for (dir in locdirs) {
+      if (locdirs.hasOwnProperty(dir)) {
+        basedir = dir;
+      }
+    }
+    if (basedir == null) {
+      assert(false, "There are no localization directories to use as a base. Something is really wrong.");
+      return;
+    }
+    baseline['files'] = get_loc_files(locdirs[basedir]);
+    baseline['name'] = basedir.leafName;
+  }
+
+  // we can't use baseline['files'].length  to count the number of files
+  // because javascript stores the files as properties on the object,
+  // not actual hash entries in the array.
+  // thus, loop to count the results.
+  // we could store them in any variable, but store them on baseline itself
+  // for convenience.
+  baseline['filecount'] = 0;
+  for (file in baseline['files']) {
+    if (baseline['files'].hasOwnProperty(file)) {
+      baseline['filecount']++;
+    }
+  }
+
+  assert(baseline['filecount'] > 0,
+    "Found more than 0 loc files in baseline " + baseline['name'] +
+    " (found " + baseline['filecount'] + ")");
+
+
+  // get all keyes for the baseline
+  baseline['keys'] = get_loc_keys(baseline['files'], baseline['name']);
+
+  baseline['keycount'] = 0;
+  for (file in baseline['keys']) {
+    if (baseline['keys'].hasOwnProperty(file)) {
+      baseline['keycount']++;
+    }
+  }
+
+  assert(baseline['keycount'] > 0,
+    "Found more than 0 strings/keys in baseline "+ baseline['name'] +
+    " (found " + baseline['keycount'] + ")");
+
+
+  // now compare files and keys for every other localization to the baseline
+  for (dirname in locdirs) {
+    if ((locdirs.hasOwnProperty(dirname)) &&
+    (dirname != baseline['name'])) {
+
+      var exactmatch = true;
+
+      files = get_loc_files(locdirs[dirname]);
+      keys = get_loc_keys(files, dirname);
+
+      // all files in this loc are also in the baseline
+      for (file in files) {
+        if (files.hasOwnProperty(file)) {
+          if (!baseline['files'].hasOwnProperty(file)) {
+            assert(false, dirname + ": baseline " +
+              baseline['name'] + " does not have the file " + file);
+              exactmatch = false;
+          }
+        }
+      }
+
+      // all files in the baseline are also in this loc
+      for (file in baseline['files']) {
+        if (baseline['files'].hasOwnProperty(file)) {
+          if (!files.hasOwnProperty(file)) {
+            assert(false, dirname + " does not have the file " + file);
+            exactmatch = false;
+          }
+        }
+      }
+
+
+      // all keys in this loc are also in the baseline
+      for (key in keys) {
+        if (keys.hasOwnProperty(key)) {
+          if (!baseline['keys'].hasOwnProperty(key)) {
+            assert(false, dirname + ": baseline " +
+              baseline['name'] + " does not have the key '" + key +
+              "' in " + keys[key]);
+              exactmatch = false;
+          }
+          else if (baseline['keys'][key] != keys[key]) {
+            assert(false, dirname + " has the key '" + key +
+            "' in " + keys[key] + ", but (" + baseline['name'] +
+            ") has it in " + baseline['keys'][key]);
+          }
+        }
+      }
+
+      // all keys in the baseline are also in this loc
+      for (key in baseline['keys']) {
+        if (baseline['keys'].hasOwnProperty(key)) {
+          if (!keys.hasOwnProperty(key)) {
+            assert(false, dirname + " does not have the key '" + key +
+            "' in " + baseline['keys'][key]);
+            exactmatch = false;
+          }
+          else if (baseline['keys'][key] != keys[key]) {
+            assert(false, dirname + " has the key '" + key +
+            "' in " + keys[key] + ", but (" + baseline['name'] +
+            ") has it in " + baseline['keys'][key]);
+          }
+        }
+      }
+
+      assert(exactmatch, "Localization (" + dirname + ") exactly matches baseline.");
+    }
+  }
+}
+
+
+
 function run_tests() { 
 
   // print debug info to console by default
@@ -394,6 +695,7 @@ function run_tests() {
     quorum_oldkey();
     notary_parsing();
     notary_replies();
+    loc_tests();
 
 
     write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "

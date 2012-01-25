@@ -11,9 +11,7 @@
 <!ENTITY HighAvailability "低级安全（高度可用）">
 <!ENTITY ManualConfiguration "手工设置">
 <!ENTITY Percentageofnotariesthatmustagree "获得notary服务器同意的数目的百分比">
-<!ENTITY QuorumPercentage "群体数（百分比）">
 <!ENTITY Lengthoftimequorummustbeachieved "群体数被认证的时间长度">
-<!ENTITY DurationDays "时间长度（天）">
 <!ENTITY OverridingFirefoxSecurityErrors "跳过Firefox安全错误">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "允许Perspectives自动跳过安全错误">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "永远相信Perspectives认为安全的认证">

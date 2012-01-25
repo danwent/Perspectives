@@ -103,25 +103,44 @@ var Pers_report = {
 	return report_data; 
     }, 
 
-    submit_data : function() {
-	try {
-        	var report_json_str = JSON.stringify(this.get_report_json());
-		var full_report = !document.getElementById("full-radio").selectedIndex;
+	submit_data : function() {
+		// don't close the window here through code -
+		// let the user decide when to close it so they can read any error messages.
+		// since the user won't be able to interact with this form while the report is being sent,
+		// temporarily disable the buttons until we're done.
+		var orig_label = document.getElementById("SubmitReport").label; //TODO: test with other localizations
 
-		window.close(); 
+		if(Pers_report.strbundle == null) {
+			Pers_report.strbundle = document.getElementById("report_strings");
+		}
+		try {
+			document.getElementById("SubmitReport").disabled = true;
+			document.getElementById("Close").disabled = true;
+			document.getElementById("SubmitReport").label =
+				Pers_report.strbundle.getString("SubmittingReport");
 
-		// no feedback if request fails. 
-        	var req = new XMLHttpRequest();
-		// synchronous request
-        	req.open("POST", this.REPORT_URI + "?record_ip=" + full_report, false);
-        	req.send(report_json_str);
-		if(req.status != 200) { 
-			alert("Failed to report attack to '" + this.REPORT_URI + "'.  Error code = " + req.status); 
-		} 
-	} catch(e) { 
-		alert("Error submitting report: " + e); 
-	} 
-    }, 
+			var report_json_str = JSON.stringify(this.get_report_json());
+			var full_report = !document.getElementById("full-radio").selectedIndex;
+
+			// no feedback if request fails.
+			var req = new XMLHttpRequest();
+			// synchronous request
+			req.open("POST", this.REPORT_URI + "?record_ip=" + full_report, false);
+			req.send(report_json_str);
+			if(req.status != 200) {
+				Pers_util.pers_alert("Failed to report attack to '" + //TODO: localize
+					this.REPORT_URI + "'.  Error code = " + req.status);
+			}
+		} catch(e) {
+			Pers_util.pers_alert("Error submitting report: " + e);
+		} finally {
+			document.getElementById("SubmitReport").label = orig_label;
+			document.getElementById("SubmitReport").disabled = false;
+			document.getElementById("Close").disabled = false;
+		}
+
+
+	},
 
     // note: this function is called in the scope of the main window, which is able to grab the cert.
     // that also means we use Perspectives.strbundle rather than Pers_report.strbundle.

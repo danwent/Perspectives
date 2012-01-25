@@ -128,11 +128,15 @@ var Pers_report = {
 			req.open("POST", this.REPORT_URI + "?record_ip=" + full_report, false);
 			req.send(report_json_str);
 			if(req.status != 200) {
-				Pers_util.pers_alert("Failed to report attack to '" + //TODO: localize
-					this.REPORT_URI + "'.  Error code = " + req.status);
+				Pers_util.pers_alert(
+					Pers_report.strbundle.getString("FailedToReport") +
+					" '" + this.REPORT_URI + "'. " +
+					Pers_report.strbundle.getString("ErrorCode") +
+					"  = " + req.status);
 			}
 		} catch(e) {
-			Pers_util.pers_alert("Error submitting report: " + e);
+			Pers_util.pers_alert(Pers_report.strbundle.getString("ErrorSubmittingReport") +
+				": " + e);
 		} finally {
 			document.getElementById("SubmitReport").label = orig_label;
 			document.getElementById("SubmitReport").disabled = false;

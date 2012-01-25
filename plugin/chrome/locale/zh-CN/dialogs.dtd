@@ -46,6 +46,6 @@
 <!ENTITY DefaultNotaryServers "Default Notary Servers">
 <!ENTITY UseDefaultNotaries "Use default notary server list">
 <!ENTITY AdditionalNotaryServers "Additional Notary Servers">
-<!ENTITY ForceNotaryCheck "cccForce Notary Check">
-<!ENTITY ReportAttack "cccReport Attack">
-<!ENTITY ViewCertificateStore "cccView Certificate Store">
+<!ENTITY ForceNotaryCheck "Force Notary Check">
+<!ENTITY ReportAttack "Report Attack">
+<!ENTITY ViewCertificateStore "View Certificate Store">

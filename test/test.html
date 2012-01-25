@@ -69,7 +69,7 @@ function assert(test, case_name) {
 }
 
 // placeholder function to note future tests we should implement.
-// here so you can easily set up tests and enable/disable them
+// it's here so you can easily set up tests and enable/disable them
 // by renaming the function they call.
 function assert_fixme(test, case_name) {
   write_string_to_element("[-] <font color='grey'>not implemented</font> : "
@@ -86,6 +86,17 @@ function debug(string) {
     string.replace(/</, '&lt;') + "</font>", 'li');
 }
 
+
+// when storing localization keys, use a separator character that is *not*
+// a legal filename character on most systems (including windows, linux, and osx)
+// this makes it easier to ensure we won't encounter it in file names
+// or have difficulty printing error info.
+// see get_keys_from_stream() for more.
+//
+// NOTE: we use 'const' here, which is not supported in all browsers.
+// That may or may not be important if Perspectives gets ported elsewhere
+// (this file is just the tests, after all)
+const LSEP = '/';
 
 // find all of the .dtd and .properties files in a directory
 function get_loc_files(dir) {
@@ -176,6 +187,15 @@ function get_loc_keys(filelist, locdirname) {
 // using the appropriate regex passed by the caller.
 function get_keys_from_stream(datastream, lineregex, keys, sourcefilename, locdirname) {
 
+  // we use 'filename/keyname' as the hash key, as that's the value
+  // we want to ensure is unique. but make sure there are no instances
+  // of the separator character inside the filename, so we don't have trouble
+  // parsing or splitting the hash key later, if necessary
+  // (e.g. for printing error info)
+  var cleanfilename = sourcefilename;
+  var regex = new RegExp(LSEP, "g");
+  cleanfilename = cleanfilename.replace(regex, '');
+
   var lines = datastream.split('\n');
   for (var i = 0; i < lines.length; i++) {
     // note: if printing for debug, <> don't show up in HTML docs.
@@ -185,17 +205,13 @@ function get_keys_from_stream(datastream, lineregex, keys, sourcefilename, locdi
     var match = lineregex.exec(lines[i]);
     if (match != null) {
       // grab the first stored match, match[1], not the entire match array.
-      if (keys.hasOwnProperty(match[1])) {
-        if (keys[match[1]] == sourcefilename) {
-          assert(false, locdirname + ": Duplicate key '" + match[1] + "' found twice in " + sourcefilename);
-        }
-        else {
-          assert(false, locdirname + ": Duplicate key '" + match[1] + "' found in " + sourcefilename +
-          ", but already defined in " + keys[match[1]]);
-        }
+      var protkey = cleanfilename + LSEP + match[1]
+      if (keys.hasOwnProperty(protkey)) {
+        assert(false, "(" + locdirname + "): Duplicate key '"
+          + match[1] + "' found twice in " + sourcefilename);
       }
       else {
-        keys[match[1]] = sourcefilename;
+        keys[protkey] = sourcefilename;
       }
     }
   }
@@ -513,20 +529,20 @@ function notary_replies() {
 // make sure our localizations all have the same keys in the same places.
 // test cases:
 //
-//  - Loc has no files
 //  - Loc has extra files
 //  - Loc is missing files
-//  - Loc has no keys
 //  - Loc has extra keys
 //  - Loc is missing keys
-//  - Loc has a key defined in a different file
 //  - Loc has a duplicate key defined in the same file
-//  - Loc has a duplicate key defined in a different file
+//  (the same key name defined in different files is okay -
+//   presumably they will be loaded and used in different stringbundles)
 //
 // if you think of more tests, try them and update the code if necessary
 function loc_tests() {
 
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+
+  write_string("Starting Localization tests");
 
   // get the current directory without the filename
   var curpath = document.location.pathname;
@@ -550,7 +566,6 @@ function loc_tests() {
     var entry = entries.getNext();
     entry.QueryInterface(Components.interfaces.nsIFile);
     if (entry.isDirectory()) {
-      //write_string_to_element("found '" + entry.leafName + "'", 'li');
       locdirs[entry.leafName] = entry;
     }
   }
@@ -625,8 +640,8 @@ function loc_tests() {
       for (file in files) {
         if (files.hasOwnProperty(file)) {
           if (!baseline['files'].hasOwnProperty(file)) {
-            assert(false, dirname + ": baseline " +
-              baseline['name'] + " does not have the file " + file);
+            assert(false, "(" + dirname + "): Extra file - baseline (" +
+              baseline['name'] + ") does not have the file '" + file + "'");
               exactmatch = false;
           }
         }
@@ -636,7 +651,8 @@ function loc_tests() {
       for (file in baseline['files']) {
         if (baseline['files'].hasOwnProperty(file)) {
           if (!files.hasOwnProperty(file)) {
-            assert(false, dirname + " does not have the file " + file);
+            assert(false, "(" + dirname + "): Missing file - (" + dirname +
+            ") does not have the file '" + file + "'");
             exactmatch = false;
           }
         }
@@ -647,15 +663,15 @@ function loc_tests() {
       for (key in keys) {
         if (keys.hasOwnProperty(key)) {
           if (!baseline['keys'].hasOwnProperty(key)) {
-            assert(false, dirname + ": baseline " +
-              baseline['name'] + " does not have the key '" + key +
+            // use .indexOf() because we know LSEP
+            // won't appear in the filename part of the key.
+            // this way we don't care if it appears in the stringname part of the key
+            var keyname = key.substring(key.indexOf(LSEP)+1);
+
+            assert(false, "(" + dirname + "): Extra Key - baseline (" +
+              baseline['name'] + ") does not have the key '" + keyname +
               "' in " + keys[key]);
               exactmatch = false;
-          }
-          else if (baseline['keys'][key] != keys[key]) {
-            assert(false, dirname + " has the key '" + key +
-            "' in " + keys[key] + ", but (" + baseline['name'] +
-            ") has it in " + baseline['keys'][key]);
           }
         }
       }
@@ -664,21 +680,22 @@ function loc_tests() {
       for (key in baseline['keys']) {
         if (baseline['keys'].hasOwnProperty(key)) {
           if (!keys.hasOwnProperty(key)) {
-            assert(false, dirname + " does not have the key '" + key +
+            var keyname = key.substring(key.indexOf(LSEP)+1);
+
+            assert(false, "(" + dirname + "): Missing key - (" + dirname +
+            ") does not have the key '" + keyname +
             "' in " + baseline['keys'][key]);
             exactmatch = false;
-          }
-          else if (baseline['keys'][key] != keys[key]) {
-            assert(false, dirname + " has the key '" + key +
-            "' in " + keys[key] + ", but (" + baseline['name'] +
-            ") has it in " + baseline['keys'][key]);
           }
         }
       }
 
-      assert(exactmatch, "Localization (" + dirname + ") exactly matches baseline.");
+      assert(exactmatch, "Localization (" + dirname + ") exactly matches baseline (" +
+        baseline['name'] + ").");
     }
   }
+
+  write_string("Finished");
 }
 
 

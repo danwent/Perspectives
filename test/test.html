@@ -135,8 +135,8 @@ function get_loc_files(dir) {
 function get_loc_keys(filelist, locdirname) {
 
   var keys = [];
-  var dtdline = /<!ENTITY ([A-Za-z]+) /;
-  var propline = /([A-Za-z]+)=/;
+  var dtdline = /<!ENTITY +([A-Za-z]+) +"([^"]*)"/; // <!ENTITY Name "String">
+  var propline = /([A-Za-z]+)=(.*)/; // name=string
 
   for (filename in filelist) {
     if (filelist.hasOwnProperty(filename)) {
@@ -212,6 +212,10 @@ function get_keys_from_stream(datastream, lineregex, keys, sourcefilename, locdi
       }
       else {
         keys[protkey] = sourcefilename;
+        if (!match[2]) {
+          assert(false, "Key '" + match[1] + "' in " + sourcefilename +
+            " has no value!");
+        }
       }
     }
   }
@@ -536,6 +540,7 @@ function notary_replies() {
 //  - Loc has a duplicate key defined in the same file
 //  (the same key name defined in different files is okay -
 //   presumably they will be loaded and used in different stringbundles)
+//  - Loc key is empty
 //
 // if you think of more tests, try them and update the code if necessary
 function loc_tests() {

@@ -79,6 +79,12 @@ var Pers_util = {
 	loadNotaryListFromString: function(str_data) { 
 		var start_arr = str_data.split("\n"); 
 		var filtered_arr = []; 
+		// the Perspectives object isn't always loaded here, so use our own
+		// to make sure it exists.
+		if(Pers_util.notarystr == null) {
+			Pers_util.notarystr = document.getElementById("notary_strings");
+		}
+
 		for(var i = 0; i < start_arr.length; i++) { 
         		if (start_arr[i].length > 0 && start_arr[i][0] != "#") {
         			// ignore lines that contain only whitespace -
@@ -95,19 +101,21 @@ var Pers_util = {
             		var notary_server = { "host" : host }; 
             		i += 1;
 
-            		if (i >= filtered_arr.length || filtered_arr[i].indexOf("BEGIN PUBLIC KEY") === -1) { 
-                		throw("Error parsing notary entry for '" + host + "'" + 
-					". Could not find 'BEGIN PUBLIC KEY' line."); 
+            		var begin_string = "BEGIN PUBLIC KEY";
+            		if (i >= filtered_arr.length || filtered_arr[i].indexOf(begin_string) === -1) {
+            			throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
+            				' - ' + Pers_util.notarystr.getFormattedString("couldNotFindLine", [ begin_string ]));
             		}
             		i += 1;
 
             		var key = ""; 
-            		while (i < filtered_arr.length && filtered_arr[i].indexOf("END PUBLIC KEY") === -1) { 
+            		var end_string = "END PUBLIC KEY";
+            		while (i < filtered_arr.length && filtered_arr[i].indexOf(end_string) === -1) {
                 		key += filtered_arr[i]; 
                 		i += 1;
 				if(i == filtered_arr.length) { 
-					throw("Error parsing notary entry for '" + host + "'" + 
-						". No 'END PUBLIC KEY' line found."); 
+					throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
+						' - ' +  Pers_util.notarystr.getFormattedString("couldNotFindLine", [ end_string ]));
 				}
             		}
 
@@ -195,6 +203,7 @@ var Pers_util = {
 			}
 			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
 		} catch(e) { 
+			//Note: localize this message if we ever expose this preference
 			alert("Unexpected error updating default notary_list from web: " + e); 
 		} 
 
@@ -205,6 +214,7 @@ var Pers_util = {
 			var notary_list_data = this.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");  
 			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
 		} catch(e) { 
+			//Note: localize this message if we ever expose this preference
 			alert("Unexpected error updating default notary_list from web: " + e); 
 		} 
 	},

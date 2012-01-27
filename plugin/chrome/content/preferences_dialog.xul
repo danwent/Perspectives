@@ -57,6 +57,10 @@
     type="bool"/>
 </preferences>
 
+<stringbundleset id="stringbundleset">
+    <stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" />
+</stringbundleset>
+
 <tabbox id="tablist"> 
  <tabs> 
   <tab label="&CertificateValidation;"/>

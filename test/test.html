@@ -553,7 +553,6 @@ function loc_tests() {
   var ioService = Components.classes["@mozilla.org/network/io-service;1"]
     .getService(Components.interfaces.nsIIOService);
 
-  //TODO: does this work on all platforms?
   var locURI = ioService.newURI("file://" + dir + "../plugin/chrome/locale", null, null);
   var locdir = locURI.QueryInterface(Components.interfaces.nsIFileURL).file;
   assert(locdir.isDirectory(), "Found loc dir " + locdir.path + ", and it's a directory.");

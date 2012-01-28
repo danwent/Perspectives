@@ -27,8 +27,9 @@
 
     <spacer flex  = "1"/>
     <hbox>
-        <button label="&Cancel;" onclick="window.close()"/>
+        <!-- For consistency, always put Cancel to the right of the action button -->
         <button label="&Addtowhitelist;" onclick="Pers_whitelist_dialog.confirm_add()"/>
+        <button label="&Cancel;" onclick="window.close()"/>
     </hbox>
   </groupbox>
 

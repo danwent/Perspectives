@@ -140,7 +140,9 @@
 </tabpanels> 
 </tabbox> 
 <hbox> 
+  <!-- For consistency, always put Cancel to the right of the action button -->
   <button label = "&OK;" onclick="acceptDialog()"/>
+  <button label = "&Cancel;" onclick="window.close();"/>
 </hbox>
 
 </prefpane>

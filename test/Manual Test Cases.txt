@@ -30,6 +30,12 @@ UI
 - Same as above; all but https should be rejected as invalid URLs
 
 
+Preferences:
+- Quorum Percentage must be <= 100
+- Quorum Percentage must be >= 1
+- Quorum Duration must be >= 1
+
+
 
 Toolbar Button
 --------------

@@ -8,31 +8,18 @@
 
 <link rel="stylesheet" type="text/css" href="../../content/css/perspectives.css" />
 <link rel="SHORTCUT ICON" href="../../content/default.png">
+<script type="text/javascript" src="../../content/common.js"></script>
 
 <script type="text/javascript">
 
-	function parse_keypress(event){
-
-		var key = (event.keyCode ? event.keyCode : event.which);
-		if (key) {
-
-			var ESC_KEYCODE = 27;
-
-			// let the Esc key close the window
-			if (key === ESC_KEYCODE) {
-				window.close();
-			}
-		}
-		return true;
-	}
-
+	// all of the other Perspectives windows close when the user presses Esc
+	// make this window do the same, to keep behaviour consistent
 	if (window.addEventListener) {
-		window.addEventListener("keypress", parse_keypress, false);
+		window.addEventListener("keypress", Pers_keypress.press_esc_to_close, false);
 	}
 	else if (window.attachEvent) {
-		window.attachEvent("onkeypress", parse_keypress)
+		window.attachEvent("onkeypress", Pers_keypress.press_esc_to_close)
 	}
-	// TODO: do we need window.keypress = parse_keypress(event); ?
 
 </script>
 </head>

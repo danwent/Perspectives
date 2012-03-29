@@ -51,16 +51,38 @@ var Pers_pref = {
 
 	},
 
-        save_button_clicked: function() {
-	   try {  
-		var add_list = document.getElementById("additional_notary_list");
-		var l = Pers_util.loadNotaryListFromString(add_list.value); 
-		window.close()
-		return true; 
-	   } catch (e) { 
-		alert("Perspectives Error: " + e);
-		return false;  
-	   } 
+	// extra validation on some of the preference values
+	save_button_clicked: function() {
+		var ret = true;
+
+		try {
+			if (this.root_prefs.getIntPref("perspectives.required_duration") < 0) {
+				this.root_prefs.setIntPref("perspectives.required_duration", 0);
+			}
+		} catch (e) {
+			Pers_util.pers_alert(e);
+			ret = false;
+		}
+		try {
+			if (this.root_prefs.getIntPref("perspectives.quorum_thresh") < 1) {
+				this.root_prefs.setIntPref("perspectives.quorum_thresh", 1);
+			} else if (this.root_prefs.getIntPref("perspectives.quorum_thresh") > 100) {
+				this.root_prefs.setIntPref("perspectives.quorum_thresh", 100);
+			}
+		} catch (e) {
+			Pers_util.pers_alert(e);
+			ret = false;
+		}
+		try {
+			var add_list = document.getElementById("additional_notary_list");
+			var l = Pers_util.loadNotaryListFromString(add_list.value);
+			window.close();
+		} catch (e) {
+			Pers_util.pers_alert(e);
+			ret = false;
+		}
+
+		return ret;
 	},
 
 	auto_update_changed: function() {
@@ -75,18 +97,18 @@ var Pers_pref = {
 			} 
 			this.load_preferences(); 
 		} catch(e) { 
-			alert("Perspectives Error: " + e); 
+			Pers_util.pers_alert(e);
 		}
 
 	},  
   
 	load_preferences: function(){
-		try { 
+		try {
 			Pers_pref.security_class_change(); 
 			var default_notary_text = this.root_prefs.getCharPref("perspectives.default_notary_list");
 			document.getElementById("default_notary_list").value = default_notary_text;
 		} catch(e) { 
-			alert("Perspectives Error: " + e); 
+			Pers_util.pers_alert(e);
 		} 
 	}
 }

@@ -23,9 +23,19 @@ var Pers_whitelist_dialog = {
 
 	add_to_whitelist : function() { 	
 		try {
+			// use Perspectives.strbundle because whitelist_dialog.xul isn't loaded yet
+			if(Perspectives.strbundle == null) {
+					Perspectives.strbundle = document.getElementById("notary_strings");
+			}
+			var error_text = Perspectives.detectInvalidURI(window);
+			if(error_text) {
+				Pers_util.pers_alert(Perspectives.strbundle.getString("couldNotAddToWhitelist")
+					+ ": " + error_text);
+				return;
+			}
 			var host = window.gBrowser.currentURI.host;
-        		window.openDialog("chrome://perspectives/content/whitelist_dialog.xul", "", "", host).focus();
-		} catch (e) { alert("add_to_whitelist: " + e); } 
+			window.openDialog("chrome://perspectives/content/whitelist_dialog.xul", "", "centerscreen", host).focus();
+		} catch (e) { Pers_util.pers_alert("add_to_whitelist: " + e); }
 
 	},
 
@@ -95,25 +105,32 @@ var Pers_whitelist_dialog = {
 
 	fill_dialog: function(){
 		try {
+			if(Pers_whitelist_dialog.strbundle == null) {
+					Pers_whitelist_dialog.strbundle = document.getElementById("whitelist_strings");
+				}
+
 			var host = window.arguments[0];
-			document.getElementById("whitelist-radio-1").label = "Whitelist website '" + host + "'"; 
+			document.getElementById("whitelist-radio-1").label =
+				Pers_whitelist_dialog.strbundle.getString("whitelistWebsite") + " '" + host + "'";
 				
 			document.getElementById("whitelist-radio-2").hidden = true; 
 			if(this.is_ip_address(host)) { 
 				var host_text = this.get_ip_domain_text(host); 
 				if(host_text) { 
-					document.getElementById("whitelist-radio-2").label = "Whitelist all websites in IP range '" + host_text + "'"; 
+					document.getElementById("whitelist-radio-2").label =
+						Pers_whitelist_dialog.strbundle.getString("whitelistAllWebsitesInIP") + " '" + host_text + "'";
 					document.getElementById("whitelist-radio-2").hidden = false; 
 				} 
 			} else {  
 				var dns_text = this.get_dns_domain_text(host); 
 				if(dns_text) { 
-					document.getElementById("whitelist-radio-2").label = "Whitelist all websites in the domain '" + dns_text + "'"; 
+					document.getElementById("whitelist-radio-2").label =
+						Pers_whitelist_dialog.strbundle.getString("whitelistAllWebsitesInDomain") + " '" + dns_text + "'";
 					document.getElementById("whitelist-radio-2").hidden = false; 
 				} 
 			}	
 
-		} catch(e) { alert("fill_dialog: " + e); } 
+		} catch(e) { Pers_util.pers_alert("fill_dialog: " + e); }
 	}, 
 
 	remove_from_whitelist : function() { 
@@ -129,7 +146,7 @@ var Pers_whitelist_dialog = {
 				var r = RegExp(e);
 				var display_str = e.replace(/\\/g,"").replace("$","").replace("^",""); 
 				if (host.match(r)) {
-					var answer = confirm("Remove '" + display_str + "' from whitelist?");  
+					var answer = confirm("Remove '" + display_str + "' from whitelist?"); //FIXME: localize, once we know how to get here
 					if(answer) { 
 						continue; 
 					} 

@@ -3,18 +3,25 @@
 <!DOCTYPE prefwindow SYSTEM "chrome://perspectives/locale/dialogs.dtd">
 
 <window id = "perspectives-notary-results" 
-	title          = "Perspectives Results"
+	title          = "Perspectives &NotaryResults;"
 	xmlns          = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	buttons        = ","
 	onload         = "Pers_results.load_results_dialog()"
-  onkeypress     = "Pers_results.parse_keypress(event)"
+  onkeypress     = "Pers_keypress.press_esc_to_close(event)"
 >
+
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="results_strings" src="chrome://perspectives/locale/results.properties" />
+    <!-- include notaries.properties so we can reference some strings rather than duplicating
+    them inside results.properties -->
+    <stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" />
+  </stringbundleset>
 
 <vbox> 
   <groupbox minheight="235">
     <caption 
       id="perspective-information-caption" 
-      label="Detailed Information" 
+      label="&DetailedInformation;"
       style="font-weight: bold"/>
 	<label id="perspective-quorum-duration" value="&NoQuorumInformation;"/>
     <textbox id = "perspective-description"

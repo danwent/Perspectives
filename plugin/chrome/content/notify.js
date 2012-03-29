@@ -73,7 +73,7 @@ var Pers_notify = {
 	notifyOverride: function(b,mixed_security){
 
 		var priority = "PRIORITY_INFO_LOW";
-		var message = mixed_security ? "Perspectives has validated this website's certificate and bypassed Firefox's security error page.  However, this page contains insecure embedded content" :  Perspectives.strbundle.getString("verificationSuccess");
+		var message = mixed_security ? Perspectives.strbundle.getString("validatedButInsecureEmbedded") :  Perspectives.strbundle.getString("verificationSuccess");
 		var buttons = [{
 			accessKey : "", 
 			label: Perspectives.strbundle.getString("learnMore"), 
@@ -89,11 +89,11 @@ var Pers_notify = {
 	notifyWhitelist: function(b){
 
 		var priority = "PRIORITY_INFO_LOW";
-		var message = "You have configured Perspectives to whitelist connections to this website"; 
+		var message = Perspectives.strbundle.getString("configuredToWhitelist");
 		var buttons = [
 			{
 			accessKey : "", 
-			label: "Remove from Whitelist", 
+			label: Perspectives.strbundle.getString("removeFromWhitelist"),
 			accessKey : "", 
 			callback: function() {
 				Pers_whitelist_dialog.remove_from_whitelist(b); 
@@ -114,7 +114,7 @@ var Pers_notify = {
 		 	}
 		  }, 
 		  {
-		 	label: "Whitelist", 
+			label: Perspectives.strbundle.getString("addToWhitelist"),
 		 	accessKey : "", 
 		 	callback: function() {
 				Pers_whitelist_dialog.add_to_whitelist(); 
@@ -168,7 +168,8 @@ var Pers_notify = {
 						Pers_debug.d_print("main", "User gives probe permission\n"); 
 						ti.has_user_permission = true;
         					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY, 
-							"Contacting notaries about '" + ti.uri.host + "'");
+							Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
+							 [ ti.uri.host ]));
 						Perspectives.updateStatus(window,false); 
 					} catch (e) { 
 						Pers_debug.d_print("main", "Error on UpdateStatus: " + e); 
@@ -209,7 +210,7 @@ var Pers_notify = {
 			} 
 		  }, 
 		  {
-		 	label: "Whitelist", 
+			label: Perspectives.strbundle.getString("addToWhitelist"),
 		 	accessKey : "", 
 		 	callback: function() {
 				Pers_whitelist_dialog.add_to_whitelist(); 

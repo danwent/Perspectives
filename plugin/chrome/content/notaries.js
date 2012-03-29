@@ -426,7 +426,7 @@ var Perspectives = {
 				obs_text += Pers_xml.resultToString(server_result_list[i]); 
 			}  
 			var qd_str = (is_cur_consistent) ? qd_days + " days" : "none";
-			var str = "Notary Lookup for: " + ti.service_id + "\n";
+			var str = "Notary Lookup for: " + ti.service_id + "\n"; //TODO: localize
     			str += "Browser's Key = '" + test_key + "'\n"; 
     			str += "Results:\n"; 
     			str += "Quorum duration: " + qd_str + "\n"; 
@@ -476,14 +476,17 @@ var Perspectives = {
 	// Updates the status of the current page 
 	updateStatus: function(win, is_forced){
 
-		if(Perspectives.strbundle == null) 
+		if(Perspectives.strbundle == null) {
 			Perspectives.strbundle = document.getElementById("notary_strings");
+		}
 
 		Pers_debug.d_print("main", "Update Status\n");
 		
 		var error_text = Perspectives.detectInvalidURI(win); 
 		if(error_text) { 	
-			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "Waiting on URL data from Firefox (" + error_text + ")");
+			var text = Perspectives.strbundle.
+				getFormattedString("waitingOnURLData", [ error_text ]);
+			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, text);
 			return; 
 		} 
 		var ti = Perspectives.getCurrentTabInfo(win);
@@ -526,13 +529,13 @@ var Perspectives = {
 				var isTemp = !Perspectives.root_prefs.getBoolPref("perspectives.exceptions.permanent");
 				setTimeout(function() {  
 					if(Perspectives.do_override(ti.browser, ti.cert, isTemp)) { 
-						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); 
+						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); //TODO: localize
 						Pers_notify.do_notify(ti, Pers_notify.TYPE_WHITELIST);
 					}
 				}, 1000); 
 			} 
-			var text = "You have configured Perspectives to whitelist connections to '" + 
-									ti.uri.host  + "'";
+			var text = Perspectives.strbundle.
+				getFormattedString("configuredToWhitelistWithHost", [ ti.uri.host ]);
 			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC, text); 
 			ti.reason_str = text;
 			return; 
@@ -590,7 +593,9 @@ var Perspectives = {
 			// make sure we're using the most recent notary list
 			Perspectives.all_notaries = this.getNotaryList(); 
 			if(Perspectives.all_notaries.length == 0) { 
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, "List of notary servers is empty."); 
+				var text = Perspectives.strbundle.
+					getString("listOfNotariesIsEmpty");
+				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 				return; 
 			} 
  
@@ -608,7 +613,7 @@ var Perspectives = {
 				Perspectives.getFaviconText().indexOf("Perspectives") < 0){
 				ti.query_results.identityText = 
 					Perspectives.setFaviconText(Perspectives.getFaviconText() +
-					"\n\n" + "Perspectives has validated this site");
+					"\n\n" + "Perspectives has validated this site"); //TODO: localize
 			}
 			var required_duration   = 
 				Perspectives.root_prefs.
@@ -650,7 +655,7 @@ var Perspectives = {
 				if(mixed_security) { 
 					// FIXME: need to clear any contrary banners
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, 
-					"HTTPS Certificate is trusted, but site contains insecure embedded content. ");
+					"HTTPS Certificate is trusted, but site contains insecure embedded content. "); //TODO: localize
 					// this will flicker, as we can't rely on just doing it on 'firstLook'
 					// due to Firefox oddness
 					if(ti.override_used) { 	
@@ -668,10 +673,10 @@ var Perspectives = {
 				// FIXME: need to clear any contrary banners
 				if(ti.state & Perspectives.state.STATE_IS_BROKEN) { 
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, 
-					"HTTPS Certificate is weakly trusted, but site contains insecure embedded content. ");
+					"HTTPS Certificate is weakly trusted, but site contains insecure embedded content. "); //TODO: localize
 				}  else { 
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC, 
-					"This site uses multiple certificates, including the certificate received and trusted by your browser.");
+					"This site uses multiple certificates, including the certificate received and trusted by your browser."); //TODO: localize
 
 				} 
 			} else if (ti.query_results.summary.indexOf("ssl key") == -1) { 
@@ -686,12 +691,12 @@ var Perspectives = {
 			} else if(ti.query_results.inconsistent_results && !ti.query_results.weakly_seen) { 
 				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = "This site regularly uses multiples certificates, and most Notaries have not recently seen the certificate received by the browser";
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, 
+				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, //TODO: localize
 					ti.query_results.tooltip);
 			} else if(ti.query_results.inconsistent_results) { 
 				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = "Perspectives is unable to validate this site, because the site regularly uses multiples certificates"; 
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, 
+				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, //TODO: localize
 					ti.query_results.tooltip);
 			} else if(!ti.query_results.cur_consistent){
 				// FIXME: need to clear any contrary banners
@@ -716,7 +721,7 @@ var Perspectives = {
 				}
 			} else { 
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = "An unknown Error occurred processing Notary results";
+				ti.query_results.tooltip = "An unknown Error occurred processing Notary results"; //TODO: localize
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_ERROR, 
 					ti.query_results.tooltip);
 			} 
@@ -772,14 +777,17 @@ var Perspectives = {
    		// was causing a bug that caused us to get the previous website's cert
    		// instead of the correct cert.  
    		onLocationChange: function(aWebProgress, aRequest, aURI) {
+			if(Perspectives.strbundle == null) {
+				Perspectives.strbundle = document.getElementById("notary_strings");
+			}
       			try{
         			Pers_debug.d_print("main", "Location change " + aURI.spec + "\n");
         			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_QUERY, 
-							"Contacting notaries about '" + aURI.host + "'");
+        				Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [ aURI.host ]));
       			} catch(err){
         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
         			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR, 
-					"Perspectives: an internal error occurred: " + err);
+					"Perspectives: an internal error occurred: " + err); //TODO: localize
       			}
 
    		},
@@ -796,7 +804,7 @@ var Perspectives = {
        			  } catch (err) {
          			Pers_debug.d_print("Perspectives had an internal exception: " + err);
          			Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR, 
-					"Perspectives: an internal error occurred: " + err);
+					"Perspectives: an internal error occurred: " + err); //TODO: localize
        			  }
      			}
   		},
@@ -813,7 +821,7 @@ var Perspectives = {
          			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
          			if(uri) {
           				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR, 
-						"Perspectives: an internal error occurred: " + err);
+						"Perspectives: an internal error occurred: " + err); //TODO: localize
          			}
        			}
  
@@ -921,7 +929,8 @@ var Perspectives = {
 			Pers_debug.d_print("main", "Forced request, clearing cache for '" + ti.uri.host + "'"); 
 			delete ti.query_results; 
 			ti.has_user_permission = true; // forcing a check is implicit permission  
-			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY, "Contacting notaries about '" + ti.uri.host + "'");
+			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY,
+				Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [ ti.uri.host ]));
 			Perspectives.updateStatus(win, true); 
 		} else { 
 			Pers_debug.d_print("main", "Requested force check with valid URI, but no tab_info is found"); 
@@ -947,7 +956,7 @@ var Perspectives = {
 					"have been updated to query the notary server for all " + 
 					"HTTPS sites. Do you want to update this setting to use " +
 					"the default or keep your current settings?", buttons, 
-					"Update Settings", "Keep current settings", "", null, 
+					"Update Settings", "Keep current settings", "", null, //TODO: localize
 					check);
 				if (answer == 0) {
 					Perspectives.root_prefs.

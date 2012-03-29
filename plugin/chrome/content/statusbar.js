@@ -104,11 +104,11 @@ var Pers_statusbar = {
 
 	openCertificates: function(){
 		openDialog("chrome://pippki/content/certManager.xul", 
-			"Certificate Manager");
+			"Certificate Manager","centerscreen,chrome");
 	},
 
 	openHelp: function(){
 		openDialog("chrome://perspectives/locale/help.html","",
-			"width=600,height=600,resizable=yes");
+			"width=600,height=600,resizable=yes,centerscreen");
 	}
 }

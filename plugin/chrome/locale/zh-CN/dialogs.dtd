@@ -1,18 +1,17 @@
+<!-- This file contains localized strings for Perspectives .xul files. -->
 <!ENTITY NotaryResults "Notary 结果">
+<!ENTITY ViewNotaryResults "View Notary 结果"> <!-- TODO -->
 <!ENTITY Preferences "配置">
 <!ENTITY NoQuorumInformation "没有查询信息">
 <!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "对于这个位置没有可用的Perspectives信息。">
 <!ENTITY Timeline "时间轴">
-<!ENTITY NotaryResults "Notary 结果">
 <!ENTITY SecuritySettings "安全设置">
 <!ENTITY HighSecurity "高级安全">
 <!ENTITY MediumSecurity "中级安全">
 <!ENTITY HighAvailability "低级安全（高度可用）">
 <!ENTITY ManualConfiguration "手工设置">
 <!ENTITY Percentageofnotariesthatmustagree "获得notary服务器同意的数目的百分比">
-<!ENTITY QuorumPercentage "群体数（百分比）">
 <!ENTITY Lengthoftimequorummustbeachieved "群体数被认证的时间长度">
-<!ENTITY DurationDays "时间长度（天）">
 <!ENTITY OverridingFirefoxSecurityErrors "跳过Firefox安全错误">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "允许Perspectives自动跳过安全错误">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "永远相信Perspectives认为安全的认证">
@@ -24,3 +23,27 @@
 <!ENTITY Servers "Notary 服务器">
 <!ENTITY Help "帮助">
 <!ENTITY OK "完成">
+<!-- TODO: Please translate! -->
+<!ENTITY Close "Close">
+<!ENTITY Cancel "Cancel">
+<!ENTITY Addtowhitelist "Add to Whitelist">
+<!ENTITY Addsitetowhitelist "Add Site to Whitelist">
+<!ENTITY Whitelistmessage "Experts only: By adding a website to your whitelist, Perspectives automatically trusts all connections to it without contacting notaries. Do this only if you understand the risks.">
+<!ENTITY ReportPossibleAttack "Report Possible Attack">
+<!ENTITY ReportAttackMessage "By reporting an attack, the Perspectives project can improve this extension and detect Internet vulernabilities.">
+<!ENTITY SendFullReport "Send full report">
+<!ENTITY SendPrivacyReport "Send privacy-sensitive report">
+<!ENTITY Optional "Optional">
+<!ENTITY EmailDescription "Email Address for follow-up questions">
+<!ENTITY AdditionalInfoMessage "Any additional information describing the circumstances of this possible attack">
+<!ENTITY ShowDetailedReportText "Show Detailed Report Text">
+<!ENTITY SubmitReport "Submit Report">
+<!ENTITY DetailedInformation "Detailed Information">
+<!ENTITY CertificateValidation "Certificate Validation">
+<!ENTITY AutoTrust "Automatically trust certificates for the following sites">
+<!ENTITY DefaultNotaryServers "Default Notary Servers">
+<!ENTITY UseDefaultNotaries "Use default notary server list">
+<!ENTITY AdditionalNotaryServers "Additional Notary Servers">
+<!ENTITY ForceNotaryCheck "Force Notary Check">
+<!ENTITY ReportAttack "Report Attack">
+<!ENTITY ViewCertificateStore "View Certificate Store">

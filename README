@@ -18,3 +18,64 @@ To debug the extension:
 
 Feel free to try Venkman or other debug methods (cf. https://developer.mozilla.org/en/Setting_up_extension_development_environment )
 
+
+TESTING
+
+To test Perspectives:
+
+- (optional, but recommended) Build and install the Perspectives extension, as above
+- Open test/test.html in your Firefox browser
+- Press the 'Run Tests' button
+
+Test results will be displayed on the page.
+
+If you have ideas for further tests please let us know!
+
+
+TESTING - SCRIPT SECURITY PERMISSIONS
+
+Some test cases read and set preferences from the Perspectives extension while running. To do this the javascript code inside test.html needs additional security permissions. If you run the tests you may see a popup warning that says
+
+	"A script from "file://" is requesting enhanced abilities that are UNSAFE and could be used to compromise your machine or data:
+	>Run or install software on your machine
+	Allow these abilities only if you trust this source to be free of viruses or malicious programs."
+
+This is normal behaviour when running the tests. If you trust the code in test.html (and don't take our word for it - read through it yourself to be sure!) you can click 'Allow' and the tests will run. If you click 'Deny' those tests will be skipped, and any remaining tests that do not require permissions will run normally.
+
+
+TESTING - ADDING TEST.HTML TO THE PERMISSIONS WHITELIST
+
+Clicking 'Allow' on the permissions popup above will globally allow any "file://" scripts access to a lot of things. Maybe you don't wish to allow that broad an exception. Maybe you don't wish to store such an exception permanently by checking the 'Remember this decision' checkbox. Or maybe you wish to revoke that stored permission once you are finished testing. Read on.
+
+Firefox stores its permissions whitelist in the prefs.js file under each Firefox profile. Profiles are usually stored in
+
+  Windows - %appData%/Mozilla/Firefox/Profiles
+  Linux - ~/.mozilla/firefox/
+  Mac - <username>/Library/Application Support/Firefox/Profiles
+
+To find or open your profile folder:
+- In a Firefox window click on Help -> Troubleshooting Information
+- Under the 'Application Basics' section, on the 'Profile Directory' line, click on the button that says 'Open Containing Folder' (Windows and Linux) or 'Show in Finder' (Mac OS)
+
+
+If Firefox is not running, you can open prefs.js and add or edit the whitelist values. You may wish to make a backup copy of the file first!!
+
+To revoke permissions that have been granted and stored, find the lines that look like
+
+	user_pref("capability.principal.codebase.p0.granted", "UniversalXPConnect");
+	user_pref("capability.principal.codebase.p0.id", "file:///");
+	user_pref("capability.principal.codebase.p0.subjectName", "");
+
+and delete them. Save the file, then re-launch Firefox.
+
+If you want to whitelist only one file, such as the test file for Perspectives, you can add or edit the value to include one local path. e.g.:
+
+	user_pref("capability.principal.codebase.p0.granted", "UniversalXPConnect");
+	user_pref("capability.principal.codebase.p0.id", "file:///C:/code/perspectives/github/test/test.html");
+	user_pref("capability.principal.codebase.p0.subjectName", "");
+
+
+
+Note: if Firefox is running no changes to prefs.js will be saved.
+
+Note: if you use a different profile than the default you may need to change the 'p0' value accordingly.

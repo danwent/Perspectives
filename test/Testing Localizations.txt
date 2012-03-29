@@ -1,0 +1,11 @@
+To test Localizations:
+
+- In a new tab, open about:config
+- Find the Preference 'general.useragent.locale'
+- Save your current value here:
+- Edit the value to the Perspectives localization you wish to test
+- Restart Firefox
+
+
+For a list of localization targets see
+https://wiki.mozilla.org/Category:L10n_Teams

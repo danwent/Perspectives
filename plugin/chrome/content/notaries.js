@@ -389,6 +389,10 @@ var Perspectives = {
 
 	notaryQueriesComplete: function(ti) {
 		try {
+			if(Pers_whitelist_dialog.strbundle == null) {
+				Pers_whitelist_dialog.strbundle = document.getElementById("notary_strings");
+			}
+
 			var server_result_list = ti.partial_query_results; 
 			delete ti.partial_query_results; 
 			delete ti.timeout_id; 
@@ -426,11 +430,15 @@ var Perspectives = {
 				obs_text += Pers_xml.resultToString(server_result_list[i]); 
 			}  
 			var qd_str = (is_cur_consistent) ? qd_days + " days" : "none";
-			var str = "Notary Lookup for: " + ti.service_id + "\n"; //TODO: localize
-    			str += "Browser's Key = '" + test_key + "'\n"; 
-    			str += "Results:\n"; 
-    			str += "Quorum duration: " + qd_str + "\n"; 
-    			str += "Notary Observations: \n" + obs_text + "\n"; 
+			var str = Perspectives.strbundle.getString("notaryLookupFor") +
+				": " + ti.service_id + "\n";
+				str += Perspectives.strbundle.getString("LegendBrowsersKey") +
+					" = '" + test_key + "'\n";
+				str += Perspectives.strbundle.getString("results") + ":\n";
+				str += Perspectives.strbundle.getString("quorumDuration") +
+					": " + qd_str + "\n";
+				str += Perspectives.strbundle.getString("notaryObservations") +
+					": \n" + obs_text + "\n";
 			//Pers_debug.d_print("main","\n" + str + "\n");	
 			var svg = Pers_gen.get_svg_graph(ti.service_id, server_result_list, 30,
 				unixtime,test_key, max_stale_sec);

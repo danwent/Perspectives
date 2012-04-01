@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>perspectives@cmu.edu</em:id>
 		<em:name>Perspectives</em:name>
 		<em:version>4.2</em:version>
-    		<em:type>2</em:type>
-    		<em:optionsURL>chrome://perspectives/content/preferences_dialog.xul</em:optionsURL>
+		<em:type>2</em:type>
+		<em:optionsURL>chrome://perspectives/content/preferences_dialog.xul</em:optionsURL>
 
-     		<!-- Firefox -->
+		<!-- Firefox -->
 		<em:targetApplication>   
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
@@ -19,38 +19,48 @@
 			</Description>
 		</em:targetApplication>
 
-        	<!-- SeaMonkey -->
-        	<em:targetApplication>
-            		<Description>
-                		<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
-                		<em:minVersion>2.0</em:minVersion>
-                		<em:maxVersion>2.0.*</em:maxVersion>
-            		</Description>
-        	</em:targetApplication>
+		<!-- SeaMonkey -->
+		<em:targetApplication>
+			<Description>
+				<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
+				<em:minVersion>2.0</em:minVersion>
+				<em:maxVersion>2.0.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
 
-        <em:localized>
-	<Description> 
-	 <em:locale>en-US</em:locale> 
-		<em:name>Perspectives</em:name>
-    		<em:description>Securely bypasses Firefox HTTPS security 
-		 errors by verifying certificates using a collection of 
-		 Network Notaries.  See http://www.perspectives-project.org 
-		</em:description>
-    		<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
-    		<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
-	 </Description> 
-    </em:localized> 
-    <em:localized> 
-	<Description> 
-	 <em:name>Perspectives</em:name>
-	 <em:locale>zh-CN</em:locale> 
-    		<em:description>一种验证安全编码站点并跳过Firefox安全警告的安全方法 </em:description>
-    		<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
-    		<em:homepageURL>http://www.perspectives-project.org
-		</em:homepageURL>
-	 </Description> 
-    </em:localized>
-    <em:unpack>true</em:unpack>
- </Description>
+		<em:localized>
+			<Description>
+			 <em:locale>en-US</em:locale>
+				<em:name>Perspectives</em:name>
+				<em:description>Securely bypasses Firefox HTTPS security
+				 errors by verifying certificates using a collection of
+				 Network Notaries.  See http://www.perspectives-project.org
+				</em:description>
+				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
+				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
+			 </Description>
+		</em:localized>
+		<em:localized>
+			<Description>
+			 <em:locale>fr</em:locale>
+				<em:name>Perspectives</em:name>
+				<em:description>Securely bypasses Firefox HTTPS security errors by verifying certificates using a collection of Network Notaries.  See http://www.perspectives-project.org
+				</em:description>
+				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
+				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
+				<em:translator>Goofy</em:translator>
+			 </Description>
+		</em:localized>
+		<em:localized>
+			<Description>
+				<em:name>Perspectives</em:name>
+				<em:locale>zh-CN</em:locale>
+				<em:description>一种验证安全编码站点并跳过Firefox安全警告的安全方法 </em:description>
+				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
+				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
+			 </Description>
+		</em:localized>
+		<em:unpack>true</em:unpack>
+	</Description>
 
 </RDF>

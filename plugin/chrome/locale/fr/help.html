@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+<title>Aide de l'extension Perspectives</title>
+
+<link rel="stylesheet" type="text/css" href="&#46;&#46;/&#46;&#46;/content/css/perspectives.css" />
+<link rel="SHORTCUT ICON" href="&#46;&#46;/&#46;&#46;/content/default.png">
+<script type="text/javascript" src="&#46;&#46;/&#46;&#46;/content/common.js"></script>
+
+<script type="text/javascript">
+
+	// all of the other Perspectives windows close when the user presses Esc
+	// make this window do the same, to keep behaviour consistent
+	if (window.addEventListener) {
+		window.addEventListener("keypress", Pers_keypress.press_esc_to_close, false);
+	}
+	else if (window.attachEvent) {
+		window.attachEvent("onkeypress", Pers_keypress.press_esc_to_close)
+	}
+
+</script>
+</head>
+
+<body>
+<h1>Aide de Perspectives</h1> 
+<h3> Qu'est-ce que Perspectives? </h3>  
+<p> Perspectives aide à empêcher les attaques "Man-in-the-Middle" (<a href="https://fr.wikipedia.org/wiki/Man-in-the-middle" target="_blank">en savoir plus</a>) contre les communications HTTPS en vérifiant l'authenticité de la clé SSL publique du serveur. C'est particulièrement important quand vous vous connectez à des sites web qui ont des certificats « auto-signés », qui ne correspondent pas, ou qui ont expiré, ce qui cause des erreurs de sécurité et vous empêche de vous connecter à certains sites en HTTPS.   
+</p> 
+
+<h3> Comment ça marche ? </h3> 
+<p> Perspectives se fonde sur le principe que la plupart du temps Internet fonctionne correctement. Quand des attaques surviennent véritablement, elles sont vraisemblablement d'une ampleur limitée (par ex. un seul routeur est touché) ou d'une durée limitée (car les attaques massives peuvent être facilement détectées). Perspectives fonctionne en inspectant régulièrement le réseau depuis plusieurs sites de confiance sur Internet, pour aider votre navigateur à détecter les deux types d'attaque. Un groupe de machines appelées « les Notaires du réseau » réparties sur tout l'Internet et maintenues par des universitaires chercheurs sont chargées d'inspecter chaque serveur à intervalles réguliers pour lui demander sa clé d'accès publique. Quand votre navigateur a besoin d'authentifier une clé, il demande à chaque « Notaire » quelles sont les clés qu'il a vu être utilisées depuis un certain temps et vérifie que ces données enregistrées coïncident avec la clé dont l'authentification est demandée. Ainsi, s'il voulait tromper votre navigateur en lui faisant accepter une clé invalide, un attaquant devrait intercepter tous les échanges entre le site et les Notaires et les avoir compromis un temps suffisamment long pour que le changement de clé ne soit pas dénoncé comme frauduleux. 
+En procédant ainsi, Perspectives met en œuvre une sorte de « PKI léger »  (<a href="http://www.securiteinfo.com/cryptographie/pki.shtml" target="_blank"> en savoir plus</a>), avec des inspections du réseau depuis de multiples endroits sûrs au lieu de procéder à une vérification manuelle à la manière des autorités de certification comme Verisign.
+</p> 
+
+<h3> Préférences </h3>
+<p> Cette section va vous aider à comprendre les paramètres de configuration que vous pouvez choisir dans le panneau des préférences de l'extension. </p>
+<p><b>Paramètres de sécurité : qu'est-ce que le Quorum et le délai de Quorum ?</b> </p>  
+<p>Le dialogue des préférences vous permet de configurer différentes valeurs pour « Quorum » et « Délai de Quorum ». 
+Ces deux valeurs de seuil vous permettent de décider de votre degré de paranoïa pour l'acceptation des clés. Dans les deux cas, les valeurs les plus élevées correspondent à une sécurité plus stricte, mais font également courir le risque de faux positif, c'est-à-dire de détecter comme invalide une clé qui ne l'est pas. 
+</p> 
+
+<p>Le <b>Quorum</b> est une valeur de seuil qui détermine le pourcentage minimum de Notaires qui doivent concorder pour qu'une clé soit considérée comme valide. Les valeurs raisonnables sont entre 100% et 50%.
+</p>
+
+<p><b>Le délai de Quorum </b> précise le nombre de jours pendant lesquels les observations sont pertinentes, pour aider à se protéger des attaques de courte durée. Si vous précisez un délai de Quorum « J » autre que zéro, cela signifie que vous voulez rejeter une clé à moins qu'un nombre suffisant (un quorum) de Notaires n'ait observé cette clé de façon pertinente les J derniers jours. 
+Dans la mesure où votre requête au réseau de Notaires peut être la première qu'il reçoit pour un serveur spécifique, il se peut qu'il ne dispose pas d'un historique des clés. Par conséquent, préciser une valeur de J supérieure à zéro peut provoquer le rejet d'un plus grand nombre de clés. 
+</p> 
+
+<p> <b> Exceptions pour des certificats invalides </b> </p> 
+<p> Quand un certificat est dans le créneau de la durée de quorum, Perspectives peut installer une exception pour ce certificat, de telle sorte que Firefox ne lance pas d'erreur de sécurité  pour les pages qui utilisent ce certificat. Vous pouvez choisir de demander ou non à Perspectives d'installer ces exceptions, et vous pourrez aussi préciser si les exceptions installées doivent être permanentes.  
+</p>
+
+
+<h3> Questions / Commentaires ? </h3>  
+ 
+<ul> 
+<li> Vous pouvez nous contacter à l'adresse <a href="mailto:perspectives-project@cs.cmu.edu">perspectives-project@cs.cmu.edu</a> </li> 
+<li> Pour en savoir plus, veuillez consulter le document support de notre conférence à ce sujet, disponible sur le <a href="http://www.perspectives-project.org" target="_blank"> site web de Perspectives </a>   </li>  
+</ul>  
+ </body> 
+</html>
+

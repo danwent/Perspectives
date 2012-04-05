@@ -1,19 +1,7 @@
-Updating the XPI: 
-
-(Needed only to release official versions of perspectives)
-
-Dependencies: openssl, unzip, and the following perl modules: 
-Convert::ASN1, XML::Parser, RDF::Core
-
-To generate the update.rdf we use
-a gpl script found here.  http://www.softlights.net/projects/mexumgen/
-1) Make sure you have necessary dependencies.
-2) Update the version in the install.rdf and make the xpi as described above.
-3) Get hold of the private key
-4) sh genupdate.sh <private key> <perspectives.xpi>
-5) put the xpi and the update.rdf on the web servers
+Updating Perspectives is now easy: simply log in to https://addons.mozilla.org/ and upload a new version.
 
 
-Then:
+After updating, remember to:
+
 * Post to the Perspectives blog ( http://perspectives-project.org )
 * Send an email to perspectives-announce ( https://groups.google.com/group/perspectives-announce )

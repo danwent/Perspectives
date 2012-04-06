@@ -79,7 +79,7 @@ var Pers_notify = {
 			label: Perspectives.strbundle.getString("learnMore"), 
 			accessKey : "", 
 			callback: function() {
-				b.loadOneTab("chrome://perspectives/locale/help.html", null, 
+				b.loadOneTab("chrome://perspectives/content/help.xhtml", null,
 							 null, null, false);
 			}
 		}];
@@ -180,7 +180,7 @@ var Pers_notify = {
 				label: Perspectives.strbundle.getString("learnMore"),
 				accessKey : "", 
 				callback: function() {
-					b.loadOneTab("chrome://perspectives/locale/help.html", 
+					b.loadOneTab("chrome://perspectives/content/help.xhtml",
 								 null, null, null, false);
 				} 
 			}

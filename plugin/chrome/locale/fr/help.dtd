@@ -1,41 +1,31 @@
-<!ENTITY h1perspectivesHelp "Perspectives Help">
-<!ENTITY h3whatisPerpectives "What is Perspectives?">
-<!ENTITY whatisPerspectives "Perspectives helps prevent 'Man-in-the-Middle' attacks against HTTPS communication by verifying the authenticity of the server's SSL public key. This is particularly important when you connect to websites that have 'self-signed', mismatched, or expired certificates, which cause Security Errors and prevent you from connecting to some HTTPS websites.">
-<!ENTITY h3howDoesItWork "How Does it Work?">
-<!ENTITY howDoesItWork "Perspectives builds on the fact that most of the time the Internet works correctly.
-When attacks do occur, they are likely to be either limited in scope (e.g., a single compromised router) or limited in duration (since large attacks can be more easily detected). 
-Perspectives uses periodic network probing from many vantage points across the Internet 
-to help your browser detect both types of attacks.  A set of machines called 'network notaries' 
-scattered across the Internet and run by academic researchers periodically probe each server
-to request its current public key. When your browser needs to authenticate a key, it asks each
-network notary for the keys they have seen the server using over time and verifies that these records
-are consistent with the key they received.  Thus, in order to fool your browser into accepting an
-invalid key, an attacker must be on all network paths between a notary and have compromised those
-paths for a significant amount of time such that the key change is not deemed suspicious.
-In this way, Perspectives implements a type of 'lightweight PKI', with network probes from multiple vantage points taking the place of manual verification performed
-by certificate authorities (e.g., Verisign).">
-<!ENTITY h3preferences "Preferences">
-<!ENTITY preferencesIntro "This section helps you understand the configuration parameters you can control via
-Perspectives' 'Preferences' panel.">
-<!ENTITY securitySettings "Security Settings: What is Quorum and Quorum Duration?">
-<!ENTITY securityValues "The preferences dialog lets you configure different values for 'Quorum' and 'Quorum Duration'. These threshold values let you decide how paranoid you want to be about accepting keys.  In both cases, higher values are more secure, but also run the risk of incorrectly determining that a key is
-invalid.">
+<!ENTITY h1perspectivesHelp "Aide de Perspectives">
+<!ENTITY h3whatisPerpectives "Qu'est-ce que Perspectives?">
+<!--This paragraph has a link in the middle, so we split it into two parts for easier translation. -->
+<!ENTITY whatisPerspectivesPart1 "Perspectives aide à empêcher les attaques 'Man-in-the-Middle'">
+<!--Feel free to change this link to your language -->
+<!ENTITY linkURLmanInTheMiddleAttack "https://fr.wikipedia.org/wiki/Man-in-the-middle">
+<!ENTITY linkTextLearnMore "en savoir plus">
+<!ENTITY whatisPerspectivesPart2 "contre les communications HTTPS en vérifiant l'authenticité de la clé SSL publique du serveur. C'est particulièrement important quand vous vous connectez à des sites web qui ont des certificats « auto-signés », qui ne correspondent pas, ou qui ont expiré, ce qui cause des erreurs de sécurité et vous empêche de vous connecter à certains sites en HTTPS.">
+<!ENTITY h3howDoesItWork "Comment ça marche ?">
+<!ENTITY howDoesItWorkPart1 "Perspectives se fonde sur le principe que la plupart du temps Internet fonctionne correctement. Quand des attaques surviennent véritablement, elles sont vraisemblablement d'une ampleur limitée (par ex. un seul routeur est touché) ou d'une durée limitée (car les attaques massives peuvent être facilement détectées). Perspectives fonctionne en inspectant régulièrement le réseau depuis plusieurs sites de confiance sur Internet, pour aider votre navigateur à détecter les deux types d'attaque. Un groupe de machines appelées « les Notaires du réseau » réparties sur tout l'Internet et maintenues par des universitaires chercheurs sont chargées d'inspecter chaque serveur à intervalles réguliers pour lui demander sa clé d'accès publique. Quand votre navigateur a besoin d'authentifier une clé, il demande à chaque « Notaire » quelles sont les clés qu'il a vu être utilisées depuis un certain temps et vérifie que ces données enregistrées coïncident avec la clé dont l'authentification est demandée. Ainsi, s'il voulait tromper votre navigateur en lui faisant accepter une clé invalide, un attaquant devrait intercepter tous les échanges entre le site et les Notaires et les avoir compromis un temps suffisamment long pour que le changement de clé ne soit pas dénoncé comme frauduleux. En procédant ainsi, Perspectives met en œuvre une sorte de « PKI léger »">
+<!ENTITY linkURLLightweightPKI "http://www.securiteinfo.com/cryptographie/pki.shtml">
+<!ENTITY howDoesItWorkPart2 ", avec des inspections du réseau depuis de multiples endroits sûrs au lieu de procéder à une vérification manuelle à la manière des autorités de certification comme Verisign.">
+<!ENTITY h3preferences "Préférences">
+<!ENTITY preferencesIntro "Cette section va vous aider à comprendre les paramètres de configuration que vous pouvez choisir dans le panneau des préférences de l'extension.">
+<!ENTITY securitySettings "Paramètres de sécurité : qu'est-ce que le Quorum et le délai de Quorum ?">
+<!ENTITY securityValues "Le dialogue des préférences vous permet de configurer différentes valeurs pour « Quorum » et « Délai de Quorum ». 
+Ces deux valeurs de seuil vous permettent de décider de votre degré de paranoïa pour l'acceptation des clés. Dans les deux cas, les valeurs les plus élevées correspondent à une sécurité plus stricte, mais font également courir le risque de faux positif, c'est-à-dire de détecter comme invalide une clé qui ne l'est pas.">
 <!ENTITY quorum "Quorum">
-<!ENTITY whatisQuorum "is a threshold value that describes, as a percentage, the minimum percentage of
-notaries that must agree about a key for it to be considered valid.  Reasonable values are between 
-100&#37; and 50&#37;.">
-<!ENTITY quorumDuration "Quorum Duration">
-<!ENTITY whatisquorumDuration "specifies the number of days that observations must be consistent, to help
-protect against short-lived attacks.  If you specify a Quorum Duration D other than zero, this is
-saying that you want to reject the key unless a quorum fraction of notaries have observed that key
-consistently for the past D days. Because your request to the network notary may be the first time
-it has heard about a particular server, it may have no available key history. As a result, setting
-D to a value greater than zero will cause more valid keys to be rejected.">
-<!ENTITY invalidCertificateExceptions "Invalid Certificate Exceptions">
-<!ENTITY invalidCertificateExceptionsInfo "When a certificate satisfies quorum duration, Perspectives can install an exception for that certificate so that Firefox will not show a security error page for pages using that certificate. You can choose whether Perspectives installs these exceptions,and if so, if these exceptions should be permanent. ">
-<!ENTITY h3questionsComments "Questions / Comments ?">
+<!ENTITY whatisQuorum "est une valeur de seuil qui détermine le pourcentage minimum de Notaires qui doivent concorder pour qu'une clé soit considérée comme valide. Les valeurs raisonnables sont entre 100&#37; et 50&#37;.">
+<!ENTITY quorumDuration "Le délai de Quorum">
+<!ENTITY whatisquorumDuration "précise le nombre de jours pendant lesquels les observations sont pertinentes, pour aider à se protéger des attaques de courte durée. Si vous précisez un délai de Quorum « J » autre que zéro, cela signifie que vous voulez rejeter une clé à moins qu'un nombre suffisant (un quorum) de Notaires n'ait observé cette clé de façon pertinente les J derniers jours. 
+Dans la mesure où votre requête au réseau de Notaires peut être la première qu'il reçoit pour un serveur spécifique, il se peut qu'il ne dispose pas d'un historique des clés. Par conséquent, préciser une valeur de J supérieure à zéro peut provoquer le rejet d'un plus grand nombre de clés.">
+<!ENTITY invalidCertificateExceptions "Exceptions pour des certificats invalides">
+<!ENTITY invalidCertificateExceptionsInfo " Quand un certificat est dans le créneau de la durée de quorum, Perspectives peut installer une exception pour ce certificat, de telle sorte que Firefox ne lance pas d'erreur de sécurité  pour les pages qui utilisent ce certificat. Vous pouvez choisir de demander ou non à Perspectives d'installer ces exceptions, et vous pourrez aussi préciser si les exceptions installées doivent être permanentes. ">
+<!ENTITY h3questionsComments "Questions / Commentaires ?">
 <!--will be followed by mail address -->
-<!ENTITY pleaseContactUs "Please contact us at">
-<!ENTITY forMore "For more details, please see our conference paper on the topic, available at the">
-<!ENTITY perspectivesWebsite "Perspectives Website">
+<!ENTITY pleaseContactUs "Vous pouvez nous contacter à l'adresse">
+<!ENTITY forMore "Pour en savoir plus, veuillez consulter le document support de notre conférence à ce sujet, disponible sur le">
+<!--will be followed by website link -->
+<!ENTITY perspectivesWebsite "site web de Perspectives">
 

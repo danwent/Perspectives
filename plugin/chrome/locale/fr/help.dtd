@@ -1,15 +1,8 @@
 <!ENTITY h1perspectivesHelp "Aide de Perspectives">
-<!ENTITY h3whatisPerpectives "Qu'est-ce que Perspectives?">
-<!--This paragraph has a link in the middle, so we split it into two parts for easier translation. -->
-<!ENTITY whatisPerspectivesPart1 "Perspectives aide à empêcher les attaques 'Man-in-the-Middle'">
-<!--Feel free to change this link to your language -->
-<!ENTITY linkURLmanInTheMiddleAttack "https://fr.wikipedia.org/wiki/Man-in-the-middle">
-<!ENTITY linkTextLearnMore "en savoir plus">
-<!ENTITY whatisPerspectivesPart2 "contre les communications HTTPS en vérifiant l'authenticité de la clé SSL publique du serveur. C'est particulièrement important quand vous vous connectez à des sites web qui ont des certificats « auto-signés », qui ne correspondent pas, ou qui ont expiré, ce qui cause des erreurs de sécurité et vous empêche de vous connecter à certains sites en HTTPS.">
+<!ENTITY h3whatisPerspectives "Qu'est-ce que Perspectives?">
+<!ENTITY whatisPerspectives "Perspectives aide à empêcher les attaques 'Man-in-the-Middle' contre les communications HTTPS en vérifiant l'authenticité de la clé SSL publique du serveur. C'est particulièrement important quand vous vous connectez à des sites web qui ont des certificats « auto-signés », qui ne correspondent pas, ou qui ont expiré, ce qui cause des erreurs de sécurité et vous empêche de vous connecter à certains sites en HTTPS.">
 <!ENTITY h3howDoesItWork "Comment ça marche ?">
-<!ENTITY howDoesItWorkPart1 "Perspectives se fonde sur le principe que la plupart du temps Internet fonctionne correctement. Quand des attaques surviennent véritablement, elles sont vraisemblablement d'une ampleur limitée (par ex. un seul routeur est touché) ou d'une durée limitée (car les attaques massives peuvent être facilement détectées). Perspectives fonctionne en inspectant régulièrement le réseau depuis plusieurs sites de confiance sur Internet, pour aider votre navigateur à détecter les deux types d'attaque. Un groupe de machines appelées « les Notaires du réseau » réparties sur tout l'Internet et maintenues par des universitaires chercheurs sont chargées d'inspecter chaque serveur à intervalles réguliers pour lui demander sa clé d'accès publique. Quand votre navigateur a besoin d'authentifier une clé, il demande à chaque « Notaire » quelles sont les clés qu'il a vu être utilisées depuis un certain temps et vérifie que ces données enregistrées coïncident avec la clé dont l'authentification est demandée. Ainsi, s'il voulait tromper votre navigateur en lui faisant accepter une clé invalide, un attaquant devrait intercepter tous les échanges entre le site et les Notaires et les avoir compromis un temps suffisamment long pour que le changement de clé ne soit pas dénoncé comme frauduleux. En procédant ainsi, Perspectives met en œuvre une sorte de « PKI léger »">
-<!ENTITY linkURLLightweightPKI "http://www.securiteinfo.com/cryptographie/pki.shtml">
-<!ENTITY howDoesItWorkPart2 ", avec des inspections du réseau depuis de multiples endroits sûrs au lieu de procéder à une vérification manuelle à la manière des autorités de certification comme Verisign.">
+<!ENTITY howDoesItWork "Perspectives se fonde sur le principe que la plupart du temps Internet fonctionne correctement. Quand des attaques surviennent véritablement, elles sont vraisemblablement d'une ampleur limitée (par ex. un seul routeur est touché) ou d'une durée limitée (car les attaques massives peuvent être facilement détectées). Perspectives fonctionne en inspectant régulièrement le réseau depuis plusieurs sites de confiance sur Internet, pour aider votre navigateur à détecter les deux types d'attaque. Un groupe de machines appelées « les Notaires du réseau » réparties sur tout l'Internet et maintenues par des universitaires chercheurs sont chargées d'inspecter chaque serveur à intervalles réguliers pour lui demander sa clé d'accès publique. Quand votre navigateur a besoin d'authentifier une clé, il demande à chaque « Notaire » quelles sont les clés qu'il a vu être utilisées depuis un certain temps et vérifie que ces données enregistrées coïncident avec la clé dont l'authentification est demandée. Ainsi, s'il voulait tromper votre navigateur en lui faisant accepter une clé invalide, un attaquant devrait intercepter tous les échanges entre le site et les Notaires et les avoir compromis un temps suffisamment long pour que le changement de clé ne soit pas dénoncé comme frauduleux. En procédant ainsi, Perspectives met en œuvre une sorte de « PKI léger », avec des inspections du réseau depuis de multiples endroits sûrs au lieu de procéder à une vérification manuelle à la manière des autorités de certification comme Verisign.">
 <!ENTITY h3preferences "Préférences">
 <!ENTITY preferencesIntro "Cette section va vous aider à comprendre les paramètres de configuration que vous pouvez choisir dans le panneau des préférences de l'extension.">
 <!ENTITY securitySettings "Paramètres de sécurité : qu'est-ce que le Quorum et le délai de Quorum ?">
@@ -28,4 +21,10 @@ Dans la mesure où votre requête au réseau de Notaires peut être la première
 <!ENTITY forMore "Pour en savoir plus, veuillez consulter le document support de notre conférence à ce sujet, disponible sur le">
 <!--will be followed by website link -->
 <!ENTITY perspectivesWebsite "site web de Perspectives">
-
+<!-- other links for more information. We keep these separate at the bottom so we don't have to split the paragraphs into chunks, which would make them harder to translate
+Feel free to change the links to something for your language, or to delete and leave it empty.-->
+<!ENTITY moreInformation "En Savoir Plus">
+<!ENTITY moreInfoManInTheMiddle "Les attaques 'Man-in-the-Middle'">
+<!ENTITY moreInfoManInTheMiddleURL "https://fr.wikipedia.org/wiki/Man-in-the-middle">
+<!ENTITY moreInfoPKI "PKI">
+<!ENTITY moreInfoPKIURL "http://www.securiteinfo.com/cryptographie/pki.shtml">

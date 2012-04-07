@@ -77,13 +77,27 @@ function assert_fixme(test, case_name) {
 }
 
 // if you're lazy and want to print some text while debugging
-function debug(string) {
-  if (window.console != undefined) {
-      console.log("DEBUG: " + string);
+function debug(obj) {
+  if (obj instanceof Array) {
+    deb_console("array contains:");
+    for (var i = 0; i < obj.length; i++) {
+      deb_console(obj[i]);
+    }
+    obj = obj.toString();
   }
+  else {
+    deb_console(obj);
+  }
+
   // strip out < so strings always appear on the page
   write_string_to_element("<font color='grey'>DEBUG: " +
-    string.replace(/</, '&lt;') + "</font>", 'li');
+    obj.replace(/</, '&lt;') + "</font>", 'li');
+}
+
+function deb_console(obj) {
+  if (window.console != undefined) {
+    console.log("DEBUG: " + obj);
+  }
 }
 
 

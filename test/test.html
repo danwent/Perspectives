@@ -135,8 +135,25 @@ function get_loc_files(dir) {
 function get_loc_keys(filelist, locdirname) {
 
   var keys = [];
-  var dtdline = /<!ENTITY +([A-Za-z]+) +"([^"]*)"/; // <!ENTITY Name "String">
-  var propline = /([A-Za-z]+)=(.*)/; // name=string
+
+  // DTD entities look like:
+  // <!ENTITY Name "String">
+  // Assumptions: could be one line or many. Cannot contain chars:
+  // "%<>
+  // For dtds to load inside xhtml files (such as our help.xhtml)
+  // it is very important that they have the closing >
+  // note: “” (smart quotes) both seem to load fine in xhtml,
+  // since we use " to wrap our strings.
+  var dtdcomment = /<!--.*-->/g;
+  var dtdsep = /<!ENTITY/;
+  var dtdline = / +([A-Za-z0-9]+) +"([^"%<>]*)" *>/;
+
+  // .properties entries look like:
+  // name=string
+  // Assumptions: exist only on a single line.
+  var propcomment = /#.*/g;
+  var propsep = /[\n\r\f]+/;
+  var propline = /([A-Za-z0-9]+)=([^\n\r\f]*)/;
 
   for (filename in filelist) {
     if (filelist.hasOwnProperty(filename)) {
@@ -163,10 +180,10 @@ function get_loc_keys(filelist, locdirname) {
 
         var ext = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
         if(ext === "dtd") {
-          keys = get_keys_from_stream(data, dtdline, keys, filename, locdirname);
+          keys = get_keys_from_stream(data, dtdcomment, dtdsep, dtdline, keys, filename, locdirname);
         }
         else if (ext === "properties") {
-          keys = get_keys_from_stream(data, propline, keys, filename,locdirname);
+          keys = get_keys_from_stream(data, propcomment, propsep, propline, keys, filename, locdirname);
         }
         else {
           assert(false, locdirname + ": File '" + file.path
@@ -185,7 +202,7 @@ function get_loc_keys(filelist, locdirname) {
 
 // extract localization string names/keys from a datastream,
 // using the appropriate regex passed by the caller.
-function get_keys_from_stream(datastream, lineregex, keys, sourcefilename, locdirname) {
+function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, sourcefilename, locdirname) {
 
   // we use 'filename/keyname' as the hash key, as that's the value
   // we want to ensure is unique. but make sure there are no instances
@@ -196,13 +213,14 @@ function get_keys_from_stream(datastream, lineregex, keys, sourcefilename, locdi
   var regex = new RegExp(LSEP, "g");
   cleanfilename = cleanfilename.replace(regex, '');
 
-  var lines = datastream.split('\n');
+  datastream = datastream.replace(comment, '');
+  var lines = datastream.split(delimiter);
   for (var i = 0; i < lines.length; i++) {
     // note: if printing for debug, <> don't show up in HTML docs.
     // they must be replaced. e.g.
     // write_string_to_element("line: '" + lines[i].replace(/</, '&lt;') + "'", 'li');
     // or just use console.log().
-    var match = lineregex.exec(lines[i]);
+    var match = itemregex.exec(lines[i]);
     if (match != null) {
       // grab the first stored match, match[1], not the entire match array.
       var protkey = cleanfilename + LSEP + match[1]
@@ -213,9 +231,16 @@ function get_keys_from_stream(datastream, lineregex, keys, sourcefilename, locdi
       else {
         keys[protkey] = sourcefilename;
         if (!match[2]) {
-          assert(false, "Key '" + match[1] + "' in " + sourcefilename +
-            " has no value!");
+          assert(false, "(" + locdirname + "): Key '" + match[1] + "' in " +
+            sourcefilename + " has no value!");
         }
+      }
+    }
+    else {
+      var space = /^\s*$/;
+      var justspace = space.exec(lines[i]);
+      if (!justspace) {
+       assert(false, "(" + locdirname + "): Malformed entry '" + lines[i] + "' in " + sourcefilename);
       }
     }
   }

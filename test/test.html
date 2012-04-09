@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <link rel="SHORTCUT ICON" href="../plugin/chrome/content/default.png">
 <title>Perspectives - Test cases</title>
 
@@ -165,8 +166,8 @@ function get_loc_keys(filelist, locdirname) {
   // .properties entries look like:
   // name=string
   // Assumptions: exist only on a single line.
-  var propcomment = /#.*/g;
-  var propsep = /[\n\r\f]+/;
+  var propcomment = /#+.*[\n\r\f]/g;
+  var propsep = /[\n\r\f]/;
   var propline = /([A-Za-z0-9]+)=([^\n\r\f]*)/;
 
   for (filename in filelist) {
@@ -178,19 +179,26 @@ function get_loc_keys(filelist, locdirname) {
 
         var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
                 createInstance(Components.interfaces.nsIFileInputStream);
-        var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].
-                      createInstance(Components.interfaces.nsIConverterInputStream);
+        var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+                          .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+        converter.charset = "UTF-8";
         fstream.init(filelist[filename], -1, 0, 0);
-        cstream.init(fstream, "UTF-8", 0, 0);
 
+        var lis = fstream.QueryInterface(Components.interfaces.nsILineInputStream);
         var str = {};
         var readmore = 0;
+        var lines = 0;
         do {
-          read = cstream.readString(0xffffffff, str); // read as much as we can
-          data += str.value;
+          readmore = lis.readLine(str);
+          data += str.value + '\n'; //HACK: we're tacking on a \n so the regexs can separate lines properly
+          lines++;
         } while (readmore != 0);
 
-        cstream.close(); // also closes fstream
+        fstream.close();
+
+        if (lines == 0) {
+          assert(false, "Read 0 lines from " + filename + ". Is that expected?");
+        }
 
         var ext = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
         if(ext === "dtd") {
@@ -229,6 +237,8 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
 
   datastream = datastream.replace(comment, '');
   var lines = datastream.split(delimiter);
+  var numkeys = 0;
+
   for (var i = 0; i < lines.length; i++) {
     // note: if printing for debug, <> don't show up in HTML docs.
     // they must be replaced. e.g.
@@ -236,6 +246,7 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
     // or just use console.log().
     var match = itemregex.exec(lines[i]);
     if (match != null) {
+      numkeys++;
       // grab the first stored match, match[1], not the entire match array.
       var protkey = cleanfilename + LSEP + match[1]
       if (keys.hasOwnProperty(protkey)) {
@@ -257,6 +268,10 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
        assert(false, "(" + locdirname + "): Malformed entry '" + lines[i] + "' in " + sourcefilename);
       }
     }
+  }
+
+  if (numkeys == 0) {
+    assert(false, sourcefilename + " had 0 keys!");
   }
   return keys;
 }

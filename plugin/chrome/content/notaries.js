@@ -389,8 +389,8 @@ var Perspectives = {
 
 	notaryQueriesComplete: function(ti) {
 		try {
-			if(Pers_whitelist_dialog.strbundle == null) {
-				Pers_whitelist_dialog.strbundle = document.getElementById("notary_strings");
+			if(Perspectives.strbundle == null) {
+				Perspectives.strbundle = document.getElementById("notary_strings");
 			}
 
 			var server_result_list = ti.partial_query_results; 
@@ -452,7 +452,7 @@ var Perspectives = {
 			Perspectives.process_notary_results(ti); 
 
 		} catch (e) { 
-			alert(e); 
+			Pers_util.pers_alert("Error in notaryQueriesComplete: " + e);
 		} 
 	},
 

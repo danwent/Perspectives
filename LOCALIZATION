@@ -66,12 +66,12 @@ For developers:
 Steps to remember when publishing a new localization:
 
 1. Before publishing a release, register the new locale inside chrome.manifest. e.g.
-	locale extname fr-FR chrome/extname/locale/fr-FR/
+	locale perspectives fr chrome/locale/fr/
 
 don't forget the trailing slash!
 
 2. Write a line for the locale in the install.rdf:
-	<locale> extname/locale/fr-FR/</locale>
+	<locale> perspectives/locale/fr-FR/</locale>
 
 adding a <Description> block with a <em:translator>translator name</em:translator> credit is a good thing.
 

@@ -65,6 +65,8 @@ For developers:
 
 Steps to remember when publishing a new localization:
 
+0. Make sure all .properties and .dtd files are saved as UTF-8 with no BOM. Otherwise many things fail horribly.
+
 1. Before publishing a release, register the new locale inside chrome.manifest. e.g.
 	locale perspectives fr chrome/locale/fr/
 

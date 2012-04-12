@@ -175,6 +175,12 @@ function get_loc_keys(filelist, locdirname) {
 
       if (filename != null) {
 
+        // FIXME: if you know a way to read the content type of files from javascript, put it here!
+        // doing this:
+        //  Components.utils.import("resource://gre/modules/NetUtil.jsm");
+        //  var channel = NetUtil.newChannel(filelist[filename]);
+        // gets us a blank contentCharset and contentType 'application/x-unknown-content-type'
+
         var data = "";
 
         var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
@@ -193,6 +199,13 @@ function get_loc_keys(filelist, locdirname) {
           data += str.value + '\n'; //HACK: we're tacking on a \n so the regexs can separate lines properly
           lines++;
         } while (readmore != 0);
+
+        // according to the MDN spec, loc files should *not* contain the BOM
+        var BOM = "ï»¿";
+        if (data.substring(0,3) == BOM) {
+          assert(false, "(" + locdirname + "): " + filename + " begins with BOM '" + BOM
+            + "'. Loc files should be saved as UTF-8 with no BOM.");
+        }
 
         fstream.close();
 

@@ -108,7 +108,7 @@ var Pers_statusbar = {
 	},
 
 	openHelp: function(){
-		openDialog("chrome://perspectives/locale/help.html","",
+		openDialog("chrome://perspectives/content/help.xhtml","",
 			"width=600,height=600,resizable=yes,centerscreen");
 	}
 }

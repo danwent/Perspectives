@@ -1,5 +1,6 @@
 content perspectives chrome/content/
 locale perspectives en-US chrome/locale/en-US/
+locale perspectives fr    chrome/locale/fr/
 locale perspectives zh-CN chrome/locale/zh-CN/
 
 content perspectives_main .

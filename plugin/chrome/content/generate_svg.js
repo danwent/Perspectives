@@ -191,8 +191,8 @@ var Pers_gen = {
 		for (key in color_info) {
 			var match_text = "";
 			if (key == browser_key) {
-				match_text = " " +
-					Perspectives.strbundle.getString("LegendBrowsersKey");
+				match_text = " (" +
+					Perspectives.strbundle.getString("LegendBrowsersKey") + ")";
 			}
 			res += '<rect x="' + x_offset + '" y="' + y_cord 
 				+ '" width="10" height="10" fill="'

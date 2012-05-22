@@ -1,0 +1,29 @@
+High-level overview of changes to Perspectives
+
+Format:
++ new feature
+* bug or behavior fix
+
+
+
+4.3
+---
+
+* remove the forced statusbar icon (GH 38)
++ add Perspectives icons to alt-tab window
++ display key age in the notary results dialog
+* UI improvements:
+    * dialogs now center themselves in the screen
+    + 'esc' cancels and closes dialogs
+    * add cancel button to Preferences dialog
+    * OK and Cancel buttons have a consistent placement
+    * increase size of notary key textboxes to improve readability
+    + alert popups now mention that they are from Perspectives
+* don't throw exceptions when trying to add invalid URIs to the whitelist
+* don't automatically close the 'report attack' window after an error (part of GH 49)
+* add min and max boundary checking for quorum duration and quorum percentage (GH 52)
+* fix parameter order for find_oldest_most_recent() (GH 48)
++ ignore blank lines when parsing notaries (GH 42)
+* merge duplicate help pages, copyedit content, and update links
+* add .css stylesheet for help pages; add some basic format/coloring
+

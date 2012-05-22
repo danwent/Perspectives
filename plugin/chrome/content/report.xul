@@ -50,6 +50,7 @@
   </groupbox>
 
     <hbox>
+        <!-- For consistency, always put Close to the right of the action button -->
         <button id="SubmitReport" label="&SubmitReport;" onclick="Pers_report.submit_data()"/>
         <button id="Close" label="&Close;" onclick="window.close()"/>
     </hbox>

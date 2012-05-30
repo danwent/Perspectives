@@ -1,0 +1,35 @@
+<!ENTITY h1perspectivesHelp "Perspectives Help">
+<!ENTITY h3whatisPerspectives "What is Perspectives?">
+<!ENTITY whatisPerspectives "Perspectives helps prevent 'Man-in-the-Middle' attacks against HTTPS communication by verifying the authenticity of the server's SSL public key. This is particularly important when you connect to websites that have 'self-signed', mismatched, or expired certificates, which cause Security Errors and prevent you from connecting to some HTTPS websites.">
+<!ENTITY h3howDoesItWork "How Does it Work?">
+<!ENTITY howDoesItWork "Perspectives builds on the fact that most of the time the Internet works correctly. When attacks do occur, they are likely to be either limited in scope (e.g., a single compromised router) or limited in duration (since large attacks can be more easily detected). Perspectives uses periodic network probing from many vantage points across the Internet to help your browser detect both types of attacks.  A set of machines called 'network notaries' scattered across the Internet and run by academic researchers periodically probe each server to request its current public key. When your browser needs to authenticate a key, it asks each network notary for the keys they have seen the server using over time and verifies that these records are consistent with the key they received.  Thus, in order to fool your browser into accepting an invalid key, an attacker must be on all network paths between a notary and have compromised those paths for a significant amount of time such that the key change is not deemed suspicious. In this way, Perspectives implements a type of lightweight PKI with network probes from multiple vantage points taking the place of manual verification performed by certificate authorities (e.g., Verisign).">
+<!ENTITY h3preferences "Preferences">
+<!ENTITY preferencesIntro "This section helps you understand the configuration parameters you can control via Perspectives' 'Preferences' panel.">
+<!ENTITY securitySettings "Security Settings: What is Quorum and Quorum Duration?">
+<!ENTITY securityValues "The preferences dialog lets you configure different values for 'Quorum' and 'Quorum Duration'. These threshold values let you decide how paranoid you want to be about accepting keys.  In both cases, higher values are more secure, but also run the risk of incorrectly determining that a key is
+invalid.">
+<!ENTITY quorum "Quorum">
+<!ENTITY whatisQuorum "is a threshold value that describes, as a percentage, the minimum percentage of notaries that must agree about a key for it to be considered valid.  Reasonable values are between 100&#37; and 50&#37;.">
+<!ENTITY quorumDuration "Quorum Duration">
+<!ENTITY whatisquorumDuration "specifies the number of days that observations must be consistent, to help
+protect against short-lived attacks.  If you specify a Quorum Duration D other than zero, this is
+saying that you want to reject the key unless a quorum fraction of notaries have observed that key
+consistently for the past D days. Because your request to the network notary may be the first time
+it has heard about a particular server, it may have no available key history. As a result, setting
+D to a value greater than zero will cause more valid keys to be rejected.">
+<!ENTITY invalidCertificateExceptions "Invalid Certificate Exceptions">
+<!ENTITY invalidCertificateExceptionsInfo "When a certificate satisfies quorum duration, Perspectives can install an exception for that certificate so that Firefox will not show a security error page for pages using that certificate. You can choose whether Perspectives installs these exceptions,and if so, if these exceptions should be permanent. ">
+<!ENTITY h3questionsComments "Questions / Comments ?">
+<!--will be followed by mail address -->
+<!ENTITY pleaseContactUs "Please contact us at">
+<!ENTITY forMore "For more details, please see our conference paper on the topic, available at the">
+<!--will be followed by website link -->
+<!ENTITY perspectivesWebsite "Perspectives Website">
+<!-- other links for more information. We keep these separate at the bottom so we don't have to split the paragraphs into chunks, which would make them harder to translate
+Feel free to change the links to something for your language, or to delete and leave it empty.-->
+<!ENTITY moreInformation "More Information">
+<!ENTITY moreInfoManInTheMiddle "'Man-in-the-middle' attacks">
+<!ENTITY moreInfoManInTheMiddleURL "https://en.wikipedia.org/wiki/Man-in-the-middle_attack">
+<!ENTITY moreInfoPKI "PKI - Public Key Infrastructure">
+<!ENTITY moreInfoPKIURL "https://en.wikipedia.org/wiki/Public_key_infrastructure">
+

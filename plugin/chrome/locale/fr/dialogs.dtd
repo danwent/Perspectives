@@ -1,0 +1,48 @@
+<!-- This file contains localized strings for Perspectives .xul files. -->
+<!ENTITY NotaryResults "Résultats des Notaires">
+<!ENTITY ViewNotaryResults "Afficher les résultats des Notaires">
+<!ENTITY Preferences "Préférences">
+<!ENTITY NoQuorumInformation "Pas d'informations de Quorum">
+<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "Aucune information de Perspectives n'est disponible pour cette adresse">
+<!ENTITY Timeline "Timeline">
+<!ENTITY SecuritySettings "Niveau de sécurité">
+<!ENTITY HighSecurity "Élevé">
+<!ENTITY MediumSecurity "Moyen">
+<!ENTITY HighAvailability "Disponibilité élevée">
+<!ENTITY ManualConfiguration "Configuration manuelle">
+<!ENTITY Percentageofnotariesthatmustagree "Pourcentage de notaires dont les avis doivent être convergents :">
+<!ENTITY Lengthoftimequorummustbeachieved "Nombre de jours pendant lesquels l'accord est nécessaire :">
+<!ENTITY OverridingFirefoxSecurityErrors "Remplacement des erreurs de sécurité de Firefox">
+<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Autoriser Perspectives à remplacer automatiquement les erreurs de sécurité">
+<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Faire confiance en permanence aux certificats validés par Perspectives">
+<!ENTITY WhentoContactNotaries "Quand contacter les Notaires">
+<!ENTITY ContactNotariesforallHTTPSsites "Contacter les Notaires pour tous les sites HTTPS">
+<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contacter les Notaires seulement quand le certificat d'un site web provoque une erreur de sécurité">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Toujours demander avant de contacter les Notaires">
+<!ENTITY Certificates "Certificats">
+<!ENTITY Servers "Serveurs Notaires">
+<!ENTITY Help "Aide">
+<!ENTITY OK "OK">
+<!ENTITY Close "Fermer">
+<!ENTITY Cancel "Annuler">
+<!ENTITY Addtowhitelist "Ajouter à la liste blanche">
+<!ENTITY Addsitetowhitelist "Ajouter le site à la liste blanche">
+<!ENTITY Whitelistmessage "Seulement pour les utilisateurs experts : en ajoutant un site web à la liste blanche, Perspectives fait confiance automatiquement à toutes les connexions vers celui-ci sans contacter les Notaires. Ne le faites que si vous comprenez bien les risques encourus.">
+<!ENTITY ReportPossibleAttack "Notifier une attaque possible">
+<!ENTITY ReportAttackMessage "Lorsque vous envoyez un rapport sur une attaque, le projet Perspectives peut améliorer cette extension et détecter des failles sur Internet">
+<!ENTITY SendFullReport "Envoyer un rapport complet">
+<!ENTITY SendPrivacyReport "Envoyer un rapport avec des données sensibles">
+<!ENTITY Optional "Facultatif">
+<!ENTITY EmailDescription "Adresse mail pour les questions suite à l'utilisation">
+<!ENTITY AdditionalInfoMessage "Toute information supplémentaire qui décrive les circonstances de cette attaque éventuelle">
+<!ENTITY ShowDetailedReportText "Afficher le texte du rapport détaillé">
+<!ENTITY SubmitReport "Soumettre un rapport">
+<!ENTITY DetailedInformation "Informations détaillées">
+<!ENTITY CertificateValidation "Validation du certificat">
+<!ENTITY AutoTrust "Faire confiance automatiquement aux certificats pour les sites suivants">
+<!ENTITY DefaultNotaryServers "Serveurs Notaires par défaut">
+<!ENTITY UseDefaultNotaries "Utiliser la liste des serveurs Notaires par défaut">
+<!ENTITY AdditionalNotaryServers "Serveurs Notaires additionnels">
+<!ENTITY ForceNotaryCheck "Forcer la vérification par les Notaires">
+<!ENTITY ReportAttack "Rapporter une attaque">
+<!ENTITY ViewCertificateStore "Afficher la liste des certificats">

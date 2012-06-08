@@ -1,0 +1,36 @@
+<!ENTITY h1perspectivesHelp "Ayuda de Perspectives">
+<!ENTITY h3whatisPerspectives "¿Qué es Perspectives?">
+<!ENTITY whatisPerspectives "Perspectives ayuda a prevenir ataques tipo 'Man-in-the-Middle' contra comunicaciones por protocolo HTTPS, por medio de la verificación de la autenticidad de la llave pública SSL del servidor. Esto es particularmente importante al conectarse con sitios web que contienen certificados 'auto-firmados', con datos erróneos, o expirados, los cuales pueden causar errores de seguridad y prevenir la conexión hacia otros sitios HTTPS.">
+<!ENTITY h3howDoesItWork "¿Cómo funciona?">
+<!ENTITY howDoesItWork "Perspectives se basa en el hecho de que la Internet funciona correctamente la mayoría del tiempo. Cuando ocurren ataques, lo más probable es que tengan un contexto limitado (Por ejemplo: comprometiendo la seguridad de un solo ruteador) o una duración limitada (ya que ataques de larga duración pueden ser detectados con facilidad) Perspectives monitorea periódicamente el tráfico de red a lo largo de varios puntos estratégicos de la Internet para ayudar a su navegador a detectar ambos tipos de ataques. Un conjunto de máquinas llamadas 'Notarías de Red' distribuídas a lo largo de la Internet, y administradas por investigadores académicos, revisan periódicamente cada servidor para observar su llave pública actual. Cuando su navegador necesita autenticar una llave, pregunta a cada Notaría acerca de las llaves que se conoce han sido utilizadas por un servidor a través del tiempo, y verifica que dichos reportes son consistentes con la llave que dicho servidor le ha enviado. De esta forma, para provocar que su navegador aceptara una llave inválida, un atacante tendría que comprometer todas las rutas de acceso a la Notaría por una cantidad de tiempo signiticativo, de manera que el cambio de llave no fuese sospechozo. Así, Perspectives implementa una forma ligera de PKI (Infraestructura de Clave Pública), reemplazando la verificación manual realizada por autoridades de certificación (como Verisign) con sondas de red a través de múltiples puntos de observación.">
+<!ENTITY h3preferences "Preferencias">
+<!ENTITY preferencesIntro "Esta sección le ayuda a comprender los parámetros de configuración que puede controlar a través del panel de Preferencias de Perspectives.">
+<!ENTITY securitySettings "Parámetros de Seguridad: ¿Qué es Quórum y Duración de Quórum?">
+<!ENTITY securityValues "El diálogo de preferencias le permite configurar diferentes valores para 'Quórum' y 'Duración de Quórum'. Estos valores de rango le permiten decidir cuán paranoico desea mostrarse al aceptar llaves. En ambos casos, valores mayores son más seguros, pero aumentan el riesgo de determinar erróneamente que una llave es inválida.">
+<!ENTITY quorum "Quórum">
+<!ENTITY whatisQuorum "Se trata de un valor de rango que describe, como porcentaje, el número mínimo de notarías que debe confirmar el valor de una llave para que se considere válida. Los valores razonables se sitúan entre el 100&#37; y 50&#37;.">
+<!ENTITY quorumDuration "Duración de Quórum">
+<!ENTITY whatisquorumDuration "Especifica el número requerido de días en que los valores observados deben ser consistentes,
+para proteger contra ataques de corta duración. Si una Duración de Quórum mayor a cero es indicada, toda llave será
+rechazada a menos que un porcentaje fraccional (Quórum) de notarías haya observado que dicha llave se ha mantenido
+consistente, por al menos ese número de días a la fecha. Debido a que su requisición puede ser la primera
+para cierto servidor en una notaría, es posible que no haya un historial disponible. Como resultado, utilizar
+valores mayores a cero puede ocasionar que un número mayor de llaves válidas sea rechazado.">
+<!ENTITY invalidCertificateExceptions "Excepciones de Certificados Inválidos">
+<!ENTITY invalidCertificateExceptionsInfo "Cuando un certificado satisface su duración de quórum, Perspectives puede
+instalar una excepción, de manera que Firefox evitará mostrar errores de seguridad para cualquier página usando dicho
+certificado. Puede elegirse si se desea que Perspectives instale o no estas excepciones, y de hacerlo, si deben
+instalarse de forma permanente. ">
+<!ENTITY h3questionsComments "¿Preguntas o comentarios?">
+<!--will be followed by mail address -->
+<!ENTITY pleaseContactUs "Favor de contactarnos en">
+<!ENTITY forMore "Para mayor información, favor de remitirse a nuestro artículo científico al respecto, disponible en el">
+<!--will be followed by website link -->
+<!ENTITY perspectivesWebsite "sitio web de Perspectives">
+<!-- other links for more information. We keep these separate at the bottom so we don't have to split the paragraphs into chunks, which would make them harder to translate
+Feel free to change the links to something for your language.-->
+<!ENTITY moreInformation "Aprender más al respecto">
+<!ENTITY moreInfoManInTheMiddle "Ataques tipo 'Man-in-the-Middle'">
+<!ENTITY moreInfoManInTheMiddleURL "http://es.wikipedia.org/wiki/Ataque_Man-in-the-middle">
+<!ENTITY moreInfoPKI "PKI - Infraestructura de Clave Pública">
+<!ENTITY moreInfoPKIURL "http://es.wikipedia.org/wiki/Infraestructura_de_clave_p&#37;C3&#37;BAblica">

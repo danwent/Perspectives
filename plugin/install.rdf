@@ -41,6 +41,18 @@
 		</em:localized>
 		<em:localized>
 			<Description>
+			 <em:locale>es-MX</em:locale>
+				<em:name>Perspectives</em:name>
+				<em:description>Securely bypasses Firefox HTTPS security errors by verifying certificates using a collection of Network Notaries.
+				See http://www.perspectives-project.org
+				</em:description>
+				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
+				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
+				<em:translator>Dan Torres</em:translator>
+			 </Description>
+		</em:localized>
+		<em:localized>
+			<Description>
 			 <em:locale>fr</em:locale>
 				<em:name>Perspectives</em:name>
 				<em:description>Contourne les erreurs de sécurité HTPPS de Firefox en vérifiant les certificats avec une série de « notaires » en réseau. Consultez http://www.perspectives-project.org (en anglais) pour en savoir plus.</em:description>

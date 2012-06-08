@@ -201,10 +201,14 @@ function get_loc_keys(filelist, locdirname) {
         } while (readmore != 0);
 
         // according to the MDN spec, loc files should *not* contain the BOM
+        // https://developer.mozilla.org/en/XUL_Tutorial/Localization
         var BOM = "ï»¿";
         if (data.substring(0,3) == BOM) {
           assert(false, "(" + locdirname + "): " + filename + " begins with BOM '" + BOM
             + "'. Loc files should be saved as UTF-8 with no BOM.");
+        }
+        else {
+          assert(true, "(" + locdirname + "): " + filename + " does not contain BOM.");
         }
 
         fstream.close();
@@ -278,7 +282,8 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
       var space = /^\s*$/;
       var justspace = space.exec(lines[i]);
       if (!justspace) {
-       assert(false, "(" + locdirname + "): Malformed entry '" + lines[i] + "' in " + sourcefilename);
+       assert(false, "(" + locdirname + "): Malformed entry '" + lines[i] + "' in " + sourcefilename
+        + ". You can try running 'make' or the perl script to fix this.");
       }
     }
   }

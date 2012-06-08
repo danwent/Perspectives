@@ -795,7 +795,7 @@ var Perspectives = {
       			} catch(err){
         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
         			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR, 
-					"Perspectives: an internal error occurred: " + err); //TODO: localize
+					"Perspectives: an error occurred when attempting to change location: " + err); //TODO: localize
       			}
 
    		},
@@ -812,7 +812,7 @@ var Perspectives = {
        			  } catch (err) {
          			Pers_debug.d_print("Perspectives had an internal exception: " + err);
          			Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR, 
-					"Perspectives: an internal error occurred: " + err); //TODO: localize
+					"Perspectives: an internal state change error occurred: " + err); //TODO: localize
        			  }
      			}
   		},
@@ -829,7 +829,7 @@ var Perspectives = {
          			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
          			if(uri) {
           				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR, 
-						"Perspectives: an internal error occurred: " + err); //TODO: localize
+						"Perspectives: an internal security change error occurred: " + err); //TODO: localize
          			}
        			}
  

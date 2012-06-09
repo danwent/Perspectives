@@ -27,7 +27,6 @@
 				<em:maxVersion>2.0.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
-
 		<em:localized>
 			<Description>
 			 <em:locale>en-US</em:locale>
@@ -65,10 +64,10 @@
 			<Description>
 				<em:name>Perspectives</em:name>
 				<em:locale>zh-CN</em:locale>
-				<em:description>一种验证安全编码站点并跳过Firefox安全警告的安全方法 </em:description>
+				<em:description>使用网络认证验证证书安全性并跳过 Firefox 的 HTTPS 安全错误页面。请查看 http://www.perspectives-project.org</em:description>
 				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
-				<em:translator>Yanlin Li</em:translator>
+				<em:translator>Yanlin Li, Wang.H.K</em:translator>
 			 </Description>
 		</em:localized>
 		<em:unpack>true</em:unpack>

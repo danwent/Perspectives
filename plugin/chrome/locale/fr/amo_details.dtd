@@ -1,0 +1,8 @@
+<!-- This file contains the 'description' and 'creator' strings that should be used inside install.rdf. 
+Unfortunately there is no way to pull these strings into the file via code (although we could perhaps write a build script).
+However, we don't want to forget to translate these when adding a new localization. Having these files is intended to help us remember.
+So: translators, if you could translate these strings normally that would be great.
+Developers: remember to copy/paste these strings into install.rdf when creating a new localization. -->
+
+<!ENTITY amoDescription "Contourne les erreurs de sécurité HTPPS de Firefox en vérifiant les certificats avec une série de « notaires » en réseau. Consultez http://www.perspectives-project.org (en anglais) pour en savoir plus.">
+<!ENTITY amoCreator "Perspectives est un projet de la section programmation informatique de l'université Carnegie Mellon">

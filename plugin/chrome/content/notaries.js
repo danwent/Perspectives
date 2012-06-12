@@ -863,14 +863,14 @@ var Perspectives = {
 			} else {  
 				Pers_util.update_default_notary_list_from_file(this.root_prefs); 
 			} 
-        		Pers_debug.d_print("main", Perspectives.notaries); 	
+			Pers_debug.d_print("main", Perspectives.notaries);
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
 			getBrowser().addProgressListener(Perspectives.notaryListener, 
 			Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
 			setTimeout(function (){ Perspectives.requeryAllTabs(gBrowser); }, 4000);
 			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
 		} catch(e) { 
-			alert("Error in initNotaries: " + e); 
+			Pers_util.pers_alert("Error in initNotaries: " + e);
 		} 
 	},
 

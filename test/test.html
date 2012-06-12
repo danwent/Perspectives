@@ -153,13 +153,18 @@ function get_loc_keys(filelist, locdirname) {
 
   // DTD entities look like:
   // <!ENTITY Name "String">
-  // Assumptions: could be one line or many. Cannot contain chars:
+  // Assumptions:
+  // - Could be one line or many
+  // (so we use [\s\S]*? instead of .* to match across multiple lines
+  // (make sure to make that *NON*-greedy!))
+  // - Cannot contain chars:
   // "%<>
+  //
   // For dtds to load inside xhtml files (such as our help.xhtml)
   // it is very important that they have the closing >
   // note: “” (smart quotes) both seem to load fine in xhtml,
   // since we use " to wrap our strings.
-  var dtdcomment = /<!--.*-->/g;
+  var dtdcomment = /<!--[\s\S]*?-->/g;
   var dtdsep = /<!ENTITY/;
   var dtdline = / +([A-Za-z0-9]+) +"([^"%<>]*)" *>/;
 
@@ -283,7 +288,7 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
       var justspace = space.exec(lines[i]);
       if (!justspace) {
        assert(false, "(" + locdirname + "): Malformed entry '" + lines[i] + "' in " + sourcefilename
-        + ". You can try running 'make' or the perl script to fix this.");
+        + " (line " + (i+1) + "). You can try running 'make' or the perl script to fix this.");
       }
     }
   }

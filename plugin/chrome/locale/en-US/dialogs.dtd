@@ -46,3 +46,12 @@
 <!ENTITY ForceNotaryCheck "Force Notary Check">
 <!ENTITY ReportAttack "Report Attack">
 <!ENTITY ViewCertificateStore "View Certificate Store">
+<!ENTITY About "About Perspectives">
+<!ENTITY ImageALTPerspectivesLogo "The Perspectives Logo - A blue circle surrounding the letter 'P'">
+<!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
+<!ENTITY ContributorTitle "Contributors">
+<!ENTITY ContributorSubTitle "(listed alphabetically by last name)">
+<!ENTITY ContributorText "Many thanks to the following people who contributed code and/or ideas">
+<!ENTITY TranslatorTitle "Translators">
+<!ENTITY TranslatorSubTitle "(listed alphabetically by locale code)">
+<!ENTITY TranslatorText "Many thanks to the following people who contributed translations">

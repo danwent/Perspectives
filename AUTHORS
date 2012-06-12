@@ -4,28 +4,13 @@ by Dan Wendlandt
 
 
 
-Many thanks to the following people who contributed code and/or ideas:
+We would like to extend our many thanks to everyone who contributed code, ideas, and/or translations! Thank you.
 
-Contributors (alphabetical by last name)
-------------
-Matt DeMoss
-Dinesh Israni
-Ethan Jackson
-Goofy
-katmagic
-David Lawhon
-Ramu Panayappan
-Dave Schaefer
-Igor Velkov
+To make localization of credits easier, the names of contributors and translators have been separated into two text files found at:
+
+plugin/chrome/content/credits/contributors.txt
+plugin/chrome/content/credits/translators.txt
 
 
 
-Many thanks to the following people who contributed translations:
-
-Localizations (alphabetical by locale code)
--------------
-Dan Torres (es-MX)
-Ville Tiensuu (fi)
-Goofy (fr)
-Alf (nl)
-Yanlin Li, Wang.H.K (zh-CN)
+You can also view them by selecting 'About Perspectives' in the Perspectives context menu.

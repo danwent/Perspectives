@@ -5,6 +5,7 @@
 <title>Perspectives - Test cases</title>
 
 <!-- Include every file so we can verify that all of the objects are testable in meta_test() -->
+<script type="text/javascript" src="../plugin/chrome/content/about.js"></script>
 <script type="text/javascript" src="../plugin/chrome/content/base64.js"></script>
 <script type="text/javascript" src="../plugin/chrome/content/client_policy.js"></script>
 <script type="text/javascript" src="../plugin/chrome/content/common.js"></script>
@@ -310,6 +311,7 @@ function meta_tests() {
 
   write_string("Starting object creation tests");
 
+  assert(typeof Pers_about === 'object', "Pers_about is type '" + typeof Pers_about + "'."); //about.js
   assert(typeof Pers_Base64 === 'object', "Pers_Base64 is type '" + typeof Pers_Base64 + "'.");
   assert(typeof Pers_client_policy === 'object', "Pers_client_policy is type '" + typeof Pers_client_policy + "'."); //client_policy.js
   assert(typeof Pers_debug === 'object', "Pers_debug is type '" + typeof Pers_debug + "'."); //common.js

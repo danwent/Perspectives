@@ -54,6 +54,14 @@ var Pers_statusbar = {
 
 	},
 
+	open_about_dialog: function() {
+		window.openDialog(
+	// 	window.open( // for debug
+			"chrome://perspectives/content/about_dialog.xul",
+	//       	"perspectivesResults", "").focus();  // for debug
+			"perspectivesabout", "centerscreen, chrome, toolbar").focus();
+	},
+
 
 	setStatus: function(uri,state, tooltip){
 		if(uri != null && uri != window.gBrowser.currentURI) { 

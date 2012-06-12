@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://perspectives/locale/dialogs.dtd">
+
+<window
+    id    = "perspectives-about"
+    title          = "&About;"
+    onload         = "Pers_about.load_about_dialog()"
+    onkeypress     = "Pers_keypress.press_esc_to_close(event)"
+    xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <vbox>
+    <hbox>
+      <separator class="thin" orient="vertical"/>
+      <vbox>
+        <separator class="thin"/>
+        <image src="default.png" TITLE="Perspectives" ALT="&ImageALTPerspectivesLogo;"/>
+      </vbox>
+      <vbox>
+        <separator class="thin"/>
+        <caption label="&AboutMainCredit;"/>
+        <label id="perspectives-version-number" value=""/>
+      </vbox>
+    </hbox>
+    <!-- <caption label=""/> -->
+    <separator class="thin"/>
+    <hbox>
+      <caption label="&ContributorTitle;" style="font-weight: bold"/>
+      <caption label="&ContributorSubTitle;"/>
+    </hbox>
+    <description>
+      &ContributorText;:
+    </description>
+
+    <textbox id = "contributors-list"
+      multiline = "true"
+      readonly  = "true"
+      flex      = "1"
+      value     = ""
+      height    = "180"/>
+
+    <separator class="thin"/>
+    <hbox>
+      <caption label="&TranslatorTitle;" style="font-weight: bold"/>
+      <caption label="&TranslatorSubTitle;"/>
+      </hbox>
+    <description>
+      &TranslatorText;:
+    </description>
+
+    <textbox id = "translators-list"
+      multiline = "true"
+      readonly  = "true"
+      flex      = "1"
+      value     = ""
+      height    = "100"/>
+
+    <hbox align="right">
+        <button id="Close" label="&Close;" onclick="window.close()"/>
+    </hbox>
+  </vbox>
+
+  <script type = "application/x-javascript" src="common.js" ></script>
+  <script type = "application/x-javascript" src="about.js" ></script>
+  <script type = "application/x-javascript" src="notaries.js" ></script>
+
+</window>
+
+
+

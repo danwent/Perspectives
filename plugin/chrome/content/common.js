@@ -219,8 +219,11 @@ var Pers_util = {
 		} 
 	},
 
-	// wrap all calls to alert() so we show a common title.
-	// this way the user knows the messages are from Perspectives.
+	// Wrap all calls to alert() so we show a common title.
+	// This way the user knows the messages are from Perspectives,
+	// which reduces confusion and makes it more likely that a bug will
+	// actually be reported (since they can now figure out where the bug came from).
+	//
 	// Note: most strings passed here should still be localized strings
 	// taken from dialogs.dtd or notaries.properties files, not hard-coded.
 	// FIXME - existing alerts should be changed to use this. Make sure to test them!

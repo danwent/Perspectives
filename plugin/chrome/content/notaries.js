@@ -741,7 +741,7 @@ var Perspectives = {
 
  
 		} catch (err) {
-			alert("process_notary_results error: " + err);
+			Pers_util.pers_alert("process_notary_results error: " + err);
 		}
 	},
 

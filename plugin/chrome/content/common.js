@@ -230,6 +230,27 @@ var Pers_util = {
 	pers_alert: function(msg) {
 	       alert("Perspectives: " + msg);
 	// TODO we could include contact info here too
+	},
+
+	// Make opening a link nicer by opening in a new tab if possible
+	open_url: function(url) {
+		try {
+		    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+				   .getService(Components.interfaces.nsIWindowMediator);
+		    var wnd = wm.getMostRecentWindow("navigator:browser");
+
+		    if(wnd && !wnd.closed && wnd.gBrowser) {
+			    wnd.gBrowser.selectedTab = wnd.gBrowser.addTab(url);
+		    }
+		    else {
+			    // if new tabs aren't possible just launch a new window
+			    wnd = window.open(url);
+		    }
+		    wnd.focus();
+		}
+		catch (e) {
+		    this.pers_alert("error opening link: " + e);
+		}
 	}
 }
 

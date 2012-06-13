@@ -48,7 +48,6 @@
 <!ENTITY ViewCertificateStore "查看证书">
 <!-- TODO: these new strings need translation -->
 <!ENTITY About "About Perspectives">
-<!ENTITY ImageALTPerspectivesLogo "The Perspectives Logo - A blue circle surrounding the letter 'P'">
 <!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
 <!ENTITY ContributorTitle "Contributors">
 <!ENTITY ContributorSubTitle "(listed alphabetically by last name)">
@@ -56,3 +55,4 @@
 <!ENTITY TranslatorTitle "Translators">
 <!ENTITY TranslatorSubTitle "(listed alphabetically by locale code)">
 <!ENTITY TranslatorText "Many thanks to the following people who contributed translations">
+<!ENTITY ClickToVisitWebsite "Click to visit the Perspectives website">

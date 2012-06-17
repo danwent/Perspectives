@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" [
+
+<!ENTITY % helpDTD SYSTEM "chrome://perspectives/locale/help.dtd">
+
+%helpDTD;
+
+]>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>&perspectivesFirewallHelp;</title>
+
+<link rel="stylesheet" type="text/css" href="../../content/css/perspectives.css" />
+<link rel="SHORTCUT ICON" href="../../content/default.png"/>
+<script type="text/javascript" src="../../content/common.js"></script>
+
+<script type="text/javascript">
+
+	// all of the other Perspectives windows close when the user presses Esc
+	// make this window do the same, to keep behaviour consistent
+	if (window.addEventListener) {
+		window.addEventListener("keypress", Pers_keypress.press_esc_to_close, false);
+	}
+	else if (window.attachEvent) {
+		window.attachEvent("onkeypress", Pers_keypress.press_esc_to_close)
+	}
+
+</script>
+</head>
+
+<body>
+<h1>&perspectivesFirewallHelp;</h1>
+
+<h3>&h3protocolandPorts;</h3>
+<p>&protocolandPortsAnswer;</p>
+
+<h3>&h3manuallyOverrideWarning;</h3>
+<p>&manuallyOverrideWarningAnswer;</p>
+
+<h3>&h3questionsComments;</h3>
+
+<ul>
+<li>&pleaseContactUs; <a href="mailto:perspectives-project@cs.cmu.edu">perspectives-project@cs.cmu.edu</a></li>
+<li>&forMore; <a href="http://www.perspectives-project.org" target="_blank">&perspectivesWebsite;</a></li>
+</ul>
+
+
+</body>
+</html>
+

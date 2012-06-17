@@ -205,7 +205,7 @@ var Pers_notify = {
 			accessKey : "", 
 			callback: function() {
 				b.loadOneTab(
-					"chrome://perspectives_main/content/firewall.html", 
+					"chrome://perspectives/content/firewall.xhtml",
 					null, null, null, false);
 			} 
 		  }, 

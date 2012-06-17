@@ -1,3 +1,5 @@
+<!-- strings for Perspectives help pages -->
+<!-- main help page -->
 <!ENTITY h1perspectivesHelp "Aide de Perspectives">
 <!ENTITY h3whatisPerspectives "Qu'est-ce que Perspectives?">
 <!ENTITY whatisPerspectives "Perspectives aide à empêcher les attaques 'Man-in-the-Middle' contre les communications HTTPS en vérifiant l'authenticité de la clé SSL publique du serveur. C'est particulièrement important quand vous vous connectez à des sites web qui ont des certificats « auto-signés », qui ne correspondent pas, ou qui ont expiré, ce qui cause des erreurs de sécurité et vous empêche de vous connecter à certains sites en HTTPS.">
@@ -28,3 +30,10 @@ Feel free to change the links to something for your language, or to delete and l
 <!ENTITY moreInfoManInTheMiddleURL "https://fr.wikipedia.org/wiki/Man-in-the-middle">
 <!ENTITY moreInfoPKI "PKI">
 <!ENTITY moreInfoPKIURL "http://www.securiteinfo.com/cryptographie/pki.shtml">
+<!-- ======= SPACER ======= -->
+<!-- Firewall help page - it reuses some strings such as the contact information -->
+<!ENTITY perspectivesFirewallHelp "Aide pour le Firewall/Proxy">
+<!ENTITY h3protocolandPorts "What Protocol and Ports does Perspectives Use?">
+<!ENTITY protocolandPortsAnswer "Perspectives uses the standard HTTP protocol to query network notary servers. However, some of these notary servers are unable to listen on the standard HTTP port (port 80) and instead listen on port 8080.  While most firewalls and proxies should allow this traffic, some may not. You can contact your network administrator to find out whether Perspectives traffic is likely being dropped by a proxy or firewall.">
+<!ENTITY h3manuallyOverrideWarning "If I cannot contact any notaries, is it safe to manually override the browser security warning?">
+<!ENTITY manuallyOverrideWarningAnswer "NO. When Perspectives is unable to reach the notary servers, it does not receive the data necessary to distinguish between a valid and an invalid certificate. Accepting a certificate without notary validation can be dangerous, because it may be that an attacker is intentionally dropping your notary queries.">

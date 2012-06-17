@@ -1,3 +1,5 @@
+<!-- strings for Perspectives help pages -->
+<!-- main help page -->
 <!ENTITY h1perspectivesHelp "Perspectives 帮助">
 <!ENTITY h3whatisPerspectives "什么是Perspectives?">
 <!ENTITY whatisPerspectives "Perspectives通过验证服务器的SSL公共密匙来阻止'Man-in-the-Middle'攻击HTTPS通信。当您链接的站点拥有“自
@@ -55,3 +57,10 @@ Perspectives是否安装这个例外，如果安装，您能选择这个例外�
 <!ENTITY moreInfoManInTheMiddleURL "https://en.wikipedia.org/wiki/Man-in-the-middle_attack">
 <!ENTITY moreInfoPKI "PKI - Public Key Infrastructure">
 <!ENTITY moreInfoPKIURL "https://zh.wikipedia.org/wiki/&#37;E5&#37;85&#37;AC&#37;E9&#37;96&#37;8B&#37;E9&#37;87&#37;91&#37;E9&#37;91&#37;B0&#37;E5&#37;9F&#37;BA&#37;E7&#37;A4&#37;8E&#37;E5&#37;BB&#37;BA&#37;E8&#37;A8&#37;AD">
+<!-- ======= SPACER ======= -->
+<!-- Firewall help page - it reuses some strings such as the contact information -->
+<!ENTITY perspectivesFirewallHelp "防火墙/代理帮助">
+<!ENTITY h3protocolandPorts "What Protocol and Ports does Perspectives Use?">
+<!ENTITY protocolandPortsAnswer "Perspectives uses the standard HTTP protocol to query network notary servers. However, some of these notary servers are unable to listen on the standard HTTP port (port 80) and instead listen on port 8080.  While most firewalls and proxies should allow this traffic, some may not. You can contact your network administrator to find out whether Perspectives traffic is likely being dropped by a proxy or firewall.">
+<!ENTITY h3manuallyOverrideWarning "If I cannot contact any notaries, is it safe to manually override the browser security warning?">
+<!ENTITY manuallyOverrideWarningAnswer "NO. When Perspectives is unable to reach the notary servers, it does not receive the data necessary to distinguish between a valid and an invalid certificate. Accepting a certificate without notary validation can be dangerous, because it may be that an attacker is intentionally dropping your notary queries.">

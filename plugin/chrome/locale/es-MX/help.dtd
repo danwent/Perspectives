@@ -1,3 +1,5 @@
+<!-- strings for Perspectives help pages -->
+<!-- main help page -->
 <!ENTITY h1perspectivesHelp "Ayuda de Perspectives">
 <!ENTITY h3whatisPerspectives "¿Qué es Perspectives?">
 <!ENTITY whatisPerspectives "Perspectives ayuda a prevenir ataques tipo 'Man-in-the-Middle' contra comunicaciones por protocolo HTTPS, por medio de la verificación de la autenticidad de la llave pública SSL del servidor. Esto es particularmente importante al conectarse con sitios web que contienen certificados 'auto-firmados', con datos erróneos, o expirados, los cuales pueden causar errores de seguridad y prevenir la conexión hacia otros sitios HTTPS.">
@@ -34,3 +36,10 @@ Feel free to change the links to something for your language.-->
 <!ENTITY moreInfoManInTheMiddleURL "http://es.wikipedia.org/wiki/Ataque_Man-in-the-middle">
 <!ENTITY moreInfoPKI "PKI - Infraestructura de Clave Pública">
 <!ENTITY moreInfoPKIURL "http://es.wikipedia.org/wiki/Infraestructura_de_clave_p&#37;C3&#37;BAblica">
+<!-- ======= SPACER ======= -->
+<!-- Firewall help page - it reuses some strings such as the contact information -->
+<!ENTITY perspectivesFirewallHelp "Ayuda para Firewall/Proxy">
+<!ENTITY h3protocolandPorts "What Protocol and Ports does Perspectives Use?">
+<!ENTITY protocolandPortsAnswer "Perspectives uses the standard HTTP protocol to query network notary servers. However, some of these notary servers are unable to listen on the standard HTTP port (port 80) and instead listen on port 8080.  While most firewalls and proxies should allow this traffic, some may not. You can contact your network administrator to find out whether Perspectives traffic is likely being dropped by a proxy or firewall.">
+<!ENTITY h3manuallyOverrideWarning "If I cannot contact any notaries, is it safe to manually override the browser security warning?">
+<!ENTITY manuallyOverrideWarningAnswer "NO. When Perspectives is unable to reach the notary servers, it does not receive the data necessary to distinguish between a valid and an invalid certificate. Accepting a certificate without notary validation can be dangerous, because it may be that an attacker is intentionally dropping your notary queries.">

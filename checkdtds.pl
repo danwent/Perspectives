@@ -118,8 +118,24 @@ for my $file (@files) {
 
 		#comments look like:
 		#<!-- any text here -->
-		elsif ($part =~ /(--[^>]+-->[^<]*)/) {
+		elsif ($part =~ /(--)([^>]+)(-->[^<]*)/) {
+
+			#save matches otherwise we lose them
+			my $first = $1;
+			my $inside = $2;
+			my $last = $3;
+
+			#restriction: comments cannot contain -- ,
+			#or they will not load properly inside .xhtml files.
+			if ($inside =~ /-{2,}/) {
+				$inside =~ s/-//g;
+				my $newline = $first . $inside . $last;
+				print "  Invalid DTD comment: replacing '$part' with '$newline'\n";
+				$part = $newline;
+			}
+
 			print FILE $delim . $part;
+
 		}
 
 		elsif ($part !~ /^\s*$/) { #blank line

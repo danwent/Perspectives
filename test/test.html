@@ -80,6 +80,11 @@ function assert_fixme(test, case_name) {
 
 // if you're lazy and want to print some text while debugging
 function debug(obj) {
+
+  if (obj == null) {
+    return;
+  }
+
   if (obj instanceof Array) {
     deb_console("array contains:");
     for (var i = 0; i < obj.length; i++) {
@@ -93,7 +98,7 @@ function debug(obj) {
 
   // strip out < so strings always appear on the page
   write_string_to_element("<font color='grey'>DEBUG: " +
-    obj.replace(/</, '&lt;') + "</font>", 'li');
+    obj.replace(/</g, '&lt;') + "</font>", 'li');
 }
 
 function deb_console(obj) {

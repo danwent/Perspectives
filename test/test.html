@@ -267,7 +267,7 @@ function validate_dtd_comments(comments, sourcefilename, locdirname) {
       if (match != null) {
         if (/-{2,}/.test(match[1])) {
           // need to replace < with &lt; for printing
-          assert(false, "(" + locdirname + "): " + sourcefilename + " has invalid comment '" + comments[c].replace(/</g, '&lt;') + "'. DTD comments cannot contain two or more -- dashes inside them. Please fix, or run 'make' to fix this automatically.");
+          assert(false, "(" + locdirname + "): " + sourcefilename + " has invalid comment '" + comments[c].replace(/</g, '&lt;') + "'. DTD comments cannot contain two or more -- dashes inside them. Please fix, or run 'make dtds' to fix this automatically.");
         }
       }
       else {

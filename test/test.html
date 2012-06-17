@@ -230,10 +230,10 @@ function get_loc_keys(filelist, locdirname) {
 
         var ext = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
         if(ext === "dtd") {
-          keys = get_keys_from_stream(data, dtdcomment, dtdsep, dtdline, keys, filename, locdirname);
+          keys = get_keys_from_stream(data, dtdcomment, dtdsep, dtdline, keys, filename, locdirname, validate_dtd_comments);
         }
         else if (ext === "properties") {
-          keys = get_keys_from_stream(data, propcomment, propsep, propline, keys, filename, locdirname);
+          keys = get_keys_from_stream(data, propcomment, propsep, propline, keys, filename, locdirname, null);
         }
         else {
           assert(false, locdirname + ": File '" + file.path
@@ -250,9 +250,36 @@ function get_loc_keys(filelist, locdirname) {
   return keys;
 }
 
+// comments inside .dtd files cannot contain two or more -- characters,
+// or attempting to load them inside an .xhtml file will fail.
+function validate_dtd_comments(comments, sourcefilename, locdirname) {
+
+  if (comments == null) {
+    return;
+  }
+
+  if (comments instanceof Array) {
+    for (c in comments) {
+
+      var commentregex = /<!--([\s\S]*?)-->/; // note: make sure the inside match is non-greedy
+      var match = commentregex.exec(comments[c]);
+
+      if (match != null) {
+        if (/-{2,}/.test(match[1])) {
+          // need to replace < with &lt; for printing
+          assert(false, "(" + locdirname + "): " + sourcefilename + " has invalid comment '" + comments[c].replace(/</g, '&lt;') + "'. DTD comments cannot contain two or more -- dashes inside them. Please fix.");
+        }
+      }
+      else {
+        assert(false, "(" + locdirname + "): " + sourcefilename + " DTD comment '" + comments[c].replace(/</g, '&lt;') + "' didn't match but somehow was parsed out as a comment. Something is really wrong.");
+      }
+    }
+  }
+}
+
 // extract localization string names/keys from a datastream,
 // using the appropriate regex passed by the caller.
-function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, sourcefilename, locdirname) {
+function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, sourcefilename, locdirname, extracommentvalidationfunc) {
 
   // we use 'filename/keyname' as the hash key, as that's the value
   // we want to ensure is unique. but make sure there are no instances
@@ -262,6 +289,10 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
   var cleanfilename = sourcefilename;
   var regex = new RegExp(LSEP, "g");
   cleanfilename = cleanfilename.replace(regex, '');
+
+  if (extracommentvalidationfunc != null) {
+    extracommentvalidationfunc(datastream.match(comment), sourcefilename, locdirname);
+  }
 
   datastream = datastream.replace(comment, '');
   var lines = datastream.split(delimiter);

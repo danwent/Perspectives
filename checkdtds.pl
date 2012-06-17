@@ -118,7 +118,7 @@ for my $file (@files) {
 
 		#comments look like:
 		#<!-- any text here -->
-		elsif ($part =~ /(--)([^>]+)(-->[^<]*)/) {
+		elsif ($part =~ /(--)([\s\S]*?)(-->[^<]*)/) {
 
 			#save matches otherwise we lose them
 			my $first = $1;

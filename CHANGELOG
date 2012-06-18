@@ -5,10 +5,16 @@ Format:
 * bug or behavior fix
 
 
+4.3.1
+-----
+* extract hardcoded strings and move to localization files
++ add (de), (es), and (fr) localizations! Many thanks to our translators.
++ fill in the missing strings from (zh-CN) localization. Many more thanks to our translators.
+* clean up build process and tests
+
 
 4.3
 ---
-
 * remove the forced statusbar icon (GH 38)
 + add Perspectives icons to alt-tab window
 + display key age in the notary results dialog
@@ -26,4 +32,3 @@ Format:
 + ignore blank lines when parsing notaries (GH 42)
 * merge duplicate help pages, copyedit content, and update links
 * add .css stylesheet for help pages; add some basic format/coloring
-

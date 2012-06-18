@@ -79,7 +79,7 @@ adding a <Description> block with a <em:translator>translator name</em:translato
 
 3. Make sure to save the file as as UNIX/UTF-8 encoding.
 
-4. Add a credit inside the AUTHORS file too
+4. Add a credit inside the AUTHORS file (or a credit to 'anonymous', if the translator prefers)
 
 
 

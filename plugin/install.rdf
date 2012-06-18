@@ -29,6 +29,18 @@
 		</em:targetApplication>
 		<em:localized>
 			<Description>
+			 <em:locale>de</em:locale>
+				<em:name>Perspectives</em:name>
+				<em:description>Securely bypasses Firefox HTTPS security errors by verifying certificates using a collection of Network Notaries.
+				See http://www.perspectives-project.org
+				</em:description>
+				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
+				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
+				<em:translator>Edward Bassett</em:translator>
+			 </Description>
+		</em:localized>
+		<em:localized>
+			<Description>
 			 <em:locale>en-US</em:locale>
 				<em:name>Perspectives</em:name>
 				<em:description>Securely bypasses Firefox HTTPS security errors by verifying certificates using a collection of Network Notaries.

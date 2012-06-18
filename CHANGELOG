@@ -11,6 +11,7 @@ Format:
 + add (de), (es), and (fr) localizations! Many thanks to our translators.
 + fill in the missing strings from (zh-CN) localization. Many more thanks to our translators.
 * clean up build process and tests
+* fix SeaMonkey initialization; extension did not load
 
 
 4.3

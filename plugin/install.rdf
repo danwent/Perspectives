@@ -55,8 +55,7 @@
 			<Description>
 			 <em:locale>es-MX</em:locale>
 				<em:name>Perspectives</em:name>
-				<em:description>Securely bypasses Firefox HTTPS security errors by verifying certificates using a collection of Network Notaries.
-				See http://www.perspectives-project.org
+				<em:description>Conéctese de forma segura con los sitios web que utilizan el protocolo HTTPS, validando sus certificados por medio de notarías de red. Vea http://www.perspectives-project.org
 				</em:description>
 				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
@@ -67,7 +66,7 @@
 			<Description>
 			 <em:locale>fr</em:locale>
 				<em:name>Perspectives</em:name>
-				<em:description>Contourne les erreurs de sécurité HTPPS de Firefox en vérifiant les certificats avec une série de « notaires » en réseau. Consultez http://www.perspectives-project.org (en anglais) pour en savoir plus.</em:description>
+				<em:description>Connectez-vous de façon plus sécurisée sur les sites Internet https en vérifiant leurs certificats avec les notaires de réseau. Consultez http://www.perspectives-project.org (en anglais) pour en savoir plus.</em:description>
 				<em:creator>Perspectives est un projet de la section programmation informatique de l'université Carnegie Mellon</em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
 				<em:translator>Goofy</em:translator>
@@ -77,7 +76,7 @@
 			<Description>
 				<em:name>Perspectives</em:name>
 				<em:locale>zh-CN</em:locale>
-				<em:description>使用网络认证验证证书安全性并跳过 Firefox 的 HTTPS 安全错误页面。请查看 http://www.perspectives-project.org</em:description>
+				<em:description>使用网络认证检查安全证书，从而安全地连接到 https 网站。请查看 http://www.perspectives-project.org</em:description>
 				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
 				<em:translator>Yanlin Li, Wang.H.K</em:translator>

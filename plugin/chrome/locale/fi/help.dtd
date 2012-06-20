@@ -6,7 +6,7 @@
 <!ENTITY h3preferences "Preferences">
 <!ENTITY preferencesIntro "This section helps you understand the configuration parameters you can control via Perspectives' 'Preferences' panel.">
 <!ENTITY securitySettings "Security Settings: What is Quorum and Quorum Duration?">
-<!ENTITY securityValues "The preferences dialog lets you configure different values for 'Quorum' and 'Quorum Duration'. These threshold values let you decide how paranoid you want to be about accepting keys.  In both cases, higher values are more secure, but also run the risk of incorrectly determining that a key is invalid.">
+<!ENTITY securityValues "The preferences dialog lets you configure different values for 'Quorum' and 'Quorum Duration'. These threshold values let you decide how paranoid you want to be about accepting keys. In both cases, higher values are more secure, but also run the risk of incorrectly determining that a key is invalid.">
 <!ENTITY quorum "Quorum">
 <!ENTITY whatisQuorum "is a threshold value that describes, as a percentage, the minimum percentage of notaries that must agree about a key for it to be considered valid.  Reasonable values are between 100&#37; and 50&#37;.">
 <!ENTITY quorumDuration "Quorum Duration">

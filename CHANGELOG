@@ -5,11 +5,15 @@ Format:
 * bug or behavior fix
 
 
-4.3.1
+4.3.2
 -----
 * extract hardcoded strings and move to localization files
 + add (de), (es), and (fr) localizations! Many thanks to our translators.
 + fill in the missing strings from (zh-CN) localization. Many more thanks to our translators.
+
+
+4.3.1
+-----
 * clean up build process and tests
 * fix SeaMonkey initialization; extension did not load
 

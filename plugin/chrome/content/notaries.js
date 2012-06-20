@@ -959,7 +959,7 @@ var Perspectives = {
 			//We create local variables here so SeaMonkey clients don't throw 'variable is not defined' exceptions
 			const Cc = Components.classes, Ci = Components.interfaces;
 
-			//prompt_update_all_https_setting stores a value for "have we already asked the user about this?"
+			//'prompt_update_all_https_setting' stores a value for "have we already asked the user about this?"
 			var ask_update = Perspectives.root_prefs.
 	                getBoolPref("perspectives.prompt_update_all_https_setting");
 			if (ask_update == true) {
@@ -986,14 +986,19 @@ var Perspectives = {
 										true);
 					}
 				}
-				Perspectives.root_prefs.
-						setBoolPref("perspectives.prompt_update_all_https_setting",
-									false);
 			}
 		}
 		catch (e) {
 			Pers_debug.d_print("error", "Error: could not prompt to update preferences about check_good_certificates: " + e);
 			return null;
+		}
+		finally {
+			//set the flag to not ask the user again, even (especially!) if something went wrong.
+			//this way even in the worst case the user will only get a popup once.
+			//they can always change their preferences later through the prefs dialog if they wish.
+			Perspectives.root_prefs.
+						setBoolPref("perspectives.prompt_update_all_https_setting",
+									false);
 		}
 	}
 			

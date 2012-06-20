@@ -6,13 +6,17 @@
   <script type="application/x-javascript" src="common.js" />
   <script type="text/javascript">
 	Perspectives.init_data();
-	Perspectives.prompt_update();
 				
     window.addEventListener('load',evtLoad,false);
+
     function evtLoad(evt){
       Perspectives.initNotaries();
       var root_prefs = Components.classes["@mozilla.org/preferences-service;1"]
                                 .getService(Components.interfaces.nsIPrefBranch);
+
+      //call this *after* the document has loaded
+      //so we have access to the stringbundle from statusbar.xul
+      Perspectives.prompt_update();
 
       var firstrun = root_prefs.getBoolPref("perspectives.first_run");
       if (firstrun) {

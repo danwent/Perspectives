@@ -541,7 +541,7 @@ var Perspectives = {
 				var isTemp = !Perspectives.root_prefs.getBoolPref("perspectives.exceptions.permanent");
 				setTimeout(function() {  
 					if(Perspectives.do_override(ti.browser, ti.cert, isTemp)) { 
-						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); //TODO: localize
+						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); //TODO: localize; can we use configuredToWhitelist to save a string?
 						Pers_notify.do_notify(ti, Pers_notify.TYPE_WHITELIST);
 					}
 				}, 1000); 

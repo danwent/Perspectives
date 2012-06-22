@@ -165,14 +165,15 @@ function get_loc_keys(filelist, locdirname) {
   // (make sure to make that *NON*-greedy!))
   // - Cannot contain chars:
   // "%<>
+  // - Cannot have non-whitespace characters in the file outside of entities and comments
   //
   // For dtds to load inside xhtml files (such as our help.xhtml)
-  // it is very important that they have the closing >
+  // it is very important that they have the closing > .
   // note: “” (smart quotes) both seem to load fine in xhtml,
   // since we use " to wrap our strings.
   var dtdcomment = /<!--[\s\S]*?-->/g;
-  var dtdsep = /<!ENTITY/;
-  var dtdline = / +([A-Za-z0-9]+) +"([^"%<>]*)" *>/;
+  var dtdsep = /<!ENTITY/; //do *NOT* start with ^ or it will mask errors
+  var dtdline = / +([A-Za-z0-9]+) +"([^"%<>]*)" *> *$/;
 
   // .properties entries look like:
   // name=string
@@ -299,11 +300,12 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
   var numkeys = 0;
 
   for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].replace(/\n/g, '');
     // note: if printing for debug, <> don't show up in HTML docs.
     // they must be replaced. e.g.
     // write_string_to_element("line: '" + lines[i].replace(/</, '&lt;') + "'", 'li');
     // or just use console.log().
-    var match = itemregex.exec(lines[i]);
+    var match = itemregex.exec(line);
     if (match != null) {
       numkeys++;
       // grab the first stored match, match[1], not the entire match array.
@@ -322,10 +324,10 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
     }
     else {
       var space = /^\s*$/;
-      var justspace = space.exec(lines[i]);
+      var justspace = space.exec(line);
       if (!justspace) {
-       assert(false, "(" + locdirname + "): Malformed entry '" + lines[i] + "' in " + sourcefilename
-        + " (line " + (i+1) + "). You can try running 'make' or the perl script to fix this.");
+       assert(false, "(" + locdirname + "): Malformed entry {{<u>" + line + "</u>}} in " + sourcefilename
+        + " (line " + (i+1) + "). You can try running 'make dtds' to fix this.");
       }
     }
   }

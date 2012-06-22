@@ -24,6 +24,7 @@ var Pers_debug = {
 	d_print_flags : { 
 		"policy" : false, 
 		"query" : false,
+		"querylarge": false, //big response strings and XML; separating this from query lines makes for easier debugging
 		"main" : false,  
 		"error" :  false 
 	},

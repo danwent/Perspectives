@@ -326,13 +326,13 @@ var Perspectives = {
 			if(req.status == 200){
 				try { 							
  
-					Pers_debug.d_print("query", req.responseText); 
+					Pers_debug.d_print("querylarge", req.responseText);
 					var server_node = req.responseXML.documentElement;
 					var server_result = Pers_xml.
 							parse_server_node(server_node,1);
 					var bin_result = Pers_xml.
 							pack_result_as_binary(server_result,ti.service_id);
-					Pers_debug.d_print("query", 
+					Pers_debug.d_print("querylarge",
 						Pers_xml.resultToString(server_result,false)); 
 					var verifier = 
 						Cc["@mozilla.org/security/datasignatureverifier;1"].

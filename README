@@ -6,15 +6,17 @@ For more information on Perspectives, see: http://www.perspectives-project.org
 HACKING
 
 Requirements:
+- a POSIX command line environment
 - make
 - zip
+
+Optional (but strongly recommended!):
 - perl (to run the dtd sanity script)
-- a POSIX command line environment
 
 
 To build, just type "make" (assuming of course you have make installed!). This will create a file called 'Perspectives.xpi'.  
 
-You can run this in Firefox using File -> Open and browsing to the Perspectives.xpi file.  
+You can run Perspectives in Firefox using File -> Open and browsing to the Perspectives.xpi file.
 
 To debug the extension:
 

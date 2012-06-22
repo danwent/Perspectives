@@ -41,6 +41,12 @@ Preferences:
 - Both Quorum Percentage and Duration must be integers
 
 
+Queries
+---------
+- If we get at least one response and one timeout, we should only send requeries to notaries that have not given a response yet.
+(enable the 'query' debug flags to see this easily)
+
+
 
 Toolbar Button
 --------------

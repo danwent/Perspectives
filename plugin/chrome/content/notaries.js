@@ -302,11 +302,11 @@ var Perspectives = {
 					} 
 					Perspectives.notaryQueriesComplete(ti);
 				} else {
-					// send another query to any of the servers we are missing
+					// send another query to any of the servers we are missing.
 					// reset the timeout, incrementing the count of the number
 					// of timeouts we have seen  
 					for(var i = 0; i < missing_replies.length; i++) { 
-						this.querySingleNotary(Perspectives.all_notaries[i],ti); 
+						this.querySingleNotary(missing_replies[i],ti);
 					}
     
 					ti.timeout_id = window.setTimeout(function() { 

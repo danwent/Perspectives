@@ -1,6 +1,17 @@
+Perspectives - Connect securely to https websites by checking certificates with network notaries.
+
+
 This directory includes the code for the Perspectives Firefox client.  
 
-For more information on Perspectives, see: http://www.perspectives-project.org
+For more information see: http://www.perspectives-project.org
+
+
+CONTACT
+
+You can contact the developers on the Perspectives Dev newsgroup:
+
+https://groups.google.com/group/perspectives-dev
+perspectives-dev@googlegroups.com
 
 
 HACKING

@@ -5,6 +5,11 @@ Format:
 * bug or behavior fix
 
 
+4.4
+---
++ Add an About dialog that lists contributors and translators
+* When sending requeries, only send to notaries that haven't yet replied.
+
 
 4.3
 ---

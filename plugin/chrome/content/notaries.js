@@ -103,11 +103,6 @@ var Perspectives = {
 		return false; 
 	}, 
 
-
-	// flag to make sure we only show component load failed alert once
-	// per Firefox session.  Otherwise, the user gets flooded with it.  
-	show_component_failed : true,
-
 	tab_info_cache : {}, 
 
 	//Sets the tooltip and the text of the favicon popup on https sites

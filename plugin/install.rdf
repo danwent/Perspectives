@@ -6,7 +6,7 @@
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>perspectives@cmu.edu</em:id>
 		<em:name>Perspectives</em:name>
-		<em:version>4.3</em:version>
+		<em:version>4.3.2</em:version>
 		<em:type>2</em:type>
 		<em:optionsURL>chrome://perspectives/content/preferences_dialog.xul</em:optionsURL>
 
@@ -15,7 +15,7 @@
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>3.0</em:minVersion>
-				<em:maxVersion>11.*</em:maxVersion>
+				<em:maxVersion>14.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 
@@ -24,15 +24,28 @@
 			<Description>
 				<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
 				<em:minVersion>2.0</em:minVersion>
-				<em:maxVersion>2.0.*</em:maxVersion>
+				<em:maxVersion>2.11.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
+
+		<!-- Localizations -->
+		<em:localized>
+			<Description>
+			 <em:locale>de</em:locale>
+				<em:name>Perspectives</em:name>
+				<em:description>Securely bypasses Firefox HTTPS security errors by verifying certificates using a collection of Network Notaries.
+				See http://www.perspectives-project.org
+				</em:description>
+				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
+				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
+				<em:translator>Edward Bassett</em:translator>
+			 </Description>
+		</em:localized>
 		<em:localized>
 			<Description>
 			 <em:locale>en-US</em:locale>
 				<em:name>Perspectives</em:name>
-				<em:description>Securely bypasses Firefox HTTPS security errors by verifying certificates using a collection of Network Notaries.
-				See http://www.perspectives-project.org
+				<em:description>Connect securely to https websites by checking certificates with network notaries. See http://www.perspectives-project.org
 				</em:description>
 				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
@@ -42,8 +55,7 @@
 			<Description>
 			 <em:locale>es-MX</em:locale>
 				<em:name>Perspectives</em:name>
-				<em:description>Securely bypasses Firefox HTTPS security errors by verifying certificates using a collection of Network Notaries.
-				See http://www.perspectives-project.org
+				<em:description>Conéctese de forma segura con los sitios web que utilizan el protocolo HTTPS, validando sus certificados por medio de notarías de red. Vea http://www.perspectives-project.org
 				</em:description>
 				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
@@ -54,7 +66,7 @@
 			<Description>
 			 <em:locale>fr</em:locale>
 				<em:name>Perspectives</em:name>
-				<em:description>Contourne les erreurs de sécurité HTPPS de Firefox en vérifiant les certificats avec une série de « notaires » en réseau. Consultez http://www.perspectives-project.org (en anglais) pour en savoir plus.</em:description>
+				<em:description>Connectez-vous de façon plus sécurisée sur les sites Internet https en vérifiant leurs certificats avec les notaires de réseau. Consultez http://www.perspectives-project.org (en anglais) pour en savoir plus.</em:description>
 				<em:creator>Perspectives est un projet de la section programmation informatique de l'université Carnegie Mellon</em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
 				<em:translator>Goofy</em:translator>
@@ -64,7 +76,7 @@
 			<Description>
 				<em:name>Perspectives</em:name>
 				<em:locale>zh-CN</em:locale>
-				<em:description>使用网络认证验证证书安全性并跳过 Firefox 的 HTTPS 安全错误页面。请查看 http://www.perspectives-project.org</em:description>
+				<em:description>使用网络认证检查安全证书，从而安全地连接到 https 网站。请查看 http://www.perspectives-project.org</em:description>
 				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
 				<em:translator>Yanlin Li, Wang.H.K</em:translator>

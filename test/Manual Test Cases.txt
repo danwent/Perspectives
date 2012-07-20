@@ -1,6 +1,11 @@
 Here is a list of manual tests you can check when making changes to the Perspectives Firefox extension. If any of these are easily automatable feel free to add cases for them in test.html instead.
 
 
+Remember: the Perspectives client extension supports multiple browsers. Remember to test it in:
+
+- Firefox
+- SeaMonkey
+
 
 UI
 --

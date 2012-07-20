@@ -59,7 +59,7 @@ var Pers_statusbar = {
 	// 	window.open( // for debug
 			"chrome://perspectives/content/about_dialog.xul",
 	//       	"perspectivesResults", "").focus();  // for debug
-			"perspectivesabout", "centerscreen, chrome, toolbar").focus();
+			"perspectivesabout", "centerscreen, chrome, toolbar, resizable").focus();
 	},
 
 

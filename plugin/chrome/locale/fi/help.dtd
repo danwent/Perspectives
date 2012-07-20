@@ -27,3 +27,10 @@ Feel free to change the links to something for your language, or to delete and l
 <!ENTITY moreInfoManInTheMiddleURL "https://en.wikipedia.org/wiki/Man-in-the-middle_attack">
 <!ENTITY moreInfoPKI "PKI - Public Key Infrastructure">
 <!ENTITY moreInfoPKIURL "https://en.wikipedia.org/wiki/Public_key_infrastructure">
+<!-- ======= SPACER ======= -->
+<!-- Firewall help page - it reuses some strings such as the contact information -->
+<!ENTITY perspectivesFirewallHelp "Perspectives Firewall/Proxy Help">
+<!ENTITY h3protocolandPorts "What Protocol and Ports does Perspectives Use?">
+<!ENTITY protocolandPortsAnswer "Perspectives uses the standard HTTP protocol to query network notary servers. However, some of these notary servers are unable to listen on the standard HTTP port (port 80) and instead listen on port 8080.  While most firewalls and proxies should allow this traffic, some may not. You can contact your network administrator to find out whether Perspectives traffic is likely being dropped by a proxy or firewall.">
+<!ENTITY h3manuallyOverrideWarning "If I cannot contact any notaries, is it safe to manually override the browser security warning?">
+<!ENTITY manuallyOverrideWarningAnswer "NO. When Perspectives is unable to reach the notary servers, it does not receive the data necessary to distinguish between a valid and an invalid certificate. Accepting a certificate without notary validation can be dangerous, because it may be that an attacker is intentionally dropping your notary queries.">

@@ -9,7 +9,10 @@ Format:
 ---
 + Add an About dialog that lists contributors and translators
 * When sending requeries, only send to notaries that haven't yet replied.
-* In the Preferences window, set proper default height and width for Notary Server textboxes
+* UI improvements:
+	* In the Preferences window, set proper default height and width for Notary Server textboxes
+	* In the Results window, expand the results textbox vertically to fill available space
+		(This makes more text visible and keeps the radio buttons in a consistent place)
 
 
 4.3.2

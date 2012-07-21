@@ -386,6 +386,14 @@ var Perspectives = {
 		}  
 	},  
 
+	// return the quorum as an integer
+	// e.g. useful for comparing against the number of results
+	getQuorumAsInt: function() {
+		var q_thresh = Perspectives.root_prefs.
+				getIntPref("perspectives.quorum_thresh") / 100;
+		return Math.round(this.all_notaries.length * q_thresh);
+	},
+
 	notaryQueriesComplete: function(ti) {
 		try {
 			if(Perspectives.strbundle == null) {
@@ -399,9 +407,7 @@ var Perspectives = {
 			var test_key = ti.cert.md5Fingerprint.toLowerCase();
 			// 2 days (FIXME: make this a pref)
 			var max_stale_sec = 2 * 24 * 3600; 
-			var q_thresh = Perspectives.root_prefs.
-						getIntPref("perspectives.quorum_thresh") / 100;
-			var q_required = Math.round(this.all_notaries.length * q_thresh);
+			var q_required = Perspectives.getQuorumAsInt();
 			var unixtime = Pers_util.get_unix_time(); 
 			var quorum_duration = Pers_client_policy.get_quorum_duration(test_key, 
 					server_result_list, q_required, max_stale_sec,unixtime);  

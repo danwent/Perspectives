@@ -33,10 +33,9 @@
 			<Description>
 			 <em:locale>de</em:locale>
 				<em:name>Perspectives</em:name>
-				<em:description>Securely bypasses Firefox HTTPS security errors by verifying certificates using a collection of Network Notaries.
-				See http://www.perspectives-project.org
+				<em:description>Verbindungen mit Https-Websites sicher aufnehmen, indem Sie deren Zertifikate mittels Netzwerknotaren &uuml;berpr&uuml;fen. Sehen Sie bitte http://www.perspectives-project.org (englischsprachig).
 				</em:description>
-				<em:creator>Perspectives Project at Carnegie Mellon Computer Science </em:creator>
+				<em:creator>Perspectives-Projekt, Schule der Informatik, Carnegie-Mellon-Universit&auml;t</em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
 				<em:translator>Edward Bassett</em:translator>
 			 </Description>

@@ -8,13 +8,10 @@ locale perspectives zh-CN chrome/locale/zh-CN/
 
 content perspectives_main .
 
-# NOTE: order here is important!
-# statusbar.xul must be included before initialize.xul in order for the init_data() function to be called properly.
-# keep these lines in order or Perspectives won't load
+# overlays for firefox
 overlay	chrome://browser/content/browser.xul chrome://perspectives/content/statusbar.xul
 overlay	chrome://browser/content/browser.xul chrome://perspectives/content/initialize.xul
 
-# these lines are needed to support seamonkey
-# order is still important! see above.
+# overlays to support seamonkey
 overlay chrome://navigator/content/navigator.xul chrome://perspectives/content/statusbar.xul
 overlay chrome://navigator/content/navigator.xul chrome://perspectives/content/initialize.xul

@@ -50,8 +50,16 @@ var Pers_statusbar = {
 	// 	window.open( // for debug
 			"chrome://perspectives/content/preferences_dialog.xul", 
 	//       	"perspectivesResults", "").focus();  // for debug
-			"perspectivepreferences", "centerscreen, chrome, toolbar").focus();
+			"perspectivepreferences", "centerscreen, chrome, toolbar, resizable").focus();
 
+	},
+
+	open_about_dialog: function() {
+		window.openDialog(
+	// 	window.open( // for debug
+			"chrome://perspectives/content/about_dialog.xul",
+	//       	"perspectivesResults", "").focus();  // for debug
+			"perspectivesabout", "centerscreen, chrome, toolbar, resizable").focus();
 	},
 
 

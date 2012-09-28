@@ -17,8 +17,8 @@
     <stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" />
   </stringbundleset>
 
-<vbox> 
-  <groupbox minheight="235">
+<vbox flex="1">
+  <groupbox minheight="235" flex="1">
     <caption 
       id="perspective-information-caption" 
       label="&DetailedInformation;"

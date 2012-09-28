@@ -64,7 +64,7 @@ var Pers_whitelist_dialog = {
 		} 	
 		this.root_prefs.setCharPref("perspectives.whitelist",whitelist);
 		window.opener.Perspectives.forceStatusUpdate(window.opener); 
-		} catch(e) { alert("confirm_add: " + e); } 
+		} catch(e) { Pers_util.pers_alert("confirm_add: " + e); }
 	}, 
 
 	is_ip_address: function(host) { 

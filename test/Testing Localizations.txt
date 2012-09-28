@@ -2,9 +2,15 @@ To test Localizations:
 
 - In a new tab, open about:config
 - Find the Preference 'general.useragent.locale'
-- Save your current value here:
+- Paste your current value here to save it:
 - Edit the value to the Perspectives localization you wish to test
 - Restart Firefox
+- Run through the tests in 'Manual Test Cases.txt' (and of course, make sure the automated ones in test.html work too)
+
+
+*Important:* Even if you don't speak the language, try to run the translation files through an online translator or other tool and check that the words roughly say what they should. This is not a test to check the grammar or structure but to make sure there are no swears, racial slurs, or other malicious text that would be bad to publish.
+
+See the LOCALIZATION file for steps to complete before publishing a localization.
 
 
 For a list of localization targets see

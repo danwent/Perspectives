@@ -1,0 +1,58 @@
+<!-- This file contains localized strings for Perspectives .xul files. -->
+<!ENTITY NotaryResults "Resultados de Notarías">
+<!ENTITY ViewNotaryResults "Ver Resultados de Notarías">
+<!ENTITY Preferences "Preferencias">
+<!ENTITY NoQuorumInformation "No hay información de quórum">
+<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "No hay información disponible en Perspecives para este lugar">
+<!ENTITY Timeline "Timeline">
+<!ENTITY SecuritySettings "Nivel de Seguridad">
+<!ENTITY HighSecurity "Seguridad Alta">
+<!ENTITY MediumSecurity "Seguridad Media">
+<!ENTITY HighAvailability "Alta Disponibilidad">
+<!ENTITY ManualConfiguration "Configuración Manual">
+<!ENTITY Percentageofnotariesthatmustagree "Porcentage de notarías que deben estar de acuerdo (porcentage de quórum): ">
+<!ENTITY Lengthoftimequorummustbeachieved "Días requeridos de acuerdo contínuo (duración de quórum): ">
+<!ENTITY OverridingFirefoxSecurityErrors "Reemplazando los errores de seguridad de Firefox">
+<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Permitir que Perspectives reemplaze automáticamente los errores de seguridad">
+<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Aceptar permanentemente los certificados validados por Perspectives">
+<!ENTITY WhentoContactNotaries "Cuándo contactar a las Notarías">
+<!ENTITY ContactNotariesforallHTTPSsites "Contactar a las Notarías para todos los sitios HTTPS">
+<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contactar a las Notarías solamente cuando el certificado de un sitio web ocasione errores de seguridad">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Preguntar siempre antes de contactar a las Notarías">
+<!ENTITY Certificates "Certificados">
+<!ENTITY Servers "Servidores de Notarías">
+<!ENTITY Help "Ayuda">
+<!ENTITY OK "OK">
+<!ENTITY Close "Cerrar">
+<!ENTITY Cancel "Cancelar">
+<!ENTITY Addtowhitelist "Agregar a lista blanca">
+<!ENTITY Addsitetowhitelist "Agregar sitio a lista blanca">
+<!ENTITY Whitelistmessage "Solo para usuarios expertos: Al agregar un sitio a tu lista blanca, Perspectives autorizará automáticamente todas las conexiones a dicho sitio sin contactar notarías. Proceda solo si entiende los riesgos.">
+<!ENTITY ReportPossibleAttack "Reportar Posible Ataque">
+<!ENTITY ReportAttackMessage "Al reportar un ataque, el proyecto Perspectives puede mejorar esta extensión y detectar vulnerabilidades de red.">
+<!ENTITY SendFullReport "Mandar reporte completo">
+<!ENTITY SendPrivacyReport "Mandar reporte con información privada">
+<!ENTITY Optional "Opcional">
+<!ENTITY EmailDescription "Dirección de correo para preguntas subsequentes">
+<!ENTITY AdditionalInfoMessage "Información adicional acerca de las circunstancias de este posible ataque">
+<!ENTITY ShowDetailedReportText "Mostrar reporte detallado">
+<!ENTITY SubmitReport "Mandar Reporte">
+<!ENTITY DetailedInformation "Información Detallada">
+<!ENTITY CertificateValidation "Validación de Certificado">
+<!ENTITY AutoTrust "Confiar automáticamente en los certificados de los siguientes sitios">
+<!ENTITY DefaultNotaryServers "Servidores de Notaría por Default">
+<!ENTITY UseDefaultNotaries "Usar la lista de servidores de notaría por default">
+<!ENTITY AdditionalNotaryServers "Servidores de Notaría Adicionales">
+<!ENTITY ForceNotaryCheck "Forzar Verificación de Notaría">
+<!ENTITY ReportAttack "Reportar Ataque">
+<!ENTITY ViewCertificateStore "Ver Lista de Certificados">
+<!-- TODO: these new strings need translation -->
+<!ENTITY About "About Perspectives">
+<!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
+<!ENTITY ContributorTitle "Contributors">
+<!ENTITY ContributorSubTitle "(listed alphabetically by last name)">
+<!ENTITY ContributorText "Many thanks to the following people who contributed bug reports, documentation, code patches, and/or ideas">
+<!ENTITY TranslatorTitle "Translators">
+<!ENTITY TranslatorSubTitle "(listed alphabetically by locale code)">
+<!ENTITY TranslatorText "Many thanks to the following people who contributed translations">
+<!ENTITY ClickToVisitWebsite "Click to visit the Perspectives website">

@@ -1,0 +1,36 @@
+<!ENTITY h1perspectivesHelp "Hilfe zu Perspectives">
+<!ENTITY h3whatisPerspectives "Was ist Perspectives?">
+<!ENTITY whatisPerspectives "Perspectives hilft, 'Mann-in-der-Mitte'-Angriffe gegen HTTP-Verbingungen vorzubeugen, indem es die Authentizit&auml;t des &ouml;ffentlichen SSL-Schl&uuml;ssels (Public Key) des Servers nachpr&uuml;ft. Dies ist besonders dann wichtig, wenn Sie sich mit Websites in Verbingung setzen, deren Zertifikat entweder selbstsigniert, fehlangepasst, oder abgelaufen ist, was Sicherheitsfehler verursacht und bei mancher Website eine Verbindung verhindert.">
+<!ENTITY h3howDoesItWork "Wie funktioniert das?">
+<!ENTITY howDoesItWork "Perspectives baut auf die Tatsache auf, dass das Internet meistens richtig funktioniert. Wenn sich Angriffe dennoch ereignen, sind es h&ouml;chstwahrscheinlich in der Ausbreitung (z.B. ein einziger kompromittierter Router) oder in der Dauer (da weitverbreitete Angriffe schneller aufgedeckt werden) begrenzte. Perspectives verwendet regelm&auml;&szlig;es Sondieren des Netzwerks aus vielen Aussichtspunkten rund um das Internet, um Ihrem Webbrowser zu helfen, beide Angriffssorten aufzudecken. Eine Gruppe von Computern, genannt 'Netzwerknotare', verbreitet rund um das Internet, und gef&uuml;hrt von akademischen Forschern, sondieren regelm&auml;&szlig; jeden Server, um seinen aktuellen &ouml;ffentlichen Schl&uuml;ssel anzufordern. Wenn Ihr Webbrowser einen Schl&uuml;ssel authentifizieren muss, so fragt er bei jedem Netzwerknotar nach, was er im Laufe der Zeit f&uuml;r Schl&uuml;ssel bei diesem Server beobachtet hat, und pr&uuml;ft nach, ob der nun angebotene Schl&uuml;ssel mit diesen Daten in Einklang ist. Um also Ihren Webbrowser so zu t&auml;uschen, dass er ein ung&uuml;ltiges Zertifikat akzeptiert, muss ein Angreifter alle Netzwerkpfade zwischen Ihnen und der erw&uuml;nschten Website kompromittiert haben - und das seit geraumer Zeit, damit der Schl&uuml;sselwechsel nicht als verdachterregend auff&auml;llt. Auf diese Weise verschafft Perspectives eine Art leichtgewichtige PKI, wobei Sondieren des Netzwerks aus vielen Aussichtspunkten rund um das Internet an der Stelle von manueller Verifizierung durch sogenannte Zertifikatsauthorit&auml;ten (wie z.B. Verisign) tritt.">
+<!ENTITY h3preferences "Einstellungen">
+<!ENTITY preferencesIntro "Dieser Absatz beschreibt die Konfigurationsparameter, die Sie mittels des 'Einstellungen'-Eingabefeldes bestimmen k&ouml;nnen.">
+<!ENTITY securitySettings "Sicherheitseinstellugen: Was sind 'Quorum' und 'Quorum-L&auml;nge'?">
+<!ENTITY securityValues "Der Einstellungsdialog erlaubt Ihnen, verschiedene 'Quorum-' und 'Quorum-L&auml;nge-'Werte zu konfigurieren. Diese Schwellwerte geben Ihnen die Wahl, wie paranoid Sie sein wollen beim Annehmen von Schl&uuml;sseln. In beiden F&auml;llen sind h&ouml;here Werte sicherer, laufen aber auch die Gefahr, irrt&uuml;mlich zu bestimmen, dass ein Schl&uuml;ssel ung&uuml;ltig ist.">
+<!ENTITY quorum "Quorum">
+<!ENTITY whatisQuorum "ist ein Schwellwert, der die mindestmenge an Notaren als Prozentangabe beschreibt, die sich &uuml;ber einen Schl&uuml;ssel einig sein m&uuml;ssen, damit dieser Schl&uuml;ssel f&uuml;r g&uuml;ltig befunden wird. Angemessene Werte liegen zwischen 100&#37; und 50&#37;.">
+<!ENTITY quorumDuration "Quorum-L&auml;nge">
+<!ENTITY whatisquorumDuration "gibt die Tageszahl an, seit der die Daten konsequent sein m&uuml;ssen, um gegen kurzlebige Angriffe sch&uuml;tzen zu helfen. Wenn Sie eine Quorum-L&auml;nge, x, au&szlig;er null angeben, so bedeutet dies, dass Sie einen Schl&uuml;ssel abweisen wollen, wenn nicht eine Mindestmenge an Notaren diesen Schl&uuml;ssel seit mindestens x Tagen konsequent verzeichnet hat. Da es durchaus vorkommen kann, dass Ihre Abfrage das erste Mal darstellt, das der Notar den gew&uuml;nschten Server zur Kenntnis nimmt, so mag es wohl sein, dass der Notar keine Schl&uuml;sseldaten zu diesem Server hat. Deshalb werden bei Werten von x gr&ouml;&szlig;er als null eine h&ouml;here Anzahl an g&uuml;ltigen Schl&uuml;sseln abgewiesen.">
+<!ENTITY invalidCertificateExceptions "Ung&uuml;ltiges-Zertifikat-Exceptions">
+<!ENTITY invalidCertificateExceptionsInfo "Wenn ein Zertifikat der Quorum-L&auml;nge genűgt, kann Perspectives f&uuml;r dieses Zertifikat eine Sicherheitsausnahme installieren, damit Firefox nicht mehr bei Webseiten, die dieses Zertifikat verwenden, einen Sicherheitsfehler zeigt. Es ist Ihre Wahl, ob Perspectives diese Ausnahmen installiert und, falls ja, ob unbefristet oder einmalig.">
+<!ENTITY h3questionsComments "Fragen / Kommentare ?">
+<!--will be followed by mail address -->
+<!ENTITY pleaseContactUs "Bitte nehmen Sie Kontakt mit uns auf, bei">
+<!ENTITY forMore "F&uuml;r weitere Details, bitte lesen Sie unseren Konferenzbeitrag zu diesem Thema, erh&auml;ltlich unter">
+<!--will be followed by website link -->
+<!ENTITY perspectivesWebsite "Perspectives-Website">
+<!-- other links for more information. We keep these separate at the bottom so we don't have to split the paragraphs into chunks, which would make them harder to translate
+Feel free to change the links to something for your language, or to delete and leave it empty.-->
+<!ENTITY moreInformation "Weitere Informationen">
+<!ENTITY moreInfoManInTheMiddle "'Mann-in-der-Mitte'-Angriffe">
+<!ENTITY moreInfoManInTheMiddleURL "https://de.wikipedia.org/wiki/Man-in-the-middle-Angriff">
+<!ENTITY moreInfoPKI "PKI - Public-Key-Infrastruktur">
+<!ENTITY moreInfoPKIURL "https://de.wikipedia.org/wiki/Pki">
+<!-- ======= SPACER ======= -->
+<!-- Firewall help page - it reuses some strings such as the contact information -->
+<!-- TODO: Please translate! -->
+<!ENTITY perspectivesFirewallHelp "Perspectives Firewall/Proxy Help">
+<!ENTITY h3protocolandPorts "What Protocol and Ports does Perspectives Use?">
+<!ENTITY protocolandPortsAnswer "Perspectives uses the standard HTTP protocol to query network notary servers. However, some of these notary servers are unable to listen on the standard HTTP port (port 80) and instead listen on port 8080.  While most firewalls and proxies should allow this traffic, some may not. You can contact your network administrator to find out whether Perspectives traffic is likely being dropped by a proxy or firewall.">
+<!ENTITY h3manuallyOverrideWarning "If I cannot contact any notaries, is it safe to manually override the browser security warning?">
+<!ENTITY manuallyOverrideWarningAnswer "NO. When Perspectives is unable to reach the notary servers, it does not receive the data necessary to distinguish between a valid and an invalid certificate. Accepting a certificate without notary validation can be dangerous, because it may be that an attacker is intentionally dropping your notary queries.">

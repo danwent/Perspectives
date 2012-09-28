@@ -1,49 +1,58 @@
 <!-- This file contains localized strings for Perspectives .xul files. -->
-<!ENTITY NotaryResults "Notary 结果">
-<!ENTITY ViewNotaryResults "View Notary 结果"> <!-- TODO -->
-<!ENTITY Preferences "配置">
-<!ENTITY NoQuorumInformation "没有查询信息">
-<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "对于这个位置没有可用的Perspectives信息。">
+<!ENTITY NotaryResults "认证结果">
+<!ENTITY ViewNotaryResults "查看认证结果">
+<!ENTITY Preferences "首选项">
+<!ENTITY NoQuorumInformation "没有最小百分比信息">
+<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "没有此地址可用的 Perspectives 信息。">
 <!ENTITY Timeline "时间轴">
 <!ENTITY SecuritySettings "安全设置">
-<!ENTITY HighSecurity "高级安全">
-<!ENTITY MediumSecurity "中级安全">
-<!ENTITY HighAvailability "低级安全（高度可用）">
-<!ENTITY ManualConfiguration "手工设置">
-<!ENTITY Percentageofnotariesthatmustagree "获得notary服务器同意的数目的百分比">
-<!ENTITY Lengthoftimequorummustbeachieved "群体数被认证的时间长度">
-<!ENTITY OverridingFirefoxSecurityErrors "跳过Firefox安全错误">
-<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "允许Perspectives自动跳过安全错误">
-<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "永远相信Perspectives认为安全的认证">
-<!ENTITY WhentoContactNotaries "何时联系Notary服务器">
-<!ENTITY ContactNotariesforallHTTPSsites "对所有的HTTPS站点都联系Notary服务器">
-<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "仅当一个站点的认证引起安全错误时联系Notary服务器">
-<!ENTITY AlwaysasktheuserbeforecontactingNotaries "在联系Notary服务器前总是询问用户">
-<!ENTITY Certificates "认证">
-<!ENTITY Servers "Notary 服务器">
+<!ENTITY HighSecurity "高级">
+<!ENTITY MediumSecurity "中级">
+<!ENTITY HighAvailability "低级(高度可用)">
+<!ENTITY ManualConfiguration "手动设置">
+<!ENTITY Percentageofnotariesthatmustagree "认证服务器信任的最低百分比(最小百分比)：">
+<!ENTITY Lengthoftimequorummustbeachieved "信任所需的最低持续时间(最短持续时间)：">
+<!ENTITY OverridingFirefoxSecurityErrors "跳过 Firefox 安全错误">
+<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "允许 Perspectives 自动跳过安全错误">
+<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "永久信任 Perspectives 验证的证书">
+<!ENTITY WhentoContactNotaries "何时联系认证服务器">
+<!ENTITY ContactNotariesforallHTTPSsites "对所有的 HTTPS 站点都联系认证服务器">
+<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "仅在站点的证书引起安全错误时联系认证服务器">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "联系认证服务器前总是询问用户">
+<!ENTITY Certificates "证书">
+<!ENTITY Servers "认证服务器">
 <!ENTITY Help "帮助">
-<!ENTITY OK "完成">
-<!-- TODO: Please translate! -->
-<!ENTITY Close "Close">
-<!ENTITY Cancel "Cancel">
-<!ENTITY Addtowhitelist "Add to Whitelist">
-<!ENTITY Addsitetowhitelist "Add Site to Whitelist">
-<!ENTITY Whitelistmessage "Experts only: By adding a website to your whitelist, Perspectives automatically trusts all connections to it without contacting notaries. Do this only if you understand the risks.">
-<!ENTITY ReportPossibleAttack "Report Possible Attack">
-<!ENTITY ReportAttackMessage "By reporting an attack, the Perspectives project can improve this extension and detect Internet vulernabilities.">
-<!ENTITY SendFullReport "Send full report">
-<!ENTITY SendPrivacyReport "Send privacy-sensitive report">
-<!ENTITY Optional "Optional">
-<!ENTITY EmailDescription "Email Address for follow-up questions">
-<!ENTITY AdditionalInfoMessage "Any additional information describing the circumstances of this possible attack">
-<!ENTITY ShowDetailedReportText "Show Detailed Report Text">
-<!ENTITY SubmitReport "Submit Report">
-<!ENTITY DetailedInformation "Detailed Information">
-<!ENTITY CertificateValidation "Certificate Validation">
-<!ENTITY AutoTrust "Automatically trust certificates for the following sites">
-<!ENTITY DefaultNotaryServers "Default Notary Servers">
-<!ENTITY UseDefaultNotaries "Use default notary server list">
-<!ENTITY AdditionalNotaryServers "Additional Notary Servers">
-<!ENTITY ForceNotaryCheck "Force Notary Check">
-<!ENTITY ReportAttack "Report Attack">
-<!ENTITY ViewCertificateStore "View Certificate Store">
+<!ENTITY OK "确定">
+<!ENTITY Close "关闭">
+<!ENTITY Cancel "取消">
+<!ENTITY Addtowhitelist "添加到白名单">
+<!ENTITY Addsitetowhitelist "添加站点到白名单">
+<!ENTITY Whitelistmessage "仅专业人员：添加站点到白名单后，Perspectives 会自动信任所有到此站点的连接而不联系认证服务器，请在了解风险的情况下才这样做。">
+<!ENTITY ReportPossibleAttack "报告可能的攻击">
+<!ENTITY ReportAttackMessage "报告攻击来帮助 Perspectives 项目改进此扩展和发现因特网漏洞。">
+<!ENTITY SendFullReport "发送完整的报告">
+<!ENTITY SendPrivacyReport "发送隐私的报告">
+<!ENTITY Optional "可选项">
+<!ENTITY EmailDescription "电子邮件地址(用于后续问题交流)">
+<!ENTITY AdditionalInfoMessage "关于这个可能的攻击所处环境的其它信息">
+<!ENTITY ShowDetailedReportText "显示详细报告文本">
+<!ENTITY SubmitReport "提交报告">
+<!ENTITY DetailedInformation "详细信息">
+<!ENTITY CertificateValidation "证书验证">
+<!ENTITY AutoTrust "自动信任下列站点的证书">
+<!ENTITY DefaultNotaryServers "默认认证服务器">
+<!ENTITY UseDefaultNotaries "使用默认认证服务器列表">
+<!ENTITY AdditionalNotaryServers "其它认证服务器">
+<!ENTITY ForceNotaryCheck "强制检查认证">
+<!ENTITY ReportAttack "报告攻击">
+<!ENTITY ViewCertificateStore "查看证书">
+<!-- TODO: these new strings need translation -->
+<!ENTITY About "About Perspectives">
+<!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
+<!ENTITY ContributorTitle "Contributors">
+<!ENTITY ContributorSubTitle "(listed alphabetically by last name)">
+<!ENTITY ContributorText "Many thanks to the following people who contributed bug reports, documentation, code patches, and/or ideas">
+<!ENTITY TranslatorTitle "Translators">
+<!ENTITY TranslatorSubTitle "(listed alphabetically by locale code)">
+<!ENTITY TranslatorText "Many thanks to the following people who contributed translations">
+<!ENTITY ClickToVisitWebsite "Click to visit the Perspectives website">

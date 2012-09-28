@@ -24,6 +24,7 @@ var Pers_debug = {
 	d_print_flags : { 
 		"policy" : false, 
 		"query" : false,
+		"querylarge": false, //big response strings and XML; separating this from query lines makes for easier debugging
 		"main" : false,  
 		"error" :  false 
 	},
@@ -219,14 +220,38 @@ var Pers_util = {
 		} 
 	},
 
-	// wrap all calls to alert() so we show a common title.
-	// this way the user knows the messages are from Perspectives.
+	// Wrap all calls to alert() so we show a common title.
+	// This way the user knows the messages are from Perspectives,
+	// which reduces confusion and makes it more likely that a bug will
+	// actually be reported (since they can now figure out where the bug came from).
+	//
 	// Note: most strings passed here should still be localized strings
 	// taken from dialogs.dtd or notaries.properties files, not hard-coded.
 	// FIXME - existing alerts should be changed to use this. Make sure to test them!
 	pers_alert: function(msg) {
 	       alert("Perspectives: " + msg);
 	// TODO we could include contact info here too
+	},
+
+	// Make opening a link nicer by opening in a new tab if possible
+	open_url: function(url) {
+		try {
+		    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+				   .getService(Components.interfaces.nsIWindowMediator);
+		    var wnd = wm.getMostRecentWindow("navigator:browser");
+
+		    if(wnd && !wnd.closed && wnd.gBrowser) {
+			    wnd.gBrowser.selectedTab = wnd.gBrowser.addTab(url);
+		    }
+		    else {
+			    // if new tabs aren't possible just launch a new window
+			    wnd = window.open(url);
+		    }
+		    wnd.focus();
+		}
+		catch (e) {
+		    this.pers_alert("error opening link: " + e);
+		}
 	}
 }
 

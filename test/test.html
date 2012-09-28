@@ -5,6 +5,7 @@
 <title>Perspectives - Test cases</title>
 
 <!-- Include every file so we can verify that all of the objects are testable in meta_test() -->
+<script type="text/javascript" src="../plugin/chrome/content/about.js"></script>
 <script type="text/javascript" src="../plugin/chrome/content/base64.js"></script>
 <script type="text/javascript" src="../plugin/chrome/content/client_policy.js"></script>
 <script type="text/javascript" src="../plugin/chrome/content/common.js"></script>
@@ -79,6 +80,11 @@ function assert_fixme(test, case_name) {
 
 // if you're lazy and want to print some text while debugging
 function debug(obj) {
+
+  if (obj == null) {
+    return;
+  }
+
   if (obj instanceof Array) {
     deb_console("array contains:");
     for (var i = 0; i < obj.length; i++) {
@@ -92,7 +98,7 @@ function debug(obj) {
 
   // strip out < so strings always appear on the page
   write_string_to_element("<font color='grey'>DEBUG: " +
-    obj.replace(/</, '&lt;') + "</font>", 'li');
+    obj.replace(/</g, '&lt;') + "</font>", 'li');
 }
 
 function deb_console(obj) {
@@ -153,15 +159,21 @@ function get_loc_keys(filelist, locdirname) {
 
   // DTD entities look like:
   // <!ENTITY Name "String">
-  // Assumptions: could be one line or many. Cannot contain chars:
+  // Assumptions:
+  // - Could be one line or many
+  // (so we use [\s\S]*? instead of .* to match across multiple lines
+  // (make sure to make that *NON*-greedy!))
+  // - Cannot contain chars:
   // "%<>
+  // - Cannot have non-whitespace characters in the file outside of entities and comments
+  //
   // For dtds to load inside xhtml files (such as our help.xhtml)
-  // it is very important that they have the closing >
+  // it is very important that they have the closing > .
   // note: “” (smart quotes) both seem to load fine in xhtml,
   // since we use " to wrap our strings.
-  var dtdcomment = /<!--.*-->/g;
-  var dtdsep = /<!ENTITY/;
-  var dtdline = / +([A-Za-z0-9]+) +"([^"%<>]*)" *>/;
+  var dtdcomment = /<!--[\s\S]*?-->/g;
+  var dtdsep = /<!ENTITY/; //do *NOT* start with ^ or it will mask errors
+  var dtdline = / +([A-Za-z0-9]+) +"([^"%<>]*)" *> *$/;
 
   // .properties entries look like:
   // name=string
@@ -201,10 +213,14 @@ function get_loc_keys(filelist, locdirname) {
         } while (readmore != 0);
 
         // according to the MDN spec, loc files should *not* contain the BOM
+        // https://developer.mozilla.org/en/XUL_Tutorial/Localization
         var BOM = "ï»¿";
         if (data.substring(0,3) == BOM) {
           assert(false, "(" + locdirname + "): " + filename + " begins with BOM '" + BOM
             + "'. Loc files should be saved as UTF-8 with no BOM.");
+        }
+        else {
+          assert(true, "(" + locdirname + "): " + filename + " does not contain BOM.");
         }
 
         fstream.close();
@@ -215,10 +231,10 @@ function get_loc_keys(filelist, locdirname) {
 
         var ext = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
         if(ext === "dtd") {
-          keys = get_keys_from_stream(data, dtdcomment, dtdsep, dtdline, keys, filename, locdirname);
+          keys = get_keys_from_stream(data, dtdcomment, dtdsep, dtdline, keys, filename, locdirname, validate_dtd_comments);
         }
         else if (ext === "properties") {
-          keys = get_keys_from_stream(data, propcomment, propsep, propline, keys, filename, locdirname);
+          keys = get_keys_from_stream(data, propcomment, propsep, propline, keys, filename, locdirname, null);
         }
         else {
           assert(false, locdirname + ": File '" + file.path
@@ -235,9 +251,36 @@ function get_loc_keys(filelist, locdirname) {
   return keys;
 }
 
+// comments inside .dtd files cannot contain two or more -- characters,
+// or attempting to load them inside an .xhtml file will fail.
+function validate_dtd_comments(comments, sourcefilename, locdirname) {
+
+  if (comments == null) {
+    return;
+  }
+
+  if (comments instanceof Array) {
+    for (c in comments) {
+
+      var commentregex = /<!--([\s\S]*?)-->/; // note: make sure the inside match is non-greedy
+      var match = commentregex.exec(comments[c]);
+
+      if (match != null) {
+        if (/-{2,}/.test(match[1])) {
+          // need to replace < with &lt; for printing
+          assert(false, "(" + locdirname + "): " + sourcefilename + " has invalid comment '" + comments[c].replace(/</g, '&lt;') + "'. DTD comments cannot contain two or more -- dashes inside them. Please fix, or run 'make dtds' to fix this automatically.");
+        }
+      }
+      else {
+        assert(false, "(" + locdirname + "): " + sourcefilename + " DTD comment '" + comments[c].replace(/</g, '&lt;') + "' didn't match but somehow was parsed out as a comment. Something is really wrong.");
+      }
+    }
+  }
+}
+
 // extract localization string names/keys from a datastream,
 // using the appropriate regex passed by the caller.
-function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, sourcefilename, locdirname) {
+function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, sourcefilename, locdirname, extracommentvalidationfunc) {
 
   // we use 'filename/keyname' as the hash key, as that's the value
   // we want to ensure is unique. but make sure there are no instances
@@ -248,16 +291,21 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
   var regex = new RegExp(LSEP, "g");
   cleanfilename = cleanfilename.replace(regex, '');
 
+  if (extracommentvalidationfunc != null) {
+    extracommentvalidationfunc(datastream.match(comment), sourcefilename, locdirname);
+  }
+
   datastream = datastream.replace(comment, '');
   var lines = datastream.split(delimiter);
   var numkeys = 0;
 
   for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].replace(/\n/g, '');
     // note: if printing for debug, <> don't show up in HTML docs.
     // they must be replaced. e.g.
     // write_string_to_element("line: '" + lines[i].replace(/</, '&lt;') + "'", 'li');
     // or just use console.log().
-    var match = itemregex.exec(lines[i]);
+    var match = itemregex.exec(line);
     if (match != null) {
       numkeys++;
       // grab the first stored match, match[1], not the entire match array.
@@ -276,9 +324,10 @@ function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, s
     }
     else {
       var space = /^\s*$/;
-      var justspace = space.exec(lines[i]);
+      var justspace = space.exec(line);
       if (!justspace) {
-       assert(false, "(" + locdirname + "): Malformed entry '" + lines[i] + "' in " + sourcefilename);
+       assert(false, "(" + locdirname + "): Malformed entry {{<u>" + line + "</u>}} in " + sourcefilename
+        + " (line " + (i+1) + "). You can try running 'make dtds' to fix this.");
       }
     }
   }
@@ -301,6 +350,7 @@ function meta_tests() {
 
   write_string("Starting object creation tests");
 
+  assert(typeof Pers_about === 'object', "Pers_about is type '" + typeof Pers_about + "'."); //about.js
   assert(typeof Pers_Base64 === 'object', "Pers_Base64 is type '" + typeof Pers_Base64 + "'.");
   assert(typeof Pers_client_policy === 'object', "Pers_client_policy is type '" + typeof Pers_client_policy + "'."); //client_policy.js
   assert(typeof Pers_debug === 'object', "Pers_debug is type '" + typeof Pers_debug + "'."); //common.js

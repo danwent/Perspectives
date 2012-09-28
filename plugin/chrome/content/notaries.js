@@ -103,11 +103,6 @@ var Perspectives = {
 		return false; 
 	}, 
 
-
-	// flag to make sure we only show component load failed alert once
-	// per Firefox session.  Otherwise, the user gets flooded with it.  
-	show_component_failed : true,
-
 	tab_info_cache : {}, 
 
 	//Sets the tooltip and the text of the favicon popup on https sites
@@ -302,11 +297,11 @@ var Perspectives = {
 					} 
 					Perspectives.notaryQueriesComplete(ti);
 				} else {
-					// send another query to any of the servers we are missing
+					// send another query to any of the servers we are missing.
 					// reset the timeout, incrementing the count of the number
 					// of timeouts we have seen  
 					for(var i = 0; i < missing_replies.length; i++) { 
-						this.querySingleNotary(Perspectives.all_notaries[i],ti); 
+						this.querySingleNotary(missing_replies[i],ti);
 					}
     
 					ti.timeout_id = window.setTimeout(function() { 
@@ -324,15 +319,19 @@ var Perspectives = {
 	
 		if (req.readyState == 4) {  
 			if(req.status == 200){
-				try { 							
+				try {
+
+					//NOTE: Firefox pre-defines Cc and Ci, but SeaMonkey does not.
+					//We create local variables here so SeaMonkey clients don't throw 'variable not defined' exceptions
+					const Cc = Components.classes, Ci = Components.interfaces;
  
-					Pers_debug.d_print("query", req.responseText); 
+					Pers_debug.d_print("querylarge", req.responseText);
 					var server_node = req.responseXML.documentElement;
 					var server_result = Pers_xml.
 							parse_server_node(server_node,1);
 					var bin_result = Pers_xml.
 							pack_result_as_binary(server_result,ti.service_id);
-					Pers_debug.d_print("query", 
+					Pers_debug.d_print("querylarge",
 						Pers_xml.resultToString(server_result,false)); 
 					var verifier = 
 						Cc["@mozilla.org/security/datasignatureverifier;1"].
@@ -378,7 +377,7 @@ var Perspectives = {
 					}
 					  
 				} catch (e) { 
-					Pers_debug.d_print("error", "exception: " + e); 
+					Pers_debug.d_print("error", "exception in notaryAjaxCallback: " + e);
 				} 
 			} else { // HTTP ERROR CODE
 				Pers_debug.d_print("error", 
@@ -386,6 +385,14 @@ var Perspectives = {
 			}
 		}  
 	},  
+
+	// return the quorum as an integer
+	// e.g. useful for comparing against the number of results
+	getQuorumAsInt: function() {
+		var q_thresh = Perspectives.root_prefs.
+				getIntPref("perspectives.quorum_thresh") / 100;
+		return Math.round(this.all_notaries.length * q_thresh);
+	},
 
 	notaryQueriesComplete: function(ti) {
 		try {
@@ -400,9 +407,7 @@ var Perspectives = {
 			var test_key = ti.cert.md5Fingerprint.toLowerCase();
 			// 2 days (FIXME: make this a pref)
 			var max_stale_sec = 2 * 24 * 3600; 
-			var q_thresh = Perspectives.root_prefs.
-						getIntPref("perspectives.quorum_thresh") / 100;
-			var q_required = Math.round(this.all_notaries.length * q_thresh);
+			var q_required = Perspectives.getQuorumAsInt();
 			var unixtime = Pers_util.get_unix_time(); 
 			var quorum_duration = Pers_client_policy.get_quorum_duration(test_key, 
 					server_result_list, q_required, max_stale_sec,unixtime);  
@@ -537,7 +542,7 @@ var Perspectives = {
 				var isTemp = !Perspectives.root_prefs.getBoolPref("perspectives.exceptions.permanent");
 				setTimeout(function() {  
 					if(Perspectives.do_override(ti.browser, ti.cert, isTemp)) { 
-						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); //TODO: localize
+						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); //TODO: localize; can we use configuredToWhitelist to save a string?
 						Pers_notify.do_notify(ti, Pers_notify.TYPE_WHITELIST);
 					}
 				}, 1000); 
@@ -741,7 +746,7 @@ var Perspectives = {
 
  
 		} catch (err) {
-			alert("process_notary_results error: " + err);
+			Pers_util.pers_alert("process_notary_results error: " + err);
 		}
 	},
 
@@ -795,7 +800,7 @@ var Perspectives = {
       			} catch(err){
         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
         			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR, 
-					"Perspectives: an internal error occurred: " + err); //TODO: localize
+					"Perspectives: an error occurred when attempting to change location: " + err); //TODO: localize
       			}
 
    		},
@@ -812,7 +817,7 @@ var Perspectives = {
        			  } catch (err) {
          			Pers_debug.d_print("Perspectives had an internal exception: " + err);
          			Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR, 
-					"Perspectives: an internal error occurred: " + err); //TODO: localize
+					"Perspectives: an internal state change error occurred: " + err); //TODO: localize
        			  }
      			}
   		},
@@ -829,7 +834,7 @@ var Perspectives = {
          			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
          			if(uri) {
           				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR, 
-						"Perspectives: an internal error occurred: " + err); //TODO: localize
+						"Perspectives: an internal security change error occurred: " + err); //TODO: localize
          			}
        			}
  
@@ -863,14 +868,14 @@ var Perspectives = {
 			} else {  
 				Pers_util.update_default_notary_list_from_file(this.root_prefs); 
 			} 
-        		Pers_debug.d_print("main", Perspectives.notaries); 	
+			Pers_debug.d_print("main", Perspectives.notaries);
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
 			getBrowser().addProgressListener(Perspectives.notaryListener, 
 			Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
 			setTimeout(function (){ Perspectives.requeryAllTabs(gBrowser); }, 4000);
 			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
 		} catch(e) { 
-			alert("Error in initNotaries: " + e); 
+			Pers_util.pers_alert("Error in initNotaries: " + e);
 		} 
 	},
 
@@ -945,36 +950,64 @@ var Perspectives = {
 		} 
 	}, 
 
+	// In Perspectives v4.0 the default settings were changed to check with notaries for *all* https websites,
+	// rather than only querying for sites that showed a certificate error.
+	// If the user has upgraded from an old version of Perspectives (<4.0) to a newer version (>=4.0),
+	// ask them if they would now prefer to check all https websites.
 	prompt_update: function() {
-		var ask_update = Perspectives.root_prefs.
-                getBoolPref("perspectives.prompt_update_all_https_setting");
-		if (ask_update == true) {
-			var check_good = Perspectives.root_prefs.
-					getBoolPref("perspectives.check_good_certificates");
-			if (!check_good) {
-				var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-						.getService(Components.interfaces.nsIPromptService);
-				var check = {value:false};
-				var buttons = 
-						prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_IS_STRING
-						+ prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING;
+		try {
+			//NOTE: Firefox pre-defines Cc and Ci, but SeaMonkey does not.
+			//We create local variables here so SeaMonkey clients don't throw 'variable is not defined' exceptions
+			const Cc = Components.classes, Ci = Components.interfaces;
 
-				var answer = prompts.confirmEx(null, "Perspectives update", 
-					"Thank you for using Perspectives. The default settings " +
-					"have been updated to query the notary server for all " + 
-					"HTTPS sites. Do you want to update this setting to use " +
-					"the default or keep your current settings?", buttons, 
-					"Update Settings", "Keep current settings", "", null, //TODO: localize
-					check);
-				if (answer == 0) {
-					Perspectives.root_prefs.
-						setBoolPref("perspectives.check_good_certificates", 
-									true); 
+			//'prompt_update_all_https_setting' stores a value for "have we already asked the user about this?"
+			var ask_update = Perspectives.root_prefs.
+	                getBoolPref("perspectives.prompt_update_all_https_setting");
+
+			if (ask_update == true) {
+
+				var check_good = Perspectives.root_prefs.
+						getBoolPref("perspectives.check_good_certificates");
+
+				if (!check_good) {
+
+					var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+							.getService(Components.interfaces.nsIPromptService);
+					var check = {value:false};
+					var buttons =
+							prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_IS_STRING
+							+ prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING
+							+ prompts.BUTTON_POS_0_DEFAULT;
+
+					if(Perspectives.strbundle == null) {
+						Perspectives.strbundle = document.getElementById("notary_strings");
+					}
+
+					var answer = prompts.confirmEx(null,
+						Perspectives.strbundle.getString("updatePromptTitle"),
+						Perspectives.strbundle.getString("updatePrompt"), buttons,
+						Perspectives.strbundle.getString("updatePromptButtonYes"), // the default button
+						Perspectives.strbundle.getString("updatePromptButtonNo"),
+						"", null, check);
+					if (answer == 0) {
+						Perspectives.root_prefs.
+							setBoolPref("perspectives.check_good_certificates",
+										true);
+					}
 				}
 			}
+		}
+		catch (e) {
+			Pers_debug.d_print("error", "Error: could not prompt to update preferences about check_good_certificates: " + e);
+			return null;
+		}
+		finally {
+			//set the flag to not ask the user again, even (especially!) if something went wrong.
+			//this way even in the worst case the user will only get a popup once.
+			//they can always change their preferences later through the prefs dialog if they wish.
 			Perspectives.root_prefs.
-					setBoolPref("perspectives.prompt_update_all_https_setting",
-								false);
+						setBoolPref("perspectives.prompt_update_all_https_setting",
+									false);
 		}
 	}
 			

@@ -5,10 +5,31 @@ Format:
 * bug or behavior fix
 
 
+4.4
+---
++ Add an About dialog that lists contributors and translators
+* When sending requeries, only send to notaries that haven't yet replied.
+* UI improvements:
+	* In the Preferences window, set proper default height and width for Notary Server textboxes
+	* In the Results window, expand the results textbox vertically to fill available space
+		(This makes more text visible and keeps the radio buttons in a consistent place)
+
+
+4.3.2
+-----
+* extract hardcoded strings and move to localization files
++ add (de), (es), and (fr) localizations! Many thanks to our translators.
++ fill in the missing strings from (zh-CN) localization. Many more thanks to our translators.
+
+
+4.3.1
+-----
+* clean up build process and tests
+* fix SeaMonkey initialization; extension did not load
+
 
 4.3
 ---
-
 * remove the forced statusbar icon (GH 38)
 + add Perspectives icons to alt-tab window
 + display key age in the notary results dialog
@@ -26,4 +47,3 @@ Format:
 + ignore blank lines when parsing notaries (GH 42)
 * merge duplicate help pages, copyedit content, and update links
 * add .css stylesheet for help pages; add some basic format/coloring
-

@@ -98,7 +98,7 @@ var Pers_xml = {
 					":\t" + start_t + " - " + start_d + "\n";
 				out += Perspectives.strbundle.getString("keyEnd") +
 					":  \t" + end_t + " - " + end_d + "\n";
-				out += "(" + parseInt((end_t - start_t) / (3600 * 24)) +
+				out += "(" + parseInt((end_t - start_t) / (3600 * 24)) + " " +
 					Perspectives.strbundle.getString("keyDays") + ")\n\n";
 			}   
 		} 

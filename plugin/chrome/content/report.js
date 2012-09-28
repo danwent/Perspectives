@@ -175,7 +175,7 @@ var Pers_report = {
 				throw(Perspectives.strbundle.getString("noResultsNoReport"));
 			}
 
-			window.openDialog("chrome://perspectives/content/report.xul", "", "centerscreen",
+			window.openDialog("chrome://perspectives/content/report.xul", "", "centerscreen, resizable",
 			cert, cached_results).focus();
 
 		} catch(e) {

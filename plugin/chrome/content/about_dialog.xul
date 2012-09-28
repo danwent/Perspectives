@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://perspectives/content/css/about.css" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://perspectives/locale/dialogs.dtd">
+
+<window
+    id    = "perspectives-about"
+    title          = "&About;"
+    onload         = "Pers_about.load_about_dialog()"
+    onkeypress     = "Pers_keypress.press_esc_to_close(event)"
+    xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <vbox>
+    <hbox>
+      <separator class="thin" orient="vertical"/>
+      <vbox pack="center">
+        <image src="default.png" tooltip="Perspectives"/>
+      </vbox>
+      <vbox>
+        <separator class="thin"/>
+        <label value="&AboutMainCredit;"/>
+        <!-- Version number will be filled in via code -->
+        <label id="perspectives-version-number" value=""/>
+        <label id="perspectives-homepage" class="hover-link" tooltiptext="&ClickToVisitWebsite;" onclick="Pers_util.open_url('http://www.perspectives-project.org/')">http://www.perspectives-project.org/</label>
+      </vbox>
+    </hbox>
+    <separator class="thin"/>
+    <hbox>
+      <caption label="&ContributorTitle;" style="font-weight: bold"/>
+      <caption label="&ContributorSubTitle;"/>
+    </hbox>
+    <description>
+      &ContributorText;:
+    </description>
+
+    <textbox id = "contributors-list"
+      multiline = "true"
+      readonly  = "true"
+      flex      = "1"
+      value     = ""
+      height    = "180"/>
+
+    <separator class="thin"/>
+    <hbox>
+      <caption label="&TranslatorTitle;" style="font-weight: bold"/>
+      <caption label="&TranslatorSubTitle;"/>
+      </hbox>
+    <description>
+      &TranslatorText;:
+    </description>
+
+    <textbox id = "translators-list"
+      multiline = "true"
+      readonly  = "true"
+      flex      = "1"
+      value     = ""
+      height    = "110"/>
+
+    <hbox align="right">
+        <button id="Close" label="&Close;" onclick="window.close()"/>
+    </hbox>
+  </vbox>
+
+  <script type = "application/x-javascript" src="common.js" ></script>
+  <script type = "application/x-javascript" src="about.js" ></script>
+  <script type = "application/x-javascript" src="notaries.js" ></script>
+
+</window>
+
+
+

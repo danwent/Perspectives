@@ -109,7 +109,7 @@
 
 <tabpanel id="notarytab"> 
 
-<vbox>  
+<vbox flex="1">
   <groupbox>
     <caption label="&WhentoContactNotaries;" style="font-weight: bold"/>
     <radiogroup preference="check-good">
@@ -123,8 +123,8 @@
 
   <groupbox> 
     <caption label="&DefaultNotaryServers;" style="font-weight: bold"/>
-    <!-- key strings wrap more elegantly at 80 characters -->
-    <textbox id="default_notary_list" multiline="true" rows="8" cols="80" readonly="true" />
+    <!-- make textboxes wide enough to hold default key formatting -->
+    <textbox id="default_notary_list" multiline="true" style="width: 85ex; height: 25ex;" readonly="true" flex="1" />
     <checkbox label="&UseDefaultNotaries;" preference="use-default-notary-list"/>
 <!--    <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()" 
 	       id="enable_default_list_auto_update" preference="enable-default-list-auto-update"/>
@@ -132,7 +132,7 @@
   </groupbox> 
   <groupbox> 
     <caption label="&AdditionalNotaryServers;" style="font-weight: bold"/>
-    <textbox id="additional_notary_list" multiline="true" rows="8" cols="80" preference="additional_notary_list" />
+    <textbox id="additional_notary_list" multiline="true" style="width: 85ex; height: 25ex;" preference="additional_notary_list" flex="1" />
   </groupbox> 
 </vbox> 
 

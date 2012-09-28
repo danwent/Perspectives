@@ -1,42 +1,66 @@
+<!-- strings for Perspectives help pages -->
+<!-- main help page -->
 <!ENTITY h1perspectivesHelp "Perspectives 帮助">
 <!ENTITY h3whatisPerspectives "什么是Perspectives?">
 <!ENTITY whatisPerspectives "Perspectives通过验证服务器的SSL公共密匙来阻止'Man-in-the-Middle'攻击HTTPS通信。当您链接的站点拥有“自
+
+
 分配”，不匹配或者过期的证书时（这会引起安全错误或者阻止您链接到某些HTTPS站点），这会十分的重要。">
 <!ENTITY h3howDoesItWork "Perspectives怎样工作?">
 <!ENTITY howDoesItWork "Perspectives基于这样一个事实，大多数时间Internet能正常的工作。当攻击发生时，攻击可能被限制在一定范围（例如：
+
+
 一个简单的受到攻击的路由）或者被限制在一定的时间（大的攻击能够被比较容易的检查到）。Perspectives通过对整个
+
 Internet上许多正常节点的周期性探测来帮助您的浏览器检测上述两种攻击。一组叫做“network notaries”的机器被一些学术研究者
+
 分布并运行在Internet中，这些机器周期性的探测每一个服务器，并询问这些服务器现在的公共密匙。当您的浏览器需要授权一个密匙时，
+
 它会询问每一个network notary，询问这些network notary在过去的时间里看到的这个服务器所使用的密匙，并且验证浏览器得到的
+
 密匙是否与network notary中记录的密匙一致。因此，为了欺骗您的浏览器接受一个无用的密匙，攻击者必须在所有通往notary的路径上，
+
 并且攻击占有这些路径很长的时间，从而使密匙的改变不被怀疑。通过这种方法，Perspectives实现了一种'lightweight PKI'，
+
 通过从多个节点的网络探测取代由认证机构执行的人工认证（例如Verisign）。">
 <!ENTITY h3preferences "选项">
 <!ENTITY preferencesIntro "下面的章节将帮助您理解配置系数。您能通过Perspectives的选项面板进行配置。">
 <!ENTITY securitySettings "安全设置: 什么是群体数和群体数持续时间?">
 <!ENTITY securityValues "选项对话框允许您为'群体数”和“群体数持续时间'配置不同的值。这些极限值允许您决定怎样去接受密匙。在两种情况中，
+
+
 越大的值就越安全，但是仍然存在作出错误决定的风险（密匙不可用）。群体数是一个极限值，它是在所有notaries中，认为密匙可用的notary的数目的
+
 最小百分比，合理的数值应该在10050&#37;到5050&#37;之间。群体数持续时间特指密匙被观察一致的天数。它可以帮助防止短时间的攻击。如果您指定群体数持续时间D（非零
+
 值），这也就是说您要拒绝一个密匙，除非在notaries中的一部分群体已经观察到在过去的D天中密匙都一致。由于您对network notary的请求，有可
+
 能是notary第一次听到一个特别的服务器，notary可能没有可用的密匙历史，因此，设置D为一个较大的值会导致较多的有效密匙被拒绝。">
 <!ENTITY quorum "无效证书例外">
 <!ENTITY whatisQuorum "当一个证书满足群体数持续时间，Perspectives会为这个证书安装一个例外，因此Firefox将不会为使用这个证书的页面显示一个安全错误页面。您能选择
+
+
 Perspectives是否安装这个例外，如果安装，您能选择这个例外是否是永久的">
-<!--leaving these blank as I'm not sure we have the content for them. Please feel free to translate or fill -->
+<!--leaving these blank as I'm not sure we have the content for them. Please feel free to translate strings from the english help file -->
 <!ENTITY quorumDuration " ">
 <!ENTITY whatisquorumDuration " ">
 <!ENTITY invalidCertificateExceptions " ">
 <!ENTITY invalidCertificateExceptionsInfo " ">
 <!ENTITY h3questionsComments "问题和建议?">
-<!--will be followed by mail address -->
 <!ENTITY pleaseContactUs "请联系我们">
 <!ENTITY forMore "详细信息，请参考我们有关这个题目的会议论文，链接">
-<!--will be followed by website link -->
+<!--will be followed by mail address -->
 <!ENTITY perspectivesWebsite "Perspectives Website">
-<!-- other links for more information. We keep these separate at the bottom so we don't have to split the paragraphs into chunks, which would make them harder to translate
-Feel free to change the links to something for your language, or to delete and leave it empty.-->
+<!--will be followed by website link -->
 <!ENTITY moreInformation "More Information">
 <!ENTITY moreInfoManInTheMiddle "'Man-in-the-middle' attacks">
 <!ENTITY moreInfoManInTheMiddleURL "https://en.wikipedia.org/wiki/Man-in-the-middle_attack">
 <!ENTITY moreInfoPKI "PKI - Public Key Infrastructure">
 <!ENTITY moreInfoPKIURL "https://zh.wikipedia.org/wiki/&#37;E5&#37;85&#37;AC&#37;E9&#37;96&#37;8B&#37;E9&#37;87&#37;91&#37;E9&#37;91&#37;B0&#37;E5&#37;9F&#37;BA&#37;E7&#37;A4&#37;8E&#37;E5&#37;BB&#37;BA&#37;E8&#37;A8&#37;AD">
+<!-- ======= SPACER ======= -->
+<!-- Firewall help page - it reuses some strings such as the contact information -->
+<!ENTITY perspectivesFirewallHelp "防火墙/代理帮助">
+<!ENTITY h3protocolandPorts "What Protocol and Ports does Perspectives Use?">
+<!ENTITY protocolandPortsAnswer "Perspectives uses the standard HTTP protocol to query network notary servers. However, some of these notary servers are unable to listen on the standard HTTP port (port 80) and instead listen on port 8080.  While most firewalls and proxies should allow this traffic, some may not. You can contact your network administrator to find out whether Perspectives traffic is likely being dropped by a proxy or firewall.">
+<!ENTITY h3manuallyOverrideWarning "If I cannot contact any notaries, is it safe to manually override the browser security warning?">
+<!ENTITY manuallyOverrideWarningAnswer "NO. When Perspectives is unable to reach the notary servers, it does not receive the data necessary to distinguish between a valid and an invalid certificate. Accepting a certificate without notary validation can be dangerous, because it may be that an attacker is intentionally dropping your notary queries.">

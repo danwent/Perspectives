@@ -1,6 +1,11 @@
 Here is a list of manual tests you can check when making changes to the Perspectives Firefox extension. If any of these are easily automatable feel free to add cases for them in test.html instead.
 
 
+Remember: the Perspectives client extension supports multiple browsers. Remember to test it in:
+
+- Firefox
+- SeaMonkey
+
 
 UI
 --
@@ -20,20 +25,31 @@ UI
 
 
 'Report Attack' tests:
-- HTTP website
-- HTTPS website, before Perspectives has finished querying
-- HTTPS website, after Perspectives has finished querying
-- Invalid URL, such as 'aaa' or blank
-- file:// URL
+  Should NOT let you send a report for:
+    - HTTP website
+    - HTTPS website, before Perspectives has finished querying
+    - Invalid URL, such as 'aaa' or blank
+    - file:// URL
+
+  *Should* let you send a report for:
+    - HTTPS website, after Perspectives has finished querying
+
 
 'Add To Whitelist' tests:
-- Same as above; all but https should be rejected as invalid URLs
+- Try the same page types as above; all non-https pages should be rejected as invalid URLs
 
 
 Preferences:
 - Quorum Percentage must be <= 100
 - Quorum Percentage must be >= 1
 - Quorum Duration must be >= 1
+- Both Quorum Percentage and Duration must be integers
+
+
+Queries
+---------
+- If we get at least one response and one timeout, we should only send requeries to notaries that have not given a response yet.
+(enable the 'query' debug flags to see this easily)
 
 
 

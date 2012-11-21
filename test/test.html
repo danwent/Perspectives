@@ -70,6 +70,11 @@ function assert(test, case_name) {
   }
 }
 
+// make it easy to print error strings
+function error(str) {
+  write_string("<b><font color='red'>ERROR:</font></b> " + str);
+}
+
 // placeholder function to note future tests we should implement.
 // it's here so you can easily set up tests and enable/disable them
 // by renaming the function they call.
@@ -545,8 +550,16 @@ function notary_parsing() {
   // ask for permission to initialize data variables,
   // so calls to Perspectives.x properties work properly.
   // see README for details
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-  Perspectives.init_data();
+  try {
+    netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+    Perspectives.init_data();
+  }
+  catch (e) {
+    error("'" + e + "'. Perspectives must be installed to run these tests. Skipping notary parse tests.");
+    g_test_count++;
+    g_fail_count++;
+    return;
+  }
 
 
   // check if Perspectives is installed and we're able to read its preferences
@@ -556,14 +569,14 @@ function notary_parsing() {
     orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
   }
   catch (e) {
-    write_string("<b>ERROR:</b> Perspectives must be installed to run these tests. Skipping notary parse tests.");
+    error("Perspectives must be installed to run these tests. Skipping notary parse tests.");
     g_test_count++;
     g_fail_count++;
     return;
   }
 
   if (orig_extra_notaries == null || orig_use_default_notaries == null) {
-    write_string("<b>ERROR:</b> Could not read preferences from Perspectives plugin. Skipping notary parse tests.");
+    error("Could not read preferences from Perspectives plugin. Skipping notary parse tests.");
     g_test_count++;
     g_fail_count++;
     return;
@@ -839,11 +852,11 @@ function run_tests() {
     write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "
       + g_fail_count + " failures. ");
     if (g_test_count != (g_pass_count + g_fail_count)) {
-      write_line("<b>ERROR:</b> Count totals did not match!");
+      error("Count totals did not match!");
     }
   } catch(e) { 
     alert(e);
-    write_string("<b><font color='red'>ERROR</font></b> - tests did not finish: '" + e + "'.");
+    error("tests did not finish: '" + e + "'.");
   } 
 } 
 

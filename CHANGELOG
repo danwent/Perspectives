@@ -5,6 +5,11 @@ Format:
 * bug or behavior fix
 
 
+4.3.3
+-----
++ Add heimdal and nine-eyes notaries to the default notary list, to improve response rate
+
+
 4.3.2
 -----
 * extract hardcoded strings and move to localization files

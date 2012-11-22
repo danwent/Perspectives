@@ -42,7 +42,7 @@ UI
 Preferences:
 - Quorum Percentage must be <= 100
 - Quorum Percentage must be >= 1
-- Quorum Duration must be >= 1
+- Quorum Duration must be >= 0
 - Both Quorum Percentage and Duration must be integers
 
 

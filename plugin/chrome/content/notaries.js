@@ -147,13 +147,37 @@ var Perspectives = {
 	},
 
 	get_invalid_cert_SSLStatus: function(uri){
-		var recentCertsSvc = 
-		Components.classes["@mozilla.org/security/recentbadcerts;1"]
-			.getService(Components.interfaces.nsIRecentBadCertsService);
+		var recentCertsSvc = null;
+
+		// firefox <= 19 and seamonkey
+		if (typeof Components.classes["@mozilla.org/security/recentbadcerts;1"]
+			!== "undefined") {
+
+			recentCertsSvc = Components.classes["@mozilla.org/security/recentbadcerts;1"]
+				.getService(Components.interfaces.nsIRecentBadCertsService);
+		}
+		// firefox > v20
+		else if (typeof Components.classes["@mozilla.org/security/x509certdb;1"]
+			!== "undefined") {
+
+			var certDB = Components.classes["@mozilla.org/security/x509certdb;1"]
+				.getService(Components.interfaces.nsIX509CertDB);
+			if (!certDB)
+				return null;
+
+			var pbs = Components.classes["@mozilla.org/privatebrowsing;1"]
+				.getService(Components.interfaces.nsIPrivateBrowsingService);
+			recentCertsSvc = certDB.getRecentBadCerts(pbs.privateBrowsingEnabled);
+		}
+		else {
+			Pers_debug.d_print("error", "No way to get invalid cert status!");
+			return null;
+		}
+
 		if (!recentCertsSvc)
 			return null;
 
-		var port = (uri.port == -1) ? 443 : uri.port;  
+		var port = (uri.port == -1) ? 443 : uri.port;
 
 		var hostWithPort = uri.host + ":" + port;
 		var gSSLStatus = recentCertsSvc.getRecentBadCert(hostWithPort);

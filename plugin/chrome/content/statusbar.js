@@ -55,11 +55,13 @@ var Pers_statusbar = {
 	},
 
 	open_about_dialog: function() {
+		/* TODO: enable once all strings have been localized
 		window.openDialog(
 	// 	window.open( // for debug
 			"chrome://perspectives/content/about_dialog.xul",
 	//       	"perspectivesResults", "").focus();  // for debug
 			"perspectivesabout", "centerscreen, chrome, toolbar, resizable").focus();
+		*/
 	},
 
 

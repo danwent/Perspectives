@@ -5,14 +5,16 @@ Format:
 * bug or behavior fix
 
 
-4.4
----
-+ Add an About dialog that lists contributors and translators
+
+4.3.4
+-----
+* Update code for retrieving invalid certificate info for Firefox v20 (GH 77)
 * When sending requeries, only send to notaries that haven't yet replied.
+* Remove unused localization string
 * UI improvements:
+	* Make the Preferences and Report Attack windows resizable
 	* In the Preferences window, set proper default height and width for Notary Server textboxes
-	* In the Results window, expand the results textbox vertically to fill available space
-		(This makes more text visible and keeps the radio buttons in a consistent place)
+	* In the Results window, expand the results textbox vertically to fill available space (This makes more text visible and keeps the radio buttons in a consistent place)
 
 
 4.3.3

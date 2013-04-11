@@ -33,9 +33,9 @@
 			<Description>
 			 <em:locale>de</em:locale>
 				<em:name>Perspectives</em:name>
-				<em:description>Verbindungen mit Https-Websites sicher aufnehmen, indem Sie deren Zertifikate mittels Netzwerknotaren &uuml;berpr&uuml;fen. Sehen Sie bitte http://www.perspectives-project.org (englischsprachig).
+				<em:description>Verbindungen mit Https-Websites sicher aufnehmen, indem Sie deren Zertifikate mittels Netzwerknotaren überprüfen. Sehen Sie bitte http://www.perspectives-project.org (englischsprachig).
 				</em:description>
-				<em:creator>Perspectives-Projekt, Schule der Informatik, Carnegie-Mellon-Universit&auml;t</em:creator>
+				<em:creator>Perspectives-Projekt, Schule der Informatik, Carnegie-Mellon-Universität</em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
 				<em:translator>Edward Bassett</em:translator>
 			 </Description>

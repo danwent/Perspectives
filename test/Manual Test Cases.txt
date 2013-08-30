@@ -63,3 +63,6 @@ x If the profile/user changes their Toolbar to show Text or Icons and Text, the 
 	https://github.com/danwent/Perspectives/issues/44 )
 
 
+Invalid Certificates
+--------------------
+- One easy way to test against 'invalid certificates' is to set your clock back before a certificate was issued. This can also generate a SecurityChange event.

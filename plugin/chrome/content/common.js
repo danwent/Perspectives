@@ -17,7 +17,6 @@
 */
 
 
-//String.prototype.trim = function() { return this.replace(/^\s+|\s+$/, ''); };
 var Pers_debug = {
 	d_print_all : false,
 

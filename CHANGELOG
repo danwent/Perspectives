@@ -5,6 +5,10 @@ Format:
 * bug or behavior fix
 
 
+4.3.5
+-----
+* Fix code for retrieving private browsing data (used for untrusted certs in Firefox v22 and up)
+* Two minor fixes to remove validation warnings on AMO
 
 4.3.4
 -----

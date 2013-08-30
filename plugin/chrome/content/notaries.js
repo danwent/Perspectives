@@ -156,7 +156,7 @@ var Perspectives = {
 			recentCertsSvc = Components.classes["@mozilla.org/security/recentbadcerts;1"]
 				.getService(Components.interfaces.nsIRecentBadCertsService);
 		}
-		// firefox > v20
+		// firefox >= v20
 		else if (typeof Components.classes["@mozilla.org/security/x509certdb;1"]
 			!== "undefined") {
 
@@ -165,9 +165,8 @@ var Perspectives = {
 			if (!certDB)
 				return null;
 
-			var pbs = Components.classes["@mozilla.org/privatebrowsing;1"]
-				.getService(Components.interfaces.nsIPrivateBrowsingService);
-			recentCertsSvc = certDB.getRecentBadCerts(pbs.privateBrowsingEnabled);
+			Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
+			recentCertsSvc = certDB.getRecentBadCerts(PrivateBrowsingUtils.isWindowPrivate(window));
 		}
 		else {
 			Pers_debug.d_print("error", "No way to get invalid cert status!");

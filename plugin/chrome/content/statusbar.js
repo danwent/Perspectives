@@ -23,6 +23,7 @@ var Pers_statusbar = {
 	STATE_NSEC  : 1,
 	STATE_NEUT  : 2,
 	STATE_QUERY  : 3,
+	STATE_WHITELIST : 4,
 
 	force_update : function(event) {
 		Perspectives.forceStatusUpdate(window); 
@@ -97,6 +98,11 @@ var Pers_statusbar = {
 			case Pers_statusbar.STATE_NEUT:
 				Pers_debug.d_print("main", "Neutral Status\n");
 				imgList[j].setAttribute("src", "chrome://perspectives/content/img/default.png");
+				continue;
+			case Pers_statusbar.STATE_WHITELIST:
+				//TODO: have other code call this
+				Pers_debug.d_print("main", "Whitelist Status\n");
+				imgList[j].setAttribute("src", "chrome://perspectives/content/img/whitelist.png");
 				continue;
 			case Pers_statusbar.STATE_QUERY:
 				Pers_debug.d_print("main", "Querying Status\n");

@@ -8,7 +8,7 @@ unittest_dest = $(unittest_dest_folder)/$(unittest_file)
 .PHONY: plugin
 
 plugin: clean dtds setup
-	sh -c "cd $(buildfolder)/ && zip -r ../$(outfile) * -x *\.svn*"
+	sh -c "cd $(buildfolder)/ && zip -q -r ../$(outfile) * -x *\.svn*"
 	rm -rf $(buildfolder)
 
 test: clean setup install-test-files plugin

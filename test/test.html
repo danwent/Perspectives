@@ -313,24 +313,8 @@ function notary_parsing() {
   var orig_use_default_notaries = null;
 
 
-  write_string("Starting notary parsing tests. <b>Note:</b> These tests require Perspectives to be installed.");
+  write_string("Starting notary parsing tests.");
 
-
-
-
-
-  // check if Perspectives is installed and we're able to read its preferences
-  try {
-    // save preferences so we can restore state afterward
-    orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
-    orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
-  }
-  catch (e) {
-    error("Perspectives must be installed to run these tests. Skipping notary parse tests.");
-    g_test_count++;
-    g_fail_count++;
-    return;
-  }
 
   if (orig_extra_notaries == null || orig_use_default_notaries == null) {
     error("Could not read preferences from Perspectives plugin. Skipping notary parse tests.");

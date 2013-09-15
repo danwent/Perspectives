@@ -1,4 +1,4 @@
-outfile = Perspectives
+outfile = Perspectives.xpi
 buildfolder = build
 unittest_file = test.html
 unittest_source = test/$(unittest_file)
@@ -8,7 +8,7 @@ unittest_dest = $(unittest_dest_folder)/$(unittest_file)
 .PHONY: plugin
 
 plugin: clean dtds setup
-	sh -c "cd $(buildfolder)/ && zip -r ../$(outfile).xpi * -x *\.svn*"
+	sh -c "cd $(buildfolder)/ && zip -r ../$(outfile) * -x *\.svn*"
 	rm -rf $(buildfolder)
 
 dtds:
@@ -25,7 +25,7 @@ dtds:
     endif
 
 clean:
-	rm -f $(outfile).xpi
+	rm -f $(outfile)
 	rm -rf $(buildfolder)/
 	rm -f $(unittest_dest)
 

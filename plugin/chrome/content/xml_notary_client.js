@@ -130,17 +130,17 @@ var Pers_xml = {
 		var bin_str = service_id;
 		bin_str += String.fromCharCode(0); // NULL-terminate
 	 
-		for (i = server_res.obs.length - 1; i >= 0; i--) { 
+		for (var i = server_res.obs.length - 1; i >= 0; i--) {
 			var o = server_res.obs[i];
 			var num_timespans = o.timestamps.length; 
 			bin_str += String.fromCharCode((num_timespans >> 8) & 255, 
 											num_timespans & 255); 
 			bin_str += String.fromCharCode(0,16,3); // key length is 16, type 3
 			var hex_array = o.key.split(":"); 
-			for(k = 0; k < hex_array.length; k++) { 
+			for(var k = 0; k < hex_array.length; k++) {
 				bin_str += String.fromCharCode((parseInt(hex_array[k],16))); 
 			}
-			for (j = 0; j < o.timestamps.length; j++) { 
+			for (var j = 0; j < o.timestamps.length; j++) {
 				var t = o.timestamps[j]; 
 				bin_str += String.fromCharCode((t.start >> 24) & 255, 
 							(t.start >> 16) & 255, 

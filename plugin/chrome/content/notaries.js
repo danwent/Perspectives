@@ -227,7 +227,7 @@ var Perspectives = {
 		var all_notaries = []; 
 		try {
 			var list_txt = Perspectives.root_prefs.getCharPref("perspectives.additional_notary_list");
-			additional_notaries = Pers_util.loadNotaryListFromString(list_txt); 
+			var additional_notaries = Pers_util.loadNotaryListFromString(list_txt);
 			all_notaries = all_notaries.concat(additional_notaries); 
 		} catch(e) { 
 			Pers_debug.d_print("error", "Error parsing additional notaries: " + e); 
@@ -235,7 +235,7 @@ var Perspectives = {
 		var use_default_notaries = Perspectives.root_prefs.getBoolPref("perspectives.use_default_notary_list"); 
 		if(use_default_notaries) {
  
-			default_notaries = Pers_util.loadNotaryListFromString(
+			var default_notaries = Pers_util.loadNotaryListFromString(
 						this.root_prefs.getCharPref("perspectives.default_notary_list")); 
 			all_notaries = all_notaries.concat(default_notaries); 
 		} 
@@ -257,7 +257,7 @@ var Perspectives = {
  
 		// send a request to each notary
 		ti.partial_query_results = []; 
-		for(i = 0; i < Perspectives.all_notaries.length; i++) {
+		for(var i = 0; i < Perspectives.all_notaries.length; i++) {
 			Pers_debug.d_print("main", "Sending query to notary " + Perspectives.all_notaries[i].host);  
 			this.querySingleNotary(Perspectives.all_notaries[i],ti); 
 		}

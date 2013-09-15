@@ -1,12 +1,13 @@
 outfile = Perspectives
 buildfolder = build
+unittest_file = test.html
+unittest_source = test/$(unittest_file)
+unittest_dest_folder = $(buildfolder)/chrome/content/test
+unittest_dest = $(unittest_dest_folder)/$(unittest_file)
 
-.PHONY: all
+.PHONY: plugin
 
-all: clean dtds
-	rm -rf $(buildfolder)/
-	mkdir $(buildfolder)
-	cp -r plugin/* $(buildfolder)/
+plugin: clean dtds setup
 	sh -c "cd $(buildfolder)/ && zip -r ../$(outfile).xpi * -x *\.svn*"
 	rm -rf $(buildfolder)
 
@@ -26,3 +27,15 @@ dtds:
 clean:
 	rm -f $(outfile).xpi
 	rm -rf $(buildfolder)/
+	rm -f $(unittest_dest)
+
+setup:
+	rm -rf $(buildfolder)/
+	mkdir $(buildfolder)
+	cp -r plugin/* $(buildfolder)/
+
+test: clean setup install-test-files plugin
+
+install-test-files: setup
+	mkdir $(unittest_dest_folder)
+	cp $(unittest_source)  $(unittest_dest)

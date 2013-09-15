@@ -315,6 +315,9 @@ function notary_parsing() {
 
   write_string("Starting notary parsing tests.");
 
+  // save preferences so we can restore state afterward
+  orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
+  orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
 
   if (orig_extra_notaries == null || orig_use_default_notaries == null) {
     error("Could not read preferences from Perspectives plugin. Skipping notary parse tests.");
@@ -329,17 +332,20 @@ function notary_parsing() {
   Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
 
   var notaries = "";
-  var initial_notary_count = 8; // Note: update if we change the default file
+  var count_before = 0;
 
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == initial_notary_count,
-    "Default notary list gets us " + initial_notary_count + " notaries ");
+  assert(notaries.length > 0,
+    "Default notary list gets us > 0 notaries (we have " + notaries.length + ")");
 
 
   var nonsense_notary = "aaaaaaaa";
+  // clear the extra notaries list to be sure what we're dealing with
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+  count_before = Perspectives.getNotaryList().length;
   Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, nonsense_notary);
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == initial_notary_count,
+  assert(notaries.length == count_before,
     "Trying to save a garbled notary string doesn't work.");
 
 
@@ -356,9 +362,11 @@ FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\
 JaJ2Lw7kRVMCAwEAAQ==\
 -----END PUBLIC KEY-----";
 
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+  count_before = Perspectives.getNotaryList().length;
   Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, notary_dupe);
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == initial_notary_count,
+  assert_fixme(notaries.length == count_before,
     "Trying to add a duplicate notary doesn't work.");
   //FIXME - note: this currently fails. We want to write code to prevent dupes.
 
@@ -373,9 +381,11 @@ FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\n\n\n\n\
 JaJ2Lw7kRVMCAwEAAQ==\n\n\n\n\
 -----END PUBLIC KEY-----\n\n\n\n";
 
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+  count_before = Perspectives.getNotaryList().length;
   Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, sparse_notary);
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == (initial_notary_count + 1),
+  assert(notaries.length == (count_before + 1),
     "Trying to add a notary with many blank lines works.");
 
 

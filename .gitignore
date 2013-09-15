@@ -1,3 +1,9 @@
-#ignore build output
-Perspectives.xpi
+# ignore build output
+*.xpi
+
+# ignore other types of files
+*.tar
+*.tar.gz
+*.zip
+
 

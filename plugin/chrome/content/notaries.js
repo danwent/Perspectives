@@ -95,7 +95,7 @@ var Perspectives = {
 	},
 
 	is_nonrouted_ip: function(ip_str) { 
-		for each (regex in Perspectives.nonrouted_ips) { 
+		for (regex in Perspectives.nonrouted_ips) {
 			if(ip_str.match(RegExp(regex))) { 
 				return true; 
 			}

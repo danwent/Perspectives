@@ -317,7 +317,6 @@ function notary_parsing() {
 
 
 
-  Perspectives.init_data();
 
 
   // check if Perspectives is installed and we're able to read its preferences
@@ -427,6 +426,9 @@ function run_tests() {
   Pers_debug.d_print_flags["error"] = true;
   
   try {
+
+    Perspectives.init_data();
+
     clear();
     meta_tests();
     quorum_basics();

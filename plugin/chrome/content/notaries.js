@@ -412,9 +412,21 @@ var Perspectives = {
 	// return the quorum as an integer
 	// e.g. useful for comparing against the number of results
 	getQuorumAsInt: function() {
+		var MIN_NOTARY_COUNT = 1;
+		//FIXME: we can cache the value inside getNotaryList() if calling is too slow.
+		var notary_count = this.getNotaryList().length;
 		var q_thresh = Perspectives.root_prefs.
 				getIntPref("perspectives.quorum_thresh") / 100;
-		return Math.round(this.all_notaries.length * q_thresh);
+		var q_count = Math.round(notary_count * q_thresh);
+
+		if (q_count < MIN_NOTARY_COUNT) {
+			q_count = MIN_NOTARY_COUNT;
+		}
+		else if (q_count > notary_count) {
+			q_count = notary_count;
+		}
+
+		return q_count;
 	},
 
 	notaryQueriesComplete: function(ti) {

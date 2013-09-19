@@ -95,11 +95,12 @@ function debug(obj) {
     for (var i = 0; i < obj.length; i++) {
       deb_console(obj[i]);
     }
-    obj = obj.toString();
   }
   else {
     deb_console(obj);
   }
+
+  obj = JSON.stringify(obj);
 
   // strip out < so strings always appear on the page
   write_string_to_element("<font color='grey'>DEBUG: " +
@@ -147,8 +148,9 @@ function quorum_basics() {
  write_string("Starting basic quorum tests...");
 
 
- var key = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
- var key2 = "bd:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+ var key = "b1:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+ var key2 = "b2:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+ var key3 = "b3:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
  var cur_time = 10000;
  var max_stale_sec = 200;
 
@@ -211,6 +213,66 @@ function quorum_basics() {
  assert((quorum_duration == -1), "Passing an empty results list fails");
 
 
+ //quorums with a small number of notaries
+ //TODO: write code to save and restore all preferences after each test,
+ //so it doesn't matter which we alter.
+ var pref_string_extra_notaries = "perspectives.additional_notary_list";
+ var pref_string_use_def_notary = "perspectives.use_default_notary_list";
+ var orig_thresh = Perspectives.root_prefs.getIntPref("perspectives.quorum_thresh");
+ var orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
+ var orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
+
+ var single_notary = "localhost:8080\n\
+-----BEGIN PUBLIC KEY-----\n\
+MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGXsegzE6E/6j4vgzi3NqGSn2dz\
+W6gRxkuAL7PB8QmRqtG9ieSQjFB6cTYvkmp7x/LtHqlr9Fa6+/mT4Ma5oKU0RpgY\
+MyfYnEk0iiNWG2fj4mRpTscHfcEJfKP13OGAYP1ZuHksTXSYsaKfIwiVKMLgQ/hA\
+FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\
+JaJ2Lw7kRVMCAwEAAQ==\
+-----END PUBLIC KEY-----";
+
+
+ try {
+  var small_quorum_thresh = 1;
+  Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", small_quorum_thresh);
+  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, false);
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, single_notary);
+
+  var qint = Perspectives.getQuorumAsInt();
+  assert(qint >= 1, small_quorum_thresh +
+    "% Quorum Threhold with 1 notary still returns a required quorum count >= 1 (got " + qint + ").");
+
+  var unixtime = Pers_util.get_unix_time();
+  var max_stale_sec = 2 * 24 * 3600;
+
+  var consistent = Pers_client_policy.check_current_consistency(
+    key, server_result_list, 0, max_stale_sec, unixtime);
+  assert((consistent === false), "Quorum size 0 is not consistent.");
+
+  var has_quorum = Pers_client_policy.has_quorum_at_time(key,
+    server_result_list, 0, null);
+  assert((has_quorum === false), "Quorum size 0 is fails at any given time.");
+
+  quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          server_result_list, 0, max_stale_sec, unixtime);
+  assert((quorum_duration == 0), "Quorum size 0 gives zero duration");
+
+
+
+  var full_quorum_thresh = 100;
+  Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", full_quorum_thresh);
+  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
+
+  var qint = Perspectives.getQuorumAsInt();
+  assert(qint == Perspectives.getNotaryList().length, full_quorum_thresh +
+    "% Quorum Threhold with many notaries returns a full required quorum count (got " + qint + ").");
+
+ }
+ finally {
+  Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", orig_thresh);
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, orig_extra_notaries);
+  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, orig_use_default_notaries);
+ }
 
  write_string("Finished");
 } 

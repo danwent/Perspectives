@@ -3,6 +3,17 @@ High-level overview of changes to Perspectives
 Format:
 + new feature
 * bug or behavior fix
+X Loss of functionality
+
+
+4.3.6
+-----
+* Security Fix: incorrect quorum duration with low number of notaries or quorum percentage (GH 87)
+* Refactor unit tests: unit test js file is now optionally installed with the rest of the extension (this makes it run properly under newer versions of Firefox) (GH 74)
+* Remove several global variables; convert to local with 'var'
+* Add new whitelist icon (image file added, but code not hooked up yet)
+* Minor improvements to the makefile formatting and output
+X Localization tests temporarily removed so we can ship to patch the security bug. They still need to be transcribed/relocated to a non-javascript language to run at build time.
 
 
 4.3.5

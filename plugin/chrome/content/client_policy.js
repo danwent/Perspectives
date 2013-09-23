@@ -178,7 +178,7 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 	var oldest_most_recent = Pers_client_policy.find_oldest_most_recent(results,stale_limit_secs,unixtime);
   	var time_changes = Pers_client_policy.get_all_key_changes(results); 
 	Pers_client_policy.sort_number_list_desc(time_changes); 
-	Pers_debug.d_print("policy", "sorted times: ", time_changes); 
+	Pers_debug.d_print("policy", "sorted times: " + time_changes);
   	var test_time = null; 
 	for(var i = 0; i < time_changes.length; i++) {
 		test_time = time_changes[i]; 

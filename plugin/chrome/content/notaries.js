@@ -850,7 +850,7 @@ var Perspectives = {
      				Pers_debug.d_print("main", "State change " + uri.spec + "\n");
          			Perspectives.updateStatus(window,false);
        			  } catch (err) {
-         			Pers_debug.d_print("Perspectives had an internal exception: " + err);
+         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
          			Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR, 
 					"Perspectives: an internal state change error occurred: " + err); //TODO: localize
        			  }

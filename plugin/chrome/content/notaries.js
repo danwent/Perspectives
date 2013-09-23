@@ -720,11 +720,15 @@ var Perspectives = {
 			} else if(ti.already_trusted && weak_trust && pref_https_weak) { 
 				// FIXME: need to clear any contrary banners
 				if(ti.state & Perspectives.state.STATE_IS_BROKEN) { 
-					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, 
-					"HTTPS Certificate is weakly trusted, but site contains insecure embedded content. "); //TODO: localize
+					ti.query_results.tooltip =
+						"HTTPS Certificate is weakly trusted, but site contains insecure embedded content." //TODO: localize
+					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT,
+						ti.query_results.tooltip);
 				}  else { 
+					ti.query_results.tooltip =
+						"This site uses multiple certificates, including the certificate received and trusted by your browser." //TODO: localize
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC, 
-					"This site uses multiple certificates, including the certificate received and trusted by your browser."); //TODO: localize
+						ti.query_results.tooltip);
 
 				} 
 			} else if (ti.query_results.summary.indexOf("ssl key") == -1) { 

@@ -95,7 +95,7 @@ var Perspectives = {
 	},
 
 	is_nonrouted_ip: function(ip_str) { 
-		for each (regex in Perspectives.nonrouted_ips) { 
+		for (regex in Perspectives.nonrouted_ips) {
 			if(ip_str.match(RegExp(regex))) { 
 				return true; 
 			}
@@ -227,7 +227,7 @@ var Perspectives = {
 		var all_notaries = []; 
 		try {
 			var list_txt = Perspectives.root_prefs.getCharPref("perspectives.additional_notary_list");
-			additional_notaries = Pers_util.loadNotaryListFromString(list_txt); 
+			var additional_notaries = Pers_util.loadNotaryListFromString(list_txt);
 			all_notaries = all_notaries.concat(additional_notaries); 
 		} catch(e) { 
 			Pers_debug.d_print("error", "Error parsing additional notaries: " + e); 
@@ -235,7 +235,7 @@ var Perspectives = {
 		var use_default_notaries = Perspectives.root_prefs.getBoolPref("perspectives.use_default_notary_list"); 
 		if(use_default_notaries) {
  
-			default_notaries = Pers_util.loadNotaryListFromString(
+			var default_notaries = Pers_util.loadNotaryListFromString(
 						this.root_prefs.getCharPref("perspectives.default_notary_list")); 
 			all_notaries = all_notaries.concat(default_notaries); 
 		} 
@@ -257,7 +257,7 @@ var Perspectives = {
  
 		// send a request to each notary
 		ti.partial_query_results = []; 
-		for(i = 0; i < Perspectives.all_notaries.length; i++) {
+		for(var i = 0; i < Perspectives.all_notaries.length; i++) {
 			Pers_debug.d_print("main", "Sending query to notary " + Perspectives.all_notaries[i].host);  
 			this.querySingleNotary(Perspectives.all_notaries[i],ti); 
 		}
@@ -412,9 +412,21 @@ var Perspectives = {
 	// return the quorum as an integer
 	// e.g. useful for comparing against the number of results
 	getQuorumAsInt: function() {
+		var MIN_NOTARY_COUNT = 1;
+		//FIXME: we can cache the value inside getNotaryList() if calling is too slow.
+		var notary_count = this.getNotaryList().length;
 		var q_thresh = Perspectives.root_prefs.
 				getIntPref("perspectives.quorum_thresh") / 100;
-		return Math.round(this.all_notaries.length * q_thresh);
+		var q_count = Math.round(notary_count * q_thresh);
+
+		if (q_count < MIN_NOTARY_COUNT) {
+			q_count = MIN_NOTARY_COUNT;
+		}
+		else if (q_count > notary_count) {
+			q_count = notary_count;
+		}
+
+		return q_count;
 	},
 
 	notaryQueriesComplete: function(ti) {

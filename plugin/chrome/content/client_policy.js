@@ -119,6 +119,10 @@ get_all_key_changes : function(results) {
 } , 
 
 check_current_consistency : function(test_key,results,quorum_size,stale_limit_secs,cur_time) {
+	if (quorum_size < 1) {
+		Pers_debug.d_print("error", "ERROR: quorum size cannot be less than 1.");
+		return false;
+	}
   	//get_all_key_changes(results); 
 	var num_valid = Pers_client_policy.get_num_valid_notaries(test_key,results,stale_limit_secs,cur_time);
 	Pers_debug.d_print("policy", 
@@ -127,6 +131,10 @@ check_current_consistency : function(test_key,results,quorum_size,stale_limit_se
 }, 
 
 has_quorum_at_time : function(test_key, results, quorum_size, time) {
+	if (quorum_size < 1) {
+		Pers_debug.d_print("error", "ERROR: quorum size cannot be less than 1.");
+		return false;
+	}
 	Pers_debug.d_print("policy", "testing quorum for time " + time + 
 			" and key: " + test_key); 
 	var total_valid = 0; 
@@ -155,6 +163,11 @@ has_quorum_at_time : function(test_key, results, quorum_size, time) {
 
 // returns duration in seconds - i.e. days * 24 * 3600.
 get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs, unixtime) { 
+
+	if (quorum_size < 1) {
+		Pers_debug.d_print("error", "ERROR: quorum size cannot be less than 1.");
+		return false;
+	}
 
 	if(! Pers_client_policy.check_current_consistency(test_key,results,quorum_size,
 					stale_limit_secs,unixtime)) { 

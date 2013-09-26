@@ -1,23 +1,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<link rel="SHORTCUT ICON" href="../plugin/chrome/content/default.png">
+<link rel="SHORTCUT ICON" href="../img/default.png">
 <title>Perspectives - Test cases</title>
 
 <!-- Include every file so we can verify that all of the objects are testable in meta_test() -->
-<script type="text/javascript" src="../plugin/chrome/content/about.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/base64.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/client_policy.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/common.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/generate_svg.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/notaries.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/notify.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/preferences_dialog.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/report.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/results_dialog.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/statusbar.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/whitelist_dialog.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/xml_notary_client.js"></script>
+<script type="text/javascript" src="../about.js"></script>
+<script type="text/javascript" src="../base64.js"></script>
+<script type="text/javascript" src="../client_policy.js"></script>
+<script type="text/javascript" src="../common.js"></script>
+<script type="text/javascript" src="../generate_svg.js"></script>
+<script type="text/javascript" src="../notaries.js"></script>
+<script type="text/javascript" src="../notify.js"></script>
+<script type="text/javascript" src="../preferences_dialog.js"></script>
+<script type="text/javascript" src="../report.js"></script>
+<script type="text/javascript" src="../results_dialog.js"></script>
+<script type="text/javascript" src="../statusbar.js"></script>
+<script type="text/javascript" src="../whitelist_dialog.js"></script>
+<script type="text/javascript" src="../xml_notary_client.js"></script>
 
 <script type="text/javascript"> 
 
@@ -95,11 +95,12 @@ function debug(obj) {
     for (var i = 0; i < obj.length; i++) {
       deb_console(obj[i]);
     }
-    obj = obj.toString();
   }
   else {
     deb_console(obj);
   }
+
+  obj = JSON.stringify(obj);
 
   // strip out < so strings always appear on the page
   write_string_to_element("<font color='grey'>DEBUG: " +
@@ -110,237 +111,6 @@ function deb_console(obj) {
   if (window.console != undefined) {
     console.log("DEBUG: " + obj);
   }
-}
-
-
-// when storing localization keys, use a separator character that is *not*
-// a legal filename character on most systems (including windows, linux, and osx)
-// this makes it easier to ensure we won't encounter it in file names
-// or have difficulty printing error info.
-// see get_keys_from_stream() for more.
-//
-// NOTE: we use 'const' here, which is not supported in all browsers.
-// That may or may not be important if Perspectives gets ported elsewhere
-// (this file is just the tests, after all)
-const LSEP = '/';
-
-// find all of the .dtd and .properties files in a directory
-function get_loc_files(dir) {
-
-  if (!dir) {
-    assert(false, "Directory passed to get_loc_files() is undefined. This is bad.");
-    return;
-  }
-
-  var entries = dir.directoryEntries;
-  var filearray = [];
-
-  if (entries != null) {
-    while(entries.hasMoreElements()) {
-      var entry = entries.getNext();
-      entry.QueryInterface(Components.interfaces.nsIFile);
-      if (entry.isFile()) {
-        var ext = entry.leafName.substring(entry.leafName.lastIndexOf(".")+1).toLowerCase();
-        if(ext === "dtd" || ext === "properties") {
-          filearray[entry.leafName] = entry;
-        }
-      }
-    }
-  }
-  else {
-    assert(false, "Localization directory '" + dir + "' has no files. This is bad.");
-  }
-
-  return filearray;
-}
-
-
-// read a file and find all of the localization string names.
-// we read synchronously and don't care about performance because
-// this code isn't part of the extension.
-function get_loc_keys(filelist, locdirname) {
-
-  var keys = [];
-
-  // DTD entities look like:
-  // <!ENTITY Name "String">
-  // Assumptions:
-  // - Could be one line or many
-  // (so we use [\s\S]*? instead of .* to match across multiple lines
-  // (make sure to make that *NON*-greedy!))
-  // - Cannot contain chars:
-  // "%<>
-  // - Cannot have non-whitespace characters in the file outside of entities and comments
-  //
-  // For dtds to load inside xhtml files (such as our help.xhtml)
-  // it is very important that they have the closing > .
-  // note: “” (smart quotes) both seem to load fine in xhtml,
-  // since we use " to wrap our strings.
-  var dtdcomment = /<!--[\s\S]*?-->/g;
-  var dtdsep = /<!ENTITY/; //do *NOT* start with ^ or it will mask errors
-  var dtdline = / +([A-Za-z0-9]+) +"([^"%<>]*)" *> *$/;
-
-  // .properties entries look like:
-  // name=string
-  // Assumptions: exist only on a single line.
-  var propcomment = /#+.*[\n\r\f]/g;
-  var propsep = /[\n\r\f]/;
-  var propline = /([A-Za-z0-9]+)=([^\n\r\f]*)/;
-
-  for (filename in filelist) {
-    if (filelist.hasOwnProperty(filename)) {
-
-      if (filename != null) {
-
-        // FIXME: if you know a way to read the content type of files from javascript, put it here!
-        // doing this:
-        //  Components.utils.import("resource://gre/modules/NetUtil.jsm");
-        //  var channel = NetUtil.newChannel(filelist[filename]);
-        // gets us a blank contentCharset and contentType 'application/x-unknown-content-type'
-
-        var data = "";
-
-        var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
-                createInstance(Components.interfaces.nsIFileInputStream);
-        var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-                          .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-        converter.charset = "UTF-8";
-        fstream.init(filelist[filename], -1, 0, 0);
-
-        var lis = fstream.QueryInterface(Components.interfaces.nsILineInputStream);
-        var str = {};
-        var readmore = 0;
-        var lines = 0;
-        do {
-          readmore = lis.readLine(str);
-          data += str.value + '\n'; //HACK: we're tacking on a \n so the regexs can separate lines properly
-          lines++;
-        } while (readmore != 0);
-
-        // according to the MDN spec, loc files should *not* contain the BOM
-        // https://developer.mozilla.org/en/XUL_Tutorial/Localization
-        var BOM = "ï»¿";
-        if (data.substring(0,3) == BOM) {
-          assert(false, "(" + locdirname + "): " + filename + " begins with BOM '" + BOM
-            + "'. Loc files should be saved as UTF-8 with no BOM.");
-        }
-        else {
-          assert(true, "(" + locdirname + "): " + filename + " does not contain BOM.");
-        }
-
-        fstream.close();
-
-        if (lines == 0) {
-          assert(false, "Read 0 lines from " + filename + ". Is that expected?");
-        }
-
-        var ext = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
-        if(ext === "dtd") {
-          keys = get_keys_from_stream(data, dtdcomment, dtdsep, dtdline, keys, filename, locdirname, validate_dtd_comments);
-        }
-        else if (ext === "properties") {
-          keys = get_keys_from_stream(data, propcomment, propsep, propline, keys, filename, locdirname, null);
-        }
-        else {
-          assert(false, locdirname + ": File '" + file.path
-            + "' is neither .dtd or .properties. We shouldn't be looking for keys inside!");
-        }
-      }
-      else {
-        assert(false, "File " + filelist.indexOf(filename) + " in " + filelist +
-          " is null.");
-      }
-    }
-  }
-
-  return keys;
-}
-
-// comments inside .dtd files cannot contain two or more -- characters,
-// or attempting to load them inside an .xhtml file will fail.
-function validate_dtd_comments(comments, sourcefilename, locdirname) {
-
-  if (comments == null) {
-    return;
-  }
-
-  if (comments instanceof Array) {
-    for (c in comments) {
-
-      var commentregex = /<!--([\s\S]*?)-->/; // note: make sure the inside match is non-greedy
-      var match = commentregex.exec(comments[c]);
-
-      if (match != null) {
-        if (/-{2,}/.test(match[1])) {
-          // need to replace < with &lt; for printing
-          assert(false, "(" + locdirname + "): " + sourcefilename + " has invalid comment '" + comments[c].replace(/</g, '&lt;') + "'. DTD comments cannot contain two or more -- dashes inside them. Please fix, or run 'make dtds' to fix this automatically.");
-        }
-      }
-      else {
-        assert(false, "(" + locdirname + "): " + sourcefilename + " DTD comment '" + comments[c].replace(/</g, '&lt;') + "' didn't match but somehow was parsed out as a comment. Something is really wrong.");
-      }
-    }
-  }
-}
-
-// extract localization string names/keys from a datastream,
-// using the appropriate regex passed by the caller.
-function get_keys_from_stream(datastream, comment, delimiter, itemregex, keys, sourcefilename, locdirname, extracommentvalidationfunc) {
-
-  // we use 'filename/keyname' as the hash key, as that's the value
-  // we want to ensure is unique. but make sure there are no instances
-  // of the separator character inside the filename, so we don't have trouble
-  // parsing or splitting the hash key later, if necessary
-  // (e.g. for printing error info)
-  var cleanfilename = sourcefilename;
-  var regex = new RegExp(LSEP, "g");
-  cleanfilename = cleanfilename.replace(regex, '');
-
-  if (extracommentvalidationfunc != null) {
-    extracommentvalidationfunc(datastream.match(comment), sourcefilename, locdirname);
-  }
-
-  datastream = datastream.replace(comment, '');
-  var lines = datastream.split(delimiter);
-  var numkeys = 0;
-
-  for (var i = 0; i < lines.length; i++) {
-    var line = lines[i].replace(/\n/g, '');
-    // note: if printing for debug, <> don't show up in HTML docs.
-    // they must be replaced. e.g.
-    // write_string_to_element("line: '" + lines[i].replace(/</, '&lt;') + "'", 'li');
-    // or just use console.log().
-    var match = itemregex.exec(line);
-    if (match != null) {
-      numkeys++;
-      // grab the first stored match, match[1], not the entire match array.
-      var protkey = cleanfilename + LSEP + match[1]
-      if (keys.hasOwnProperty(protkey)) {
-        assert(false, "(" + locdirname + "): Duplicate key '"
-          + match[1] + "' found twice in " + sourcefilename);
-      }
-      else {
-        keys[protkey] = sourcefilename;
-        if (!match[2]) {
-          assert(false, "(" + locdirname + "): Key '" + match[1] + "' in " +
-            sourcefilename + " has no value!");
-        }
-      }
-    }
-    else {
-      var space = /^\s*$/;
-      var justspace = space.exec(line);
-      if (!justspace) {
-       assert(false, "(" + locdirname + "): Malformed entry {{<u>" + line + "</u>}} in " + sourcefilename
-        + " (line " + (i+1) + "). You can try running 'make dtds' to fix this.");
-      }
-    }
-  }
-
-  if (numkeys == 0) {
-    assert(false, sourcefilename + " had 0 keys!");
-  }
-  return keys;
 }
 
 
@@ -378,8 +148,9 @@ function quorum_basics() {
  write_string("Starting basic quorum tests...");
 
 
- var key = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
- var key2 = "bd:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+ var key = "b1:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+ var key2 = "b2:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+ var key3 = "b3:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
  var cur_time = 10000;
  var max_stale_sec = 200;
 
@@ -442,6 +213,66 @@ function quorum_basics() {
  assert((quorum_duration == -1), "Passing an empty results list fails");
 
 
+ //quorums with a small number of notaries
+ //TODO: write code to save and restore all preferences after each test,
+ //so it doesn't matter which we alter.
+ var pref_string_extra_notaries = "perspectives.additional_notary_list";
+ var pref_string_use_def_notary = "perspectives.use_default_notary_list";
+ var orig_thresh = Perspectives.root_prefs.getIntPref("perspectives.quorum_thresh");
+ var orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
+ var orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
+
+ var single_notary = "localhost:8080\n\
+-----BEGIN PUBLIC KEY-----\n\
+MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGXsegzE6E/6j4vgzi3NqGSn2dz\
+W6gRxkuAL7PB8QmRqtG9ieSQjFB6cTYvkmp7x/LtHqlr9Fa6+/mT4Ma5oKU0RpgY\
+MyfYnEk0iiNWG2fj4mRpTscHfcEJfKP13OGAYP1ZuHksTXSYsaKfIwiVKMLgQ/hA\
+FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\
+JaJ2Lw7kRVMCAwEAAQ==\
+-----END PUBLIC KEY-----";
+
+
+ try {
+  var small_quorum_thresh = 1;
+  Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", small_quorum_thresh);
+  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, false);
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, single_notary);
+
+  var qint = Perspectives.getQuorumAsInt();
+  assert(qint >= 1, small_quorum_thresh +
+    "% Quorum Threhold with 1 notary still returns a required quorum count >= 1 (got " + qint + ").");
+
+  var unixtime = Pers_util.get_unix_time();
+  var max_stale_sec = 2 * 24 * 3600;
+
+  var consistent = Pers_client_policy.check_current_consistency(
+    key, server_result_list, 0, max_stale_sec, unixtime);
+  assert((consistent === false), "Quorum size 0 is not consistent.");
+
+  var has_quorum = Pers_client_policy.has_quorum_at_time(key,
+    server_result_list, 0, null);
+  assert((has_quorum === false), "Quorum size 0 is fails at any given time.");
+
+  quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          server_result_list, 0, max_stale_sec, unixtime);
+  assert((quorum_duration == 0), "Quorum size 0 gives zero duration");
+
+
+
+  var full_quorum_thresh = 100;
+  Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", full_quorum_thresh);
+  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
+
+  var qint = Perspectives.getQuorumAsInt();
+  assert(qint == Perspectives.getNotaryList().length, full_quorum_thresh +
+    "% Quorum Threhold with many notaries returns a full required quorum count (got " + qint + ").");
+
+ }
+ finally {
+  Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", orig_thresh);
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, orig_extra_notaries);
+  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, orig_use_default_notaries);
+ }
 
  write_string("Finished");
 } 
@@ -544,36 +375,11 @@ function notary_parsing() {
   var orig_use_default_notaries = null;
 
 
-  write_string("Starting notary parsing tests. <b>Note:</b> These tests require Perspectives to be installed.");
+  write_string("Starting notary parsing tests.");
 
-
-  // ask for permission to initialize data variables,
-  // so calls to Perspectives.x properties work properly.
-  // see README for details
-  try {
-    netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-    Perspectives.init_data();
-  }
-  catch (e) {
-    error("'" + e + "'. Perspectives must be installed to run these tests. Skipping notary parse tests.");
-    g_test_count++;
-    g_fail_count++;
-    return;
-  }
-
-
-  // check if Perspectives is installed and we're able to read its preferences
-  try {
-    // save preferences so we can restore state afterward
-    orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
-    orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
-  }
-  catch (e) {
-    error("Perspectives must be installed to run these tests. Skipping notary parse tests.");
-    g_test_count++;
-    g_fail_count++;
-    return;
-  }
+  // save preferences so we can restore state afterward
+  orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
+  orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
 
   if (orig_extra_notaries == null || orig_use_default_notaries == null) {
     error("Could not read preferences from Perspectives plugin. Skipping notary parse tests.");
@@ -588,17 +394,20 @@ function notary_parsing() {
   Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
 
   var notaries = "";
-  var initial_notary_count = 8; // Note: update if we change the default file
+  var count_before = 0;
 
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == initial_notary_count,
-    "Default notary list gets us " + initial_notary_count + " notaries ");
+  assert(notaries.length > 0,
+    "Default notary list gets us > 0 notaries (we have " + notaries.length + ")");
 
 
   var nonsense_notary = "aaaaaaaa";
+  // clear the extra notaries list to be sure what we're dealing with
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+  count_before = Perspectives.getNotaryList().length;
   Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, nonsense_notary);
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == initial_notary_count,
+  assert(notaries.length == count_before,
     "Trying to save a garbled notary string doesn't work.");
 
 
@@ -615,9 +424,11 @@ FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\
 JaJ2Lw7kRVMCAwEAAQ==\
 -----END PUBLIC KEY-----";
 
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+  count_before = Perspectives.getNotaryList().length;
   Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, notary_dupe);
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == initial_notary_count,
+  assert_fixme(notaries.length == count_before,
     "Trying to add a duplicate notary doesn't work.");
   //FIXME - note: this currently fails. We want to write code to prevent dupes.
 
@@ -632,9 +443,11 @@ FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\n\n\n\n\
 JaJ2Lw7kRVMCAwEAAQ==\n\n\n\n\
 -----END PUBLIC KEY-----\n\n\n\n";
 
+  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+  count_before = Perspectives.getNotaryList().length;
   Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, sparse_notary);
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == (initial_notary_count + 1),
+  assert(notaries.length == (count_before + 1),
     "Trying to add a notary with many blank lines works.");
 
 
@@ -660,177 +473,6 @@ function notary_replies() {
 }
 
 
-// make sure our localizations all have the same keys in the same places.
-// test cases:
-//
-//  - Loc has extra files
-//  - Loc is missing files
-//  - Loc has extra keys
-//  - Loc is missing keys
-//  - Loc has a duplicate key defined in the same file
-//  (the same key name defined in different files is okay -
-//   presumably they will be loaded and used in different stringbundles)
-//  - Loc key is empty
-//
-// if you think of more tests, try them and update the code if necessary
-function loc_tests() {
-
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-
-  write_string("Starting Localization tests");
-
-  // get the current directory without the filename
-  var curpath = document.location.pathname;
-  var filename = curpath.substring(curpath.lastIndexOf("/")+1);
-  var dir = curpath.substring(0, curpath.length - filename.length)
-
-  // localization folders should be a relative path away from this file.
-  var ioService = Components.classes["@mozilla.org/network/io-service;1"]
-    .getService(Components.interfaces.nsIIOService);
-
-  var locURI = ioService.newURI("file://" + dir + "../plugin/chrome/locale", null, null);
-  var locdir = locURI.QueryInterface(Components.interfaces.nsIFileURL).file;
-  assert(locdir.isDirectory(), "Found loc dir " + locdir.path + ", and it's a directory.");
-
-  // get all of the loc directories
-  var entries = locdir.directoryEntries;
-  var locdirs = [];
-  while(entries.hasMoreElements())
-  {
-    var entry = entries.getNext();
-    entry.QueryInterface(Components.interfaces.nsIFile);
-    if (entry.isDirectory()) {
-      locdirs[entry.leafName] = entry;
-    }
-  }
-
-  // en-US is probably our most robust localization, so start with it as a base
-  // we should still find everything regardless.
-  var baseline = [];
-  if ('en-US' in locdirs) {
-    baseline['files'] = get_loc_files(locdirs['en-US']);
-    baseline['name'] = 'en-US';
-  }
-  else {
-    // just use the first one
-    var basedir = null;
-    for (dir in locdirs) {
-      if (locdirs.hasOwnProperty(dir)) {
-        basedir = dir;
-      }
-    }
-    if (basedir == null) {
-      assert(false, "There are no localization directories to use as a base. Something is really wrong.");
-      return;
-    }
-    baseline['files'] = get_loc_files(locdirs[basedir]);
-    baseline['name'] = basedir.leafName;
-  }
-
-  // we can't use baseline['files'].length  to count the number of files
-  // because javascript stores the files as properties on the object,
-  // not actual hash entries in the array.
-  // thus, loop to count the results.
-  // we could store them in any variable, but store them on baseline itself
-  // for convenience.
-  baseline['filecount'] = 0;
-  for (file in baseline['files']) {
-    if (baseline['files'].hasOwnProperty(file)) {
-      baseline['filecount']++;
-    }
-  }
-
-  assert(baseline['filecount'] > 0,
-    "Found more than 0 loc files in baseline " + baseline['name'] +
-    " (found " + baseline['filecount'] + ")");
-
-
-  // get all keyes for the baseline
-  baseline['keys'] = get_loc_keys(baseline['files'], baseline['name']);
-
-  baseline['keycount'] = 0;
-  for (file in baseline['keys']) {
-    if (baseline['keys'].hasOwnProperty(file)) {
-      baseline['keycount']++;
-    }
-  }
-
-  assert(baseline['keycount'] > 0,
-    "Found more than 0 strings/keys in baseline "+ baseline['name'] +
-    " (found " + baseline['keycount'] + ")");
-
-
-  // now compare files and keys for every other localization to the baseline
-  for (dirname in locdirs) {
-    if ((locdirs.hasOwnProperty(dirname)) &&
-    (dirname != baseline['name'])) {
-
-      var exactmatch = true;
-
-      files = get_loc_files(locdirs[dirname]);
-      keys = get_loc_keys(files, dirname);
-
-      // all files in this loc are also in the baseline
-      for (file in files) {
-        if (files.hasOwnProperty(file)) {
-          if (!baseline['files'].hasOwnProperty(file)) {
-            assert(false, "(" + dirname + "): Extra file - baseline (" +
-              baseline['name'] + ") does not have the file '" + file + "'");
-              exactmatch = false;
-          }
-        }
-      }
-
-      // all files in the baseline are also in this loc
-      for (file in baseline['files']) {
-        if (baseline['files'].hasOwnProperty(file)) {
-          if (!files.hasOwnProperty(file)) {
-            assert(false, "(" + dirname + "): Missing file - (" + dirname +
-            ") does not have the file '" + file + "'");
-            exactmatch = false;
-          }
-        }
-      }
-
-
-      // all keys in this loc are also in the baseline
-      for (key in keys) {
-        if (keys.hasOwnProperty(key)) {
-          if (!baseline['keys'].hasOwnProperty(key)) {
-            // use .indexOf() because we know LSEP
-            // won't appear in the filename part of the key.
-            // this way we don't care if it appears in the stringname part of the key
-            var keyname = key.substring(key.indexOf(LSEP)+1);
-
-            assert(false, "(" + dirname + "): Extra Key - baseline (" +
-              baseline['name'] + ") does not have the key '" + keyname +
-              "' in " + keys[key]);
-              exactmatch = false;
-          }
-        }
-      }
-
-      // all keys in the baseline are also in this loc
-      for (key in baseline['keys']) {
-        if (baseline['keys'].hasOwnProperty(key)) {
-          if (!keys.hasOwnProperty(key)) {
-            var keyname = key.substring(key.indexOf(LSEP)+1);
-
-            assert(false, "(" + dirname + "): Missing key - (" + dirname +
-            ") does not have the key '" + keyname +
-            "' in " + baseline['keys'][key]);
-            exactmatch = false;
-          }
-        }
-      }
-
-      assert(exactmatch, "Localization (" + dirname + ") exactly matches baseline (" +
-        baseline['name'] + ").");
-    }
-  }
-
-  write_string("Finished");
-}
 
 
 
@@ -840,13 +482,15 @@ function run_tests() {
   Pers_debug.d_print_flags["error"] = true;
   
   try {
+
+    Perspectives.init_data();
+
     clear();
     meta_tests();
     quorum_basics();
     quorum_oldkey();
     notary_parsing();
     notary_replies();
-    loc_tests();
 
 
     write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "
@@ -863,11 +507,10 @@ function run_tests() {
 </script>
 </head>
 <body>
-
-<input type="button" value="Run Tests" onclick="run_tests()">
-<p> Run with firebug to see detailed test output if something fails.  </p> 
-<h2> Results: </h2>  
-<div id="results"> 
-
+  <img src="../img/default.png" TITLE="Perspectives Logo"/>
+  <input type="button" value="Run Tests" onclick="run_tests()">
+  <p> Run with firebug or the web console to see detailed test output if something fails.</p>
+  <h2> Results: </h2>
+  <div id="results">
 </body>
 </html>

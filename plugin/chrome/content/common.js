@@ -178,7 +178,7 @@ var Pers_util = {
 							"0x0d", "0x01", "0x01", "0x04", "0x05", "0x00", 
 							"0x03", "0x81", "0xad", "0x00"];
 		var header_str = '';
-		for (i = 0; i < der_header_md5.length; i++) { 
+		for (var i = 0; i < der_header_md5.length; i++) {
 			header_str += String.fromCharCode(parseInt(der_header_md5[i],16));
 		}
 		return Pers_Base64.encode(header_str + base_str) ; 

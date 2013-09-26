@@ -29,7 +29,7 @@
 		<!-- <image id="perspective-status-image" /> -->
 		<image 	id="perspective-button-image"
 				class="perspective-status-image-class"
-				src="chrome://perspectives/content/default.png" 
+				src="chrome://perspectives/content/img/default.png"
 				style="width:16px; height:16px;" />
 		<menupopup id="perspective-contextmenu-button" position="after_start">
 		  <menuitem label="&ViewNotaryResults;"   oncommand="Pers_statusbar.open_results_dialog()"/>

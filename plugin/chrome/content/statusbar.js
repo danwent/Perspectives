@@ -23,6 +23,7 @@ var Pers_statusbar = {
 	STATE_NSEC  : 1,
 	STATE_NEUT  : 2,
 	STATE_QUERY  : 3,
+	STATE_WHITELIST : 4,
 
 	force_update : function(event) {
 		Perspectives.forceStatusUpdate(window); 
@@ -88,23 +89,28 @@ var Pers_statusbar = {
 			switch(state){
 			case Pers_statusbar.STATE_SEC:
 				Pers_debug.d_print("main", "Secure Status\n");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/good.png");
+				imgList[j].setAttribute("src", "chrome://perspectives/content/img/good.png");
 				continue;
 			case Pers_statusbar.STATE_NSEC:
 				Pers_debug.d_print("main", "Unsecure Status\n");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/bad.png");
+				imgList[j].setAttribute("src", "chrome://perspectives/content/img/bad.png");
 				continue;
 			case Pers_statusbar.STATE_NEUT:
 				Pers_debug.d_print("main", "Neutral Status\n");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/default.png");
+				imgList[j].setAttribute("src", "chrome://perspectives/content/img/default.png");
+				continue;
+			case Pers_statusbar.STATE_WHITELIST:
+				//TODO: have other code call this
+				Pers_debug.d_print("main", "Whitelist Status\n");
+				imgList[j].setAttribute("src", "chrome://perspectives/content/img/whitelist.png");
 				continue;
 			case Pers_statusbar.STATE_QUERY:
 				Pers_debug.d_print("main", "Querying Status\n");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/progress.gif");
+				imgList[j].setAttribute("src", "chrome://perspectives/content/img/progress.gif");
 				continue;
 			case Pers_statusbar.STATE_ERROR:
 				Pers_debug.d_print("main", "Error Status\n");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/error.png");
+				imgList[j].setAttribute("src", "chrome://perspectives/content/img/error.png");
 				continue;
 			}
 		}

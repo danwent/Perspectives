@@ -14,7 +14,7 @@
     <hbox>
       <separator class="thin" orient="vertical"/>
       <vbox pack="center">
-        <image src="default.png" tooltip="Perspectives"/>
+        <image src="img/default.png" tooltip="Perspectives"/>
       </vbox>
       <vbox>
         <separator class="thin"/>

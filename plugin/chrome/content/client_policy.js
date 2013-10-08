@@ -216,7 +216,19 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 // This technique is implemented by the functions 'key_weakly_seen_by_quorum' and 'inconsistency_check' 
 
 key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_length){ 
+	if (check_length < 1) {
+		Pers_debug.d_print("error",
+				"Check length cannot be negative when testing for weakly seen certificates!");
+		return false;
+	}
+
  	var cutoff_sec = Pers_util.get_unix_time() - Pers_util.DAY2SEC(check_length); 
+
+	if (cutoff_sec < 1) {
+		Pers_debug.d_print("error",
+				"Check length cannot be larger than the current time when testing for weakly seen certificates!");
+		return false;
+	}
 
 	for(var i = 0; i < results.length; i++) {
 		var seen = false;  

@@ -144,6 +144,32 @@ function meta_tests() {
   write_string("Finished");
 }
 
+function client_sanity() {
+ write_string("Starting client policy unit tests...");
+
+ var key = "b1:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+ var curtime = Pers_util.get_unix_time();
+ var short_start = curtime - 1;
+ var short_end = curtime;
+ var short_result_list = [
+     { "server" : "test1:8080",
+       "obs" : [  { "key" : key,
+        "timestamps" : [ { "start" : short_start , "end" : short_end  } ] } ]
+     }
+   ];
+
+ var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          short_result_list, 1, -10);
+ assert((weakly_seen === false), "Negative Check lengths can't be weakly seen");
+
+ var weak_check_time_limit = Pers_util.SEC2DAY(curtime + curtime);
+ weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          short_result_list, 1, weak_check_time_limit);
+ assert((weakly_seen === false), "Check lengths longer than time since the epoch can't be weakly seen");
+
+
+}
+
 function quorum_basics() {
  write_string("Starting basic quorum tests...");
 
@@ -487,6 +513,7 @@ function run_tests() {
 
     clear();
     meta_tests();
+    client_sanity();
     quorum_basics();
     quorum_oldkey();
     notary_parsing();

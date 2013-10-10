@@ -244,6 +244,58 @@ function quorum_basics() {
           empty_result_list, 1, max_stale_sec,cur_time);
  assert((quorum_duration == -1), "Passing an empty results list fails");
 
+ spacer('Observations with gaps (duration is still counted correctly if there is a gap between keys)');
+
+ max_stale_sec = 600;
+ cur_time = 2000;
+ // leave a gap between the end of the key and the current time
+ var key1_duration = 200;
+ var end_time_1 = (cur_time - 100);
+ var start_time_1 = end_time_1 - key1_duration;
+ var key2_duration = 400;
+ var end_time_2 = (start_time_1 - 150)
+ var start_time_2 = end_time_2 - key2_duration;
+
+ assert(cur_time > end_time_1, "Gap setup: key1 ends before the current time");
+ assert(end_time_1 > start_time_1 , "Gap setup: key1 starts before it ends");
+ assert(start_time_1 > end_time_2 , "Gap setup: key2 ends before key1 starts");
+ assert(end_time_2 > start_time_2 , "Gap setup: key2 starts before it ends");
+ assert(start_time_2 >= 0 , "Gap setup: all times are non-negative");
+ assert(end_time_1 > (cur_time - max_stale_sec), "Gap setup: Target key1 ends inside the cutoff limit");
+
+  var gap_result_list = [
+   { "server" : "204.255.124.41:8080",
+     "obs" : [  { "key" : key,
+      "timestamps" : [ { "start" : start_time_1 , "end" : end_time_1  } ] } ]
+   },
+   { "server" : "128.2.185.85:8080",
+     "obs" : [  { "key" : key2,
+      "timestamps" : [ { "start" : start_time_2 , "end" : end_time_2  } ] } ]
+   }
+ ];
+
+  //(i.e. only as long as the bar, and only if inside cutoff)
+  quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          gap_result_list, 1, max_stale_sec, cur_time);
+  assert((quorum_duration === (end_time_1 - start_time_1 + 1)), "Target key first: |curtime| .. |current key| .. |other key| {cutoff} (should be " +
+    (end_time_1 - start_time_1 + 1) + ", not " + (cur_time - start_time_1 + 1) +
+    ": got " + quorum_duration + ").");
+
+  assert(end_time_2 > (cur_time - max_stale_sec), "Gap setup: New target key2 ends inside the cutoff limit");
+  quorum_duration = Pers_client_policy.get_quorum_duration(key2,
+          gap_result_list, 1, max_stale_sec, cur_time);
+  assert((quorum_duration === (end_time_2 - start_time_2 + 1)), "Target key second: |curtime| .. |other key| .. |current key.. {cutoff} .. |(should be " +
+    (end_time_2 - start_time_2 + 1) + ", not " + (cur_time - start_time_2 + 1) +
+    ": got " + quorum_duration + ").");
+
+  max_stale_sec = 200;
+  assert(end_time_2 < (cur_time - max_stale_sec), "Gap setup: After change, target key2 ends *outside* the cutoff limit");
+  quorum_duration = Pers_client_policy.get_quorum_duration(key2,
+          gap_result_list, 1, max_stale_sec, cur_time);
+  assert((quorum_duration === -1), "Results with gaps do not give a duration if they happen after the time cutoff.");
+
+  //TODO: more gap tests with multiple matching results from multiple notaries
+
  spacer('Quorums for certificates with short durations');
 
  var short_start = 10;
@@ -285,7 +337,6 @@ function quorum_basics() {
 
  spacer('Quorums with a small number of notaries');
 
- //quorums with a small number of notaries
  //TODO: write code to save and restore all preferences after each test,
  //so it doesn't matter which we alter.
  var pref_string_extra_notaries = "perspectives.additional_notary_list";

@@ -83,6 +83,12 @@ function assert_fixme(test, case_name) {
   + case_name, 'li');
 }
 
+// add a horizontal bar to visuall separate some items or tests
+function spacer(category_name) {
+  write_string_to_element("------- <font color='grey'>" + category_name +
+    ":</font>", 'li');
+}
+
 // if you're lazy and want to print some text while debugging
 function debug(obj) {
 

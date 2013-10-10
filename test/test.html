@@ -244,6 +244,46 @@ function quorum_basics() {
           empty_result_list, 1, max_stale_sec,cur_time);
  assert((quorum_duration == -1), "Passing an empty results list fails");
 
+ spacer('Quorums for certificates with short durations');
+
+ var short_start = 10;
+ var short_end = 11;
+ var short_result_list = [
+     { "server" : "test1:8080",
+       "obs" : [  { "key" : key,
+        "timestamps" : [ { "start" : short_start , "end" : short_end  } ] } ]
+     }
+   ];
+
+  // place cur_time within the 'valid range' cutoff
+  cur_time = 24 * 3600;
+  max_stale_sec = 200;
+  quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          short_result_list, 1, max_stale_sec, cur_time);
+ assert((quorum_duration == -1), "A one-second duration out of the valid time window is inconsistent (got " +
+    quorum_duration + ").");
+
+ // the 'weakly seen' property is relative to the current time,
+ // so allow a check length going back to the end date of the observation.
+ var weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - short_end);
+ var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          short_result_list, 1, weak_check_time_limit);
+ assert((weakly_seen === true), "keys with one second duration count as 'weakly seen'");
+
+  max_stale_sec = 3 * 24 * 3600;
+  quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          short_result_list, 1, max_stale_sec, cur_time);
+ assert((quorum_duration == 1), "A one-second duration within the valid time window is one second (got " +
+    quorum_duration + ").");
+
+ cur_time += 24 * 3600;
+ assert(((cur_time - max_stale_sec) < short_end), "(meta) Current time for the next test is still within the valid window.");
+ var quorum_duration2 = Pers_client_policy.get_quorum_duration(key,
+          short_result_list, 1, max_stale_sec, cur_time);
+ assert((quorum_duration == quorum_duration2), "Changing the curtime within the valid window doesn't change the duration of the cert observation (got " +
+    quorum_duration2 + ").");
+
+ spacer('Quorums with a small number of notaries');
 
  //quorums with a small number of notaries
  //TODO: write code to save and restore all preferences after each test,

@@ -189,14 +189,16 @@ function quorum_basics() {
  var key_start_diff = 1000;
  var key_start_time = (cur_time - key_start_diff);
 
+ var key_end_time = cur_time;
+
  var server_result_list = [ 
    { "server" : "204.255.124.41:8080", 
      "obs" : [  { "key" : key,
-		  "timestamps" : [ { "start" : 0 , "end" : cur_time  } ] } ]
+		  "timestamps" : [ { "start" : 0 , "end" : key_end_time  } ] } ]
    }, 
    { "server" : "128.2.185.85:8080",
      "obs" : [  { "key" : key,
-		  "timestamps" : [ { "start" : key_start_time , "end" : cur_time  } ] } ]
+		  "timestamps" : [ { "start" : key_start_time , "end" : key_end_time  } ] } ]
    } 
  ];
 
@@ -215,22 +217,43 @@ function quorum_basics() {
  assert((quorum_duration == cur_time + 1), "Requiring smaller quorum gives a longer duration");
  assert((quorum_duration > (cur_time - max_stale_sec)), "Getting enough quorum voters passes");
 
-
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list, 10, max_stale_sec, cur_time);
  assert((quorum_duration == -1), "Getting fewer quorum voters than required fails");
 
-
+ spacer('When observations end at the current time');
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list,	1, max_stale_sec,
-				cur_time + max_stale_sec);
- assert((quorum_duration == (cur_time + max_stale_sec) + 1), "Being at the edge of the quorum duration time limit passes");
-
+				cur_time);
+ assert((key_end_time > (cur_time - max_stale_sec)), "The key is within the quorum time limit.");
+ assert((quorum_duration >= 1 ), "Searching for an existing key within the time limit has a positive duration");
+ assert((quorum_duration == (cur_time + max_stale_sec + 1)), "The duration is as long as the observation.start to observation.end (Expected " + (cur_time + max_stale_sec + 1) +
+    ", got " + quorum_duration + ")");
 
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list, 1, max_stale_sec,
         cur_time + max_stale_sec + 1);
  assert((quorum_duration == -1), "Being over the quorum duration time limit fails");
+
+ // run tests with keys that don't end exactly at the current time
+ spacer('When observations *do not* end at the current time');
+ cur_time += 100;
+
+ assert((key_end_time > (cur_time - max_stale_sec)), "Key is inside the quorum duration limit.");
+ quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          server_result_list, 1, max_stale_sec,
+        cur_time);
+ assert((quorum_duration >= 1 ), "2. Being at the edge of the quorum duration time limit passes");
+ assert((quorum_duration === (cur_time + max_stale_sec + 1)), "2. The duration is as long as the observation.start to observation.end (i.e. it does NOT also count time that is white/a gap between it's end an the current time). (Expected " + (cur_time + max_stale_sec + 1) +
+    ", got " + quorum_duration + ")");
+
+ cur_time += 2 * max_stale_sec;
+ assert((key_end_time < (cur_time - max_stale_sec)), "With changes, key is *outside* the quorum duration limit.");
+ quorum_duration = Pers_client_policy.get_quorum_duration(key,
+          server_result_list, 1, max_stale_sec,
+        cur_time + max_stale_sec + 1);
+ assert((quorum_duration == -1), "2. Being over the quorum duration time limit fails");
+
 
 
  quorum_duration = Pers_client_policy.get_quorum_duration(key2,

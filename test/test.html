@@ -308,12 +308,23 @@ function quorum_basics() {
     (end_time_1 - start_time_1 + 1) + ", not " + (cur_time - start_time_1 + 1) +
     ": got " + gap_quorum_duration1 + ").");
 
+ // the 'weakly seen' property is relative to the current time,
+ // so allow a check length going back to the end date of the observation.
+ var weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - end_time_2);
+ var gap_weakly_seen1 = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          gap_result_list, 1, weak_check_time_limit);
+ assert((gap_weakly_seen1 === false), "key is not 'weakly seen'");
+
   assert(end_time_2 > (cur_time - max_stale_sec), "Gap setup: New target key2 ends inside the cutoff limit");
   var gap_quorum_duration2 = Pers_client_policy.get_quorum_duration(key2,
           gap_result_list, 1, max_stale_sec, cur_time);
   assert((gap_quorum_duration2 === (end_time_2 - start_time_2 + 1)), "Target key second: |curtime| .. |other key| .. |current key.. {cutoff} .. |(should be " +
     (end_time_2 - start_time_2 + 1) + ", not " + (cur_time - start_time_2 + 1) +
     ": got " + gap_quorum_duration2 + ").");
+
+   var gap_weakly_seen2 = Pers_client_policy.key_weakly_seen_by_quorum(key2,
+          gap_result_list, 1, weak_check_time_limit);
+ assert((gap_weakly_seen2 === false), "key2 is not 'weakly seen'");
 
   // if we had the same result set without the gap, the durations should be the same
  spacer("Gap and non-gap durations should be the same");
@@ -347,6 +358,14 @@ function quorum_basics() {
     ": got " + nongap_quorum_duration1 + ").");
   assert((nongap_quorum_duration1 === gap_quorum_duration1), "Duration is the same with and without gaps.");
 
+   // the 'weakly seen' property is relative to the current time,
+   // so allow a check length going back to the end date of the observation.
+   var weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - end_time_2);
+   var nongap_weakly_seen1 = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            non_gap_result_list, 1, weak_check_time_limit);
+   assert((nongap_weakly_seen1 === false), "key is not 'weakly seen'");
+   assert((nongap_weakly_seen1 === gap_weakly_seen1), "'weakly seen' result is the same with and without gaps.");
+
   assert(end_time_2 > (cur_time - max_stale_sec), "Nongap setup: New target key2 ends inside the cutoff limit");
   var nongap_quorum_duration2 = Pers_client_policy.get_quorum_duration(key2,
           non_gap_result_list, 1, max_stale_sec, cur_time);
@@ -354,6 +373,13 @@ function quorum_basics() {
     (end_time_2 - start_time_2 + 1) + ", not " + (cur_time - start_time_2 + 1) +
     ": got " + nongap_quorum_duration2 + ").");
   assert((nongap_quorum_duration2 === gap_quorum_duration2), "Duration is the same with and without gaps.");
+
+   // the 'weakly seen' property is relative to the current time,
+   // so allow a check length going back to the end date of the observation.
+   var nongap_weakly_seen2 = Pers_client_policy.key_weakly_seen_by_quorum(key2,
+            non_gap_result_list, 1, weak_check_time_limit);
+   assert((nongap_weakly_seen2 === false), "key is not 'weakly seen'");
+   assert((nongap_weakly_seen2 === gap_weakly_seen2), "'weakly seen' result is the same with and without gaps.");
 
   spacer("Further gap tests");
   end_time_2 = orig_end_time_2;

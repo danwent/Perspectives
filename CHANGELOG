@@ -6,6 +6,13 @@ Format:
 X Loss of functionality
 
 
+4.3.7
+-----
+* Fix text display for weakly seen results (tooltip was not getting set, causing the UI to show 'null' in the results window)
+* Add unit tests for weakly seen keys, keys with short durations, keys with gaps, and calculation of key duration
+* Fix minor debug function calls
+
+
 4.3.6
 -----
 * Security Fix: incorrect quorum duration with low number of notaries or quorum percentage (GH 87)

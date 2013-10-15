@@ -39,7 +39,7 @@ var Pers_about = {
 				AddonManager.getAddonByID(Perspectives.MY_ID, Pers_about.set_version_number);
 			}
 			catch (ex) {
-				Pers_debug.d_print("Error getting version number? Or old version of firefox. '" + ex + "'");
+				Pers_debug.d_print("error", "Error getting version number? Or old version of firefox. '" + ex + "'");
 				// Firefox 3.6 and before; Mozilla 1.9.2 and before
 				var em = Components.classes["@mozilla.org/extensions/manager;1"]
 						 .getService(Components.interfaces.nsIExtensionManager);

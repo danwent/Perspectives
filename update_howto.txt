@@ -4,7 +4,7 @@ Here are the steps to update Perspectives:
 1. Local changes
 
 - Commit, stash, or revert all of your in-progress changes
-- Build the new version
+- Build a test new version ('make test')
 - Run the in-browser tests (see the README for details)
 - Run the manual tests (see the tests/ directory)
 
@@ -13,6 +13,7 @@ Once you're confident everything works:
 - Check: do you need to/can you increase the version compatibility in plugin/install.rdf ?
 - Increment the version number in plugin/install.rdf
 - Add a tag in git for the new version, to make it easy to find if we ever need to republish, rebuild, or for people who build from source
+- Build a clean version ('make clean; make')
 - Upload your changes to github
 - Create a pull request to bring your changes to the main branch
 

@@ -9,8 +9,10 @@ X Loss of functionality
 4.3.7
 -----
 * Fix text display for weakly seen results (tooltip was not getting set, causing the UI to show 'null' in the results window)
+* Add sanity checks for invalid time ranges when calculating weakly seen property
 * Add unit tests for weakly seen keys, keys with short durations, keys with gaps, and calculation of key duration
 * Fix minor debug function calls
+* Improve documentation on how to release updates (update_howto.txt)
 
 
 4.3.6

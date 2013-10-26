@@ -176,6 +176,100 @@ function client_sanity() {
 
 }
 
+function nonrouted_ips() {
+ write_string("Starting nonrouted ip unit tests...");
+
+ // nonrouted means the address is private and unreachable by notaries.
+ spacer("Reachable addresses");
+ var host = "perspectives-project.org";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "github.com";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test0.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test1.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test2.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test3.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test4.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test5.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test6.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test7.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test8.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test9.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ // hosts that contain numbers should still work
+ host = "100tests.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "1000tests.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "test100tests.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ host = "192168tests.net";
+ assert((Perspectives.is_nonrouted_ip(host) === false), host);
+
+ spacer("Unreachable by notaries");
+
+ host = "127.0.0.1";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ host = "169.254.15.59";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ // pick something in the beginning/middle/end of each RFC1918 private space
+ host = "10.0.0.0";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ host = "10.0.0.1";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ host = "10.255.254.254";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ host = "172.16.0.0";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ host = "172.16.1.1";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ host = "172.31.254.254";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ host = "192.168.0.0";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ host = "192.168.10.21";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+ host = "192.168.254.254";
+ assert((Perspectives.is_nonrouted_ip(host) === true), host);
+
+
+ write_string("Done!");
+}
+
 function quorum_basics() {
  write_string("Starting basic quorum tests...");
 
@@ -731,6 +825,7 @@ function run_tests() {
     clear();
     meta_tests();
     client_sanity();
+    nonrouted_ips();
     quorum_basics();
     quorum_oldkey();
     notary_parsing();

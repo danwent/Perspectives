@@ -23,10 +23,13 @@ var Perspectives = {
 	strbundle : null, // this isn't loaded when things are intialized
 
 
+	// IP addresses that can't be queried by notary machines
+	// (unless the notary is specifically set up on a private network)
+	// so don't ask about them.
 	// FIXME: these regexes should be less generous
-	nonrouted_ips : [ "^192\.168\.", "^10.", "^172\.1[6-9]\.", 
-			"^172\.2[0-9]\.", "172\.3[0-1]\.", "^169\.254\.", 
-			"^127\.0\.0\.1$"], // could add many more
+	nonrouted_ips : [ /^192\.168\./, /^10\./, /^172\.1[6-9]\./,
+			/^172\.2[0-9]\./, /^172\.3[0-1]\./, /^169\.254\./,
+			/^127\.0\.0\.1$/], // could add many more
 
 	// list of objects representing each notary server's name + port and public
 	// key this list is populated by fillNotaryList() based on a file shipped with the 
@@ -95,8 +98,8 @@ var Perspectives = {
 	},
 
 	is_nonrouted_ip: function(ip_str) { 
-		for (regex in Perspectives.nonrouted_ips) {
-			if(ip_str.match(RegExp(regex))) { 
+		for (var i = 0; i < Perspectives.nonrouted_ips.length; i++) {
+			if (ip_str.match(Perspectives.nonrouted_ips[i])) {
 				return true; 
 			}
 		} 

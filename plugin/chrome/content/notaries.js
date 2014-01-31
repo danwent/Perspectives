@@ -705,8 +705,13 @@ var Perspectives = {
 				// just does not show positive security indicators.  
 				if(mixed_security) { 
 					// FIXME: need to clear any contrary banners
-					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, 
-					"HTTPS Certificate is trusted, but site contains insecure embedded content. "); //TODO: localize
+					// TODO: once we have separated calculation of results
+					// from applying the resuts and can add better tests for these,
+					// wrap setting the status and the tooltip in their own function
+					// so no steps are forgotten
+					ti.query_results.tooltip =
+						"HTTPS Certificate is trusted, but site contains insecure embedded content.";
+					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, ti.query_results.tooltip); //TODO: localize
 					// this will flicker, as we can't rely on just doing it on 'firstLook'
 					// due to Firefox oddness
 					if(ti.override_used) { 	

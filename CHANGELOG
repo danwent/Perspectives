@@ -5,6 +5,12 @@ Format:
 * bug or behavior fix
 X Loss of functionality
 
+We attempt to use meaningful version numbers, following semver.org:
+	Given a version number MAJOR.MINOR.PATCH, increment the:
+	MAJOR version when you make large architectural changes,
+	MINOR version when you add functionality in a backwards-compatible manner
+	PATCH version when you make backwards-compatible bug fixes.
+
 
 4.3.8
 -----

@@ -180,7 +180,7 @@ var Pers_notify = {
 				label: Perspectives.strbundle.getString("learnMore"),
 				accessKey : "", 
 				callback: function() {
-					b.loadOneTab("chrome://perspectives/content/help.xhtml",
+					ti.browser.loadOneTab("chrome://perspectives/content/help.xhtml",
 								 null, null, null, false);
 				} 
 			}

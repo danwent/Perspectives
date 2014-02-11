@@ -188,6 +188,14 @@ var Pers_notify = {
 						ti.browser.loadOneTab("chrome://perspectives/content/help.xhtml",
 									 null, null, null, false);
 					} 
+				},
+				{
+					label: Perspectives.strbundle.getString("hideNotificationReminders"),
+					accessKey : "",
+					callback: function() {
+						Perspectives.root_prefs.
+							setBoolPref("extensions.perspectives.show_permission_reminder", false);
+					}
 				}
 			];
 			this.notifyGeneric(ti.browser, priority, message, buttons);

@@ -170,7 +170,7 @@ var Pers_notify = {
 						}
 						try {
 							// run probe
-							Pers_debug.d_print("main", "User gives probe permission\n");
+							Pers_debug.d_print("main", "User gives probe permission");
 							ti.has_user_permission = true;
 								Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY,
 								Perspectives.strbundle.getFormattedString("contactingNotariesAbout",

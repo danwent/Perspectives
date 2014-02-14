@@ -12,6 +12,14 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.4
+---
++ Add new preference to show/hide the notification box when "Ask before contacting notaries" is enabled (GH 101)
+* Fix the 'Learn More' button (thanks to Jens for the bug report!) (GH 100)
+* Fix text display in results window for pages with insecure content
+* Grey-out the default notary textbox to indicate it cannot be edited
+
+
 4.3.8
 -----
 * Fix bug with incorrect public/private address resolution (GH 94)
@@ -40,6 +48,7 @@ X Localization tests temporarily removed so we can ship to patch the security bu
 -----
 * Fix code for retrieving private browsing data (used for untrusted certs in Firefox v22 and up)
 * Two minor fixes to remove validation warnings on AMO
+
 
 4.3.4
 -----

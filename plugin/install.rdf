@@ -13,7 +13,7 @@
 			MINOR version when you add functionality in a backwards-compatible manner
 			PATCH version when you make backwards-compatible bug fixes.
 		-->
-		<em:version>4.4a</em:version>
+		<em:version>4.4</em:version>
 		<em:type>2</em:type>
 		<em:optionsURL>chrome://perspectives/content/preferences_dialog.xul</em:optionsURL>
 

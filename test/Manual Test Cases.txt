@@ -41,6 +41,21 @@ UI
 - Try the same page types as above; all non-https pages should be rejected as invalid URLs
 
 
+'Always ask before contacting Notaries':
+	- When installing for the first time, does this default to off?
+	- When off, does the client always contact notaries?
+		- Regardless of whether the 'Display a reminder' subcheckbox is checked?
+		- Is the sub checkbox disabled?
+	- When on, does the client *not* contact notaries?
+		- Is a reminder notification box displayed (if that preference is set)?
+			- Is the reminder on by default?
+			- Do all of the buttons on the notification box work?
+			- Does clicking the 'Hide these messages' button turn off further notifications?
+		- Can the normal 'Force Notary Check' option be used even if the reminder box is shown?
+	- Does the 'Display a reminder' subcheckbox enable and disable on the Preferences screen when the main checkbox is checked and unchecked?
+	- Are preferences remembered?
+
+
 Preferences:
 - Quorum Percentage must be <= 100
 - Quorum Percentage must be >= 1

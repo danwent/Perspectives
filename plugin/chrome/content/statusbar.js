@@ -88,33 +88,33 @@ var Pers_statusbar = {
 			imgList[j].parentNode.setAttribute("tooltiptext", tooltip); 
 			switch(state){
 			case Pers_statusbar.STATE_SEC:
-				Pers_debug.d_print("main", "Secure Status\n");
+				Pers_debug.d_print("main", "Secure Status");
 				imgList[j].setAttribute("src", "chrome://perspectives/content/img/good.png");
 				continue;
 			case Pers_statusbar.STATE_NSEC:
-				Pers_debug.d_print("main", "Unsecure Status\n");
+				Pers_debug.d_print("main", "Unsecure Status");
 				imgList[j].setAttribute("src", "chrome://perspectives/content/img/bad.png");
 				continue;
 			case Pers_statusbar.STATE_NEUT:
-				Pers_debug.d_print("main", "Neutral Status\n");
+				Pers_debug.d_print("main", "Neutral Status");
 				imgList[j].setAttribute("src", "chrome://perspectives/content/img/default.png");
 				continue;
 			case Pers_statusbar.STATE_WHITELIST:
 				//TODO: have other code call this
-				Pers_debug.d_print("main", "Whitelist Status\n");
+				Pers_debug.d_print("main", "Whitelist Status");
 				imgList[j].setAttribute("src", "chrome://perspectives/content/img/whitelist.png");
 				continue;
 			case Pers_statusbar.STATE_QUERY:
-				Pers_debug.d_print("main", "Querying Status\n");
+				Pers_debug.d_print("main", "Querying Status");
 				imgList[j].setAttribute("src", "chrome://perspectives/content/img/progress.gif");
 				continue;
 			case Pers_statusbar.STATE_ERROR:
-				Pers_debug.d_print("main", "Error Status\n");
+				Pers_debug.d_print("main", "Error Status");
 				imgList[j].setAttribute("src", "chrome://perspectives/content/img/error.png");
 				continue;
 			}
 		}
-		Pers_debug.d_print("main", "changing tooltip to: " + tooltip + "\n"); 
+		Pers_debug.d_print("main", "changing tooltip to: " + tooltip);
 		return true;
 	},
 

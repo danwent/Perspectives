@@ -127,65 +127,79 @@ var Pers_notify = {
 	// this is the drop down which is shown if preferences indicate
 	// that notaries should only be queried with user permission
 	notifyNeedsPermission: function(ti){
-		var priority = "PRIORITY_WARNING_HIGH";
-		var message = Perspectives.strbundle.getString("needsPermission");  
-		var buttons = null;
-		var buttons = [
-			{
-				label: Perspectives.strbundle.getString("yesContactNotaries"), 
-				accessKey : "", 
-				callback: function() {
-					try { 
 
-						//Happens on requeryAllTabs
-						try{
-							var notificationBox = ti.browser.getNotificationBox();
-							}
-						catch(e){
-							return;
-						}
-	
-						var nbox = ti.browser.getNotificationBox();
-						nbox.removeCurrentNotification();
-					} 
-					catch (err) {
-						// sometimes, this doesn't work.  why?
-						// well, we'll just have to remove them all
+		var show_box = Perspectives.root_prefs.
+			getBoolPref("extensions.perspectives.show_permission_reminder");
+
+		if (show_box){
+			var priority = "PRIORITY_WARNING_HIGH";
+			var message = Perspectives.strbundle.getString("needsPermission");
+			var buttons = null;
+			var buttons = [
+				{
+					label: Perspectives.strbundle.getString("yesContactNotaries"),
+					accessKey : "",
+					callback: function() {
 						try { 
-							nbox.removeAllNotifications();
-							Pers_debug.d_print("main", 
-									"successfully removed all notifications\n");
+
+							//Happens on requeryAllTabs
+							try{
+								var notificationBox = ti.browser.getNotificationBox();
+								}
+							catch(e){
+								return;
+							}
+
+							var nbox = ti.browser.getNotificationBox();
+							nbox.removeCurrentNotification();
 						} 
-						catch (err2) { 
+						catch (err) {
+							// sometimes, this doesn't work.  why?
+							// well, we'll just have to remove them all
+							try {
+								nbox.removeAllNotifications();
+								Pers_debug.d_print("main",
+										"successfully removed all notifications\n");
+							}
+							catch (err2) {
+								Pers_debug.d_print("error",
+										"probe_permission error2:" + err2 + "\n");
+							}
 							Pers_debug.d_print("error",
-									"probe_permission error2:" + err2 + "\n"); 
+									"probe_permission error1: " + err + "\n");
+						}
+						try {
+							// run probe
+							Pers_debug.d_print("main", "User gives probe permission");
+							ti.has_user_permission = true;
+								Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY,
+								Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
+								 [ ti.uri.host ]));
+							Perspectives.updateStatus(window,false);
+						} catch (e) {
+							Pers_debug.d_print("main", "Error on UpdateStatus: " + e);
 						} 
-						Pers_debug.d_print("error",
-								"probe_permission error1: " + err + "\n"); 
 					}
-					try {  
-						// run probe
-						Pers_debug.d_print("main", "User gives probe permission\n"); 
-						ti.has_user_permission = true;
-        					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY, 
-							Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
-							 [ ti.uri.host ]));
-						Perspectives.updateStatus(window,false); 
-					} catch (e) { 
-						Pers_debug.d_print("main", "Error on UpdateStatus: " + e); 
+				},
+				{
+					label: Perspectives.strbundle.getString("learnMore"),
+					accessKey : "",
+					callback: function() {
+						ti.browser.loadOneTab("chrome://perspectives/content/help.xhtml",
+									 null, null, null, false);
 					} 
+				},
+				{
+					label: Perspectives.strbundle.getString("hideNotificationReminders"),
+					accessKey : "",
+					callback: function() {
+						Perspectives.root_prefs.
+							setBoolPref("extensions.perspectives.show_permission_reminder", false);
+					}
 				}
-			},
-			{ 
-				label: Perspectives.strbundle.getString("learnMore"),
-				accessKey : "", 
-				callback: function() {
-					b.loadOneTab("chrome://perspectives/content/help.xhtml",
-								 null, null, null, false);
-				} 
-			}
-		];
-   		this.notifyGeneric(ti.browser, priority, message, buttons);  
+			];
+			this.notifyGeneric(ti.browser, priority, message, buttons);
+		}
 	},
 
 	// this is the drop down which is shown if we receive no notary replies.  

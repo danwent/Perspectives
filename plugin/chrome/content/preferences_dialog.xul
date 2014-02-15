@@ -39,6 +39,10 @@
     id="require-user-permission"
     name="perspectives.require_user_permission"
     type="bool"/>
+  <preference
+    id="show-permission-reminder"
+    name="extensions.perspectives.show_permission_reminder"
+    type="bool"/>
   <preference 
     id="whitelist"
     name="perspectives.whitelist"
@@ -116,15 +120,25 @@
       <radio label="&ContactNotariesforallHTTPSsites;" value="true"/>
      <radio label="&ContactNotariesonlywhenawebsitescertificatecausesasecurityerror;" value="false"/>
     </radiogroup>
-   <checkbox
-      label="&AlwaysasktheuserbeforecontactingNotaries;" 
-      preference="require-user-permission"/> 
+     <checkbox id="require-user-permission-checkbox"
+        label="&AlwaysasktheuserbeforecontactingNotaries;"
+        preference="require-user-permission"
+        oncommand="Pers_pref.disable_reminder_box()"/>
+        <hbox>
+          <!-- just use a blank label to indent the sub-checkbox,
+          so it's obvious that it belongs to the parent -->
+          <label value="   "/>
+          <checkbox id="show-permission-reminder-checkbox"
+            label="&DisplayPermissionReminder;"
+            preference="show-permission-reminder"/>
+        </hbox>
   </groupbox>
 
   <groupbox> 
     <caption label="&DefaultNotaryServers;" style="font-weight: bold"/>
     <!-- make textboxes wide enough to hold default key formatting -->
-    <textbox id="default_notary_list" multiline="true" style="width: 85ex; height: 25ex;" readonly="true" flex="1" />
+    <textbox id="default_notary_list" multiline="true"
+      style="width: 85ex; height: 25ex; color: grey;" readonly="true" flex="1"/>
     <checkbox label="&UseDefaultNotaries;" preference="use-default-notary-list"/>
 <!--    <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()" 
 	       id="enable_default_list_auto_update" preference="enable-default-list-auto-update"/>

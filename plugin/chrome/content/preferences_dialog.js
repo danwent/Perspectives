@@ -25,6 +25,12 @@ var Pers_pref = {
 		document.getElementById("quorum-duration-text").disabled=is_disabled; 
 	}, 
 
+	disable_reminder_box: function() {
+		// enable or disable the sub-checkbox based on the value of the parent
+		var checked = document.getElementById("require-user-permission-checkbox").checked;
+		document.getElementById("show-permission-reminder-checkbox").disabled=!checked;
+	},
+
 	menuset: function(qu, du){
 		Pers_pref.disable_quorum_text(true); 
 		document.getElementById("quorum-thresh").value = qu;
@@ -105,6 +111,7 @@ var Pers_pref = {
 	load_preferences: function(){
 		try {
 			Pers_pref.security_class_change(); 
+			Pers_pref.disable_reminder_box();
 			var default_notary_text = this.root_prefs.getCharPref("perspectives.default_notary_list");
 			document.getElementById("default_notary_list").value = default_notary_text;
 		} catch(e) { 

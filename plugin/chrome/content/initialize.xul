@@ -41,14 +41,14 @@
         if(!buttonId) {
           Pers_debug.d_print("error",
                     "Could not add Perspectives button to toolbar: "
-                    + buttonId + " doesn't exist\n");
+                    + buttonId + " doesn't exist");
           return;
         }
 
         if(!toolbarId) {
           Pers_debug.d_print("error",
                     "Could not add Perspectives button to toolbar: "
-                    + toolbarId + " doesn't exist\n");
+                    + toolbarId + " doesn't exist");
           return;
         }
         var toolbar = document.getElementById(toolbarId);
@@ -75,12 +75,12 @@
                     }
                     else {
                         Pers_debug.d_print("error",
-                          "Could not get element " + beforeId + "\n");
+                          "Could not get element " + beforeId + "");
                     }
                 }
                 else {
                     Pers_debug.d_print("error",
-                      "" + beforeId + " doesn't exist.\n");
+                      "" + beforeId + " doesn't exist.");
                 }
 
                 try{
@@ -88,7 +88,7 @@
                 }
                 catch(e) {
                   Pers_debug.d_print("error",
-                      "Could not add Perspectives button to toolbar:" + e + "\n");
+                      "Could not add Perspectives button to toolbar:" + e);
                 }
 
                 toolbar.setAttribute("currentset", toolbar.currentSet);
@@ -101,13 +101,13 @@
             else {
               Pers_debug.d_print("error",
                       "Could not add Perspectives button to toolbar: "
-                      + ToolbarId + " has no child node\n");
+                      + ToolbarId + " has no child node");
             }
         }
         else {
           Pers_debug.d_print("error",
                     "Could not add Perspectives button to toolbar: "
-                    + toolbarId + " doesn't exist\n");
+                    + toolbarId + " doesn't exist");
         }
     }
   </script>

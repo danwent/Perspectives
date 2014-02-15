@@ -5,6 +5,20 @@ Format:
 * bug or behavior fix
 X Loss of functionality
 
+We attempt to use meaningful version numbers, following semver.org:
+	Given a version number MAJOR.MINOR.PATCH, increment the:
+	MAJOR version when you make large architectural changes,
+	MINOR version when you add functionality in a backwards-compatible manner
+	PATCH version when you make backwards-compatible bug fixes.
+
+
+4.4
+---
++ Add new preference to show/hide the notification box when "Ask before contacting notaries" is enabled (GH 101)
+* Fix the 'Learn More' button (thanks to Jens for the bug report!) (GH 100)
+* Fix text display in results window for pages with insecure content
+* Grey-out the default notary textbox to indicate it cannot be edited
+
 
 4.3.8
 -----
@@ -34,6 +48,7 @@ X Localization tests temporarily removed so we can ship to patch the security bu
 -----
 * Fix code for retrieving private browsing data (used for untrusted certs in Firefox v22 and up)
 * Two minor fixes to remove validation warnings on AMO
+
 
 4.3.4
 -----

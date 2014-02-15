@@ -531,7 +531,7 @@ var Perspectives = {
 			Perspectives.strbundle = document.getElementById("notary_strings");
 		}
 
-		Pers_debug.d_print("main", "Update Status\n");
+		Pers_debug.d_print("main", "Update Status");
 		
 		var error_text = Perspectives.detectInvalidURI(win); 
 		if(error_text) { 	
@@ -549,7 +549,7 @@ var Perspectives = {
 			return;
 		} 
 		
-		Pers_debug.d_print("main", "Update Status: " + ti.uri.spec + "\n");
+		Pers_debug.d_print("main", "Update Status: " + ti.uri.spec);
 		
 		ti.cert       = Perspectives.getCertificate(ti.browser);
 		if(!ti.cert){
@@ -565,7 +565,7 @@ var Perspectives = {
 
 		ti.is_override_cert = Perspectives.overrideService.isCertUsedForOverrides(ti.cert, true, true);
 		Pers_debug.d_print("main", 
-			"is_override_cert = " + ti.is_override_cert + "\n"); 
+			"is_override_cert = " + ti.is_override_cert);
 		var check_good = Perspectives.root_prefs.
 			getBoolPref("perspectives.check_good_certificates"); 
 
@@ -628,11 +628,11 @@ var Perspectives = {
 		if(ti.query_results) { 
 			Perspectives.process_notary_results(ti);
 		} else {  
-			Pers_debug.d_print("main", ti.uri.host + " needs a request\n"); 
+			Pers_debug.d_print("main", ti.uri.host + " needs a request");
 			var needs_perm = Perspectives.root_prefs
 					.getBoolPref("perspectives.require_user_permission"); 
 			if(needs_perm && !ti.has_user_permission) {
-				Pers_debug.d_print("main", "needs user permission\n");  
+				Pers_debug.d_print("main", "needs user permission");
 				Pers_notify.do_notify(ti, Pers_notify.TYPE_NEEDS_PERMISSION);
 				var text = Perspectives.strbundle.getString("needsPermission"); 
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text); 
@@ -650,7 +650,7 @@ var Perspectives = {
 				return; 
 			} 
  
-			Pers_debug.d_print("main", "Contacting notaries\n"); 
+			Pers_debug.d_print("main", "Contacting notaries");
 			// this call is asynchronous.  after hearing from the 
 			// notaries, the logic picks up again with the function 
 			// 'process_notary_results()' below
@@ -705,8 +705,13 @@ var Perspectives = {
 				// just does not show positive security indicators.  
 				if(mixed_security) { 
 					// FIXME: need to clear any contrary banners
-					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, 
-					"HTTPS Certificate is trusted, but site contains insecure embedded content. "); //TODO: localize
+					// TODO: once we have separated calculation of results
+					// from applying the resuts and can add better tests for these,
+					// wrap setting the status and the tooltip in their own function
+					// so no steps are forgotten
+					ti.query_results.tooltip =
+						"HTTPS Certificate is trusted, but site contains insecure embedded content.";
+					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, ti.query_results.tooltip); //TODO: localize
 					// this will flicker, as we can't rely on just doing it on 'firstLook'
 					// due to Firefox oddness
 					if(ti.override_used) { 	
@@ -836,7 +841,7 @@ var Perspectives = {
 				Perspectives.strbundle = document.getElementById("notary_strings");
 			}
       			try{
-        			Pers_debug.d_print("main", "Location change " + aURI.spec + "\n");
+        			Pers_debug.d_print("main", "Location change " + aURI.spec);
         			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_QUERY, 
         				Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [ aURI.host ]));
       			} catch(err){
@@ -854,7 +859,7 @@ var Perspectives = {
 			if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP){
        			  try {
      				var uri = window.gBrowser.currentURI;
-     				Pers_debug.d_print("main", "State change " + uri.spec + "\n");
+    				Pers_debug.d_print("main", "State change " + uri.spec);
          			Perspectives.updateStatus(window,false);
        			  } catch (err) {
          			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
@@ -870,7 +875,7 @@ var Perspectives = {
        			var uri = null;
        			try{
          			uri = window.gBrowser.currentURI;
-         			Pers_debug.d_print("main", "Security change " + uri.spec + "\n");
+         			Pers_debug.d_print("main", "Security change " + uri.spec);
          			Perspectives.updateStatus(window,false);
        			} catch(err){
          			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);

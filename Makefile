@@ -39,5 +39,5 @@ install-test-files: setup
 	mkdir $(unittest_dest_folder)
 	cp $(unittest_source)  $(unittest_dest)
 
-install-fx:
+install-fx: plugin
 	firefox $(outfile)&

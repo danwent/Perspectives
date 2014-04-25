@@ -25,27 +25,27 @@
 <!ENTITY OK "OK">
 <!ENTITY Close "Sulje">
 <!ENTITY Cancel "Peruuta">
-<!ENTITY Addtowhitelist "Lisää whitelistille">
-<!ENTITY Addsitetowhitelist "Lisää sivusto whitelistille">
-<!ENTITY Whitelistmessage "Vain eksperteille: Lisäämällä sivuston whitelistille, Perspectives automaattisesti luottaa kaikkiin yhteyksiin tältä palvelimelta eikä ota yhteyttä Notarityyn. Tee tämä vain jos ymmärrät riskit.">
-<!ENTITY ReportPossibleAttack "Raportoi mahdollinen hyökkäys">
+<!ENTITY Addtowhitelist "LisÃ¤Ã¤ whitelistille">
+<!ENTITY Addsitetowhitelist "LisÃ¤Ã¤ sivusto whitelistille">
+<!ENTITY Whitelistmessage "Vain eksperteille: LisÃ¤Ã¤mÃ¤llÃ¤ sivuston whitelistille, Perspectives automaattisesti luottaa kaikkiin yhteyksiin tÃ¤ltÃ¤ palvelimelta eikÃ¤ ota yhteyttÃ¤ Notarityyn. Tee tÃ¤mÃ¤ vain jos ymmÃ¤rrÃ¤t riskit.">
+<!ENTITY ReportPossibleAttack "Raportoi mahdollinen hyÃ¶kkÃ¤ys">
 <!ENTITY ReportAttackMessage "By reporting an attack, the Perspectives project can improve this extension and detect Internet vulernabilities.">
-<!ENTITY SendFullReport "Lähetä täysikokoinen raportti">
+<!ENTITY SendFullReport "LÃ¤hetÃ¤ tÃ¤ysikokoinen raportti">
 <!ENTITY SendPrivacyReport "Send privacy-sensitive report">
 <!ENTITY Optional "Valinnainen">
 <!ENTITY EmailDescription "Email Address for follow-up questions">
 <!ENTITY AdditionalInfoMessage "Any additional information describing the circumstances of this possible attack">
-<!ENTITY ShowDetailedReportText "Näytä tarkempi raporttiteksti">
-<!ENTITY SubmitReport "Lähetä raportti">
+<!ENTITY ShowDetailedReportText "NÃ¤ytÃ¤ tarkempi raporttiteksti">
+<!ENTITY SubmitReport "LÃ¤hetÃ¤ raportti">
 <!ENTITY DetailedInformation "Tarkemmat tiedot">
 <!ENTITY CertificateValidation "Sertifikaatin tarkastus">
-<!ENTITY AutoTrust "Luota automaattisesti kaikkiin sertifikaatteihin tällä sivustolla">
+<!ENTITY AutoTrust "Luota automaattisesti kaikkiin sertifikaatteihin tÃ¤llÃ¤ sivustolla">
 <!ENTITY DefaultNotaryServers "Default Notary Servers">
 <!ENTITY UseDefaultNotaries "Use default notary server list">
 <!ENTITY AdditionalNotaryServers "Additional Notary Servers">
 <!ENTITY ForceNotaryCheck "Force Notary Check">
-<!ENTITY ReportAttack "Raportoi hyökkäys">
-<!ENTITY ViewCertificateStore "Näytä sertifikaattivarasto">
+<!ENTITY ReportAttack "Raportoi hyÃ¶kkÃ¤ys">
+<!ENTITY ViewCertificateStore "NÃ¤ytÃ¤ sertifikaattivarasto">
 <!-- TODO: Please translate! -->
 <!ENTITY About "About Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">

@@ -2,50 +2,50 @@
 <!ENTITY NotaryResults "Ergebnisse des Notars">
 <!ENTITY ViewNotaryResults "Ergebnisse des Notars anshen">
 <!ENTITY Preferences "Einstellungen">
-<!ENTITY NoQuorumInformation "Keine Quorum-Informationen vorhanden">
-<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "Es gibt keine Perspectives-Informationen zu dieser Website">
+<!ENTITY NoQuorumInformation "Keine Quorum Informationen vorhanden">
+<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "Es gibt keine Informationen von Perspectives zu dieser Webseite">
 <!ENTITY Timeline "Zeitachse">
 <!ENTITY SecuritySettings "Sicherheitseinstellungen">
 <!ENTITY HighSecurity "Hohe Sicherheit">
-<!ENTITY MediumSecurity "Mittelstufige Sicherheit">
+<!ENTITY MediumSecurity "Durchschnittliche Sicherheit">
 <!ENTITY HighAvailability "Hohe Verfügbarkeit">
 <!ENTITY ManualConfiguration "Manuelle Konfiguration">
-<!ENTITY Percentageofnotariesthatmustagree "Prozentsatz der zustimmigen Notare (Quorum-Prozensatz): ">
-<!ENTITY Lengthoftimequorummustbeachieved "Nötgie Tage der kontinuierlichen Übereinkunft (Quorum-Länge): ">
-<!ENTITY OverridingFirefoxSecurityErrors "Firefox-Sicherheitsfehler aufheben">
-<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Perspectives erlauben, Sicherheitsfehler automatische aufzuheben">
-<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Von Perspectives für gültig erklärten Zertifikaten permanent trauen">
-<!ENTITY WhentoContactNotaries "Bedingung zum Nachfragen bei Notaren">
-<!ENTITY ContactNotariesforallHTTPSsites "Für alle HTTPS-Websites bei Notaren nachfragen">
-<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Nur bei Sicherheitsfehler wegen des Zertifikats einer Website bei Notaren nachfragen">
-<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Immer den Benutzer vor dem Nachfragen bei Notaren fragen">
-<!ENTITY Certificates "Zertificate">
-<!ENTITY Servers "Notarenservers">
+<!ENTITY Percentageofnotariesthatmustagree "Prozentsatz der Notare die zustimmen müssen (Quorum Prozentsatz):">
+<!ENTITY Lengthoftimequorummustbeachieved "Nötige Anzahl Tage mit kontinuierlicher Übereinstimmung (Quorum Dauer):">
+<!ENTITY OverridingFirefoxSecurityErrors "Firefox Sicherheitsfehler umgehen">
+<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Perspectives erlauben, Sicherheitsfehler automatisch zu umgehen">
+<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Von Perspectives überprüften Zertifikaten dauerhaft vertrauen">
+<!ENTITY WhentoContactNotaries "Bedingung für das Nachfragen bei Notaren">
+<!ENTITY ContactNotariesforallHTTPSsites "Für alle HTTPS Webseiten bei Notaren nachfragen">
+<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Nur nachfragen, wenn das Zertifikat einer Webseite einen Sicherheitsfehler verursacht">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Immer nachfragen, bevor Notaren kontaktiert werden.">
+<!ENTITY Certificates "Zertifikate">
+<!ENTITY Servers "Notarenserver">
 <!ENTITY Help "Hilfe">
 <!ENTITY OK "OK">
 <!ENTITY Close "Schließen">
 <!ENTITY Cancel "Abbrechen">
 <!ENTITY Addtowhitelist "In die Whitelist eintragen">
-<!ENTITY Addsitetowhitelist "Website in die Whitelist eintragen">
-<!ENTITY Whitelistmessage "Nur für Profis: Wenn Sie eine Website in die Whitelist eintragen, traut Perspectives automatisch allen Verbindungen damit, ohne bei den Notaren nachzufragen. Dies sollten Sie nur dann tun, wenn Sie die Risiken verstehen.">
+<!ENTITY Addsitetowhitelist "Webseite zur Whitelist hinzufügen">
+<!ENTITY Whitelistmessage "Nur für Experten: Wenn Sie eine Webseite in die Whitelist eintragen, vertraut Perspectives automatisch allen Verbindungen zu ihr, ohne bei den Notaren nachzufragen. Dies sollten Sie nur dann tun, wenn Sie die Risiken verstehen.">
 <!ENTITY ReportPossibleAttack "Möglichen Angriff melden">
-<!ENTITY ReportAttackMessage "Indem Sie einen Angriff melden, kann das Perspectives-Projekt diese Erweiterung verbessern und Ungeschützheiten im Internet bekämpfen.">
-<!ENTITY SendFullReport "Vollbericht einreichen">
-<!ENTITY SendPrivacyReport "Datengeschutzer Bericht einreichen">
-<!ENTITY Optional "Optionen">
-<!ENTITY EmailDescription "Email-Adresse bei Rückfragebedarf">
+<!ENTITY ReportAttackMessage "Indem Sie einen Angriff melden, kann das Perspectives Projekt diese Erweiterung verbessern und Schwachstellen im Internet erkennen.">
+<!ENTITY SendFullReport "Vollständigen Bericht senden">
+<!ENTITY SendPrivacyReport "Anonymisierten Bericht senden">
+<!ENTITY Optional "Optional">
+<!ENTITY EmailDescription "E-Mail-Adresse für Rückfragen">
 <!ENTITY AdditionalInfoMessage "Weitere Informationen zu den Umständen dieses möglichen Angriffs">
-<!ENTITY ShowDetailedReportText "Detaillierten Berichtstext anzeigen">
-<!ENTITY SubmitReport "Bericht einreichen">
+<!ENTITY ShowDetailedReportText "Detaillierten Inhalt des Berichts anzeigen">
+<!ENTITY SubmitReport "Bericht absenden">
 <!ENTITY DetailedInformation "Detaillierte Informationen">
-<!ENTITY CertificateValidation "Zertifikatengültigkeitsprüfung">
-<!ENTITY AutoTrust "Zertifikaten für folgende Websites automatisch trauen">
-<!ENTITY DefaultNotaryServers "Standardnotarenservers">
-<!ENTITY UseDefaultNotaries "Liste der Standardnotarenservers benutzen">
-<!ENTITY AdditionalNotaryServers "Weitere Notarenservers">
-<!ENTITY ForceNotaryCheck "Nachfragen bei Notaren zwingen">
+<!ENTITY CertificateValidation "Zertifikatsüberprüfung">
+<!ENTITY AutoTrust "Zertifikaten von folgenden Webseiten automatisch vertrauen">
+<!ENTITY DefaultNotaryServers "Standard Notarenserver">
+<!ENTITY UseDefaultNotaries "Liste der Standard Notarenserver benutzen">
+<!ENTITY AdditionalNotaryServers "Zusätzliche Notarenserver">
+<!ENTITY ForceNotaryCheck "Nachfrage bei Notaren erzwingen">
 <!ENTITY ReportAttack "Angriff melden">
-<!ENTITY ViewCertificateStore "Zertifikatspeicher anzeigen">
+<!ENTITY ViewCertificateStore "Zertifikate anzeigen">
 <!-- TODO: Please translate! -->
 <!ENTITY About "About Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">

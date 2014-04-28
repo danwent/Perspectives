@@ -1,4 +1,5 @@
 # ignore build output
+build/
 *.xpi
 
 # ignore other types of files

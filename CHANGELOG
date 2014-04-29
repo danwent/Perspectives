@@ -12,6 +12,15 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.4.1
+-----
+* Rescue localization tests! Tests now run as a python script at build-time (GH 74)
+* Fix call to XMLHttpRequest constructor to use 'new' - compatability fix for the upcoming Firefox 30 (GH 108)
+* Update German translations (thanks Patrick!)
+* Unlock Dutch and Finnish translations (thanks Alf and Ville!). These translations are not fully complete, but enabling them at least lets people see *some* text in their desired language.
+* Remove perspectives1.networknotary.org from the set of default notaries. This notary needs to be upgraded before it can be used full-time.
+
+
 4.4
 ---
 + Add new preference to show/hide the notification box when "Ask before contacting notaries" is enabled (GH 101)
@@ -41,7 +50,7 @@ We attempt to use meaningful version numbers, following semver.org:
 * Remove several global variables; convert to local with 'var'
 * Add new whitelist icon (image file added, but code not hooked up yet)
 * Minor improvements to the makefile formatting and output
-X Localization tests temporarily removed so we can ship to patch the security bug. They still need to be transcribed/relocated to a non-javascript language to run at build time.
+X Localization tests temporarily removed so we can ship to patch the security bug. They still need to be transcribed/relocated to a non-javascript language to run at build time. (fixed in 4.4.1)
 
 
 4.3.5

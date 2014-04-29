@@ -13,7 +13,7 @@
 			MINOR version when you add functionality in a backwards-compatible manner
 			PATCH version when you make backwards-compatible bug fixes.
 		-->
-		<em:version>4.4</em:version>
+		<em:version>4.4.1</em:version>
 		<em:type>2</em:type>
 		<em:optionsURL>chrome://perspectives/content/preferences_dialog.xul</em:optionsURL>
 
@@ -22,7 +22,7 @@
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>3.0</em:minVersion>
-				<em:maxVersion>27.*</em:maxVersion>
+				<em:maxVersion>28.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 
@@ -31,7 +31,7 @@
 			<Description>
 				<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
 				<em:minVersion>2.0</em:minVersion>
-				<em:maxVersion>2.24.*</em:maxVersion>
+				<em:maxVersion>2.25.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 
@@ -40,9 +40,9 @@
 			<Description>
 			 <em:locale>de</em:locale>
 				<em:name>Perspectives</em:name>
-				<em:description>Verbindungen mit Https-Websites sicher aufnehmen, indem Sie deren Zertifikate mittels Netzwerknotaren überprüfen. Sehen Sie bitte http://www.perspectives-project.org (englischsprachig).
+				<em:description>Umgeht HTTPS Sicherheitswarnungen auf sichere Weise, indem die Zertifikate mit Hilfe einer Liste von Netzwerknotaren überprüft werden. Siehe http://www.perspectives-project.org (englischsprachig)..
 				</em:description>
-				<em:creator>Perspectives-Projekt, Schule der Informatik, Carnegie-Mellon-Universität</em:creator>
+				<em:creator>Perspectives Projekt der Carnegie Mellon Computer Science</em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
 				<em:translator>Edward Bassett</em:translator>
 			 </Description>

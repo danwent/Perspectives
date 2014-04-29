@@ -7,7 +7,7 @@ unittest_dest = $(unittest_dest_folder)/$(unittest_file)
 
 .PHONY: plugin
 
-plugin: clean dtds setup
+plugin: clean loctests setup
 	sh -c "cd $(buildfolder)/ && zip -q -r ../$(outfile) * -x *\.svn*"
 	rm -rf $(buildfolder)
 
@@ -17,17 +17,14 @@ clean:
 	rm -f $(outfile)
 	rm -rf $(buildfolder)/
 
-dtds:
-	@# remove invalid entity characters as part of the build
-	@# 1. we never have to remember to run this step manually
-	@# 2. this ensures the plugin won't crash
-	@echo Checking for perl...
+loctests:
+	@# ensure localization files are valid.
 	@# note: the next few lines use spaces instead of tabs for indentation
 	@# just to keep them nicely formatted with the actual commands
-    ifeq ($(shell command -v perl ; echo $$?),1)
-	    @echo -e "  perl not installed; skipping DTD tests.\n  WARNING: Invalid DTDs may prevent Perspectives from working.\n  Install perl to enable dtd validation."
+    ifeq ($(shell command -v python ; echo $$?),1)
+	    @echo -e "  python not installed; skipping localization tests.\n  WARNING: Invalid localization files may prevent Perspectives from working.\n  Install python to enable localization validation."
     else
-	    find ./plugin/chrome/locale/ -name "*.dtd" | xargs perl -w checkdtds.pl
+	    python test/checkloc.py ../plugin/chrome/locale/
     endif
 
 setup:

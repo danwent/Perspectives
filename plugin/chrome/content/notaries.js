@@ -276,7 +276,7 @@ var Perspectives = {
 		var full_url = "http://" + notary_server.host + 
 				"?host=" + ti.uri.host + "&port=" + port + "&service_type=2&";
 		Pers_debug.d_print("query", "sending query: '" + full_url + "'");
-		var req  = XMLHttpRequest();
+		var req  = new XMLHttpRequest();
 		req.open("GET", full_url, true);
 		req.onreadystatechange = (function(evt) { 
 					Perspectives.notaryAjaxCallback(ti, req, notary_server, ti.has_user_permission); 

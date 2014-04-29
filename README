@@ -22,7 +22,7 @@ Requirements:
 - zip
 
 Optional (but strongly recommended!):
-- perl (to run the build tests)
+- python and the python 'lxml' library (to run the build tests)
 
 
 To build, just type "make" (assuming of course you have make installed!). This will create a file called 'Perspectives.xpi'.  

@@ -12,6 +12,11 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.4.2
+-----
+* Update German translation
+
+
 4.4.1
 -----
 * Rescue localization tests! Tests now run as a python script at build-time (GH 74)

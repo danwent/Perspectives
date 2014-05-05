@@ -1,8 +1,8 @@
 <!-- Diese Datei beinhaltet lokalisierte Strings für die .xul-Dateien von Perspectives -->
 <!ENTITY NotaryResults "Ergebnisse des Notars">
-<!ENTITY ViewNotaryResults "Ergebnisse des Notars anshen">
+<!ENTITY ViewNotaryResults "Ergebnisse des Notars ansehen">
 <!ENTITY Preferences "Einstellungen">
-<!ENTITY NoQuorumInformation "Keine Quorum Informationen vorhanden">
+<!ENTITY NoQuorumInformation "Keine Informationen zum Quorum vorhanden">
 <!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "Es gibt keine Informationen von Perspectives zu dieser Webseite">
 <!ENTITY Timeline "Zeitachse">
 <!ENTITY SecuritySettings "Sicherheitseinstellungen">
@@ -16,7 +16,7 @@
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Perspectives erlauben, Sicherheitsfehler automatisch zu umgehen">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Von Perspectives überprüften Zertifikaten dauerhaft vertrauen">
 <!ENTITY WhentoContactNotaries "Bedingung für das Nachfragen bei Notaren">
-<!ENTITY ContactNotariesforallHTTPSsites "Für alle HTTPS Webseiten bei Notaren nachfragen">
+<!ENTITY ContactNotariesforallHTTPSsites "Für alle HTTPS-Webseiten bei Notaren nachfragen">
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Nur nachfragen, wenn das Zertifikat einer Webseite einen Sicherheitsfehler verursacht">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "Immer nachfragen, bevor Notaren kontaktiert werden.">
 <!ENTITY Certificates "Zertifikate">
@@ -47,13 +47,13 @@
 <!ENTITY ReportAttack "Angriff melden">
 <!ENTITY ViewCertificateStore "Zertifikate anzeigen">
 <!-- TODO: Please translate! -->
-<!ENTITY About "About Perspectives">
-<!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
-<!ENTITY ContributorTitle "Contributors">
-<!ENTITY ContributorSubTitle "(listed alphabetically by last name)">
-<!ENTITY ContributorText "Many thanks to the following people who contributed bug reports, documentation, code patches, and/or ideas">
-<!ENTITY TranslatorTitle "Translators">
-<!ENTITY TranslatorSubTitle "(listed alphabetically by locale code)">
-<!ENTITY TranslatorText "Many thanks to the following people who contributed translations">
-<!ENTITY ClickToVisitWebsite "Click to visit the Perspectives website">
-<!ENTITY DisplayPermissionReminder "Display a notification reminder">
+<!ENTITY About "Über Perspectives">
+<!ENTITY AboutMainCredit "Perspectives Client - Erweiterung für Firefox von Dan Wendlandt">
+<!ENTITY ContributorTitle "Mitwirkende">
+<!ENTITY ContributorSubTitle "(alphabetisch sortiert)">
+<!ENTITY ContributorText "Herzlichen Dank an diese Menschen, die Fehlerberichte, Dokumentationen, Verbesserungen und/oder Ideen beigetragen haben">
+<!ENTITY TranslatorTitle "Übersetzer">
+<!ENTITY TranslatorSubTitle "(alphabetisch nach Sprache sortiert)">
+<!ENTITY TranslatorText "Herzlichen Dank an diese Menschen, die zur Übersetzung beigetragen haben">
+<!ENTITY ClickToVisitWebsite "Hier klicken, um die Website von Perspectives zu öffnen">
+<!ENTITY DisplayPermissionReminder "Eine Erinnerung anzeigen">

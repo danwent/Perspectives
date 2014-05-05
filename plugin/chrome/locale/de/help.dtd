@@ -6,7 +6,7 @@
 <!ENTITY h3preferences "Einstellungen">
 <!ENTITY preferencesIntro "Dieser Absatz beschreibt die Einstellungen, die im 'Einstellungen'-Reiter angepasst werden können">
 <!ENTITY securitySettings "Sicherheitseinstellugen: Was sind 'Quorum Prozentsatz' und 'Quorum Länge'?">
-<!ENTITY securityValues "Der Einstellungsdialog erlaubt es, verschiedene Werte für 'Quorum Prozentsatz' und 'Quorum Länge' zu setzen. Diese Schwellwerte geben Ihnen die Wahl, wie paranoid Sie bezüglich des Annehmens von Schlüsseln sein wollen. In beiden Fällen bieten höhere Werte mehr Sicherheit, erhöhen aber auch die Gefahr ein Schlüssel fälschlicherweise als  ungültig zu erkennen.">
+<!ENTITY securityValues "Der Einstellungsdialog erlaubt es, verschiedene Werte für 'Quorum Prozentsatz' und 'Quorum Länge' zu setzen. Diese Schwellwerte geben Ihnen die Wahl, wie paranoid Sie bezüglich des Annehmens von Schlüsseln sein wollen. In beiden Fällen bieten höhere Werte mehr Sicherheit, erhöhen aber auch die Gefahr ein Schlüssel fälschlicherweise als ungültig zu erkennen.">
 <!ENTITY quorum "Quorum Prozentsatz">
 <!ENTITY whatisQuorum "ist ein Schwellwert, der die Mindestzahl von Notaren als Prozentangabe beschreibt, die sich bezüglich eines Schlüssel einig sein müssen, damit dieser Schlüssel als gültig erachtet wird. Vernünftige Werte liegen zwischen 100&#37; und 50&#37;.">
 <!ENTITY quorumDuration "Quorum Dauer">
@@ -30,8 +30,8 @@ Feel free to change the links to something for your language, or to delete and l
 <!-- ======= SPACER ======= -->
 <!-- Firewall help page - it reuses some strings such as the contact information -->
 <!-- TODO: Please translate! -->
-<!ENTITY perspectivesFirewallHelp "Perspectives Firewall/Proxy Help">
-<!ENTITY h3protocolandPorts "What Protocol and Ports does Perspectives Use?">
-<!ENTITY protocolandPortsAnswer "Perspectives uses the standard HTTP protocol to query network notary servers. However, some of these notary servers are unable to listen on the standard HTTP port (port 80) and instead listen on port 8080.  While most firewalls and proxies should allow this traffic, some may not. You can contact your network administrator to find out whether Perspectives traffic is likely being dropped by a proxy or firewall.">
-<!ENTITY h3manuallyOverrideWarning "If I cannot contact any notaries, is it safe to manually override the browser security warning?">
-<!ENTITY manuallyOverrideWarningAnswer "NO. When Perspectives is unable to reach the notary servers, it does not receive the data necessary to distinguish between a valid and an invalid certificate. Accepting a certificate without notary validation can be dangerous, because it may be that an attacker is intentionally dropping your notary queries.">
+<!ENTITY perspectivesFirewallHelp "Hilfe zur Verwendung von Perspectives hinter einer Firewall oder einem Proxy">
+<!ENTITY h3protocolandPorts "Welches Protokoll verwendet Perspectives?">
+<!ENTITY protocolandPortsAnswer "Perspectives verwendet das HTTP-Protokoll, um die Server von Notaren zu erreichen. Einige dieser Server können jedoch nicht auf den Port 80 (Standard bei HTTP-Verbindungen) lauschen und verwenden stattdessen Port 8080. Die meiste Firewall-Software sowie die meisten Proxys erlauben diese Verbindungen, manche jedoch nicht. Fragen sie ihren Netzwerkadministrator, ob diese Verbindungen von einem Proxy oder einer Firewall blockiert werden.">
+<!ENTITY h3manuallyOverrideWarning "Wenn ich zu keinem der Notare eine Verbindung herstellen kann, ist es dann sicher, die Sicherheitsmeldung des Browsers abzuschalten? Dies trifft z.B. zu, wenn sie sich in einem Netzwerk ohne Verbindung ins Internet befinden.">
+<!ENTITY manuallyOverrideWarningAnswer "Nein. Wenn Perspectives keine Verbindung zu den Servern der Notare herstellen konnte, fehlen die benötigten Daten, um die Gültigkeit eines Zertifikats zu bestimmen. Es ist gefährlich, ein Zertifikat anzunehmen, das nicht von den Notaren validiert wurde, weil ein Angreifer die Verbindung zu den Servern der Notaren blockieren könnte.">

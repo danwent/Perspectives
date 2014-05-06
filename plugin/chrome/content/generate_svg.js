@@ -109,9 +109,10 @@ var Pers_gen = {
 			var most_recent_color = "white"; // none
 			var most_recent_end = 0;  
 			var results = server_result_list[i]; 
+			var servername = results.server.replace(/^https?\:\/\//, '');
 			y_cord += 20; 
 			res += '<text x="4" y="' + (y_cord + 8) + '" font-size="10">' 
-				+ results.server + '</text>\n'; 
+				+ servername + '</text>\n';
  
 			for(var j = 0; j < results.obs.length; j++) { 
 				var obs = results.obs[j];

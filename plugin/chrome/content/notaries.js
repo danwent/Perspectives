@@ -273,8 +273,13 @@ var Perspectives = {
 
 	querySingleNotary: function(notary_server, ti) { 
 		var port = (ti.uri.port == -1) ? 443 : ti.uri.port;  
-		var full_url = "http://" + notary_server.host + 
+		var full_url = notary_server.host +
 				"?host=" + ti.uri.host + "&port=" + port + "&service_type=2&";
+		if (full_url.substring(0,4) !== 'http') {
+			// default to unencrypted queries if nothing is specified,
+			// since we don't know if the server supports HTTPS.
+			full_url = "http://" + full_url;
+		}
 		Pers_debug.d_print("query", "sending query: '" + full_url + "'");
 		var req  = new XMLHttpRequest();
 		req.open("GET", full_url, true);

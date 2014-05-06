@@ -456,7 +456,7 @@ function quorum_basics() {
  var weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - end_time_2);
  var gap_weakly_seen1 = Pers_client_policy.key_weakly_seen_by_quorum(key,
           gap_result_list, 1, weak_check_time_limit);
- assert((gap_weakly_seen1 === false), "key is not 'weakly seen'");
+ assert((gap_weakly_seen1 === true), "key is 'weakly seen'");
 
   assert(end_time_2 > (cur_time - max_stale_sec), "Gap setup: New target key2 ends inside the cutoff limit");
   var gap_quorum_duration2 = Pers_client_policy.get_quorum_duration(key2,
@@ -467,7 +467,7 @@ function quorum_basics() {
 
    var gap_weakly_seen2 = Pers_client_policy.key_weakly_seen_by_quorum(key2,
           gap_result_list, 1, weak_check_time_limit);
- assert((gap_weakly_seen2 === false), "key2 is not 'weakly seen'");
+ assert((gap_weakly_seen2 === true), "key2 is 'weakly seen'");
 
   // if we had the same result set without the gap, the durations should be the same
  spacer("Gap and non-gap durations should be the same");
@@ -506,7 +506,8 @@ function quorum_basics() {
    var weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - end_time_2);
    var nongap_weakly_seen1 = Pers_client_policy.key_weakly_seen_by_quorum(key,
             non_gap_result_list, 1, weak_check_time_limit);
-   assert((nongap_weakly_seen1 === false), "key is not 'weakly seen'");
+   assert((nongap_weakly_seen1 === true), "key is 'weakly seen'");
+   // the important tests - that results with and without gaps are the same.
    assert((nongap_weakly_seen1 === gap_weakly_seen1), "'weakly seen' result is the same with and without gaps.");
 
   assert(end_time_2 > (cur_time - max_stale_sec), "Nongap setup: New target key2 ends inside the cutoff limit");
@@ -521,7 +522,7 @@ function quorum_basics() {
    // so allow a check length going back to the end date of the observation.
    var nongap_weakly_seen2 = Pers_client_policy.key_weakly_seen_by_quorum(key2,
             non_gap_result_list, 1, weak_check_time_limit);
-   assert((nongap_weakly_seen2 === false), "key is not 'weakly seen'");
+   assert((nongap_weakly_seen2 === true), "key is 'weakly seen'");
    assert((nongap_weakly_seen2 === gap_weakly_seen2), "'weakly seen' result is the same with and without gaps.");
 
   spacer("Further gap tests");

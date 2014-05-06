@@ -203,15 +203,17 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 // For sites that do not consistently use a single certificate, Perspectives supports
 // a weaker notion of whether a key is 'valid', called 'weak consistency'.  
 // This test checks that two things are BOTH true: 
-// 1) confirm that no notary has consistently seen any key for this website.  We do this
+//
+// 1) that 'test' key has been seen by at least 'quorum_size' notaries in the past
+// 'check_length' days.  Note that this is weaker than Perspectives' standard
+// requirement that notaries must have seen a key consistently over time.  Even a single
+// observation by all notaries could undermine this form of consistency.
+//
+// 2) confirm that no notary has consistently seen any key for this website.  We do this
 // by checking that in the past 'check_length' days, no notary has seen the
 // same key for more than 'max_timespan' days.  The goal of this check is to make sure
 // weak consistency cannot be used by an attacker to undermine a site that regularly 
 // uses a single 'correct' key. 
-// 2) that 'test' key has been seen by at least 'quorum_size' notaries in the past 
-// 'check_length' days.  Note that this is weaker than Perspectives' standard 
-// requirement that notaries must have seen a key consistently over time.  Even a single
-// observation by all notaries could undermine this form of consistency.  
 
 // This technique is implemented by the functions 'key_weakly_seen_by_quorum' and 'inconsistency_check' 
 

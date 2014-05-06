@@ -164,6 +164,22 @@ function client_sanity() {
      }
    ];
 
+ var days_last_seen = 3;
+ var duration = 2; // days
+ var old_end = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen);
+ var old_start = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen - duration);
+
+ var second_result_list = [
+     { "server" : "test1:8080",
+       "obs" : [  { "key" : key,
+        "timestamps" : [ { "start" : old_start , "end" : old_end  } ] } ]
+     },
+     { "server" : "test2:8080",
+       "obs" : [  { "key" : key,
+        "timestamps" : [ { "start" : old_start , "end" : old_end  } ] } ]
+     }
+   ];
+
  var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
           short_result_list, 1, -10);
  assert((weakly_seen === false), "Negative Check lengths can't be weakly seen");
@@ -172,6 +188,39 @@ function client_sanity() {
  weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
           short_result_list, 1, weak_check_time_limit);
  assert((weakly_seen === false), "Check lengths longer than time since the epoch can't be weakly seen");
+
+ weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          short_result_list, -1, 1);
+ assert((weakly_seen === false), "Negative quorum sizes can't be weakly seen");
+
+ weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          short_result_list, 0, 1);
+ assert((weakly_seen === false), "Quorum size 0 can't be weakly seen");
+
+
+ var check_length = (days_last_seen + 1); //days
+ assert((check_length >= days_last_seen), "(meta) Test setup: check length >= ending day of observation.");
+ var weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          second_result_list, 3, check_length);
+ assert((weakly_seen_test === false), "Keys seen but by fewer than quorum_size notaries do not count as weakly seen.");
+
+ check_length = (days_last_seen - 1); //days
+ assert((check_length <= days_last_seen), "(meta) Test setup: check length <= ending day of observation.");
+ weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          second_result_list, 2, check_length);
+  assert((weakly_seen_test === false), "Keys seen by quorum_size notaries but not in the past X days do not count as weakly seen.");
+
+ check_length = (days_last_seen + 1); //days
+ assert((check_length >= days_last_seen), "(meta) Test setup: check length >= ending day of observation.");
+ weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          second_result_list, 2, check_length);
+ assert((weakly_seen_test === true), "Keys seen by quorum_size notaries AND in the past X days DO count as weakly seen.");
+
+  check_length = days_last_seen; //days
+ assert((check_length === days_last_seen), "(meta) Test setup: check length === ending day of observation.");
+ weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
+          second_result_list, 2, check_length);
+ assert((weakly_seen_test === true), "Keys seen by quorum_size notaries exactly in the past X days DO count as weakly seen.");
 
 
 }

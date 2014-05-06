@@ -222,6 +222,12 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 		return false;
 	}
 
+	if (quorum_size < 1) {
+		Pers_debug.d_print("error",
+				"Quorum size must be a positive integer when testing for weakly seen certificates!");
+		return false;
+	}
+
  	var cutoff_sec = Pers_util.get_unix_time() - Pers_util.DAY2SEC(check_length); 
 
 	if (cutoff_sec < 1) {
@@ -230,8 +236,9 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 		return false;
 	}
 
+	var seen_count = 0;
+
 	for(var i = 0; i < results.length; i++) {
-		var seen = false;  
 		for(var j = 0; j < results[i].obs.length; j++) { 
 			if(results[i].obs[j].key != test_key) { 
 				continue; 
@@ -239,16 +246,20 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 			for(var k = 0; k < results[i].obs[j].timestamps.length; k++) { 
 				var ts = results[i].obs[j].timestamps[k]; 
 				if (ts.end >= cutoff_sec) { 
-					seen = true; 
+					seen_count += 1;
 					break; 
 				}  
 			}
 		}
-		if(!seen) { 
-			return false; 
-		} 
+		if (seen_count >= quorum_size) {
+			return true;
+		}
 	}
-	return true; 
+	if (seen_count >= quorum_size) {
+			return true;
+	}
+
+	return false;
 }, 
 
 

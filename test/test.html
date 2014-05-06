@@ -592,7 +592,7 @@ JaJ2Lw7kRVMCAwEAAQ==\
 
   quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list, 0, max_stale_sec, unixtime);
-  assert((quorum_duration == 0), "Quorum size 0 gives zero duration");
+  assert((quorum_duration === 0), "Quorum size 0 gives zero duration");
 
 
 

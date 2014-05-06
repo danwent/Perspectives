@@ -166,7 +166,7 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 
 	if (quorum_size < 1) {
 		Pers_debug.d_print("error", "ERROR: quorum size cannot be less than 1.");
-		return false;
+		return 0;
 	}
 
 	if(! Pers_client_policy.check_current_consistency(test_key,results,quorum_size,

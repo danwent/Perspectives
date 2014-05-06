@@ -92,7 +92,7 @@ function spacer(category_name) {
 // if you're lazy and want to print some text while debugging
 function debug(obj) {
 
-  if (obj == null) {
+  if (obj === null) {
     return;
   }
 
@@ -303,17 +303,17 @@ function quorum_basics() {
 
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list,	2, max_stale_sec,cur_time);
- assert((quorum_duration == (cur_time - key_start_time) + 1), "Requiring larger quorum gives a shorter duration");
+ assert((quorum_duration === (cur_time - key_start_time) + 1), "Requiring larger quorum gives a shorter duration");
 
 
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list, 1, max_stale_sec, cur_time);
- assert((quorum_duration == cur_time + 1), "Requiring smaller quorum gives a longer duration");
+ assert((quorum_duration === cur_time + 1), "Requiring smaller quorum gives a longer duration");
  assert((quorum_duration > (cur_time - max_stale_sec)), "Getting enough quorum voters passes");
 
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list, 10, max_stale_sec, cur_time);
- assert((quorum_duration == -1), "Getting fewer quorum voters than required fails");
+ assert((quorum_duration === -1), "Getting fewer quorum voters than required fails");
 
  spacer('When observations end at the current time');
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
@@ -321,13 +321,13 @@ function quorum_basics() {
 				cur_time);
  assert((key_end_time > (cur_time - max_stale_sec)), "The key is within the quorum time limit.");
  assert((quorum_duration >= 1 ), "Searching for an existing key within the time limit has a positive duration");
- assert((quorum_duration == (cur_time + max_stale_sec + 1)), "The duration is as long as the observation.start to observation.end (Expected " + (cur_time + max_stale_sec + 1) +
+ assert((quorum_duration === (cur_time + max_stale_sec + 1)), "The duration is as long as the observation.start to observation.end (Expected " + (cur_time + max_stale_sec + 1) +
     ", got " + quorum_duration + ")");
 
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list, 1, max_stale_sec,
         cur_time + max_stale_sec + 1);
- assert((quorum_duration == -1), "Being over the quorum duration time limit fails");
+ assert((quorum_duration === -1), "Being over the quorum duration time limit fails");
 
  // run tests with keys that don't end exactly at the current time
  spacer('When observations *do not* end at the current time');
@@ -346,20 +346,20 @@ function quorum_basics() {
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           server_result_list, 1, max_stale_sec,
         cur_time + max_stale_sec + 1);
- assert((quorum_duration == -1), "2. Being over the quorum duration time limit fails");
+ assert((quorum_duration === -1), "2. Being over the quorum duration time limit fails");
 
 
 
  quorum_duration = Pers_client_policy.get_quorum_duration(key2,
           server_result_list, 1, max_stale_sec,cur_time);
- assert((quorum_duration == -1), "Looking for a key that has no results fails");
+ assert((quorum_duration === -1), "Looking for a key that has no results fails");
 
 
  var empty_result_list = [];
 
  quorum_duration = Pers_client_policy.get_quorum_duration(key,
           empty_result_list, 1, max_stale_sec,cur_time);
- assert((quorum_duration == -1), "Passing an empty results list fails");
+ assert((quorum_duration === -1), "Passing an empty results list fails");
 
  spacer('Observations with gaps (duration is still counted correctly if there is a gap between keys)');
 
@@ -526,7 +526,7 @@ function quorum_basics() {
   max_stale_sec = 200;
   quorum_duration = Pers_client_policy.get_quorum_duration(key,
           short_result_list, 1, max_stale_sec, cur_time);
- assert((quorum_duration == -1), "A one-second duration out of the valid time window is inconsistent (got " +
+ assert((quorum_duration === -1), "A one-second duration out of the valid time window is inconsistent (got " +
     quorum_duration + ").");
 
  // the 'weakly seen' property is relative to the current time,
@@ -539,14 +539,14 @@ function quorum_basics() {
   max_stale_sec = 3 * 24 * 3600;
   quorum_duration = Pers_client_policy.get_quorum_duration(key,
           short_result_list, 1, max_stale_sec, cur_time);
- assert((quorum_duration == 1), "A one-second duration within the valid time window is one second (got " +
+ assert((quorum_duration === 1), "A one-second duration within the valid time window is one second (got " +
     quorum_duration + ").");
 
  cur_time += 24 * 3600;
  assert(((cur_time - max_stale_sec) < short_end), "(meta) Current time for the next test is still within the valid window.");
  var quorum_duration2 = Pers_client_policy.get_quorum_duration(key,
           short_result_list, 1, max_stale_sec, cur_time);
- assert((quorum_duration == quorum_duration2), "Changing the curtime within the valid window doesn't change the duration of the cert observation (got " +
+ assert((quorum_duration === quorum_duration2), "Changing the curtime within the valid window doesn't change the duration of the cert observation (got " +
     quorum_duration2 + ").");
 
  spacer('Quorums with a small number of notaries');
@@ -601,7 +601,7 @@ JaJ2Lw7kRVMCAwEAAQ==\
   Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
 
   var qint = Perspectives.getQuorumAsInt();
-  assert(qint == Perspectives.getNotaryList().length, full_quorum_thresh +
+  assert(qint === Perspectives.getNotaryList().length, full_quorum_thresh +
     "% Quorum Threhold with many notaries returns a full required quorum count (got " + qint + ").");
 
  }
@@ -718,7 +718,7 @@ function notary_parsing() {
   orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
   orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
 
-  if (orig_extra_notaries == null || orig_use_default_notaries == null) {
+  if (orig_extra_notaries === null || orig_use_default_notaries === null) {
     error("Could not read preferences from Perspectives plugin. Skipping notary parse tests.");
     g_test_count++;
     g_fail_count++;
@@ -744,7 +744,7 @@ function notary_parsing() {
   count_before = Perspectives.getNotaryList().length;
   Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, nonsense_notary);
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == count_before,
+  assert(notaries.length === count_before,
     "Trying to save a garbled notary string doesn't work.");
 
 
@@ -765,7 +765,7 @@ JaJ2Lw7kRVMCAwEAAQ==\
   count_before = Perspectives.getNotaryList().length;
   Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, notary_dupe);
   notaries = Perspectives.getNotaryList();
-  assert_fixme(notaries.length == count_before,
+  assert_fixme(notaries.length === count_before,
     "Trying to add a duplicate notary doesn't work.");
   //FIXME - note: this currently fails. We want to write code to prevent dupes.
 
@@ -784,7 +784,7 @@ JaJ2Lw7kRVMCAwEAAQ==\n\n\n\n\
   count_before = Perspectives.getNotaryList().length;
   Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, sparse_notary);
   notaries = Perspectives.getNotaryList();
-  assert(notaries.length == (count_before + 1),
+  assert(notaries.length === (count_before + 1),
     "Trying to add a notary with many blank lines works.");
 
 

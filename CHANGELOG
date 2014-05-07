@@ -12,6 +12,16 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.5
+---
++ Enable https queries to notaries! For now, turn this on by adding 'https://' in front of the notary URL
+* Fix unit tests to use === instead of ==
+* Fix return value for get_quorum_duration(). Fixing the tests in the previous item exposed this bug.
+* Fix use of quorum_size for key_weakly_seen_by_quorum(). It's actually used now. (GH 89)
+* Fix the tooltip used by Perspectives icon during location changes (GH 112)
+* Fix icon status for location change events - only set the icon spinning for https sites (GH  113)
+
+
 4.4.1
 -----
 * Rescue localization tests! Tests now run as a python script at build-time (GH 74)

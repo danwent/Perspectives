@@ -22,6 +22,11 @@ We attempt to use meaningful version numbers, following semver.org:
 * Fix icon status for location change events - only set the icon spinning for https sites (GH  113)
 
 
+4.4.2
+-----
+* Update German translation
+
+
 4.4.1
 -----
 * Rescue localization tests! Tests now run as a python script at build-time (GH 74)

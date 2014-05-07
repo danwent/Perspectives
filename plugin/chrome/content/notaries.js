@@ -998,7 +998,7 @@ var Perspectives = {
 		var error_text = Perspectives.detectInvalidURI(win);  
 		if(error_text) { 
 			Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI")
-				+ "(" + error_text + ")");
+				+ " (" + error_text + ")");
 			return; 
 		} 
 		var ti = Perspectives.getCurrentTabInfo(win);

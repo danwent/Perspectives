@@ -10,16 +10,16 @@
 <!ENTITY MediumSecurity "Średnie bezpieczeństwo">
 <!ENTITY HighAvailability "Wysoka dostępność">
 <!ENTITY ManualConfiguration "Konfiguracja ręczna">
-<!ENTITY Percentageofnotariesthatmustagree "Odsetek notariuszy którzy muszą się zgadzać (kworum w procentach): ">
+<!ENTITY Percentageofnotariesthatmustagree "Odsetek notariuszy, którzy muszą się zgadzać (kworum w procentach): ">
 <!ENTITY Lengthoftimequorummustbeachieved "Okres czasu zgodnego kworum (okres kworum): ">
-<!ENTITY OverridingFirefoxSecurityErrors "Przesłanianie błędów bezpieczeństwa Firefoxa">
-<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Pozwól, by Perspectives automatycznie przesłaniało błędy bezpieczeństwa">
+<!ENTITY OverridingFirefoxSecurityErrors "Pomijanie błędów bezpieczeństwa Firefoxa">
+<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Pozwól, by Perspectives automatycznie pomijało błędy bezpieczeństwa">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Zaufaj certyfikatom zweryfikowanym przez Perspectives na stałe">
 <!ENTITY WhentoContactNotaries "Kiedy kontaktować się z notariuszami">
 <!ENTITY ContactNotariesforallHTTPSsites "Kontaktuj się z notariuszami odnośnie wszystkich stron HTTPS">
-<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Kontaktuj się z notariuszami tylko gdy certyfikat strony internetowej powoduje błąd bezpieczeństwa">
-<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Zawsze pytaj przed kontaktem z notariuszami">
-<!ENTITY DisplayPermissionReminder "Wyświetl przypomnienie">
+<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Kontaktuj się z notariuszami tylko, jeśli certyfikat strony internetowej powoduje błąd bezpieczeństwa">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Nie łącz się z notariuszami bez wiedzy użytkownika">
+<!ENTITY DisplayPermissionReminder "Wyświetlaj zapytanie o zgodę na konktakt z notariuszami">
 <!ENTITY Certificates "Certifikaty">
 <!ENTITY Servers "Serwery notarialne">
 <!ENTITY Help "Pomoc">
@@ -28,7 +28,7 @@
 <!ENTITY Cancel "Anuluj">
 <!ENTITY Addtowhitelist "Dodaj do białej listy">
 <!ENTITY Addsitetowhitelist "Dodaj stronę do białej listy">
-<!ENTITY Whitelistmessage "Wyłącznie dla ekspertów: dodanie strony internetowej do białej listy sprawia, że Perspectives automatycznie ufa wszystkim połączeniem do niej bez uprzedniego kontaktowania się z notariuszami. Zrób to wyłącznie, jeśli rozumiesz zagrożenia.">
+<!ENTITY Whitelistmessage "Wyłącznie dla ekspertów: dodanie strony internetowej do białej listy sprawia, że Perspectives automatycznie ufa wszystkim połączeniem do niej bez uprzedniego kontaktowania się z notariuszami. Zrób to wyłącznie, jeśli rozumiesz zagrożenie.">
 <!ENTITY ReportPossibleAttack "Zgłoś możliwy atak">
 <!ENTITY ReportAttackMessage "Zgłaszanie ataków umożliwia projektowi Perspectives ciągłe ulepszanie tego rozszerzenia i wykrywanie luk w Internecie.">
 <!ENTITY SendFullReport "Wyślij pełne zgłoszenie">
@@ -51,7 +51,7 @@
 <!ENTITY AboutMainCredit "Klient Perspectives - rozszerzenie Dana Wendlandta do Firefoxa">
 <!ENTITY ContributorTitle "Współautorzy">
 <!ENTITY ContributorSubTitle "(w porządku alfabetycznym według nazwiska)">
-<!ENTITY ContributorText "Wielkie podziękowania dla następujących ludzi, którzy uczestniczyli w zgłaszaniu błędów, współtworzyli dokumentację, kod bądź pomysły">
+<!ENTITY ContributorText "Wielkie podziękowania dla następujących ludzi, którzy uczestniczyli w zgłaszaniu błędów, współtworzyli dokumentację, kod lub pomysły">
 <!ENTITY TranslatorTitle "Tłumacze">
 <!ENTITY TranslatorSubTitle "(w porządku alfabetycznym według kodu regionalnego)">
 <!ENTITY TranslatorText "Wielkie podziękowania dla następujących ludzi, którzy pomagali przy tłumaczeniu">

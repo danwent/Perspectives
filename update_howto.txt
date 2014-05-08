@@ -12,6 +12,7 @@ Once you're confident everything works:
 
 - Check: do you need to/can you increase the version compatibility in plugin/install.rdf ?
 - Increment the version number in plugin/install.rdf
+- Briefly describe the changes in the CHANGELOG file
 - Add a tag in git for the new version, to make it easy to find if we ever need to republish, rebuild, or for people who build from source
 - Build a clean version ('make clean; make')
 - Upload your changes to github

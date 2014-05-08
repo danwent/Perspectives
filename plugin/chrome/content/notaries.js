@@ -273,8 +273,13 @@ var Perspectives = {
 
 	querySingleNotary: function(notary_server, ti) { 
 		var port = (ti.uri.port == -1) ? 443 : ti.uri.port;  
-		var full_url = "http://" + notary_server.host + 
+		var full_url = notary_server.host +
 				"?host=" + ti.uri.host + "&port=" + port + "&service_type=2&";
+		if (full_url.substring(0,4) !== 'http') {
+			// default to unencrypted queries if nothing is specified,
+			// since we don't know if the server supports HTTPS.
+			full_url = "http://" + full_url;
+		}
 		Pers_debug.d_print("query", "sending query: '" + full_url + "'");
 		var req  = new XMLHttpRequest();
 		req.open("GET", full_url, true);
@@ -842,8 +847,20 @@ var Perspectives = {
 			}
       			try{
         			Pers_debug.d_print("main", "Location change " + aURI.spec);
-        			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_QUERY, 
-        				Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [ aURI.host ]));
+        			var state = Pers_statusbar.STATE_NEUT;
+        			var tooltip = "Perspectives";
+
+        			if (aURI !== null && aURI.scheme === 'https') {
+        				// we'll actually send a query for https connections, so update the UI.
+        				state = Pers_statusbar.STATE_QUERY;
+        				// use the asciiHost: sometimes the host contains invalid characters, or is unset.
+        				// in those cases getFormattedString() will throw an exception,
+        				// which causes the error icon to be displayed.
+        				tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
+        					[ aURI.asciiHost ])
+        				// TODO: can we start sending the query from right here, to begin sooner?
+        			}
+        			Pers_statusbar.setStatus(aURI, state, tooltip);
       			} catch(err){
         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
         			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR, 
@@ -981,7 +998,7 @@ var Perspectives = {
 		var error_text = Perspectives.detectInvalidURI(win);  
 		if(error_text) { 
 			Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI")
-				+ "(" + error_text + ")");
+				+ " (" + error_text + ")");
 			return; 
 		} 
 		var ti = Perspectives.getCurrentTabInfo(win);

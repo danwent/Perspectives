@@ -166,7 +166,7 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 
 	if (quorum_size < 1) {
 		Pers_debug.d_print("error", "ERROR: quorum size cannot be less than 1.");
-		return false;
+		return 0;
 	}
 
 	if(! Pers_client_policy.check_current_consistency(test_key,results,quorum_size,
@@ -203,15 +203,17 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 // For sites that do not consistently use a single certificate, Perspectives supports
 // a weaker notion of whether a key is 'valid', called 'weak consistency'.  
 // This test checks that two things are BOTH true: 
-// 1) confirm that no notary has consistently seen any key for this website.  We do this
+//
+// 1) that 'test' key has been seen by at least 'quorum_size' notaries in the past
+// 'check_length' days.  Note that this is weaker than Perspectives' standard
+// requirement that notaries must have seen a key consistently over time.  Even a single
+// observation by all notaries could undermine this form of consistency.
+//
+// 2) confirm that no notary has consistently seen any key for this website.  We do this
 // by checking that in the past 'check_length' days, no notary has seen the
 // same key for more than 'max_timespan' days.  The goal of this check is to make sure
 // weak consistency cannot be used by an attacker to undermine a site that regularly 
 // uses a single 'correct' key. 
-// 2) that 'test' key has been seen by at least 'quorum_size' notaries in the past 
-// 'check_length' days.  Note that this is weaker than Perspectives' standard 
-// requirement that notaries must have seen a key consistently over time.  Even a single
-// observation by all notaries could undermine this form of consistency.  
 
 // This technique is implemented by the functions 'key_weakly_seen_by_quorum' and 'inconsistency_check' 
 
@@ -219,6 +221,12 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 	if (check_length < 1) {
 		Pers_debug.d_print("error",
 				"Check length cannot be negative when testing for weakly seen certificates!");
+		return false;
+	}
+
+	if (quorum_size < 1) {
+		Pers_debug.d_print("error",
+				"Quorum size must be a positive integer when testing for weakly seen certificates!");
 		return false;
 	}
 
@@ -230,8 +238,9 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 		return false;
 	}
 
+	var seen_count = 0;
+
 	for(var i = 0; i < results.length; i++) {
-		var seen = false;  
 		for(var j = 0; j < results[i].obs.length; j++) { 
 			if(results[i].obs[j].key != test_key) { 
 				continue; 
@@ -239,16 +248,20 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 			for(var k = 0; k < results[i].obs[j].timestamps.length; k++) { 
 				var ts = results[i].obs[j].timestamps[k]; 
 				if (ts.end >= cutoff_sec) { 
-					seen = true; 
+					seen_count += 1;
 					break; 
 				}  
 			}
 		}
-		if(!seen) { 
-			return false; 
-		} 
+		if (seen_count >= quorum_size) {
+			return true;
+		}
 	}
-	return true; 
+	if (seen_count >= quorum_size) {
+			return true;
+	}
+
+	return false;
 }, 
 
 

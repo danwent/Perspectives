@@ -19,8 +19,8 @@
 <!ENTITY ContactNotariesforallHTTPSsites "Kontaktuj się z notariuszami odnośnie wszystkich stron HTTPS">
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Kontaktuj się z notariuszami tylko, jeśli certyfikat strony internetowej powoduje błąd bezpieczeństwa">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "Nie łącz się z notariuszami bez wiedzy użytkownika">
-<!ENTITY DisplayPermissionReminder "Wyświetlaj zapytanie o zgodę na konktakt z notariuszami">
-<!ENTITY Certificates "Certifikaty">
+<!ENTITY DisplayPermissionReminder "Wyświetlaj zapytanie o zgodę na kontakt z notariuszami">
+<!ENTITY Certificates "Certyfikaty">
 <!ENTITY Servers "Serwery notarialne">
 <!ENTITY Help "Pomoc">
 <!ENTITY OK "OK">
@@ -40,7 +40,7 @@
 <!ENTITY SubmitReport "Wyślij raport">
 <!ENTITY DetailedInformation "Szczegółowe informacje">
 <!ENTITY CertificateValidation "Weryfikacja certyfikatu">
-<!ENTITY AutoTrust "Automatcznie ufaj certyfikatom następujących stron">
+<!ENTITY AutoTrust "Automatycznie ufaj certyfikatom następujących stron">
 <!ENTITY DefaultNotaryServers "Domyślne serwery notarialne">
 <!ENTITY UseDefaultNotaries "Użyj domyślnej listy serwerów notarialnych">
 <!ENTITY AdditionalNotaryServers "Dodatkowe serwery notarialne">

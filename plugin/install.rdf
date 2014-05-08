@@ -82,7 +82,7 @@
 			<Description>
 				<em:locale>pl</em:locale>
 				<em:name>Perspectives</em:name>
-				<em:description>Łącz się bezpiecznie ze stronami HTTPS sprawdzając certyfikaty przy użyciu siecowych notariuszy. Sprawdź http://www.perspectives-project.org</em:description>
+				<em:description>Łącz się bezpiecznie ze stronami HTTPS, sprawdzając certyfikaty przy użyciu sieciowych notariuszy. Sprawdź http://www.perspectives-project.org</em:description>
 				<em:creator>Projekt Perspectives z wydziału informatycznego Uniwersytetu Carnegie Mellon</em:creator>
 				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
 				<em:translator>Jakub Warmuz</em:translator>

@@ -1,58 +1,58 @@
 <!-- This file contains localized strings for Perspectives .xul files. -->
-<!ENTITY NotaryResults "Notary Results">
-<!ENTITY ViewNotaryResults "View Notary Results">
-<!ENTITY Preferences "Preferences">
-<!ENTITY NoQuorumInformation "No Quorum Information">
-<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "There is no Perspectives information available for this location">
-<!ENTITY Timeline "Timeline">
-<!ENTITY SecuritySettings "Security Level">
-<!ENTITY HighSecurity "High Security">
-<!ENTITY MediumSecurity "Medium Security">
-<!ENTITY HighAvailability "High Availability">
-<!ENTITY ManualConfiguration "Manual Configuration">
-<!ENTITY Percentageofnotariesthatmustagree "Percentage of notaries that must agree (quorum percentage): ">
-<!ENTITY Lengthoftimequorummustbeachieved "Days of continuous agreement required (quorum duration): ">
-<!ENTITY OverridingFirefoxSecurityErrors "Overriding Firefox Security Errors">
-<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Allow Perspectives to automatically override security errors">
-<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Permanently trust certificates validated by Perspectives">
-<!ENTITY WhentoContactNotaries "When to Contact Notaries">
-<!ENTITY ContactNotariesforallHTTPSsites "Contact Notaries for all HTTPS sites">
-<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contact Notaries only when a website's certificate causes a security error">
-<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Always ask before contacting Notaries">
-<!ENTITY DisplayPermissionReminder "Display a notification reminder">
-<!ENTITY Certificates "Certificates">
-<!ENTITY Servers "Notary Servers">
-<!ENTITY Help "Help">
+<!ENTITY NotaryResults "Wyniki notarialne">
+<!ENTITY ViewNotaryResults "Zobacz wyniki notarialne">
+<!ENTITY Preferences "Ustawienia">
+<!ENTITY NoQuorumInformation "Brak kworum">
+<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "Perspectives nie posiada informacji dla tej lokalizacji">
+<!ENTITY Timeline "Oś czasu">
+<!ENTITY SecuritySettings "Poziom bezpieczeństwa">
+<!ENTITY HighSecurity "Wysokie bezpieczeństwo">
+<!ENTITY MediumSecurity "Średnie bezpieczeństwo">
+<!ENTITY HighAvailability "Wysoka dostępność">
+<!ENTITY ManualConfiguration "Konfiguracja ręczna">
+<!ENTITY Percentageofnotariesthatmustagree "Odsetek notariuszy którzy muszą się zgadzać (kworum w procentach): ">
+<!ENTITY Lengthoftimequorummustbeachieved "Okres czasu zgodnego kworum (okres kworum): ">
+<!ENTITY OverridingFirefoxSecurityErrors "Przesłanianie błędów bezpieczeństwa Firefoxa">
+<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Pozwól, by Perspectives automatycznie przesłaniało błędy bezpieczeństwa">
+<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Zaufaj certyfikatom zweryfikowanym przez Perspectives na stałe">
+<!ENTITY WhentoContactNotaries "Kiedy kontaktować się z notariuszami">
+<!ENTITY ContactNotariesforallHTTPSsites "Kontaktuj się z notariuszami odnośnie wszystkich stron HTTPS">
+<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Kontaktuj się z notariuszami tylko gdy certyfikat strony internetowej powoduje błąd bezpieczeństwa">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Zawsze pytaj przed kontaktem z notariuszami">
+<!ENTITY DisplayPermissionReminder "Wyświetl przypomnienie">
+<!ENTITY Certificates "Certifikaty">
+<!ENTITY Servers "Serwery notarialne">
+<!ENTITY Help "Pomoc">
 <!ENTITY OK "OK">
-<!ENTITY Close "Close">
-<!ENTITY Cancel "Cancel">
-<!ENTITY Addtowhitelist "Add to Whitelist">
-<!ENTITY Addsitetowhitelist "Add Site to Whitelist">
-<!ENTITY Whitelistmessage "Experts only: By adding a website to your whitelist, Perspectives automatically trusts all connections to it without contacting notaries. Do this only if you understand the risks.">
-<!ENTITY ReportPossibleAttack "Report Possible Attack">
-<!ENTITY ReportAttackMessage "By reporting an attack, the Perspectives project can improve this extension and detect Internet vulernabilities.">
-<!ENTITY SendFullReport "Send full report">
-<!ENTITY SendPrivacyReport "Send privacy-sensitive report">
-<!ENTITY Optional "Optional">
-<!ENTITY EmailDescription "Email Address for follow-up questions">
-<!ENTITY AdditionalInfoMessage "Any additional information describing the circumstances of this possible attack">
-<!ENTITY ShowDetailedReportText "Show Detailed Report Text">
-<!ENTITY SubmitReport "Submit Report">
-<!ENTITY DetailedInformation "Detailed Information">
-<!ENTITY CertificateValidation "Certificate Validation">
-<!ENTITY AutoTrust "Automatically trust certificates for the following sites">
-<!ENTITY DefaultNotaryServers "Default Notary Servers">
-<!ENTITY UseDefaultNotaries "Use default notary server list">
-<!ENTITY AdditionalNotaryServers "Additional Notary Servers">
-<!ENTITY ForceNotaryCheck "Force Notary Check">
-<!ENTITY ReportAttack "Report Attack">
-<!ENTITY ViewCertificateStore "View Certificate Store">
-<!ENTITY About "About Perspectives">
-<!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
-<!ENTITY ContributorTitle "Contributors">
-<!ENTITY ContributorSubTitle "(listed alphabetically by last name)">
-<!ENTITY ContributorText "Many thanks to the following people who contributed bug reports, documentation, code patches, and/or ideas">
-<!ENTITY TranslatorTitle "Translators">
-<!ENTITY TranslatorSubTitle "(listed alphabetically by locale code)">
-<!ENTITY TranslatorText "Many thanks to the following people who contributed translations">
-<!ENTITY ClickToVisitWebsite "Click to visit the Perspectives website">
+<!ENTITY Close "Zamknij">
+<!ENTITY Cancel "Anuluj">
+<!ENTITY Addtowhitelist "Dodaj do białej listy">
+<!ENTITY Addsitetowhitelist "Dodaj stronę do białej listy">
+<!ENTITY Whitelistmessage "Wyłącznie dla ekspertów: dodanie strony internetowej do białej listy sprawia, że Perspectives automatycznie ufa wszystkim połączeniem do niej bez uprzedniego kontaktowania się z notariuszami. Zrób to wyłącznie, jeśli rozumiesz zagrożenia.">
+<!ENTITY ReportPossibleAttack "Zgłoś możliwy atak">
+<!ENTITY ReportAttackMessage "Zgłaszanie ataków umożliwia projektowi Perspectives ciągłe ulepszanie tego rozszerzenia i wykrywanie luk w Internecie.">
+<!ENTITY SendFullReport "Wyślij pełne zgłoszenie">
+<!ENTITY SendPrivacyReport "Wyślij prywatne zgłoszenie">
+<!ENTITY Optional "Opcjonalnie">
+<!ENTITY EmailDescription "adres email, na który mogą zostać wysłane dodatkowe pytania">
+<!ENTITY AdditionalInfoMessage "Dodatkowe informacje opisujące okoliczności możliwego ataku">
+<!ENTITY ShowDetailedReportText "Pokaż tekst raportu szczegółowego">
+<!ENTITY SubmitReport "Wyślij raport">
+<!ENTITY DetailedInformation "Szczegółowe informacje">
+<!ENTITY CertificateValidation "Weryfikacja certyfikatu">
+<!ENTITY AutoTrust "Automatcznie ufaj certyfikatom następujących stron">
+<!ENTITY DefaultNotaryServers "Domyślne serwery notarialne">
+<!ENTITY UseDefaultNotaries "Użyj domyślnej listy serwerów notarialnych">
+<!ENTITY AdditionalNotaryServers "Dodatkowe serwery notarialne">
+<!ENTITY ForceNotaryCheck "Wymuś sprawdzenie notarialne">
+<!ENTITY ReportAttack "Zgłoś atak">
+<!ENTITY ViewCertificateStore "Zobacz zapisane certyfikaty">
+<!ENTITY About "O Perspectives">
+<!ENTITY AboutMainCredit "Klient Perspectives - rozszerzenie Dana Wendlandta do Firefoxa">
+<!ENTITY ContributorTitle "Współautorzy">
+<!ENTITY ContributorSubTitle "(w porządku alfabetycznym według nazwiska)">
+<!ENTITY ContributorText "Wielkie podziękowania dla następujących ludzi, którzy uczestniczyli w zgłaszaniu błędów, współtworzyli dokumentację, kod bądź pomysły">
+<!ENTITY TranslatorTitle "Tłumacze">
+<!ENTITY TranslatorSubTitle "(w porządku alfabetycznym według kodu regionalnego)">
+<!ENTITY TranslatorText "Wielkie podziękowania dla następujących ludzi, którzy pomagali przy tłumaczeniu">
+<!ENTITY ClickToVisitWebsite "Kliknij by odwiedzić stronę internetową Perspectives">

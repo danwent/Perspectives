@@ -80,6 +80,16 @@
 		</em:localized>
 		<em:localized>
 			<Description>
+				<em:locale>pl</em:locale>
+				<em:name>Perspectives</em:name>
+				<em:description>Łącz się bezpiecznie ze stronami HTTPS, sprawdzając certyfikaty przy użyciu sieciowych notariuszy. Sprawdź http://www.perspectives-project.org</em:description>
+				<em:creator>Projekt Perspectives z wydziału informatycznego Uniwersytetu Carnegie Mellon</em:creator>
+				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
+				<em:translator>Jakub Warmuz</em:translator>
+			</Description>
+		</em:localized>
+		<em:localized>
+			<Description>
 				<em:name>Perspectives</em:name>
 				<em:locale>zh-CN</em:locale>
 				<em:description>使用网络认证检查安全证书，从而安全地连接到 https 网站。请查看 http://www.perspectives-project.org</em:description>

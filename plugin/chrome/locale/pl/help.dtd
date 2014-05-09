@@ -1,0 +1,50 @@
+<!-- strings for Perspectives help pages -->
+<!-- main help page -->
+<!ENTITY h1perspectivesHelp "Pomoc Perspectives">
+<!ENTITY h3whatisPerspectives "Czym jest Perspectives?">
+<!ENTITY whatisPerspectives "Perspectives zapobiega atakom typu
+'man in the middle' (ang. człowiek po środku) na komunikację
+HTTPS poprzez weryfikację autentyczności klucza publicznego SSL
+serwera. Jest to szczególnie istotne podczas łączenia się
+ze stronami HTTPS, które posiadają certyfikaty 'samopodpisane',
+niepasujące lub takie, które straciły ważność. Powoduje to
+błędy bezpieczeństwa uniemożliwiające połączenie się z tymi stronami.">
+<!ENTITY h3howDoesItWork "Jak to działa?">
+<!ENTITY howDoesItWork "Perspectives opiera się na tym, że przez większość czasu Internet działa poprawnie. Kiedy już pojawiają się ataki, mają one zazwyczaj wąski zakres (np. pojedynczy zaatakowany router) lub czas ich trwania jest ograniczony (gdyż większe ataki są łatwiejsze do wykrycia). Perspectives wykorzystuje okresowe próbkowanie sieciowe z wielu punktów widokowych Internetu, umożliwiając Twojej przeglądarce wykrycie obydwu typów ataków. Zbiór maszyn nazywanych 'sieciowymi notariuszami', rozsianych po Internecie i prowadzonych przez badaczy akademickich okresowo sonduje każdy serwer, odpytując o jego aktualny klucz publiczny. Kiedy Twoja przeglądarka musi sprawdzić autentyczność klucza, odpytuje ona każdego sieciowego notariusza o klucz, który był przez niego obserwowany i weryfikuje, czy te wyniki są spójne z otrzymanym kluczem. W celu oszukania Twojej przeglądarki tak, by akceptowała ona fałszywy klucz, atakujący musiałby zatem znajdować się na wszystkich ścieżkach sieciowych między Tobą i notariuszem. Musiałby on także atakować te ścieżki przez znaczącą ilość czasu, aby zamiana klucza nie wydała się podejrzana. W ten sposób Perspectives implementuje typ PKI (infrastruktury klucza publicznego), w której sieciowe próbkowania z wielu punktów widokowych zastępują ręczną weryfikację dokonywaną przez urzędy certyfikacji (np. Verisign).">
+<!ENTITY h3preferences "Ustawienia">
+<!ENTITY preferencesIntro "Ta sekcja ułatwia zrozumienie parametrów konfiguracyjnych, które można zmieniać w panelu 'Ustawienia'">
+<!ENTITY securitySettings "Ustawienia bezpieczeństwa: Czym jest 'kworum' i 'okres kworum'?">
+<!ENTITY securityValues "Okno ustawień umożliwia konfigurację różnych wartości dla 'kworum' i 'okresu kworum'. Te wartości progowe pozwalają Ci zadecydować, jak bardzo podejrzliwy chcesz być odnośnie akceptowania kluczy. W obydwu przypadkach wyższe wartości są bardziej bezpieczne, ale istnieje również większe niebezpieczeństwo odrzucania ważnych kluczy.">
+<!ENTITY quorum "Kworum">
+<!ENTITY whatisQuorum "jest wartością progową, która określa w procentach minimalny odsetek notariuszy, którzy muszą być zgodni odnośnie klucza, by uznać go za ważny. Sensowne wartości to od 100&#37; do 50&#37;.">
+<!ENTITY quorumDuration "Okres kworum">
+<!ENTITY whatisquorumDuration "określa liczbę dni, w trakcie których
+obserwacje muszą być spójne, co pozwala chronić przed krótkotrwałymi
+atakami. Jeśli podasz okres kworum D inny niż zero, odrzucenia klucz nastąpi
+tylko wtedy, gdy obserwacje potrzebnego kworum notariuszy nie są spójne
+przez D ostatnich dni. Twoje zapytanie do sieciowego notariusza może być
+dla niego pierwszą stycznością z danym serwerem, dlatego może on nie
+posiadać historii klucza. W rezultacie ustawienie wartości D większej
+niż zero, spowoduje, że więcej ważnych kluczy zostanie odrzuconych.">
+<!ENTITY invalidCertificateExceptions "Wyjątki dla niepoprawnych certyfikatów">
+<!ENTITY invalidCertificateExceptionsInfo "Jeśli certyfikat spełnia okres trwania kworum, Perspectives zainstaluje wyjątek, dzięki któremu Firefox nie będzie pokazywał strony błędu bezpieczeństwa dla stron, które używają tego certyfikatu. Możesz wybrać, czy Perspectives zainstaluje takie wyjątki, a jeżeli tak, to czy te wyjątki zostaną zainstalowane na stałe.">
+<!ENTITY h3questionsComments "Pytania / komentarze?">
+<!--will be followed by mail address -->
+<!ENTITY pleaseContactUs "Prosimy o kontakt na">
+<!ENTITY forMore "Więcej szczegółów znajduje się w naszym referacie na ten temat, który dostępny jest na">
+<!--will be followed by website link -->
+<!ENTITY perspectivesWebsite "Strona internetowa Perspectives">
+<!-- other links for more information. We keep these separate at the bottom so we don't have to split the paragraphs into chunks, which would make them harder to translate
+Feel free to change the links to something for your language, or to delete and leave it empty.-->
+<!ENTITY moreInformation "Więcej informacji">
+<!ENTITY moreInfoManInTheMiddle "Ataki typu 'man in the middle'">
+<!ENTITY moreInfoManInTheMiddleURL "https://pl.wikipedia.org/wiki/Atak_man_in_the_middle">
+<!ENTITY moreInfoPKI "Infrastruktura klucza publicznego (PKI)">
+<!ENTITY moreInfoPKIURL "https://pl.wikipedia.org/wiki/Infrastruktura_klucza_publicznego">
+<!-- ======= SPACER ======= -->
+<!-- Firewall help page - it reuses some strings such as the contact information -->
+<!ENTITY perspectivesFirewallHelp "Pomoc Perspectives na temat Firewall/Proxy">
+<!ENTITY h3protocolandPorts "Z jakiego protokołu i których portów korzysta Perspectives?">
+<!ENTITY protocolandPortsAnswer "Perspectives wykorzystuje standardowy protokół HTTP do odpytywania sieciowych serwerów notarialnych. Jednakże, niektóre z serwerów notarialnych nie są wstanie nasłuchiwać na standardowym porcie HTTP (port 80) i korzystają z portu 8080. Większość firewalli i serwerów proxy powinno przepuścić ten ruch sieciowy, niektóre jednak tego nie zrobią. Możesz skontaktować się ze swoim administratorem sieciowym i dowiedzieć się, czy istnieje prawdopodobieństwo, że ruch sieciowy Perspectives będzie blokowany przez proxy lub firewalla.">
+<!ENTITY h3manuallyOverrideWarning "Czy bezpiecznie jest ręcznie wyłączyć ostrzeżenie bezpieczeństwa w przeglądarce, jeśli nie nie można skontaktować się z żadnym notariuszem?">
+<!ENTITY manuallyOverrideWarningAnswer "NIE. Kiedy Perspectives nie może skontaktować się z żadnym serwerem notarialnym, dane potrzebne do rozróżnienia ważnego i nieważnego certyfikatu nie są dostarczone. Zaakceptowanie certyfikatu bez weryfikacji notarialnej może być niebezpieczne, gdyż istnieje możliwość, że to atakujący celowo blokuje Twoje zapytania notarialne.">

@@ -29,7 +29,6 @@ Feel free to change the links to something for your language, or to delete and l
 <!ENTITY moreInfoPKIURL "https://de.wikipedia.org/wiki/Public-Key-Infrastruktur">
 <!-- ======= SPACER ======= -->
 <!-- Firewall help page - it reuses some strings such as the contact information -->
-<!-- TODO: Please translate! -->
 <!ENTITY perspectivesFirewallHelp "Hilfe zur Verwendung von Perspectives hinter einer Firewall oder einem Proxy">
 <!ENTITY h3protocolandPorts "Welches Protokoll verwendet Perspectives?">
 <!ENTITY protocolandPortsAnswer "Perspectives verwendet das HTTP-Protokoll, um die Server von Notaren zu erreichen. Einige dieser Server können jedoch nicht auf den Port 80 (Standard bei HTTP-Verbindungen) lauschen und verwenden stattdessen Port 8080. Die meiste Firewall-Software sowie die meisten Proxys erlauben diese Verbindungen, manche jedoch nicht. Fragen sie ihren Netzwerkadministrator, ob diese Verbindungen von einem Proxy oder einer Firewall blockiert werden.">

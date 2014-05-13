@@ -29,7 +29,7 @@
 <!ENTITY Addsitetowhitelist "Lisää sivusto whitelistille">
 <!ENTITY Whitelistmessage "Vain eksperteille: Lisäämällä sivuston whitelistille, Perspectives automaattisesti luottaa kaikkiin yhteyksiin tältä palvelimelta eikä ota yhteyttä Notarityyn. Tee tämä vain jos ymmärrät riskit.">
 <!ENTITY ReportPossibleAttack "Raportoi mahdollinen hyökkäys">
-<!ENTITY ReportAttackMessage "By reporting an attack, the Perspectives project can improve this extension and detect Internet vulernabilities.">
+<!ENTITY ReportAttackMessage "By reporting an attack, the Perspectives project can improve this extension and detect Internet vulnerabilities.">
 <!ENTITY SendFullReport "Lähetä täysikokoinen raportti">
 <!ENTITY SendPrivacyReport "Send privacy-sensitive report">
 <!ENTITY Optional "Valinnainen">

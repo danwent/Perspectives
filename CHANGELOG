@@ -12,6 +12,12 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.5.1
+-----
+* Add (pl) Polish translation! Many thanks to Jakub and Sonia!
+* Fix typos and whitespace in localization files
+
+
 4.5
 ---
 + Enable https queries to notaries! For now, turn this on by adding 'https://' in front of the notary URL

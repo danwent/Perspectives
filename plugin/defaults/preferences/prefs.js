@@ -13,7 +13,6 @@ pref("perspectives.require_user_permission", false);
 pref("extensions.perspectives.show_permission_reminder", true);
 pref("extensions.perspectives.contact_in_private_browsing_mode", false);
 pref("perspectives.show_label", true);
-pref("perspectives.svg", "");
 pref("perspectives.max_timespan_for_inconsistency_test", 7);
 pref("perspectives.weak_consistency_time_limit", 30);
 pref("perspectives.trust_https_with_weak_consistency", true);

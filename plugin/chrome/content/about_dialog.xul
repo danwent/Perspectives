@@ -38,7 +38,7 @@
       readonly  = "true"
       flex      = "1"
       value     = ""
-      height    = "180"/>
+      height    = "210"/>
 
     <separator class="thin"/>
     <hbox>
@@ -54,7 +54,7 @@
       readonly  = "true"
       flex      = "1"
       value     = ""
-      height    = "110"/>
+      height    = "130"/>
 
     <hbox align="right">
         <button id="Close" label="&Close;" onclick="window.close()"/>

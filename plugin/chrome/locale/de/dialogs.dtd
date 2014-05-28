@@ -56,7 +56,7 @@
 <!ENTITY ViewCertificateStore "Zertifikate anzeigen">
 <!ENTITY DistrustAllCertificates "Allen Zertifikaten misstrauen...">
 <!ENTITY About "Über Perspectives">
-<!ENTITY AboutMainCredit "Perspectives Client - Erweiterung für Firefox von Dan Wendlandt">
+<!ENTITY AboutMainCredit "Perspectives Client, von Dan Wendlandt">
 <!ENTITY ContributorTitle "Mitwirkende">
 <!ENTITY ContributorSubTitle "(alphabetisch sortiert)">
 <!ENTITY ContributorText "Herzlichen Dank an diese Menschen, die Fehlerberichte, Dokumentationen, Verbesserungen und/oder Ideen beigetragen haben">

@@ -65,7 +65,7 @@
 <!ENTITY DistrustAllCertificates "Distrust all certificates...">
 <!-- -->
 <!ENTITY About "O Perspectives">
-<!ENTITY AboutMainCredit "Klient Perspectives - rozszerzenie Dana Wendlandta do Firefoxa">
+<!ENTITY AboutMainCredit "Klient Perspectives - rozszerzenie Dana Wendlandta">
 <!ENTITY ContributorTitle "Współautorzy">
 <!ENTITY ContributorSubTitle "(w porządku alfabetycznym według nazwiska)">
 <!ENTITY ContributorText "Wielkie podziękowania dla następujących ludzi, którzy uczestniczyli w zgłaszaniu błędów, współtworzyli dokumentację, kod lub pomysły">

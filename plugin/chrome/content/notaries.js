@@ -758,11 +758,17 @@ var Perspectives = {
 				ti.query_results.tooltip = "This site regularly uses multiples certificates, and most Notaries have not recently seen the certificate received by the browser";
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, //TODO: localize
 					ti.query_results.tooltip);
+				if(!ti.already_trusted){
+					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
+				}
 			} else if(ti.query_results.inconsistent_results) {
 				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = "Perspectives is unable to validate this site, because the site regularly uses multiples certificates";
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, //TODO: localize
 					ti.query_results.tooltip);
+				if(!ti.already_trusted){
+					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
+				}
 			} else if(!ti.query_results.cur_consistent){
 				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip =
@@ -771,7 +777,7 @@ var Perspectives = {
 					ti.query_results.tooltip);
 				// we may reconsider this in the future, but currently we don't do a
 				// drop-down if things aren't consistent but the browser already trusts the cert.
-				if(!ti.already_trusted && ti.firstLook){
+				if(!ti.already_trusted && ti.firstLook){ // ti.firstLook is never set => delete?
 					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
 				}
 			} else if(ti.query_results.duration < required_duration){
@@ -789,6 +795,8 @@ var Perspectives = {
 				ti.query_results.tooltip = "An unknown Error occurred processing Notary results"; //TODO: localize
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_ERROR,
 					ti.query_results.tooltip);
+
+				// Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED); // warn on error?
 			}
 
 
@@ -1076,3 +1084,4 @@ var Perspectives = {
 	}
 
 }
+

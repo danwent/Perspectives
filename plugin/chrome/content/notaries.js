@@ -230,17 +230,18 @@ var Perspectives = {
 			var list_txt = Perspectives.root_prefs.getCharPref("perspectives.additional_notary_list");
 			var additional_notaries = Pers_util.loadNotaryListFromString(list_txt);
 			all_notaries = all_notaries.concat(additional_notaries);
+
+			var use_default_notaries = Perspectives.root_prefs.getBoolPref("perspectives.use_default_notary_list");
+			if(use_default_notaries) {
+				var default_notaries = Pers_util.loadNotaryListFromString(
+					Perspectives.root_prefs.getCharPref("perspectives.default_notary_list"));
+				all_notaries = all_notaries.concat(default_notaries);
+			}
+
+			return all_notaries;
 		} catch(e) {
 			Pers_debug.d_print("error", "Error parsing additional notaries: " + e);
 		}
-		var use_default_notaries = Perspectives.root_prefs.getBoolPref("perspectives.use_default_notary_list");
-		if(use_default_notaries) {
-
-			var default_notaries = Pers_util.loadNotaryListFromString(
-						this.root_prefs.getCharPref("perspectives.default_notary_list"));
-			all_notaries = all_notaries.concat(default_notaries);
-		}
-		return all_notaries;
 	},
 
 

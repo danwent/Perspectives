@@ -21,11 +21,11 @@ var Pers_debug = {
 	d_print_all : false,
 
 	d_print_flags : {
-		"policy" : false,
-		"query" : false,
+		"policy"    : false,
+		"query"     : false,
 		"querylarge": false, //big response strings and XML; separating this from query lines makes for easier debugging
-		"main" : false,
-		"error" :  false
+		"main"      : false,
+		"error"     : false
 	},
 
 	d_print: function(flag,line) {
@@ -72,11 +72,13 @@ var Pers_util = {
   		return str;
 	},
 
+	// never used?
 	loadNotaryListFromURI: function(uri) {
 		return this.loadNotaryListFromString(this.readFileFromURI(uri));
 	},
 
 	loadNotaryListFromString: function(str_data) {
+		var ret = [];
 		var start_arr = str_data.split("\n");
 		var filtered_arr = [];
 		// the Perspectives object isn't always loaded here, so use our own
@@ -86,44 +88,81 @@ var Pers_util = {
 		}
 
 		for(var i = 0; i < start_arr.length; i++) {
-        		if (start_arr[i].length > 0 && start_arr[i][0] != "#") {
-        			// ignore lines that contain only whitespace -
-        			// makes the file easier to parse cross-platform
-        			if (/^\s+$/g.test(start_arr[i]) === false) {
-        				filtered_arr.push(start_arr[i]);
-        			}
-        		}
+			if (start_arr[i].length > 0 && start_arr[i][0] != "#") {
+				// ignore lines that contain only whitespace -
+				// makes the file easier to parse cross-platform
+				if (/^\s+$/g.test(start_arr[i]) === false) {
+					filtered_arr.push(start_arr[i]);
+				}
+			}
 		}
-       		var i = 0;
+
+		var i = 0;
 		var notary_list = [];
-        	while (i < filtered_arr.length) {
+		while (i < filtered_arr.length) {
 			var host = filtered_arr[i];
-            		var notary_server = { "host" : host };
-            		i += 1;
+			var notary_server = { "host" : host };
+			i += 1;
 
-            		var begin_string = "BEGIN PUBLIC KEY";
-            		if (i >= filtered_arr.length || filtered_arr[i].indexOf(begin_string) === -1) {
-            			throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
-            				' - ' + Pers_util.notarystr.getFormattedString("couldNotFindLine", [ begin_string ]));
-            		}
-            		i += 1;
+			var begin_string = "BEGIN PUBLIC KEY";
+			if (i >= filtered_arr.length || filtered_arr[i].indexOf(begin_string) === -1) {
+				throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
+					' - ' + Pers_util.notarystr.getFormattedString("couldNotFindLine", [ begin_string ]));
+			}
+			i += 1;
 
-            		var key = "";
-            		var end_string = "END PUBLIC KEY";
-            		while (i < filtered_arr.length && filtered_arr[i].indexOf(end_string) === -1) {
-                		key += filtered_arr[i];
-                		i += 1;
+			var key = "";
+			var end_string = "END PUBLIC KEY";
+			while (i < filtered_arr.length && filtered_arr[i].indexOf(end_string) === -1) {
+				key += filtered_arr[i];
+				i += 1;
 				if(i == filtered_arr.length) {
 					throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
 						' - ' +  Pers_util.notarystr.getFormattedString("couldNotFindLine", [ end_string ]));
 				}
-            		}
+			}
 
-            		i += 1; // consume the 'END PUBLIC KEY' line
-            		notary_server.public_key = key;
-            		notary_list.push(notary_server);
-        	}
-		return notary_list;
+			i += 1; // consume the 'END PUBLIC KEY' line
+			notary_server.public_key = key;
+			notary_list.push(notary_server);
+		}
+
+		// remove duplicate notaries and cleanup string or warn if public keys for duplicates don't match
+		if(notary_list.length > 1) {
+			var sortedNotaries = notary_list.sort(function(notaryA, notaryB) {
+				return notaryA.host.localeCompare(notaryB.host)
+			});
+
+			var filteredNotaries = [sortedNotaries[0]];
+			var unmatchedHosts   = [];
+			var prevDuplicate = false;
+			for(var i = 1; i < sortedNotaries.length; i++) {
+				var notaryA = sortedNotaries[i - 1];
+				var notaryB = sortedNotaries[i    ];
+				if(notaryA.host !== notaryB.host) {
+					filteredNotaries.push(notaryB);
+					prevDuplicate = false;
+				} else {
+					if(!prevDuplicate) {
+						if(notaryA.public_key !== notaryB.public_key) {
+							unmatchedHosts.push(notaryA.host);
+						}
+					}
+
+					prevDuplicate = true;
+				}
+			}
+
+			if(unmatchedHosts.length === 0) {
+				ret = filteredNotaries;
+			} else {
+				throw Pers_util.notarystr.getFormattedString("duplicateNotariesUnmatchedError", [unmatchedHosts.join(", ")]);
+			}
+		} else {
+			ret = notary_list;
+		}
+
+		return ret;
 	},
 
 	// stolen from: http://stackoverflow.com/questions/130404/javascript-data-formatting-pretty-printer

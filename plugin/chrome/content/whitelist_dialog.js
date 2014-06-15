@@ -161,7 +161,7 @@ var Pers_whitelist_dialog = {
 			}
 			Perspectives.root_prefs.setCharPref("perspectives.whitelist",new_whitelist.join(","));
 			window.Perspectives.forceStatusUpdate(window);
-		} catch(e) { alert("remove_from_whitelist:" + e); }
+		} catch(e) { Pers_util.pers_alert("remove_from_whitelist:" + e); }
 	}
 }
 

@@ -10,17 +10,19 @@
 <!ENTITY MediumSecurity "Durchschnittliche Sicherheit">
 <!ENTITY HighAvailability "Hohe Verfügbarkeit">
 <!ENTITY ManualConfiguration "Manuelle Konfiguration">
-<!ENTITY Percentageofnotariesthatmustagree "Prozentsatz der Notare die zustimmen müssen (Quorum Prozentsatz):">
-<!ENTITY Lengthoftimequorummustbeachieved "Nötige Anzahl Tage mit kontinuierlicher Übereinstimmung (Quorum Dauer):">
+<!ENTITY Percentageofnotariesthatmustagree "Prozentsatz der Notare die zustimmen müssen (Quorum-Prozentsatz):"      >
+<!ENTITY Lengthoftimequorummustbeachieved  "Nötige Anzahl Tage mit kontinuierlicher Übereinstimmung (Quorum-Dauer):">
+<!ENTITY QueryTimeout                      "Maximale Antwortzeit für die Nachfrage bei Notaren (in Millisekunden): ">
+<!ENTITY QueryRetries                      "Anzahl der Neuversuche wenn die Antwortzeit überschritten wurde: "      >
 <!ENTITY OverridingFirefoxSecurityErrors "Firefox Sicherheitsfehler umgehen">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Perspectives erlauben, Sicherheitsfehler automatisch zu umgehen">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Von Perspectives überprüften Zertifikaten dauerhaft vertrauen">
 <!ENTITY WhentoContactNotaries "Bedingung für das Nachfragen bei Notaren">
 <!ENTITY ContactNotariesforallHTTPSsites "Für alle HTTPS-Webseiten bei Notaren nachfragen">
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Nur nachfragen, wenn das Zertifikat einer Webseite einen Sicherheitsfehler verursacht">
-<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Immer nachfragen, bevor Notaren kontaktiert werden.">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Immer nachfragen, bevor Notare kontaktiert werden.">
 <!ENTITY Certificates "Zertifikate">
-<!ENTITY Servers "Notarenserver">
+<!ENTITY Servers "Notarserver">
 <!ENTITY Help "Hilfe">
 <!ENTITY OK "OK">
 <!ENTITY Close "Schließen">
@@ -40,13 +42,12 @@
 <!ENTITY DetailedInformation "Detaillierte Informationen">
 <!ENTITY CertificateValidation "Zertifikatsüberprüfung">
 <!ENTITY AutoTrust "Zertifikaten von folgenden Webseiten automatisch vertrauen">
-<!ENTITY DefaultNotaryServers "Standard Notarenserver">
-<!ENTITY UseDefaultNotaries "Liste der Standard Notarenserver benutzen">
-<!ENTITY AdditionalNotaryServers "Zusätzliche Notarenserver">
+<!ENTITY DefaultNotaryServers "Standard-Notarserver">
+<!ENTITY UseDefaultNotaries "Liste der Standard-Notarserver benutzen">
+<!ENTITY AdditionalNotaryServers "Zusätzliche Notarserver">
 <!ENTITY ForceNotaryCheck "Nachfrage bei Notaren erzwingen">
 <!ENTITY ReportAttack "Angriff melden">
 <!ENTITY ViewCertificateStore "Zertifikate anzeigen">
-<!-- TODO: Please translate! -->
 <!ENTITY About "Über Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Erweiterung für Firefox von Dan Wendlandt">
 <!ENTITY ContributorTitle "Mitwirkende">

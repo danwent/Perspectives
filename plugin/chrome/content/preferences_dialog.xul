@@ -2,40 +2,48 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <!DOCTYPE prefwindow SYSTEM "chrome://perspectives/locale/dialogs.dtd">
 
-<prefwindow id = "perspectives-properties" 
+<prefwindow id = "perspectives-properties"
 	title          = "Perspectives &Preferences;"
 	xmlns          = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	buttons        = ","
-	onload         = "Pers_pref.load_preferences()" 
+	onload         = "Pers_pref.load_preferences()"
 	ondialogaccept = "return Pers_pref.save_button_clicked();"
 >
-<prefpane id="perspective-main-prefpane"> 
-<preferences> 
-  <preference 
-    id="quorum-thresh"   
-    name="perspectives.quorum_thresh" 
+<prefpane id="perspective-main-prefpane">
+<preferences>
+  <preference
+    id="quorum-thresh"
+    name="perspectives.quorum_thresh"
     type="int"/>
-  <preference 
-    id="quorum-duration" 
+  <preference
+    id="quorum-duration"
     name="perspectives.required_duration"
     type="int"/>
-  <preference 
+  <preference
+    id="query-retries"
+    name="perspectives.query_retries"
+    type="int"/>
+  <preference
+    id="query-timeout"
+    name="perspectives.query_timeout_ms"
+    type="int"/>
+  <preference
     id="security-settings"
     name="perspectives.security_settings"
     type="int"/>
-  <preference 
+  <preference
     id="exception-perm"
     name="perspectives.exceptions.permanent"
     type="bool"/>
-  <preference 
+  <preference
     id="exception-enabled"
     name="perspectives.exceptions.enabled"
     type="bool"/>
-  <preference 
+  <preference
     id="check-good"
     name="perspectives.check_good_certificates"
     type="bool"/>
-  <preference 
+  <preference
     id="require-user-permission"
     name="perspectives.require_user_permission"
     type="bool"/>
@@ -43,19 +51,19 @@
     id="show-permission-reminder"
     name="extensions.perspectives.show_permission_reminder"
     type="bool"/>
-  <preference 
+  <preference
     id="whitelist"
     name="perspectives.whitelist"
     type="string"/>
-  <preference 
+  <preference
     id="additional_notary_list"
     name="perspectives.additional_notary_list"
     type="string"/>
-  <preference 
+  <preference
     id="use-default-notary-list"
     name="perspectives.use_default_notary_list"
     type="bool"/>
-  <preference 
+  <preference
     id="enable-default-list-auto-update"
     name="perspectives.enable_default_list_auto_update"
     type="bool"/>
@@ -65,43 +73,53 @@
     <stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" />
 </stringbundleset>
 
-<tabbox id="tablist"> 
- <tabs> 
+<tabbox id="tablist">
+ <tabs>
   <tab label="&CertificateValidation;"/>
   <tab label="&Servers;"/>
  </tabs>
- <tabpanels> 
-  <tabpanel id="securitytab"> 
+ <tabpanels>
+  <tabpanel id="securitytab">
 
   <vbox>
-  <groupbox > 
+  <groupbox >
     <caption label="&SecuritySettings;" style="font-weight: bold"/>
-    <menulist id="secset"  
+    <menulist id="secset"
       preference = "security-settings"
-      oncommand  = "Pers_pref.security_class_change()"> 
+      oncommand  = "Pers_pref.security_class_change()">
       <menupopup>
-      <menuitem label="&HighSecurity;"        value="2"/> 
+      <menuitem label="&HighSecurity;"        value="2"/>
       <menuitem label="&MediumSecurity;"      value="1"/>
       <menuitem label="&HighAvailability;"    value="0"/>
       <menuitem label="&ManualConfiguration;" value="-1"/>
-      </menupopup> 
+      </menupopup>
     </menulist>
     <hbox align="right">
       <label value="&Percentageofnotariesthatmustagree;"/>
       <spacer flex="1"/>
-      <textbox preference="quorum-thresh" id="quorum-thresh-text" size="4"/>
+      <textbox type="number" preference="quorum-thresh" id="quorum-thresh-text" size="4"/>
     </hbox>
     <hbox align="right">
       <label value="&Lengthoftimequorummustbeachieved;"/>
       <spacer flex="1"/>
-      <textbox preference="quorum-duration" id="quorum-duration-text" size="4" />
-    </hbox> 
-  </groupbox> 
+      <textbox type="number" preference="quorum-duration" id="quorum-duration-text" size="4" />
+    </hbox>
+    <hbox align="right">
+      <label value="&QueryTimeout;"/>
+      <spacer flex="1"/>
+      <textbox type="number" preference="query-timeout" id="query-timeout-text" size="4" />
+    </hbox>
+    <hbox align="right">
+      <label value="&QueryRetries;"/>
+      <spacer flex="1"/>
+      <textbox type="number" preference="query-retries" id="query-retries-text" size="4" />
+    </hbox>
+  </groupbox>
   <groupbox>
     <caption  label="&OverridingFirefoxSecurityErrors;" style="font-weight: bold"/>
-    <checkbox label="&AllowPerspectivestoautomaticallyoverridesecurityerrors;" 
+    <checkbox label="&AllowPerspectivestoautomaticallyoverridesecurityerrors;"
       preference="exception-enabled"/>
-    <checkbox label="&PermanentlytrustcertificatesvalidatedbyPerspectives;" 
+    <checkbox label="&PermanentlytrustcertificatesvalidatedbyPerspectives;"
       preference="exception-perm"/>
      <label value="&AutoTrust;:" />
       <textbox preference="whitelist" id="whitelist" size="40" />
@@ -111,7 +129,7 @@
   <spacer flex="1"/>
 </tabpanel>
 
-<tabpanel id="notarytab"> 
+<tabpanel id="notarytab">
 
 <vbox flex="1">
   <groupbox>
@@ -134,26 +152,26 @@
         </hbox>
   </groupbox>
 
-  <groupbox> 
+  <groupbox>
     <caption label="&DefaultNotaryServers;" style="font-weight: bold"/>
     <!-- make textboxes wide enough to hold default key formatting -->
     <textbox id="default_notary_list" multiline="true"
       style="width: 85ex; height: 25ex; color: grey;" readonly="true" flex="1"/>
     <checkbox label="&UseDefaultNotaries;" preference="use-default-notary-list"/>
-<!--    <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()" 
+<!--    <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()"
 	       id="enable_default_list_auto_update" preference="enable-default-list-auto-update"/>
 -->
-  </groupbox> 
-  <groupbox> 
+  </groupbox>
+  <groupbox>
     <caption label="&AdditionalNotaryServers;" style="font-weight: bold"/>
     <textbox id="additional_notary_list" multiline="true" style="width: 85ex; height: 25ex;" preference="additional_notary_list" flex="1" />
-  </groupbox> 
-</vbox> 
+  </groupbox>
+</vbox>
 
-</tabpanel> 
-</tabpanels> 
-</tabbox> 
-<hbox> 
+</tabpanel>
+</tabpanels>
+</tabbox>
+<hbox>
   <!-- For consistency, always put Cancel to the right of the action button -->
   <button label = "&OK;" onclick="acceptDialog()"/>
   <button label = "&Cancel;" onclick="window.close();"/>
@@ -165,4 +183,4 @@
 <script type = "application/x-javascript" src="common.js" ></script>
 <script type="application/x-javascript" src="base64.js" />
 
-</prefwindow> 
+</prefwindow>

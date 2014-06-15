@@ -11,7 +11,11 @@
 <!ENTITY HighAvailability "Alta Disponibilidad">
 <!ENTITY ManualConfiguration "Configuración Manual">
 <!ENTITY Percentageofnotariesthatmustagree "Porcentage de notarías que deben estar de acuerdo (porcentage de quórum): ">
-<!ENTITY Lengthoftimequorummustbeachieved "Días requeridos de acuerdo contínuo (duración de quórum): ">
+<!ENTITY Lengthoftimequorummustbeachieved  "Días requeridos de acuerdo contínuo (duración de quórum): "                >
+<!-- TODO translate -->
+<!ENTITY QueryTimeout                      "Timeout for querying notaries (in milliseconds): " >
+<!ENTITY QueryRetries                      "Number of retries if a timeout has exceeded: "     >
+<!-- -->
 <!ENTITY OverridingFirefoxSecurityErrors "Reemplazando los errores de seguridad de Firefox">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Permitir que Perspectives reemplaze automáticamente los errores de seguridad">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Aceptar permanentemente los certificados validados por Perspectives">

@@ -11,7 +11,11 @@
 <!ENTITY HighAvailability "低级(高度可用)">
 <!ENTITY ManualConfiguration "手动设置">
 <!ENTITY Percentageofnotariesthatmustagree "认证服务器信任的最低百分比(最小百分比)：">
-<!ENTITY Lengthoftimequorummustbeachieved "信任所需的最低持续时间(最短持续时间)：">
+<!ENTITY Lengthoftimequorummustbeachieved  "信任所需的最低持续时间(最短持续时间)："  >
+<!-- TODO translate -->
+<!ENTITY QueryTimeout                      "Timeout for querying notaries (in milliseconds): " >
+<!ENTITY QueryRetries                      "Number of retries if a timeout has exceeded: "     >
+<!-- -->
 <!ENTITY OverridingFirefoxSecurityErrors "跳过 Firefox 安全错误">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "允许 Perspectives 自动跳过安全错误">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "永久信任 Perspectives 验证的证书">

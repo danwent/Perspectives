@@ -18,8 +18,6 @@
 
 var Perspectives = {
  	MY_ID: "perspectives@cmu.edu",
-	TIMEOUT_SEC: 5,  // this is timeout for each query to the server
-	NUM_TRIES_PER_SERVER: 2, // number of times we query a server before giving up
 	strbundle : null, // this isn't loaded when things are intialized
 
 
@@ -267,8 +265,7 @@ var Perspectives = {
 
 		ti.timeout_id = window.setTimeout(function() {
 			Perspectives.notaryQueryTimeout(ti,0);
-		}, Perspectives.TIMEOUT_SEC * 1000 );
-
+		}, Perspectives.root_prefs.getIntPref("perspectives.query_timeout_ms") );
 	},
 
 	querySingleNotary: function(notary_server, ti) {
@@ -316,7 +313,7 @@ var Perspectives = {
 					}
 				}
 
-				var is_final_timeout = (num_timeouts == Perspectives.NUM_TRIES_PER_SERVER);
+				var is_final_timeout = (num_timeouts == Perspectives.root_prefs.getIntPref("perspectives.query_retries"));
 				if(is_final_timeout) {
 					// time is up, so just add empty results for missing
 					// notaries and begin processing results
@@ -337,7 +334,7 @@ var Perspectives = {
 
 					ti.timeout_id = window.setTimeout(function() {
 						Perspectives.notaryQueryTimeout(ti, num_timeouts + 1);
-					}, Perspectives.TIMEOUT_SEC * 1000 );
+					}, Perspectives.root_prefs.getIntPref("perspectives.query_timeout_ms") );
 				}
 
 			} catch (e) {
@@ -794,12 +791,9 @@ var Perspectives = {
 				// Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED); // warn on error?
 			}
 
-
 			if(ti.query_results.identityText){
 				Perspectives.setFaviconText(ti.query_results.identityText);
 			}
-
-
 		} catch (err) {
 			Pers_util.pers_alert("process_notary_results error: " + err);
 		}

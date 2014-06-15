@@ -581,17 +581,17 @@ var Perspectives = {
 		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && !(ti.is_override_cert);
 
 		if(Perspectives.is_whitelisted_by_user(ti.uri.host)) {
+			var text = Perspectives.strbundle.
+				getFormattedString("configuredToWhitelistWithHost", [ti.uri.host]);
 			if(! (ti.already_trusted || ti.is_override_cert)) {
 				var isTemp = !Perspectives.root_prefs.getBoolPref("perspectives.exceptions.permanent");
 				setTimeout(function() {
 					if(Perspectives.do_override(ti.browser, ti.cert, isTemp)) {
-						Perspectives.setFaviconText("Certificate trusted based on Perspectives whitelist"); //TODO: localize; can we use configuredToWhitelist to save a string?
+						Perspectives.setFaviconText(text);
 						Pers_notify.do_notify(ti, Pers_notify.TYPE_WHITELIST);
 					}
 				}, 1000);
 			}
-			var text = Perspectives.strbundle.
-				getFormattedString("configuredToWhitelistWithHost", [ ti.uri.host ]);
 			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC, text);
 			ti.reason_str = text;
 			return;
@@ -669,7 +669,7 @@ var Perspectives = {
 				Perspectives.getFaviconText().indexOf("Perspectives") < 0){
 				ti.query_results.identityText =
 					Perspectives.setFaviconText(Perspectives.getFaviconText() +
-					"\n\n" + "Perspectives has validated this site"); //TODO: localize
+					"\n\n" + Perspectives.strbundle.getString("verificationSuccess"));
 			}
 			var required_duration   =
 				Perspectives.root_prefs.
@@ -714,9 +714,8 @@ var Perspectives = {
 					// from applying the resuts and can add better tests for these,
 					// wrap setting the status and the tooltip in their own function
 					// so no steps are forgotten
-					ti.query_results.tooltip =
-						"HTTPS Certificate is trusted, but site contains insecure embedded content.";
-					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, ti.query_results.tooltip); //TODO: localize
+					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedButInsecureEmbedded");
+					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, ti.query_results.tooltip);
 					// this will flicker, as we can't rely on just doing it on 'firstLook'
 					// due to Firefox oddness
 					if(ti.override_used) {
@@ -725,21 +724,18 @@ var Perspectives = {
 				}  else {
 
 					ti.query_results.tooltip = Perspectives.strbundle.
-						getFormattedString("verifiedMessage",
-						[ ti.query_results.duration, required_duration]);
+						getFormattedString("verifiedMessage", [ti.query_results.duration, required_duration]);
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC,
 						ti.query_results.tooltip);
 				}
 			} else if(ti.already_trusted && weak_trust && pref_https_weak) {
 				// FIXME: need to clear any contrary banners
 				if(ti.state & Perspectives.state.STATE_IS_BROKEN) {
-					ti.query_results.tooltip =
-						"HTTPS Certificate is weakly trusted, but site contains insecure embedded content." //TODO: localize
+					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedWeaklyButInsecureEmbedded");
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT,
 						ti.query_results.tooltip);
 				}  else {
-					ti.query_results.tooltip =
-						"This site uses multiple certificates, including the certificate received and trusted by your browser." //TODO: localize
+					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedMultipleByBrowser");
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC,
 						ti.query_results.tooltip);
 
@@ -755,17 +751,15 @@ var Perspectives = {
 				}
 			} else if(ti.query_results.inconsistent_results && !ti.query_results.weakly_seen) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = "This site regularly uses multiples certificates, and most Notaries have not recently seen the certificate received by the browser";
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, //TODO: localize
-					ti.query_results.tooltip);
+				ti.query_results.tooltip = Perspectives.strbundle.getString("untrustedMultipleNotSeen");
+				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, ti.query_results.tooltip);
 				if(!ti.already_trusted){
 					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
 				}
 			} else if(ti.query_results.inconsistent_results) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = "Perspectives is unable to validate this site, because the site regularly uses multiples certificates";
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, //TODO: localize
-					ti.query_results.tooltip);
+				ti.query_results.tooltip = Perspectives.strbundle.getString("untrustedMultipleNotVerifiable");
+				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, ti.query_results.tooltip);
 				if(!ti.already_trusted){
 					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
 				}
@@ -792,7 +786,8 @@ var Perspectives = {
 				}
 			} else {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = "An unknown Error occurred processing Notary results"; //TODO: localize
+				ti.query_results.tooltip = Perspectives.strbundle.
+					getFormattedString("errorParsingNotaryEntry", [ti.uri.host]);
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_ERROR,
 					ti.query_results.tooltip);
 
@@ -829,8 +824,6 @@ var Perspectives = {
 		return false;
 	},
 
-
-
 	// See Documentation for nsIWebProgressListener at:
 	// https://developer.mozilla.org/en/nsIWebProgressListener
 
@@ -853,71 +846,75 @@ var Perspectives = {
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
 			}
-      			try{
-        			Pers_debug.d_print("main", "Location change " + aURI.spec);
-        			var state = Pers_statusbar.STATE_NEUT;
-        			var tooltip = "Perspectives";
 
-        			if (aURI !== null && aURI.scheme === 'https') {
-        				// we'll actually send a query for https connections, so update the UI.
-        				state = Pers_statusbar.STATE_QUERY;
-        				// use the asciiHost: sometimes the host contains invalid characters, or is unset.
-        				// in those cases getFormattedString() will throw an exception,
-        				// which causes the error icon to be displayed.
-        				tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
-        					[ aURI.asciiHost ])
-        				// TODO: can we start sending the query from right here, to begin sooner?
-        			}
-        			Pers_statusbar.setStatus(aURI, state, tooltip);
-      			} catch(err){
-        			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
-        			Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR,
-					"Perspectives: an error occurred when attempting to change location: " + err); //TODO: localize
-      			}
+			try {
+				Pers_debug.d_print("main", "Location change " + aURI.spec);
+				var state = Pers_statusbar.STATE_NEUT;
+				var tooltip = "Perspectives";
 
+				if (aURI !== null && aURI.scheme === 'https') {
+					// we'll actually send a query for https connections, so update the UI.
+					state = Pers_statusbar.STATE_QUERY;
+					// use the asciiHost: sometimes the host contains invalid characters, or is unset.
+					// in those cases getFormattedString() will throw an exception,
+					// which causes the error icon to be displayed.
+					tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
+						[ aURI.asciiHost ])
+					// TODO: can we start sending the query from right here, to begin sooner?
+				}
+				Pers_statusbar.setStatus(aURI, state, tooltip);
+			} catch(err){
+				Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
+				Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR,
+					Perspectives.strbundle.getFormattedString("internalError", ["onLocationChange - " + err]));
+			}
    		},
 
    		// we only call updateStatus on STATE_STOP, as a catch all in case
    		// onSecurityChange was never called.
    		onStateChange: function(aWebProgress, aRequest, aFlag, aStatus) {
-
 			if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP){
-       			  try {
-     				var uri = window.gBrowser.currentURI;
-    				Pers_debug.d_print("main", "State change " + uri.spec);
-         			Perspectives.updateStatus(window,false);
-       			  } catch (err) {
-         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
-         			Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR,
-					"Perspectives: an internal state change error occurred: " + err); //TODO: localize
-       			  }
-     			}
+				try {
+					var uri = window.gBrowser.currentURI;
+					Pers_debug.d_print("main", "State change " + uri.spec);
+					Perspectives.updateStatus(window,false);
+				} catch (err) {
+					if(Perspectives.strbundle == null) {
+						Perspectives.strbundle = document.getElementById("notary_strings");
+					}
+
+					Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
+					Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR,
+						Perspectives.strbundle.getFormattedString("internalError", ["onStateChange - " + err]));
+				  }
+				}
   		},
 
   		// this is the main function we key off of.  It seems to work well, even though
   		// the docs do not explicitly say when it will be called.
-  		onSecurityChange:    function() {
-       			var uri = null;
-       			try{
-         			uri = window.gBrowser.currentURI;
-         			Pers_debug.d_print("main", "Security change " + uri.spec);
-         			Perspectives.updateStatus(window,false);
-       			} catch(err){
-         			Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
-         			if(uri) {
-          				Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR,
-						"Perspectives: an internal security change error occurred: " + err); //TODO: localize
-         			}
-       			}
+  		onSecurityChange: function() {
+			var uri = null;
+			try{
+				uri = window.gBrowser.currentURI;
+				Pers_debug.d_print("main", "Security change " + uri.spec);
+				Perspectives.updateStatus(window,false);
+			} catch(err){
+				Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
+				if(uri) {
+					if(Perspectives.strbundle == null) {
+						Perspectives.strbundle = document.getElementById("notary_strings");
+					}
 
+					Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR,
+						Perspectives.strbundle.getFormattedString("internalError", ["onSecurityChange - " + err]));
+				}
+			}
   		},
 
-		onStatusChange:      function() { },
-		onProgressChange:    function() { },
+		onStatusChange     : function() { },
+		onProgressChange   : function() { },
 		onLinkIconAvailable: function() { }
 	},
-
-
 
 	requeryAllTabs: function(b){
 		/*
@@ -947,7 +944,11 @@ var Perspectives = {
 			setTimeout(function (){ Perspectives.requeryAllTabs(gBrowser); }, 4000);
 			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
 		} catch(e) {
-			Pers_util.pers_alert("Error in initNotaries: " + e);
+			if(Perspectives.strbundle == null) {
+				Perspectives.strbundle = document.getElementById("notary_strings");
+			}
+
+			Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("internalError", ["initNotaries - " + e]));
 		}
 	},
 

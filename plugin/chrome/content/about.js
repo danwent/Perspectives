@@ -28,9 +28,7 @@ var Pers_about = {
 	},
 
 	load_about_dialog: function() {
-
 		try {
-
 			var version = "?";
 
 			try {
@@ -48,13 +46,17 @@ var Pers_about = {
 			}
 
 			var contributors = Pers_util.readFileFromURI("chrome://perspectives/content/credits/contributors.txt");
-			var translators = Pers_util.readFileFromURI("chrome://perspectives/content/credits/translators.txt");
+			var translators  = Pers_util.readFileFromURI("chrome://perspectives/content/credits/translators.txt");
 
 			document.getElementById("contributors-list").value = contributors;
 			document.getElementById("translators-list").value = translators;
 		} catch(e) {
-			Pers_util.pers_alert("Error loading credits:" + e); //TODO: extract for localization
+			if(Perspectives.strbundle == null) {
+				Perspectives.strbundle = document.getElementById("notary_strings");
+			}
+
+			Pers_util.pers_alert(Perspectives.strbundle.
+				getFormattedString("loadingCreditsError", [e]));
 		}
 	}
 }
-

@@ -265,7 +265,7 @@ var Perspectives = {
 
 		ti.timeout_id = window.setTimeout(function() {
 			Perspectives.notaryQueryTimeout(ti,0);
-		}, Perspectives.root_prefs.getIntPref("perspectives.query_timeout_ms") );
+		}, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms") );
 	},
 
 	querySingleNotary: function(notary_server, ti) {
@@ -313,7 +313,7 @@ var Perspectives = {
 					}
 				}
 
-				var is_final_timeout = (num_timeouts == Perspectives.root_prefs.getIntPref("perspectives.query_retries"));
+				var is_final_timeout = (num_timeouts == Perspectives.root_prefs.getIntPref("extensions.perspectives.query_retries"));
 				if(is_final_timeout) {
 					// time is up, so just add empty results for missing
 					// notaries and begin processing results
@@ -334,7 +334,7 @@ var Perspectives = {
 
 					ti.timeout_id = window.setTimeout(function() {
 						Perspectives.notaryQueryTimeout(ti, num_timeouts + 1);
-					}, Perspectives.root_prefs.getIntPref("perspectives.query_timeout_ms") );
+					}, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms") );
 				}
 
 			} catch (e) {

@@ -1,7 +1,10 @@
+// new preference should be created in the "extensions.perspectives.x" namespace
+// see https://developer.mozilla.org/en/Extensions/Extension_etiquette
+// and https://github.com/danwent/Perspectives/issues/59
 pref("perspectives.quorum_thresh"    ,   75);
 pref("perspectives.required_duration",    0);
-pref("perspectives.query_retries"    ,    2);
-pref("perspectives.query_timeout_ms" , 5000);
+pref("extensions.perspectives.query_retries"   ,    2);
+pref("extensions.perspectives.query_timeout_ms", 5000);
 pref("perspectives.security_settings",    1);
 pref("perspectives.exceptions.permanent", false);
 pref("perspectives.exceptions.enabled", true);

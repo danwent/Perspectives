@@ -21,11 +21,11 @@
     type="int"/>
   <preference
     id="query-retries"
-    name="perspectives.query_retries"
+    name="extensions.perspectives.query_retries"
     type="int"/>
   <preference
     id="query-timeout"
-    name="perspectives.query_timeout_ms"
+    name="extensions.perspectives.query_timeout_ms"
     type="int"/>
   <preference
     id="security-settings"

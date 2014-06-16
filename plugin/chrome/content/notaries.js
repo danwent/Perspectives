@@ -706,6 +706,7 @@ var Perspectives = {
 					getBoolPref("perspectives.trust_https_with_weak_consistency");
 			var weak_trust = ti.query_results.inconsistent_results && ti.query_results.weakly_seen;
 
+			debugger
 			if(strong_trust) {
 				// FIXME: need to clear any contrary banners
 				var mixed_security =  ti.state & Perspectives.state.STATE_IS_BROKEN;
@@ -765,7 +766,7 @@ var Perspectives = {
 						ti.query_results.tooltip);
 
 				}
-			} else if (ti.query_results.summary.indexOf("ssl key") == -1) {
+			} else if (ti.query_results.summary.indexOf(Perspectives.strbundle.getString("sslKey")) === -1) {
 				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip =
 					Perspectives.strbundle.getString("noRepliesWarning");

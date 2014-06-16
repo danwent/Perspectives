@@ -23,6 +23,9 @@
 <!ENTITY ContactNotariesforallHTTPSsites "Contact Notaries for all HTTPS sites">
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contact Notaries only when a website's certificate causes a security error">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "Always ask before contacting Notaries">
+<!-- TODO translate -->
+<!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode">
+<!-- -->
 <!ENTITY Certificates "Sertifikaatit">
 <!ENTITY Servers "Notary Servers">
 <!ENTITY Help "Apua">

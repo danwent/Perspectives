@@ -23,6 +23,9 @@
 <!ENTITY ContactNotariesforallHTTPSsites "Contacter les Notaires pour tous les sites HTTPS">
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contacter les Notaires seulement quand le certificat d'un site web provoque une erreur de sécurité">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "Toujours demander avant de contacter les Notaires">
+<!-- TODO translate -->
+<!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode">
+<!-- -->
 <!ENTITY Certificates "Certificats">
 <!ENTITY Servers "Serveurs Notaires">
 <!ENTITY Help "Aide">

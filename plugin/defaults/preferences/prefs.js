@@ -11,6 +11,7 @@ pref("perspectives.exceptions.enabled", true);
 pref("perspectives.check_good_certificates", true);
 pref("perspectives.require_user_permission", false);
 pref("extensions.perspectives.show_permission_reminder", true);
+pref("extensions.perspectives.contact_in_private_browsing_mode", false);
 pref("perspectives.show_label", true);
 pref("perspectives.svg", "");
 pref("perspectives.max_timespan_for_inconsistency_test", 7);

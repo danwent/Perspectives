@@ -52,6 +52,10 @@
     name="extensions.perspectives.show_permission_reminder"
     type="bool"/>
   <preference
+    id="contact-in-private-browsing-mode"
+    name="extensions.perspectives.contact_in_private_browsing_mode"
+    type="bool"/>
+  <preference
     id="whitelist"
     name="perspectives.whitelist"
     type="string"/>
@@ -149,6 +153,12 @@
           <checkbox id="show-permission-reminder-checkbox"
             label="&DisplayPermissionReminder;"
             preference="show-permission-reminder"/>
+        </hbox>
+        <hbox>
+          <label value="   "/>
+          <checkbox id="contact-in-private-browsing-mode-checkbox"
+            label="&ContactNotariesInPrivateBrowsingMode;"
+            preference="contact-in-private-browsing-mode"/>
         </hbox>
   </groupbox>
 

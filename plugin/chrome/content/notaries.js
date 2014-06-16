@@ -634,6 +634,7 @@ var Perspectives = {
 			Pers_debug.d_print("main", ti.uri.host + " needs a request");
 			var needs_perm = Perspectives.root_prefs
 					.getBoolPref("perspectives.require_user_permission");
+
 			if(needs_perm && !ti.has_user_permission) {
 				Pers_debug.d_print("main", "needs user permission");
 				Pers_notify.do_notify(ti, Pers_notify.TYPE_NEEDS_PERMISSION);
@@ -643,6 +644,32 @@ var Perspectives = {
 				return;
 			}
 
+			// respect private browsing mode
+			var contact_private = Perspectives.root_prefs
+				.getBoolPref("extensions.perspectives.contact_in_private_browsing_mode");
+			if(!contact_private) {
+				var is_private = true; // default to true, better err on the save side
+				try { // Firefox 20+
+					Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
+					is_private = PrivateBrowsingUtils.isWindowPrivate(win);
+				} catch(e) { // pre Firefox 20
+					try {
+						is_private = Components.classes["@mozilla.org/privatebrowsing;1"].
+							getService(Components.interfaces.nsIPrivateBrowsingService).
+							privateBrowsingEnabled;
+					} catch(e) {
+						Pers_debug.d_print("main", "Can't retrieve private browsing mode. Assume 'private browsing mode activated'.");
+					}
+				}
+
+				if(is_private) {
+					Pers_debug.d_print("main", "don't contact notaries in private browsing mode");
+					var text = Perspectives.strbundle.getString("needsPermission"); // TODO: maybe add an additional localization hinting to private browsing mode
+					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
+					ti.reason_str = text;
+					return;
+				}
+			}
 
 			// make sure we're using the most recent notary list
 			Perspectives.all_notaries = this.getNotaryList();

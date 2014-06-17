@@ -16,8 +16,6 @@
 *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
 // convert an xml '<server>' node to a javascript object
 // In JSON syntax, this object has the following format:
 // { "signature" : "...base64 public key...",
@@ -32,30 +30,30 @@
 var Pers_xml = {
 	parse_server_node: function(reply, expected_version) {
 
-		if(reply.nodeName != "notary_reply"){
+		if(reply.nodeName !== "notary_reply") {
 			return null;
 		}
 		var version = reply.attributes.getNamedItem("version").value;
-		if(version != expected_version) {
-			Pers_debug.d_print("error","Expected version '" + expected_version
+		if(version !== expected_version) {
+			Pers_debug.d_print("error", "Expected version '" + expected_version
 				+ "' but got version '" + version + "'");
 			return null;
 		}
 
 		var res = {};
 		var sig_type = reply.attributes.getNamedItem("sig_type").value;
-		if(sig_type != "rsa-md5") {
+		if(sig_type !== "rsa-md5") {
 			// in the future, we will support 'rsa-sha256' as well
-			Pers_debug.d_print("error","Expected sig_type 'rsa-md5' " +
+			Pers_debug.d_print("error", "Expected sig_type 'rsa-md5' " +
 				"but got sig_type '" + sig_type + "'");
 			return null;
 		}
 		var sig_base64 = reply.attributes.getNamedItem("sig").value;
 		res.signature = Pers_util.add_der_signature_header(sig_base64);
 		res.obs       = [];
-		for (var j = 0; j < reply.childNodes.length; j++){
+		for(var j = 0; j < reply.childNodes.length; j++) {
 			var keynode = reply.childNodes[j];
-			if (keynode.nodeName != "key"){
+			if(keynode.nodeName !== "key") {
 				continue;
 			}
 
@@ -64,9 +62,9 @@ var Pers_xml = {
 				"key_type"   : keynode.attributes.getNamedItem("type").value,
 				"timestamps" : []
 			};
-			for (var k = 0; k < keynode.childNodes.length; k++){
+			for(var k = 0; k < keynode.childNodes.length; k++) {
 				var tsnode = keynode.childNodes[k];
-				if (tsnode.nodeName != "timestamp"){
+				if(tsnode.nodeName !== "timestamp") {
 					continue;
 				}
 				key_info.timestamps.push({
@@ -82,7 +80,7 @@ var Pers_xml = {
 
 
 	// Dumps all data in a server response to a string for easy debugging
-	resultToString: function(server_result, show_sig){
+	resultToString: function(server_result, show_sig) {
 		if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
 		}
@@ -92,7 +90,7 @@ var Pers_xml = {
 			var o = server_result.obs[j];
 			out += Perspectives.strbundle.getString("sslKey")
 				+ ": '" + o.key + "'\n";
-			for(var k = 0; k < o.timestamps.length; k++){
+			for(var k = 0; k < o.timestamps.length; k++) {
 				var start_t = o.timestamps[k].start;
 				var end_t   = o.timestamps[k].end;
 				var start_d = new Date(1000 * start_t).toDateString();
@@ -133,7 +131,7 @@ var Pers_xml = {
 		var bin_str = service_id;
 		bin_str += String.fromCharCode(0); // NULL-terminate
 
-		for (var i = server_res.obs.length - 1; i >= 0; i--) {
+		for(var i = server_res.obs.length - 1; i >= 0; i--) {
 			var o = server_res.obs[i];
 			var num_timespans = o.timestamps.length;
 			bin_str += String.fromCharCode((num_timespans >> 8) & 255,
@@ -143,7 +141,7 @@ var Pers_xml = {
 			for(var k = 0; k < hex_array.length; k++) {
 				bin_str += String.fromCharCode((parseInt(hex_array[k],16)));
 			}
-			for (var j = 0; j < o.timestamps.length; j++) {
+			for(var j = 0; j < o.timestamps.length; j++) {
 				var t = o.timestamps[j];
 				bin_str += String.fromCharCode((t.start >> 24) & 255,
 							(t.start >> 16) & 255,

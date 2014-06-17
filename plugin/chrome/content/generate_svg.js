@@ -29,7 +29,7 @@ var Pers_gen = {
 			var results = server_result_list[i];
 			for(var j = 0; j < results.obs.length; j++) {
 				var obs = results.obs[j];
-				if (key_to_ts_list[obs.key] == null) {
+				if(key_to_ts_list[obs.key] == null) {
 					key_to_ts_list[obs.key] = [];
 				}
 				for(var k = 0; k < obs.timestamps.length; k++) {
@@ -66,7 +66,7 @@ var Pers_gen = {
 	},
 
 	get_svg_graph: function(service_id, server_result_list, len_days, cur_secs,
-							browser_key, max_stale_sec) {
+							browser_key, max_stale_sec, required_duration) {
 		var x_offset = 230, y_offset = 40;
 		var width = 700;
 		var y_cord = y_offset;
@@ -108,7 +108,7 @@ var Pers_gen = {
 			var most_recent_color = "white"; // none
 			var most_recent_end = 0;
 			var results = server_result_list[i];
-			var servername = results.server.replace(/^https?\:\/\//, '');
+			var servername = results.server.replace(/^https?\:\/\//, ''); // TODO: code inspect says the backslash for \: is unnecessary
 			y_cord += 20;
 			res += '<text x="4" y="' + (y_cord + 8) + '" font-size="10">'
 				+ servername + '</text>\n';
@@ -178,12 +178,20 @@ var Pers_gen = {
 				+ '" rx="5" stroke="black" stroke-width="1px" />\n';
 		} // end per-server
 
+		// draw quorum line
+		if(required_duration > 0) {
+			var x = x_offset + pixels_per_day * required_duration;
+			res += '<path d = "M ' + x + ' ' + (y_offset + 30) +  ' L ' + x
+				+ ' ' + (y_cord + 20)
+				+ '" stroke="black" stroke-width="1"/>\n';
+		}
+
 		// draw Days axis
 		for(var i = 0; i < 11; i++) {
 			var days = i * (len_days / 10.0);
 			var x = x_offset + (pixels_per_day * days);
 			var y = y_offset + 30;
-			if(len_days < 10 && days != 0) {
+			if(len_days < 10 && days !== 0) { // FIXME: the branches have the same functionality?
 				// print with decimal point (broken)
 				res += '<text x="' + x + '" y="' + y
 					+ '" font-size="15">'
@@ -195,7 +203,7 @@ var Pers_gen = {
 			}
 			res += '<path d = "M ' + x + ' ' + y +  ' L ' + x
 				+ ' ' + (y_cord + 20)
-				+ '" stroke = "grey" stroke-width = "1"/>\n';
+				+ '" stroke="grey" stroke-width="1"/>\n';
 		}
 
 		// draw legend mapping colors to keys
@@ -203,10 +211,10 @@ var Pers_gen = {
 		if(grey_used) {
 			color_info["all other keys"] = "grey";
 		}
-		for (var key in color_info) {
+		for(var key in color_info) {
 			if(color_info.hasOwnProperty(key)) {
 				var match_text = "";
-				if (key === browser_key) {
+				if(key === browser_key) {
 					match_text = " (" +
 						Perspectives.strbundle.getString("LegendBrowsersKey") + ")";
 				}

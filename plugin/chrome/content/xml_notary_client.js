@@ -20,13 +20,15 @@
 
 // convert an xml '<server>' node to a javascript object
 // In JSON syntax, this object has the following format:
-/* { "signature" : "XXXX",
-     "obs" : [  { "key" : "XXX",
- 		  "timestamps" : [ { "start" : XXX, "end" : YYY } ]
-		}
-	     ]
-   }
-*/
+// { "signature" : "...base64 public key...",
+// , "server"    : "notary.example.com:80"
+// , "obs"       : [ { "key"        : "...hex key..."
+//                   , "key_type"   : "ssl etc."
+//                   , "timestamps" : [ { "start" : 1234567890, end : 9876543210 } ]
+//                 ]
+// , "is_valid"  : null|bool
+// }
+
 var Pers_xml = {
 	parse_server_node: function(reply, expected_version) {
 
@@ -40,7 +42,7 @@ var Pers_xml = {
 			return null;
 		}
 
-		var res = new Object();
+		var res = {};
 		var sig_type = reply.attributes.getNamedItem("sig_type").value;
 		if(sig_type != "rsa-md5") {
 			// in the future, we will support 'rsa-sha256' as well
@@ -50,7 +52,7 @@ var Pers_xml = {
 		}
 		var sig_base64 = reply.attributes.getNamedItem("sig").value;
 		res.signature = Pers_util.add_der_signature_header(sig_base64);
-		res.obs     = new Array();
+		res.obs       = [];
 		for (var j = 0; j < reply.childNodes.length; j++){
 			var keynode = reply.childNodes[j];
 			if (keynode.nodeName != "key"){
@@ -58,8 +60,8 @@ var Pers_xml = {
 			}
 
 			var key_info = {
-				"key" : keynode.attributes.getNamedItem("fp").value,
-				"key_type" : keynode.attributes.getNamedItem("type").value,
+				"key"        : keynode.attributes.getNamedItem("fp"  ).value,
+				"key_type"   : keynode.attributes.getNamedItem("type").value,
 				"timestamps" : []
 			};
 			for (var k = 0; k < keynode.childNodes.length; k++){
@@ -68,18 +70,19 @@ var Pers_xml = {
 					continue;
 				}
 				key_info.timestamps.push({
-					"start" : tsnode.attributes.getNamedItem("start").value,
-					"end" : tsnode.attributes.getNamedItem("end").value
+					"start" : parseInt(tsnode.attributes.getNamedItem("start").value, 10), // static typing ftw!
+					"end"   : parseInt(tsnode.attributes.getNamedItem("end"  ).value, 10)
 				});
             }
 			res.obs.push(key_info);
         }
+		res.is_valid = null;
 		return res;
 	},
 
 
 	// Dumps all data in a server response to a string for easy debugging
-	resultToString: function(server_result,show_sig){
+	resultToString: function(server_result, show_sig){
 		if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
 		}
@@ -91,9 +94,9 @@ var Pers_xml = {
 				+ ": '" + o.key + "'\n";
 			for(var k = 0; k < o.timestamps.length; k++){
 				var start_t = o.timestamps[k].start;
-				var end_t = o.timestamps[k].end;
+				var end_t   = o.timestamps[k].end;
 				var start_d = new Date(1000 * start_t).toDateString();
-				var end_d = new Date(1000 * end_t).toDateString();
+				var end_d   = new Date(1000 * end_t  ).toDateString();
 				out += Perspectives.strbundle.getString("keyStart") +
 					":\t" + start_t + " - " + start_d + "\n";
 				out += Perspectives.strbundle.getString("keyEnd") +
@@ -102,7 +105,7 @@ var Pers_xml = {
 					Perspectives.strbundle.getString("keyDays") + ")\n\n";
 			}
 		}
-		if(server_result.obs.length == 0) {
+		if(server_result.obs.length === 0) {
 			out += "[ " + Perspectives.strbundle.getString("noResults") + " ]";
 		}
 		if(show_sig) {
@@ -154,4 +157,4 @@ var Pers_xml = {
 
 		return bin_str;
 	}
-}
+};

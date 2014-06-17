@@ -18,7 +18,7 @@
 
 var Perspectives = {
  	MY_ID: "perspectives@cmu.edu",
-	strbundle : null, // this isn't loaded when things are intialized
+	strbundle : null, // this isn't loaded when things are initialized
 
 
 	// IP addresses that can't be queried by notary machines
@@ -108,24 +108,28 @@ var Perspectives = {
 
 	//Sets the tooltip and the text of the favicon popup on https sites
 	setFaviconText: function(str){
-        	var box = document.getElementById("identity-box");
-        	if(box)
-            		box.tooltipText = str;
-        	else { // SeaMonkey
-            		box = document.getElementById("security-button");
-            		if(box)
-               		box.tooltipText = str;
-        	}
+		var box = document.getElementById("identity-box");
+		if(box) {
+			box.tooltipText = str;
+		}
+		else { // SeaMonkey
+			box = document.getElementById("security-button");
+			if(box) {
+				box.tooltipText = str;
+			}
+		}
 	},
 
 	getFaviconText: function(){
-        	var box = document.getElementById("identity-box");
-        	if(box)
-            		return box.tooltipText;
-        	// SeaMonkey
-        	box = document.getElementById("security-button");
-        	if(box)
-            		return box.tooltipText;
+		var box = document.getElementById("identity-box");
+		if(box) {
+				return box.tooltipText;
+		}
+		// SeaMonkey
+		box = document.getElementById("security-button");
+		if(box) {
+				return box.tooltipText;
+		}
 	},
 
 	// cached result data
@@ -163,8 +167,9 @@ var Perspectives = {
 
 			var certDB = Components.classes["@mozilla.org/security/x509certdb;1"]
 				.getService(Components.interfaces.nsIX509CertDB);
-			if (!certDB)
+			if (!certDB) {
 				return null;
+			}
 
 			Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 			recentCertsSvc = certDB.getRecentBadCerts(PrivateBrowsingUtils.isWindowPrivate(window));
@@ -174,15 +179,17 @@ var Perspectives = {
 			return null;
 		}
 
-		if (!recentCertsSvc)
+		if (!recentCertsSvc) {
 			return null;
+		}
 
 		var port = (uri.port == -1) ? 443 : uri.port;
 
 		var hostWithPort = uri.host + ":" + port;
 		var gSSLStatus = recentCertsSvc.getRecentBadCert(hostWithPort);
-		if (!gSSLStatus)
+		if(!gSSLStatus) {
 			return null;
+		}
 		return gSSLStatus;
 	},
 
@@ -200,8 +207,9 @@ var Perspectives = {
 	psv_get_valid_cert: function(ui) {
 		try {
 			ui.QueryInterface(Components.interfaces.nsISSLStatusProvider);
-			if(!ui.SSLStatus)
+			if(!ui.SSLStatus) {
 				return null;
+			}
 			return ui.SSLStatus.serverCert;
 		}
 		catch (e) {
@@ -367,10 +375,28 @@ var Perspectives = {
 							createInstance(Ci.nsIDataSignatureVerifier);
 					var result = verifier.verifyData(bin_result,
 							server_result.signature, notary_server.public_key);
-					if(!result) {
+					if(result) {
+						// TODO: move into a check function
+						// ... and import UnderscoreJS and use functional style programming
+						server_result.is_valid = true;
+						for(var i = 0; i < server_result.obs.length; i++) {
+							var obs = server_result.obs[i];
+							if(server_result.is_valid) {
+								for(var j = 0; j < obs.timestamps.length; j++) {
+									var ts = obs.timestamps[j];
+									if(ts.end < ts.start) {
+										server_result.is_valid = false;
+										break;
+									}
+								}
+							} else {
+								break
+							}
+						}
+					} else {
 						Pers_debug.d_print("error", "Invalid signature from : " +
-							notary_server.host);
-						return;
+													notary_server.host);
+						server_result.is_valid = false;
 					}
 					server_result.server = notary_server.host;
 
@@ -384,16 +410,23 @@ var Perspectives = {
 					}
 				 	var i;
 					for(i = 0; i < result_list.length; i++) {
-						if(result_list[i].server == server_result.server) {
-							Pers_debug.d_print("query",
-							  "Ignoring duplicate reply for '" +
-								ti.service_id + "' from '" +
-								server_result.server + "'");
-							return;
+						if(result_list[i].server === server_result.server) {
+							// also check if previous response was valid
+							if(result_list[i].is_valid === true) {
+								Pers_debug.d_print("query",
+								  	"Ignoring duplicate reply for '" +
+										ti.service_id + "' from '"   +
+										server_result.server + "'");
+								return;
+							} else {
+								result_list.splice(i, 1);
+								break
+							}
 						}
 					}
 					Pers_debug.d_print("query","adding result from: " +
 							notary_server.host);
+
 					result_list.push(server_result);
 
 					var num_replies = ti.partial_query_results.length;
@@ -454,7 +487,6 @@ var Perspectives = {
 					server_result_list, q_required, max_stale_sec,unixtime);
 			var is_cur_consistent = quorum_duration != -1;
 
-
 			var weak_check_time_limit = Perspectives.root_prefs.
 						getIntPref("perspectives.weak_consistency_time_limit");
 			var inconsistent_check_max = Perspectives.root_prefs.
@@ -487,7 +519,7 @@ var Perspectives = {
 					": \n" + obs_text + "\n";
 			//Pers_debug.d_print("main","\n" + str + "\n");
 			var svg = Pers_gen.get_svg_graph(ti.service_id, server_result_list, 30,
-				unixtime,test_key, max_stale_sec);
+				unixtime, test_key, max_stale_sec);
 			ti.query_results = new Perspectives.SslCert(ti.uri.host,
 										ti.uri.port, test_key,
 										str, null,svg, qd_days,
@@ -512,12 +544,15 @@ var Perspectives = {
 			return false;
 		}
 		var flags = 0;
-		if(gSSLStatus.isUntrusted)
+		if(gSSLStatus.isUntrusted) {
 			flags |= Perspectives.overrideService.ERROR_UNTRUSTED;
-		if(gSSLStatus.isDomainMismatch)
+		}
+		if(gSSLStatus.isDomainMismatch) {
 			flags |= Perspectives.overrideService.ERROR_MISMATCH;
-		if(gSSLStatus.isNotValidAtThisTime)
+		}
+		if(gSSLStatus.isNotValidAtThisTime) {
 			flags |= Perspectives.overrideService.ERROR_TIME;
+		}
 
 		Perspectives.overrideService.rememberValidityOverride(
 			uri.asciiHost, uri.port, cert, flags, isTemp);
@@ -557,7 +592,7 @@ var Perspectives = {
 		ti.cert       = Perspectives.getCertificate(ti.browser);
 		if(!ti.cert){
 			var text = Perspectives.strbundle.
-				getFormattedString("noCertError", [ ti.uri.host ])
+				getFormattedString("noCertError", [ti.uri.host]);
 			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 			ti.reason_str = text;
 			return;
@@ -601,7 +636,7 @@ var Perspectives = {
 			var unreachable = Perspectives.is_nonrouted_ip(ti.uri.host);
 			if(unreachable) {
 				var text = Perspectives.strbundle.
-					getFormattedString("rfc1918Error", [ ti.uri.host ])
+					getFormattedString("rfc1918Error", [ti.uri.host]);
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 				ti.reason_str = text;
 				return;
@@ -706,13 +741,12 @@ var Perspectives = {
 					getBoolPref("perspectives.trust_https_with_weak_consistency");
 			var weak_trust = ti.query_results.inconsistent_results && ti.query_results.weakly_seen;
 
-			debugger
 			if(strong_trust) {
 				// FIXME: need to clear any contrary banners
 				var mixed_security =  ti.state & Perspectives.state.STATE_IS_BROKEN;
 				if(!ti.is_override_cert && (ti.state & Perspectives.state.STATE_IS_INSECURE)){
 					ti.exceptions_enabled = Perspectives.root_prefs.
-						getBoolPref("perspectives.exceptions.enabled")
+						getBoolPref("perspectives.exceptions.enabled");
 					if(ti.exceptions_enabled) {
 						ti.override_used = true;
 						var isTemp = !Perspectives.root_prefs.
@@ -737,7 +771,7 @@ var Perspectives = {
 				if(mixed_security) {
 					// FIXME: need to clear any contrary banners
 					// TODO: once we have separated calculation of results
-					// from applying the resuts and can add better tests for these,
+					// from applying the results and can add better tests for these,
 					// wrap setting the status and the tooltip in their own function
 					// so no steps are forgotten
 					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedButInsecureEmbedded");
@@ -764,7 +798,6 @@ var Perspectives = {
 					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedMultipleByBrowser");
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC,
 						ti.query_results.tooltip);
-
 				}
 			} else if (ti.query_results.summary.indexOf(Perspectives.strbundle.getString("sslKey")) === -1) {
 				// FIXME: need to clear any contrary banners
@@ -803,8 +836,7 @@ var Perspectives = {
 			} else if(ti.query_results.duration < required_duration){
 				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip = Perspectives.strbundle.
-					getFormattedString("thresholdWarning",
-					[ ti.query_results.duration, required_duration]);
+					getFormattedString("thresholdWarning", [ti.query_results.duration, required_duration]);
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC,
 					ti.query_results.tooltip);
 				if(!ti.already_trusted && ti.firstLook){
@@ -834,13 +866,15 @@ var Perspectives = {
 			var whitelist = Perspectives.root_prefs.
 				    getCharPref("perspectives.whitelist").split(",");
 			for(var entry in whitelist) {
-				var e = whitelist[entry];
-				if(e.length == 0) {
-					continue;
-				}
-				var r = RegExp(e);
-				if (host.match(r)) {
-					return true;
+				if(whitelist.hasOwnProperty(entry)) {
+					var e = whitelist[entry];
+					if(e.length == 0) {
+						continue;
+					}
+					var r = new RegExp(e);
+					if(host.match(r)) {
+						return true;
+					}
 				}
 			}
 		} catch(e) { /* ignore */ }
@@ -862,7 +896,7 @@ var Perspectives = {
 	//note can use request to suspend the loading
 	notaryListener : {
 
-   		// Note: We intentially do NOT call updateStatus from here, as this
+   		// Note: We intentionally do NOT call updateStatus from here, as this
    		// was causing a bug that caused us to get the previous website's cert
    		// instead of the correct cert.
    		onLocationChange: function(aWebProgress, aRequest, aURI) {
@@ -882,7 +916,7 @@ var Perspectives = {
 					// in those cases getFormattedString() will throw an exception,
 					// which causes the error icon to be displayed.
 					tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
-						[ aURI.asciiHost ])
+						[aURI.asciiHost]);
 					// TODO: can we start sending the query from right here, to begin sooner?
 				}
 				Pers_statusbar.setStatus(aURI, state, tooltip);
@@ -993,7 +1027,9 @@ var Perspectives = {
 		// sometimes things blow up because accessing uri.host throws an exception
 		try {
 			var ignore = uri.host;
-			if(!uri.host) throw "";
+			if(!uri.host) {
+				throw "";
+			}
 		} catch(e) {
 			return Perspectives.strbundle.getString("notValidRemoteServer");
 		}
@@ -1106,6 +1142,5 @@ var Perspectives = {
 									false);
 		}
 	}
-
-}
+};
 

@@ -16,7 +16,6 @@
 *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 var Pers_whitelist_dialog = {
 	root_prefs : Components.classes["@mozilla.org/preferences-service;1"].
 				getService(Components.interfaces.nsIPrefBranch),
@@ -27,7 +26,8 @@ var Pers_whitelist_dialog = {
 			if(Perspectives.strbundle == null) {
 					Perspectives.strbundle = document.getElementById("notary_strings");
 			}
-			var error_text = Perspectives.detectInvalidURI(window);
+			var uri = window.gBrowser.currentURI;
+			var error_text = Perspectives.detectInvalidURI(uri);
 			if(error_text) {
 				Pers_util.pers_alert(Perspectives.strbundle.getString("couldNotAddToWhitelist")
 					+ ": " + error_text);
@@ -35,41 +35,41 @@ var Pers_whitelist_dialog = {
 			}
 			var host = window.gBrowser.currentURI.host;
 			window.openDialog("chrome://perspectives/content/whitelist_dialog.xul", "", "centerscreen", host).focus();
-		} catch (e) { Pers_util.pers_alert("add_to_whitelist: " + e); }
+		} catch(e) { Pers_util.pers_alert("add_to_whitelist: " + e); }
 
 	},
 
 	confirm_add : function() {
 		try {
-		var host = window.arguments[0];
-		var is_domain = document.getElementById("whitelist-radio-2").selected;
-		var is_ip = this.is_ip_address(host);
+			var host = window.arguments[0];
+			var is_domain = document.getElementById("whitelist-radio-2").selected;
+			var is_ip = this.is_ip_address(host);
 
-		window.close();
+			window.close();
 
-		if(is_domain) {
-			if(is_ip) {
-				var regex = this.get_ip_domain_regex(host);
+			if(is_domain) {
+				if(is_ip) {
+					var regex = this.get_ip_domain_regex(host);
+				} else {
+					var regex = this.get_dns_domain_regex(host);
+				}
 			} else {
-				var regex = this.get_dns_domain_regex(host);
+				var regex = "^" + host.replace(".", "\\.", "g") + "$";
 			}
-		} else {
-			var regex = "^" + host.replace(".","\\.","g") + "$";
-		}
-		var whitelist = this.root_prefs.getCharPref("perspectives.whitelist");
-		if(whitelist.length == 0) {
-			whitelist = regex;
-		} else {
-			whitelist = whitelist + "," + regex;
-		}
-		this.root_prefs.setCharPref("perspectives.whitelist",whitelist);
-		window.opener.Perspectives.forceStatusUpdate(window.opener);
+			var whitelist = this.root_prefs.getCharPref("perspectives.whitelist");
+			if(whitelist.length === 0) {
+				whitelist = regex;
+			} else {
+				whitelist = whitelist + "," + regex;
+			}
+			this.root_prefs.setCharPref("perspectives.whitelist", whitelist);
+			window.opener.Perspectives.forceStatusUpdate(window.opener);
 		} catch(e) { Pers_util.pers_alert("confirm_add: " + e); }
 	},
 
 	is_ip_address: function(host) {
 		var host_arr = host.split("\.");
-		return host_arr[host_arr.length - 1].match(RegExp("[0-9]+"));
+		return host_arr[host_arr.length - 1].match(new RegExp("[0-9]+"));
 	},
 
 	// 'host' could be a domain name or an ip address
@@ -83,14 +83,13 @@ var Pers_whitelist_dialog = {
 	},
 
 	get_dns_domain_regex: function(host) {
-		return ".*\\." + this.get_dns_domain_text(host).replace(".","\\.","g") + "$";
+		return ".*\\." + this.get_dns_domain_text(host).replace(".", "\\.", "g") + "$";
 	},
 
 	get_ip_domain_text: function(host) {
 		var host_arr = host.split("\.");
-		var l = host_arr.length;
 		var prefix =  host_arr[0] + "." + host_arr[1] + "." + host_arr[2] + ".";
-		if(host_arr.length == 4) {
+		if(host_arr.length === 0) {
 			return prefix + "0" + " - " + prefix + "255";
 		}
 		return null;
@@ -98,12 +97,11 @@ var Pers_whitelist_dialog = {
 
 	get_ip_domain_regex: function(host) {
 		var host_arr = host.split("\.");
-		var l = host_arr.length;
 		var prefix =  host_arr[0] + "." + host_arr[1] + "." + host_arr[2] + ".";
-		return "^" + prefix.replace(".","\\.","g") + "[0-9]+$";
+		return "^" + prefix.replace(".", "\\.", "g") + "[0-9]+$";
 	},
 
-	fill_dialog: function(){
+	fill_dialog: function() {
 		try {
 			if(Pers_whitelist_dialog.strbundle == null) {
 					Pers_whitelist_dialog.strbundle = document.getElementById("whitelist_strings");
@@ -144,25 +142,27 @@ var Pers_whitelist_dialog = {
 			var old_whitelist = Perspectives.root_prefs.getCharPref("perspectives.whitelist").split(",");
 			var new_whitelist = [];
 			for(var entry in old_whitelist) {
-				var e = old_whitelist[entry];
-				if(e.length == 0) {
-					continue;
-				}
-				var r = RegExp(e);
-				var display_str = e.replace(/\\/g,"").replace("$","").replace("^","");
-				if (host.match(r)) {
-					var answer = confirm(Perspectives.strbundle.
-						getFormattedString("removeFromWhitelistQuestion", [display_str]));
-					if(answer) {
+				if(old_whitelist.hasOwnProperty(entry)) {
+					var e = old_whitelist[entry];
+					if(e.length === 0) {
 						continue;
 					}
+					var r = new RegExp(e);
+					var display_str = e.replace(/\\/g, "").replace("$", "").replace("^", "");
+					if(host.match(r)) {
+						var answer = confirm(Perspectives.strbundle.
+							getFormattedString("removeFromWhitelistQuestion", [display_str]));
+						if(answer) {
+							continue;
+						}
+					}
+					new_whitelist.push(e);
 				}
-				new_whitelist.push(e);
 			}
-			Perspectives.root_prefs.setCharPref("perspectives.whitelist",new_whitelist.join(","));
+			Perspectives.root_prefs.setCharPref("perspectives.whitelist", new_whitelist.join(","));
 			window.Perspectives.forceStatusUpdate(window);
 		} catch(e) { Pers_util.pers_alert("remove_from_whitelist:" + e); }
 	}
-}
+};
 
 

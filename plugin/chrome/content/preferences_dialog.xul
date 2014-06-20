@@ -189,8 +189,8 @@
 
 </prefpane>
 
-<script type = "application/x-javascript" src="preferences_dialog.js" ></script>
-<script type = "application/x-javascript" src="common.js" ></script>
-<script type="application/x-javascript" src="base64.js" />
+<script type="application/x-javascript" src="preferences_dialog.js" />
+<script type="application/x-javascript" src="common.js"             />
+<script type="application/x-javascript" src="base64.js"             />
 
 </prefwindow>

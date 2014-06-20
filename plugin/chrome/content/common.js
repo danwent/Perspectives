@@ -22,13 +22,14 @@ var Pers_debug = {
 
 	d_print_flags : {
 		"policy"    : false,
-		"query"     : false,
+		"query"     : true,
 		"querylarge": false, //big response strings and XML; separating this from query lines makes for easier debugging
-		"main"      : false,
-		"error"     : false
+		"main"      : true,
+		"error"     : true
+//		"listener"  : false
 	},
 
-	d_print: function(flag,line) {
+	d_print: function(flag, line) {
 		if(!Pers_debug.d_print_flags[flag] && !Pers_debug.d_print_all) {
 			return;
 		}
@@ -45,7 +46,7 @@ var Pers_debug = {
 			/* ignore, this will blow up if Firebug is not installed */
 		}
 	}
-}
+};
 
 var Pers_util = {
 	get_unix_time: function() {
@@ -57,13 +58,13 @@ var Pers_util = {
 	DAY2SEC: function(day) { return day * (3600 * 24); },
 
 	// stolen from: http://forums.mozillazine.org/viewtopic.php?p=921150
-	readFileFromURI: function(uri){
+	readFileFromURI: function(uri) {
 
   		var ioService=Components.classes["@mozilla.org/network/io-service;1"]
 				.getService(Components.interfaces.nsIIOService);
   		var scriptableStream=Components.classes["@mozilla.org/scriptableinputstream;1"]
     				.getService(Components.interfaces.nsIScriptableInputStream);
-  		var channel=ioService.newChannel(uri,null,null);
+  		var channel=ioService.newChannel(uri, null, null);
   		var input=channel.open();
   		scriptableStream.init(input);
   		var str=scriptableStream.read(input.available());
@@ -88,10 +89,10 @@ var Pers_util = {
 		}
 
 		for(var i = 0; i < start_arr.length; i++) {
-			if (start_arr[i].length > 0 && start_arr[i][0] != "#") {
+			if(start_arr[i].length > 0 && start_arr[i][0] !== "#") {
 				// ignore lines that contain only whitespace -
 				// makes the file easier to parse cross-platform
-				if (/^\s+$/g.test(start_arr[i]) === false) {
+				if(/^\s+$/g.test(start_arr[i]) === false) {
 					filtered_arr.push(start_arr[i]);
 				}
 			}
@@ -99,13 +100,13 @@ var Pers_util = {
 
 		var i = 0;
 		var notary_list = [];
-		while (i < filtered_arr.length) {
+		while(i < filtered_arr.length) {
 			var host = filtered_arr[i];
 			var notary_server = { "host" : host };
 			i += 1;
 
 			var begin_string = "BEGIN PUBLIC KEY";
-			if (i >= filtered_arr.length || filtered_arr[i].indexOf(begin_string) === -1) {
+			if(i >= filtered_arr.length || filtered_arr[i].indexOf(begin_string) === -1) {
 				throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
 					' - ' + Pers_util.notarystr.getFormattedString("couldNotFindLine", [ begin_string ]));
 			}
@@ -113,10 +114,10 @@ var Pers_util = {
 
 			var key = "";
 			var end_string = "END PUBLIC KEY";
-			while (i < filtered_arr.length && filtered_arr[i].indexOf(end_string) === -1) {
+			while(i < filtered_arr.length && filtered_arr[i].indexOf(end_string) === -1) {
 				key += filtered_arr[i];
 				i += 1;
-				if(i == filtered_arr.length) {
+				if(i === filtered_arr.length) {
 					throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
 						' - ' +  Pers_util.notarystr.getFormattedString("couldNotFindLine", [ end_string ]));
 				}
@@ -167,24 +168,23 @@ var Pers_util = {
 
 	// stolen from: http://stackoverflow.com/questions/130404/javascript-data-formatting-pretty-printer
 	pretty_print_json : function(obj, indent) {
-
-		function IsArray(array) { return !( !array || (!array.length || array.length == 0) || typeof array !== 'object' || !array.constructor || array.nodeType || array.item ); }
-
   		var result = "";
-  		if (indent == null) indent = "";
+  		if(indent == null) { indent = ""; }
 
-  		for (var property in obj){
+  		for(var property in obj) {
+			if(obj.hasOwnProperty(property)) {
     			var value = obj[property];
-			var txt = "<unknown type>";
-			var t = typeof value;
-    			if (t == 'string' || t == 'boolean' || t == 'number')
+				var txt = "<unknown type>";
+				var t = typeof value;
+    			if(t === 'string' || t === 'boolean' || t === 'number') {
       				txt = "'" + value + "'";
-    			else if (t == 'object'){
-      			/*	if (IsArray(value)){
+				}
+    			else if(t === 'object') {
+      			/*	if(IsArray(value)) {
         				txt = "[ \n";
 					//alert("array " + property + " has length " + obj[property].length);
 					for(i = 0; i < obj[property].length; i++) {
-					     //txt = txt + this.pretty_print_json(obj[property][i],indent) + ",\n";
+					     //txt = txt + this.pretty_print_json(obj[property][i], indent) + ",\n";
 					     txt = txt + obj[property][i] + ",\n";
 					}
 					txt = txt + "]\n";
@@ -199,6 +199,7 @@ var Pers_util = {
       				}
     			}
     			result += indent + "'" + property + "' : " + txt + ",\n";
+			}
   		}
   		return result.replace(/,\n$/, "");
 	},
@@ -217,8 +218,8 @@ var Pers_util = {
 							"0x0d", "0x01", "0x01", "0x04", "0x05", "0x00",
 							"0x03", "0x81", "0xad", "0x00"];
 		var header_str = '';
-		for (var i = 0; i < der_header_md5.length; i++) {
-			header_str += String.fromCharCode(parseInt(der_header_md5[i],16));
+		for(var i = 0; i < der_header_md5.length; i++) {
+			header_str += String.fromCharCode(parseInt(der_header_md5[i], 16));
 		}
 		return Pers_Base64.encode(header_str + base_str) ;
 	},
@@ -239,7 +240,7 @@ var Pers_util = {
         			Pers_debug.d_print("error", "Signature verification failed on notary list update");
 				return;
 			}
-			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
+			root_prefs.setCharPref("perspectives.default_notary_list", notary_list_data);
 		} catch(e) {
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
@@ -254,7 +255,7 @@ var Pers_util = {
 	update_default_notary_list_from_file : function(root_prefs) {
 		try {
 			var notary_list_data = this.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");
-			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
+			root_prefs.setCharPref("perspectives.default_notary_list", notary_list_data);
 		} catch(e) {
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
@@ -294,11 +295,11 @@ var Pers_util = {
 		    }
 		    wnd.focus();
 		}
-		catch (e) {
-			Pers_util.pers_alert("error opening link: " + e);
+		catch(e) {
+		    Pers_util.pers_alert("error opening link: " + e);
 		}
 	}
-}
+};
 
 var Pers_keypress = {
 
@@ -307,13 +308,13 @@ var Pers_keypress = {
     press_esc_to_close: function(event) {
 
         var key = (event.keyCode ? event.keyCode : event.which);
-        if (key) {
+        if(key) {
 
             // let the Esc key close the window
-            if (key == Pers_keypress.ESC_KEYCODE) {
+            if(key === Pers_keypress.ESC_KEYCODE) {
                 window.close();
             }
         }
         return true;
     }
-}
+};

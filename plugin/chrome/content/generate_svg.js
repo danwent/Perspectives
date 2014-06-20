@@ -191,16 +191,10 @@ var Pers_gen = {
 			var days = i * (len_days / 10.0);
 			var x = x_offset + (pixels_per_day * days);
 			var y = y_offset + 30;
-			if(len_days < 10 && days !== 0) { // FIXME: the branches have the same functionality?
-				// print with decimal point (broken)
-				res += '<text x="' + x + '" y="' + y
-					+ '" font-size="15">'
-					+ days + '</text>\n';
-          	} else {
-				res += '<text x="' + x + '" y="' + y
-					+ '" font-size="15">'
-					+ days + '</text>\n';
-			}
+			// print with decimal point (broken)
+			res += '<text x="' + x + '" y="' + y
+				+ '" font-size="15">'
+				+ days + '</text>\n';
 			res += '<path d = "M ' + x + ' ' + y +  ' L ' + x
 				+ ' ' + (y_cord + 20)
 				+ '" stroke="grey" stroke-width="1"/>\n';

@@ -127,7 +127,7 @@ var Pers_xml = {
 	// they were on the server, in order to compute the signature correctly.
 	// The xml seems to be parsed in a consistent way, but I don't know if
 	// that is guaranteed to be the case.
-	pack_result_as_binary: function(server_res,service_id) {
+	pack_result_as_binary: function(server_res, service_id) {
 		var bin_str = service_id;
 		bin_str += String.fromCharCode(0); // NULL-terminate
 
@@ -136,10 +136,10 @@ var Pers_xml = {
 			var num_timespans = o.timestamps.length;
 			bin_str += String.fromCharCode((num_timespans >> 8) & 255,
 											num_timespans & 255);
-			bin_str += String.fromCharCode(0,16,3); // key length is 16, type 3
+			bin_str += String.fromCharCode(0, 16, 3); // key length is 16, type 3
 			var hex_array = o.key.split(":");
 			for(var k = 0; k < hex_array.length; k++) {
-				bin_str += String.fromCharCode((parseInt(hex_array[k],16)));
+				bin_str += String.fromCharCode((parseInt(hex_array[k], 16)));
 			}
 			for(var j = 0; j < o.timestamps.length; j++) {
 				var t = o.timestamps[j];

@@ -22,7 +22,7 @@ var Pers_about = {
 	// in Fx 4.0 and up the call to get the version number happens asynchronously,
 	// so contain the update in a function we can use as the callback
 	set_version_number: function(addon) {
-		if (addon != null) {
+		if(addon != null) {
 			document.getElementById("perspectives-version-number").value = addon.version;
 		}
 	},
@@ -36,7 +36,7 @@ var Pers_about = {
 				Components.utils.import("resource://gre/modules/AddonManager.jsm");
 				AddonManager.getAddonByID(Perspectives.MY_ID, Pers_about.set_version_number);
 			}
-			catch (ex) {
+			catch(ex) {
 				Pers_debug.d_print("error", "Error getting version number? Or old version of firefox. '" + ex + "'");
 				// Firefox 3.6 and before; Mozilla 1.9.2 and before
 				var em = Components.classes["@mozilla.org/extensions/manager;1"]
@@ -49,7 +49,7 @@ var Pers_about = {
 			var translators  = Pers_util.readFileFromURI("chrome://perspectives/content/credits/translators.txt");
 
 			document.getElementById("contributors-list").value = contributors;
-			document.getElementById("translators-list").value = translators;
+			document.getElementById("translators-list" ).value = translators;
 		} catch(e) {
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
@@ -59,4 +59,4 @@ var Pers_about = {
 				getFormattedString("loadingCreditsError", [e]));
 		}
 	}
-}
+};

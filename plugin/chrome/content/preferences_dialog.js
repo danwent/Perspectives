@@ -32,7 +32,7 @@ var Pers_pref = {
 		document.getElementById("contact-in-private-browsing-mode-checkbox").disabled =  checked;
 	},
 
-	menuset: function(qu, du){
+	menuset: function(qu, du) {
 		Pers_pref.disable_quorum_text(true);
 		document.getElementById("quorum-thresh").value = qu;
 		document.getElementById("quorum-duration").value = du;
@@ -41,7 +41,7 @@ var Pers_pref = {
 	security_class_change: function() {
 		var setting  = document.getElementById("secset").value;
 
-		switch (parseInt(setting)){
+		switch (parseInt(setting)) {
 		case 2:
 			Pers_pref.menuset(75, 2);
 			break;
@@ -63,28 +63,28 @@ var Pers_pref = {
 		var ret = true;
 
 		try {
-			if (this.root_prefs.getIntPref("perspectives.required_duration") < 0) {
+			if(this.root_prefs.getIntPref("perspectives.required_duration") < 0) {
 				this.root_prefs.setIntPref("perspectives.required_duration", 0);
 			}
-		} catch (e) {
+		} catch(e) {
 			Pers_util.pers_alert(e);
 			ret = false;
 		}
 		try {
-			if (this.root_prefs.getIntPref("perspectives.quorum_thresh") < 1) {
+			if(this.root_prefs.getIntPref("perspectives.quorum_thresh") < 1) {
 				this.root_prefs.setIntPref("perspectives.quorum_thresh", 1);
-			} else if (this.root_prefs.getIntPref("perspectives.quorum_thresh") > 100) {
+			} else if(this.root_prefs.getIntPref("perspectives.quorum_thresh") > 100) {
 				this.root_prefs.setIntPref("perspectives.quorum_thresh", 100);
 			}
-		} catch (e) {
+		} catch(e) {
 			Pers_util.pers_alert(e);
 			ret = false;
 		}
 		try {
 			var add_list = document.getElementById("additional_notary_list");
-			var l = Pers_util.loadNotaryListFromString(add_list.value);
+			Pers_util.loadNotaryListFromString(add_list.value);
 			window.close();
-		} catch (e) {
+		} catch(e) {
 			Pers_util.pers_alert(e);
 			ret = false;
 		}
@@ -109,15 +109,14 @@ var Pers_pref = {
 
 	},
 
-	load_preferences: function(){
+	load_preferences: function() {
 		try {
 			Pers_pref.security_class_change();
 			Pers_pref.disable_reminder_box();
-			var default_notary_text = this.root_prefs.getCharPref("perspectives.default_notary_list");
-			document.getElementById("default_notary_list").value = default_notary_text;
+			document.getElementById("default_notary_list").value = this.root_prefs.getCharPref("perspectives.default_notary_list");
 		} catch(e) {
 			Pers_util.pers_alert(e);
 		}
 	}
-}
+};
 

@@ -18,12 +18,12 @@
 
 
 var Pers_statusbar = {
-	STATE_ERROR : -1,
-	STATE_SEC   : 0,
-	STATE_NSEC  : 1,
-	STATE_NEUT  : 2,
-	STATE_QUERY  : 3,
-	STATE_WHITELIST : 4,
+	STATE_ERROR     : -1,
+	STATE_SEC       :  0,
+	STATE_NSEC      :  1,
+	STATE_NEUT      :  2,
+	STATE_QUERY     :  3,
+	STATE_WHITELIST :  4,
 
 	force_update : function(event) {
 		Perspectives.forceStatusUpdate(window);
@@ -65,56 +65,49 @@ var Pers_statusbar = {
 		*/
 	},
 
-	setStatus: function(uri, state, tooltip) {
-		if(uri != null && uri !== window.gBrowser.currentURI) {
-		//	Pers_debug.d_print("main", "Ignoring setStatus for '" + uri.spec +
-		//	"' because current browser tab is for '" +
-		//	window.gBrowser.currentURI.spec + "'");
-			return;
-		}
+	setStatus: function(state, tooltip) {
 		if(!tooltip) {
 			tooltip = "Perspectives";
 		}
 
 		var imgList = document.querySelectorAll("image.perspective-status-image-class");
 
-		if(!imgList) { //happens when called from a dialog
+		if(!imgList) { // happens when called from a dialog
 			imgList = window.opener.document.
 				querySelectorAll("image.perspective-status-image-class");
 		}
 
-		for(var j = 0; j < imgList.length; ++j) {
-			imgList[j].parentNode.setAttribute("tooltiptext", tooltip);
+		_.each(imgList, function(img) {
+			img.parentNode.setAttribute("tooltiptext", tooltip);
 			switch(state) {
 			case Pers_statusbar.STATE_SEC:
 				Pers_debug.d_print("main", "Secure Status");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/img/good.png");
-				continue;
+				img.setAttribute("src", "chrome://perspectives/content/img/good.png");
+				break;
 			case Pers_statusbar.STATE_NSEC:
 				Pers_debug.d_print("main", "Unsecure Status");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/img/bad.png");
-				continue;
+				img.setAttribute("src", "chrome://perspectives/content/img/bad.png");
+				break;
 			case Pers_statusbar.STATE_NEUT:
 				Pers_debug.d_print("main", "Neutral Status");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/img/default.png");
-				continue;
+				img.setAttribute("src", "chrome://perspectives/content/img/default.png");
+				break;
 			case Pers_statusbar.STATE_WHITELIST:
 				//TODO: have other code call this
 				Pers_debug.d_print("main", "Whitelist Status");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/img/whitelist.png");
-				continue;
+				img.setAttribute("src", "chrome://perspectives/content/img/whitelist.png");
+				break;
 			case Pers_statusbar.STATE_QUERY:
 				Pers_debug.d_print("main", "Querying Status");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/img/progress.gif");
-				continue;
+				img.setAttribute("src", "chrome://perspectives/content/img/progress.gif");
+				break;
 			case Pers_statusbar.STATE_ERROR:
 				Pers_debug.d_print("main", "Error Status");
-				imgList[j].setAttribute("src", "chrome://perspectives/content/img/error.png");
-				continue;
+				img.setAttribute("src", "chrome://perspectives/content/img/error.png");
+				break;
 			}
-		}
+		});
 		Pers_debug.d_print("main", "changing tooltip to: " + tooltip);
-		return true; // FIXME: inconsistent return points
 	},
 
 	openCertificates: function() {

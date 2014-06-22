@@ -22,11 +22,10 @@ var Pers_debug = {
 
 	d_print_flags : {
 		"policy"    : false,
-		"query"     : true,
+		"query"     : false,
 		"querylarge": false, //big response strings and XML; separating this from query lines makes for easier debugging
-		"main"      : true,
-		"error"     : true
-//		"listener"  : false
+		"main"      : false,
+		"error"     : false
 	},
 
 	d_print: function(flag, line) {
@@ -225,13 +224,13 @@ var Pers_util = {
 	},
 
 
-	update_public_key : "MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAF16BJZAsESZnEq6MeCYsntL1233FVdz/6dNXptTwoKACOcnoae+/S5d9Ms2kmQMTMWkW5NdRV2/iKIdQx14Y7GZojPYvL85ZjwlTXRblqwoxnwdE+Vd2V5itxV0Okcu2+E66tvtr6aeBVt7hwtowyQPgiWz2rDgV6RsohbetiaHUMZKDdoQFzu/5CAW+7QtbFoJjNMqez6pz80xFWrIJzRC+fXlues1Af37+cCAwEAAQ==",
-	update_list_uri : "http://update.networknotary.org/http_notary_list.txt",
-	update_sig_uri : "http://update.networknotary.org/http_notary_list.sig",
+	update_public_key: "MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAF16BJZAsESZnEq6MeCYsntL1233FVdz/6dNXptTwoKACOcnoae+/S5d9Ms2kmQMTMWkW5NdRV2/iKIdQx14Y7GZojPYvL85ZjwlTXRblqwoxnwdE+Vd2V5itxV0Okcu2+E66tvtr6aeBVt7hwtowyQPgiWz2rDgV6RsohbetiaHUMZKDdoQFzu/5CAW+7QtbFoJjNMqez6pz80xFWrIJzRC+fXlues1Af37+cCAwEAAQ==",
+	update_list_uri  : "http://update.networknotary.org/http_notary_list.txt",
+	update_sig_uri   : "http://update.networknotary.org/http_notary_list.sig",
 	update_default_notary_list_from_web: function(root_prefs) {
 		try {
 			var notary_list_data = Pers_util.readFileFromURI(this.update_list_uri);
-			var sig_no_header = Pers_util.readFileFromURI(this.update_sig_uri);
+			var sig_no_header    = Pers_util.readFileFromURI(this.update_sig_uri );
 			var sig = this.add_der_signature_header(sig_no_header);
 			var verifier = Components.classes["@mozilla.org/security/datasignatureverifier;1"].
 							createInstance(Components.interfaces.nsIDataSignatureVerifier);
@@ -249,7 +248,6 @@ var Pers_util = {
 			Pers_util.pers_alert(Perspectives.strbundle.
 				getFormattedString("updateDefaultListWebError", [e]));
 		}
-
 	},
 
 	update_default_notary_list_from_file : function(root_prefs) {

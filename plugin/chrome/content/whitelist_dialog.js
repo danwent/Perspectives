@@ -49,7 +49,7 @@ var Pers_whitelist_dialog = {
 
 			if(is_domain) {
 				if(is_ip) {
-					var regex = this.get_ip_domain_regex(host);
+					var regex = this.get_ip_domain_regex (host);
 				} else {
 					var regex = this.get_dns_domain_regex(host);
 				}
@@ -135,7 +135,7 @@ var Pers_whitelist_dialog = {
 		try {
 			// use Perspectives.strbundle because whitelist_dialog.xul isn't loaded yet
 			if(Perspectives.strbundle == null) {
-					Perspectives.strbundle = document.getElementById("notary_strings");
+				Perspectives.strbundle = document.getElementById("notary_strings");
 			}
 
 			var host = window.gBrowser.currentURI.host;
@@ -164,5 +164,3 @@ var Pers_whitelist_dialog = {
 		} catch(e) { Pers_util.pers_alert("remove_from_whitelist:" + e); }
 	}
 };
-
-

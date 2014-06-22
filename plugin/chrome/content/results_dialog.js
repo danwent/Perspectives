@@ -63,8 +63,8 @@ var Pers_results = {
  		}
 
 		try {
-			var info  = document.getElementById("perspective-description");
-			var liner = document.getElementById("perspective-quorum-duration");
+			var info  = document.getElementById("perspective-description"        );
+			var liner = document.getElementById("perspective-quorum-duration"    );
 			var host  = document.getElementById("perspective-information-caption");
 
 			var win = window.opener;
@@ -75,7 +75,7 @@ var Pers_results = {
 					Pers_results.notaryStrings.getString("invalidURI") + " (" + error_text + ")";
 				return;
 			}
-			var ti = win.Perspectives.getCurrentTabInfo(uri);
+			var ti = win.Perspectives.getCurrentTabInfo(win.gBrowser.contentWindow);
 			var query_results  = ti.query_results;
 			host.label = ti ? uri.host + ": " + Pers_results.getActionStr(uri, ti) : uri.host;
 

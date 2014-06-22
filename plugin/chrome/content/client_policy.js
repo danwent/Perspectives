@@ -269,18 +269,11 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 // 'max_timespan' in the last 'check_length' days.  Only return 'true' if
 // there is more than one key that has been seen though.
 inconsistency_check : function(results, max_timespan, check_length) {
-
-	var unique_keys = {};
-	for(var i = 0; i < results.length; i++) {
-		for(var j = 0; j < results[i].obs.length; j++) {
-			var k = results[i].obs[j].key;
-			unique_keys[k] = "";
-		}
-	}
-	var key_count = 0;
-	for(var k in unique_keys) {
-		key_count++;
-	}
+	var key_count = _.unique(_.map(results, function(r) {
+		_.map(r.obs, function(o) {
+			return o.key;
+		})
+	})).length;
 	if(key_count <= 1) {
 		return false;
 	}

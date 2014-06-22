@@ -17,7 +17,6 @@
 */
 
 var Pers_notify = {
-
 	// unique identifier for each notification
 	// this is used to determine whether we need to
 	// show a notification, or whether it is a duplication
@@ -35,18 +34,12 @@ var Pers_notify = {
 			return;
 		}
 		switch(type) {
-			case this.TYPE_OVERRIDE :
-				this.notifyOverride(browser, false); break;
-			case this.TYPE_OVERRIDE_MIXED :
-				this.notifyOverride(browser, true); break;
-			case this.TYPE_WHITELIST :
-				this.notifyWhitelist(browser); break;
-			case this.TYPE_FAILED :
-				this.notifyFailed(browser); break;
-			case this.TYPE_NEEDS_PERMISSION :
-				this.notifyNeedsPermission(browser); break;
-			case this.TYPE_NO_REPLIES :
-				this.notifyNoReplies(browser); break;
+			case this.TYPE_OVERRIDE         : this.notifyOverride       (browser, false); break;
+			case this.TYPE_OVERRIDE_MIXED   : this.notifyOverride       (browser, true ); break;
+			case this.TYPE_WHITELIST        : this.notifyWhitelist      (browser       ); break;
+			case this.TYPE_FAILED           : this.notifyFailed         (browser       ); break;
+			case this.TYPE_NEEDS_PERMISSION : this.notifyNeedsPermission(browser       ); break;
+			case this.TYPE_NO_REPLIES       : this.notifyNoReplies      (browser       ); break;
 			default:
 				Pers_debug.d_print("error", "Unknown notify type: " + type);
 		}
@@ -62,21 +55,18 @@ var Pers_notify = {
 		catch(e) {
 			return;
 		}
-		var notificationBox = b.getNotificationBox();
 		this.clear_existing_banner(b, "Perspectives");
 
 		notificationBox.appendNotification(message, "Perspectives", null, notificationBox[priority], buttons);
 	},
 
 	notifyOverride: function(b, mixed_security) {
-
 		var priority = "PRIORITY_INFO_LOW";
 		var message = mixed_security ? Perspectives.strbundle.getString("validatedButInsecureEmbedded") :  Perspectives.strbundle.getString("verificationSuccess");
 		var buttons = [{
-			accessKey : "",
-			label: Perspectives.strbundle.getString("learnMore"),
-			accessKey : "",
-			callback: function() {
+			label    : Perspectives.strbundle.getString("learnMore"),
+			accessKey: "",
+			callback : function() {
 				b.loadOneTab("chrome://perspectives/content/help.xhtml", null,
 							 null, null, false);
 			}
@@ -85,17 +75,15 @@ var Pers_notify = {
 	},
 
 	notifyWhitelist: function(b) {
-
 		var priority = "PRIORITY_INFO_LOW";
 		var message = Perspectives.strbundle.getString("configuredToWhitelist");
 		var buttons = [
 			{
-			accessKey : "",
-			label: Perspectives.strbundle.getString("removeFromWhitelist"),
-			accessKey : "",
-			callback: function() {
-				Pers_whitelist_dialog.remove_from_whitelist(b);
-			}
+				label    : Perspectives.strbundle.getString("removeFromWhitelist"),
+				accessKey: "",
+				callback : function() {
+					Pers_whitelist_dialog.remove_from_whitelist();
+				}
 			}
 		];
    		this.notifyGeneric(b, priority, message, buttons);
@@ -107,14 +95,14 @@ var Pers_notify = {
 		var buttons = [
 // Report attack always fails at the moment. Hide it until we fix it. issue #122
 //			{
-//				label: Perspectives.strbundle.getString("reportThis"),
+//				label    : Perspectives.strbundle.getString("reportThis"),
 //				accessKey: "",
-//				callback: function () {
+//				callback : function () {
 //					Pers_report.report_attack();
 //				}
 //			},
 			{
-				label: Perspectives.strbundle.getString("addToWhitelist"),
+				label    : Perspectives.strbundle.getString("addToWhitelist"),
 				accessKey: "",
 				callback : function() {
 					Pers_whitelist_dialog.add_to_whitelist();
@@ -134,22 +122,19 @@ var Pers_notify = {
 		if(show_box) {
 			var priority = "PRIORITY_WARNING_HIGH";
 			var message = Perspectives.strbundle.getString("needsPermission");
-			var buttons = null;
 			var buttons = [
 				{
-					label: Perspectives.strbundle.getString("yesContactNotaries"),
-					accessKey : "",
-					callback: function() {
+					label    : Perspectives.strbundle.getString("yesContactNotaries"),
+					accessKey: "",
+					callback : function() {
 						try {
 							//Happens on requeryAllTabs
 							try {
-								var notificationBox = browser.getNotificationBox();
+								var nbox = browser.getNotificationBox();
 							}
 							catch(e) {
 								return;
 							}
-
-							var nbox = browser.getNotificationBox();
 							nbox.removeCurrentNotification();
 						}
 						catch(err) {
@@ -170,37 +155,34 @@ var Pers_notify = {
 						try {
 							// run probe
 							Pers_debug.d_print("main", "User gives probe permission");
-							var uri = browser.currentURI;
-							// HACK (Lambdor):
-							// I reduced every dependency from ti to browser but now it's required here,
-							// thus we retrieve it from the global cache. This may display the notification
-							// on the wrong tab but this has to be fixed in general, see: #60, #85, #103.
-							// Callpath is: updateStatus -> do_notify -> notifyNeedsPermission
-							Perspectives.getCurrentTabInfo(uri).has_user_permission = true;
+							Perspectives.getCurrentTabInfo(browser.contentWindow).has_user_permission = true;
 
-							Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_QUERY,
-								Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
-									[uri.host]), false);
+							var uri = browser.currentURI;
+							ti.state   = Pers_statusbar.STATE_QUERY;
+							ti.tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [uri.host]);
+							Pers_statusbar.setStatus(ti.state, ti.tooltip);
+
 							var cert = Perspectives.getCertificate(browser);
 							var security_state = browser.securityUI.state;
-							Perspectives.updateStatus(browser, cert, uri, security_state, false, false);
+							ti.process.publishCert(browser, cert, security_state);
+							Perspectives.queryNotaries(uri, Perspectives.getNotaryList(), ti.process.publishQueryResults);
 						} catch(e) {
 							Pers_debug.d_print("main", "Error on UpdateStatus: " + e);
 						}
 					}
 				},
 				{
-					label: Perspectives.strbundle.getString("learnMore"),
-					accessKey : "",
-					callback: function() {
+					label    : Perspectives.strbundle.getString("learnMore"),
+					accessKey: "",
+					callback : function() {
 						browser.loadOneTab("chrome://perspectives/content/help.xhtml",
 									 null, null, null, false);
 					}
 				},
 				{
-					label: Perspectives.strbundle.getString("hideNotificationReminders"),
-					accessKey : "",
-					callback: function() {
+					label    : Perspectives.strbundle.getString("hideNotificationReminders"),
+					accessKey: "",
+					callback : function() {
 						Perspectives.root_prefs.
 							setBoolPref("extensions.perspectives.show_permission_reminder", false);
 					}
@@ -223,22 +205,22 @@ var Pers_notify = {
 //					Pers_report.report_attack();
 //				}
 //			},
-		  {
-			label: Perspectives.strbundle.getString("firewallHelp"),
-			accessKey : "",
-			callback: function() {
-				b.loadOneTab(
-					"chrome://perspectives/content/firewall.xhtml",
-					null, null, null, false);
+			{
+				label    : Perspectives.strbundle.getString("firewallHelp"),
+				accessKey: "",
+				callback : function() {
+					b.loadOneTab(
+						"chrome://perspectives/content/firewall.xhtml",
+						null, null, null, false);
+				}
+			},
+			{
+				label    : Perspectives.strbundle.getString("addToWhitelist"),
+				accessKey: "",
+				callback : function() {
+					Pers_whitelist_dialog.add_to_whitelist();
+				}
 			}
-		  },
-		  {
-			label: Perspectives.strbundle.getString("addToWhitelist"),
-		 	accessKey : "",
-		 	callback: function() {
-				Pers_whitelist_dialog.add_to_whitelist();
-		 	}
-		  }
 		];
    		this.notifyGeneric(b, priority, message, buttons);
 	},

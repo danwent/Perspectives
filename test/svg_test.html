@@ -1,38 +1,63 @@
+<html>
+<head>
+<script type="text/javascript" src="../plugin/chrome/content/common.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/generate_svg.js"></script>
+<script type="text/javascript">
+    d_print_all = true;
+    other_cache = { "debug": "" }; // HACK: needed for common.js
 
-<script type="text/javascript" src="../plugin/chrome/content/common.js"></script> 
-<script type="text/javascript" src="../plugin/chrome/content/generate_svg.js"></script> 
-<script type="text/javascript"> 
+    // HACK: Stupid global objects.
+    // We should pass localizations as parameters!
+    Perspectives = {
+        strbundle : {
+            getString : function( key ) {
+                return (
+                    { "LegendKeyHistory"         : "Key History (Days)"
+                    , "LegendNotaryAndCurrentKey": "Notary and Current Key"
+                    , "LegendBrowsersKey"        : "Browser's Key"
+                    })[key];
+            }
+        }
+    };
 
-d_print_all = true; 
-other_cache = { "debug" : "" }; // needed for common.js
+    function generate_graph() {
+        var server_result_list = [
+            { "server": "cmu.ron.lcs.mit.edu:8080",
+                "obs": [
+                    { "key": "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00",
+                        "timestamps": [
+                            { "start": 0, "end": 100000  }
+                        ] }
+                ]
+            },
+            { "server": "hostway.ron.lcs.mit.edu:8080",
+                "obs": [
+                    { "key": "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00",
+                        "timestamps": [
+                            { "start": 9000, "end": 100000  }
+                        ] }
+                ]
+            }
+        ];
 
+        var key = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+        var max_stale_sec     = 2 * 24 * 3600;
+        var required_duration = 2;
+        var svg = Pers_gen.get_svg_graph("www.test.com:443,2", server_result_list,
+                30, 100100, key, max_stale_sec, required_duration);
 
-function generate_graph() {
- var server_result_list = [ 
-   { "server" : "cmu.ron.lcs.mit.edu:8080", 
-     "obs" : [  { "key" : "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00", 
-		  "timestamps" : [ { "start" : 0 , "end" : 100000  } ] } ] 
-   }, 
-   { "server" : "hostway.ron.lcs.mit.edu:8080", 
-     "obs" : [  { "key" : "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00", 
-		  "timestamps" : [ { "start" : 9000 , "end" : 100000  } ] } ] 
-   } 
- ];
- 
-  var key = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";  
-  var svg = Pers_gen.get_svg_graph("www.test.com:443,2", server_result_list, 
-		30, 100100, key);
-   
-  var parser       = new DOMParser();
-  var svgDoc   = parser.parseFromString(svg, "text/xml");
-  var svgNode = svgDoc.getElementsByTagName("svg")[0];
-  var results = document.getElementById("results"); 
-  results.appendChild(svgNode); 
-} 
-
-
+        var parser = new DOMParser();
+        var svgDoc = parser.parseFromString(svg, "text/xml");
+        var svgNode = svgDoc.getElementsByTagName("svg")[0];
+        var results = document.getElementById("results");
+        results.appendChild(svgNode);
+}
 </script>
-<input type="button" value="Generate Graph" onclick="generate_graph()">
-<p> Run with firebug to see detailed test output if something fails.  </p> 
-<h2> Results: </h2>  
-<div id="results"> 
+</head>
+<body>
+    <input type="button" value="Generate Graph" onclick="generate_graph()">
+    <p>Run with firebug to see detailed test output if something fails.</p>
+    <h2>Results: </h2>
+    <div id="results"></div>
+</body>
+</html>

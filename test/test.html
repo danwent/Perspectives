@@ -19,597 +19,625 @@
 <script type="text/javascript" src="../whitelist_dialog.js"></script>
 <script type="text/javascript" src="../xml_notary_client.js"></script>
 
-<script type="text/javascript"> 
+<script type="text/javascript">
 
 d_print_all = true;
-other_cache = { "debug" : "" }; // needed for common.js
+other_cache = { "debug": "" }; // needed for common.js
 
 var g_test_count = 0;
 var g_pass_count = 0;
 var g_fail_count = 0;
 
-
 /******* Helper Functions *******/
-function clear() { 
-   var node = document.getElementById('results'); 
-   node.innerHTML = "";
-   g_test_count = 0;
-   g_pass_count = 0;
-   g_fail_count = 0;
+function clear() {
+    var node = document.getElementById('results');
+    node.innerHTML = "";
+    g_test_count = 0;
+    g_pass_count = 0;
+    g_fail_count = 0;
 }
 
 function write_string(str) {
-   write_string_to_element(str, 'p');
-} 
+    write_string_to_element(str, 'p');
+}
 
 function write_string_to_element(str, elname) {
-   var node = document.getElementById('results');
-   var child = document.createElement(elname);
-   child.innerHTML = str;
-   node.appendChild(child);
+    var node = document.getElementById('results');
+    var child = document.createElement(elname);
+    child.innerHTML = str;
+    node.appendChild(child);
 }
 
 function assert(test, case_name) {
-  g_test_count++;
-	if(test) {
-	  write_string_to_element("[" + g_test_count +
-      "] <font color='green'>passed</font> : " + case_name, 'li');
-    g_pass_count++;
-  }
-  else {
-	  write_string_to_element("[" + g_test_count +
-      "] <b><font color='red'>FAILED</font></b> : " + case_name, 'li');
-    g_fail_count++;
-  }
+    g_test_count++;
+    if(test) {
+        write_string_to_element('[' + g_test_count +
+                '] <span style="color: green">passed</span> : ' + case_name, 'li');
+        g_pass_count++;
+    }
+    else {
+        write_string_to_element('[' + g_test_count +
+                '] <b style="color: red">FAILED</b> : ' + case_name, 'li');
+        g_fail_count++;
+    }
 
-  // if people are looking through the console to debug,
-  // give them some help tracing the action.
-  if (window.console != undefined) {
+    // if people are looking through the console to debug,
+    // give them some help tracing the action.
+    if(window.console != undefined) {
         console.log("------- Finished test " +
-          g_test_count + ": " + case_name);
-  }
+                g_test_count + ": " + case_name);
+    }
 }
 
 // make it easy to print error strings
 function error(str) {
-  write_string("<b><font color='red'>ERROR:</font></b> " + str);
+    write_string('<b style="color: red">ERROR:</b>' + str);
 }
 
 // placeholder function to note future tests we should implement.
 // it's here so you can easily set up tests and enable/disable them
 // by renaming the function they call.
 function assert_fixme(test, case_name) {
-  write_string_to_element("[-] <font color='grey'>not implemented</font> : "
-  + case_name, 'li');
+    write_string_to_element('[-] <span style="color: grey">not implemented</span> : '
+            + case_name, 'li');
 }
 
 // add a horizontal bar to visuall separate some items or tests
 function spacer(category_name) {
-  write_string_to_element("------- <font color='grey'>" + category_name +
-    ":</font>", 'li');
+    write_string_to_element('------- <span style="color: grey">' + category_name +
+            ':</span>', 'li');
 }
 
 // if you're lazy and want to print some text while debugging
 function debug(obj) {
-
-  if (obj === null) {
-    return;
-  }
-
-  if (obj instanceof Array) {
-    deb_console("array contains:");
-    for (var i = 0; i < obj.length; i++) {
-      deb_console(obj[i]);
+    if(obj === null) {
+        return;
     }
-  }
-  else {
-    deb_console(obj);
-  }
 
-  obj = JSON.stringify(obj);
+    if(obj instanceof Array) {
+        deb_console("array contains:");
+        for(var i = 0; i < obj.length; i++) {
+            deb_console(obj[i]);
+        }
+    }
+    else {
+        deb_console(obj);
+    }
 
-  // strip out < so strings always appear on the page
-  write_string_to_element("<font color='grey'>DEBUG: " +
-    obj.replace(/</g, '&lt;') + "</font>", 'li');
+    // strip out < so strings always appear on the page
+    write_string_to_element('<span style="color: grey">DEBUG: ' +
+            JSON.stringify(obj).replace(/</g, '&lt;') + '</span>', 'li');
 }
 
 function deb_console(obj) {
-  if (window.console != undefined) {
-    console.log("DEBUG: " + obj);
-  }
+    if(window.console != undefined) {
+        console.log("DEBUG: " + obj);
+    }
 }
-
-
 
 /******* Tests *******/
 
 function meta_tests() {
 
-  // make sure we can include and parse every object
-  // so we'll be able to run tests on them.
-  // if you add objects, add a test here
+    // make sure we can include and parse every object
+    // so we'll be able to run tests on them.
+    // if you add objects, add a test here
 
-  write_string("Starting object creation tests");
+    write_string("Starting object creation tests");
 
-  assert(typeof Pers_about === 'object', "Pers_about is type '" + typeof Pers_about + "'."); //about.js
-  assert(typeof Pers_Base64 === 'object', "Pers_Base64 is type '" + typeof Pers_Base64 + "'.");
-  assert(typeof Pers_client_policy === 'object', "Pers_client_policy is type '" + typeof Pers_client_policy + "'."); //client_policy.js
-  assert(typeof Pers_debug === 'object', "Pers_debug is type '" + typeof Pers_debug + "'."); //common.js
-  assert(typeof Pers_util === 'object', "Pers_util is type '" + typeof Pers_util + "'.");
-  assert(typeof Pers_keypress === 'object', "Pers_keypress is type '" + typeof Pers_keypress + "'.");
-  assert(typeof Pers_gen === 'object', "Pers_gen is type '" + typeof Pers_gen + "'."); //generate_svg.js
-  assert(typeof Perspectives === 'object', "Perspectives is type '" + typeof Perspectives + "'."); //notaries.js
-  assert(typeof Pers_notify === 'object', "Pers_notify is type '" + typeof Pers_notify + "'."); //notify.js
-  assert(typeof Pers_pref === 'object', "Pers_pref is type '" + typeof Pers_pref + "'."); //preferences_dialog.js FIXME
-  assert(typeof Pers_report === 'object', "Pers_report is type '" + typeof Pers_report + "'."); //report.js
-  assert(typeof Pers_results === 'object', "Pers_results is type '" + typeof Pers_results + "'."); //results_dialog.js FIXME
-  assert(typeof Pers_statusbar === 'object', "Pers_statusbar is type '" + typeof Pers_statusbar + "'."); //statusbar.js
-  assert(typeof Pers_whitelist_dialog === 'object', "Pers_whitelist_dialog is type '" + typeof Pers_whitelist_dialog + "'."); //whitelist_dialog.js FIXME
-  assert(typeof Pers_xml === 'object', "Pers_xml is type '" + typeof Pers_xml + "'."); //xml_notary_client.js
+    assert(typeof Pers_about === 'object', "Pers_about is type '" + typeof Pers_about + "'."); //about.js
+    assert(typeof Pers_Base64 === 'object', "Pers_Base64 is type '" + typeof Pers_Base64 + "'.");
+    assert(typeof Pers_client_policy === 'object', "Pers_client_policy is type '" + typeof Pers_client_policy + "'."); //client_policy.js
+    assert(typeof Pers_debug === 'object', "Pers_debug is type '" + typeof Pers_debug + "'."); //common.js
+    assert(typeof Pers_util === 'object', "Pers_util is type '" + typeof Pers_util + "'.");
+    assert(typeof Pers_keypress === 'object', "Pers_keypress is type '" + typeof Pers_keypress + "'.");
+    assert(typeof Pers_gen === 'object', "Pers_gen is type '" + typeof Pers_gen + "'."); //generate_svg.js
+    assert(typeof Perspectives === 'object', "Perspectives is type '" + typeof Perspectives + "'."); //notaries.js
+    assert(typeof Pers_notify === 'object', "Pers_notify is type '" + typeof Pers_notify + "'."); //notify.js
+    assert(typeof Pers_pref === 'object', "Pers_pref is type '" + typeof Pers_pref + "'."); //preferences_dialog.js FIXME
+    assert(typeof Pers_report === 'object', "Pers_report is type '" + typeof Pers_report + "'."); //report.js
+    assert(typeof Pers_results === 'object', "Pers_results is type '" + typeof Pers_results + "'."); //results_dialog.js FIXME
+    assert(typeof Pers_statusbar === 'object', "Pers_statusbar is type '" + typeof Pers_statusbar + "'."); //statusbar.js
+    assert(typeof Pers_whitelist_dialog === 'object', "Pers_whitelist_dialog is type '" + typeof Pers_whitelist_dialog + "'."); //whitelist_dialog.js FIXME
+    assert(typeof Pers_xml === 'object', "Pers_xml is type '" + typeof Pers_xml + "'."); //xml_notary_client.js
 
-  write_string("Finished");
+    write_string("Finished");
 }
 
 function client_sanity() {
- write_string("Starting client policy unit tests...");
+    write_string("Starting client policy unit tests...");
 
- var key = "b1:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
- var curtime = Pers_util.get_unix_time();
- var short_start = curtime - 1;
- var short_end = curtime;
- var short_result_list = [
-     { "server" : "test1:8080",
-       "obs" : [  { "key" : key,
-        "timestamps" : [ { "start" : short_start , "end" : short_end  } ] } ]
-     }
-   ];
+    var key = "b1:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+    var curtime = Pers_util.get_unix_time();
+    var short_start = curtime - 1;
+    var short_result_list = [
+        { "server": "test1:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": short_start, "end": curtime  }
+                    ] }
+            ]
+        }
+    ];
 
- var days_last_seen = 3;
- var duration = 2; // days
- var old_end = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen);
- var old_start = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen - duration);
+    var days_last_seen = 3;
+    var duration = 2; // days
+    var old_end = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen);
+    var old_start = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen - duration);
 
- var second_result_list = [
-     { "server" : "test1:8080",
-       "obs" : [  { "key" : key,
-        "timestamps" : [ { "start" : old_start , "end" : old_end  } ] } ]
-     },
-     { "server" : "test2:8080",
-       "obs" : [  { "key" : key,
-        "timestamps" : [ { "start" : old_start , "end" : old_end  } ] } ]
-     }
-   ];
+    var second_result_list = [
+        { "server": "test1:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": old_start, "end": old_end  }
+                    ] }
+            ]
+        },
+        { "server": "test2:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": old_start, "end": old_end  }
+                    ] }
+            ]
+        }
+    ];
 
- var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          short_result_list, 1, -10);
- assert((weakly_seen === false), "Negative Check lengths can't be weakly seen");
+    var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            short_result_list, 1, -10);
+    assert((weakly_seen === false), "Negative Check lengths can't be weakly seen");
 
- var weak_check_time_limit = Pers_util.SEC2DAY(curtime + curtime);
- weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          short_result_list, 1, weak_check_time_limit);
- assert((weakly_seen === false), "Check lengths longer than time since the epoch can't be weakly seen");
+    var weak_check_time_limit = Pers_util.SEC2DAY(curtime + curtime);
+    weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            short_result_list, 1, weak_check_time_limit);
+    assert((weakly_seen === false), "Check lengths longer than time since the epoch can't be weakly seen");
 
- weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          short_result_list, -1, 1);
- assert((weakly_seen === false), "Negative quorum sizes can't be weakly seen");
+    weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            short_result_list, -1, 1);
+    assert((weakly_seen === false), "Negative quorum sizes can't be weakly seen");
 
- weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          short_result_list, 0, 1);
- assert((weakly_seen === false), "Quorum size 0 can't be weakly seen");
+    weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            short_result_list, 0, 1);
+    assert((weakly_seen === false), "Quorum size 0 can't be weakly seen");
 
+    var check_length = (days_last_seen + 1); //days
+    assert((check_length >= days_last_seen), "(meta) Test setup: check length >= ending day of observation.");
+    var weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            second_result_list, 3, check_length);
+    assert((weakly_seen_test === false), "Keys seen but by fewer than quorum_size notaries do not count as weakly seen.");
 
- var check_length = (days_last_seen + 1); //days
- assert((check_length >= days_last_seen), "(meta) Test setup: check length >= ending day of observation.");
- var weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          second_result_list, 3, check_length);
- assert((weakly_seen_test === false), "Keys seen but by fewer than quorum_size notaries do not count as weakly seen.");
+    check_length = (days_last_seen - 1); //days
+    assert((check_length <= days_last_seen), "(meta) Test setup: check length <= ending day of observation.");
+    weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            second_result_list, 2, check_length);
+    assert((weakly_seen_test === false), "Keys seen by quorum_size notaries but not in the past X days do not count as weakly seen.");
 
- check_length = (days_last_seen - 1); //days
- assert((check_length <= days_last_seen), "(meta) Test setup: check length <= ending day of observation.");
- weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          second_result_list, 2, check_length);
-  assert((weakly_seen_test === false), "Keys seen by quorum_size notaries but not in the past X days do not count as weakly seen.");
+    check_length = (days_last_seen + 1); //days
+    assert((check_length >= days_last_seen), "(meta) Test setup: check length >= ending day of observation.");
+    weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            second_result_list, 2, check_length);
+    assert((weakly_seen_test === true), "Keys seen by quorum_size notaries AND in the past X days DO count as weakly seen.");
 
- check_length = (days_last_seen + 1); //days
- assert((check_length >= days_last_seen), "(meta) Test setup: check length >= ending day of observation.");
- weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          second_result_list, 2, check_length);
- assert((weakly_seen_test === true), "Keys seen by quorum_size notaries AND in the past X days DO count as weakly seen.");
-
-  check_length = days_last_seen; //days
- assert((check_length === days_last_seen), "(meta) Test setup: check length === ending day of observation.");
- weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          second_result_list, 2, check_length);
- assert((weakly_seen_test === true), "Keys seen by quorum_size notaries exactly in the past X days DO count as weakly seen.");
-
+    check_length = days_last_seen; //days
+    assert((check_length === days_last_seen), "(meta) Test setup: check length === ending day of observation.");
+    weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            second_result_list, 2, check_length);
+    assert((weakly_seen_test === true), "Keys seen by quorum_size notaries exactly in the past X days DO count as weakly seen.");
 
 }
 
 function nonrouted_ips() {
- write_string("Starting nonrouted ip unit tests...");
+    write_string("Starting nonrouted ip unit tests...");
 
- // nonrouted means the address is private and unreachable by notaries.
- spacer("Reachable addresses");
- var host = "perspectives-project.org";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    // nonrouted means the address is private and unreachable by notaries.
+    spacer("Reachable addresses");
+    var host = "perspectives-project.org";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "github.com";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "github.com";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test0.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test0.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test1.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test1.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test2.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test2.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test3.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test3.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test4.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test4.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test5.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test5.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test6.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test6.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test7.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test7.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test8.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test8.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test9.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test9.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- // hosts that contain numbers should still work
- host = "100tests.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    // hosts that contain numbers should still work
+    host = "100tests.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "1000tests.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "1000tests.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "test100tests.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "test100tests.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- host = "192168tests.net";
- assert((Perspectives.is_nonrouted_ip(host) === false), host);
+    host = "192168tests.net";
+    assert((Perspectives.is_nonrouted_ip(host) === false), host);
 
- spacer("Unreachable by notaries");
+    spacer("Unreachable by notaries");
 
- host = "127.0.0.1";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "127.0.0.1";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- host = "169.254.15.59";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "169.254.15.59";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- // pick something in the beginning/middle/end of each RFC1918 private space
- host = "10.0.0.0";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    // pick something in the beginning/middle/end of each RFC1918 private space
+    host = "10.0.0.0";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- host = "10.0.0.1";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "10.0.0.1";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- host = "10.255.254.254";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "10.255.254.254";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- host = "172.16.0.0";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "172.16.0.0";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- host = "172.16.1.1";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "172.16.1.1";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- host = "172.31.254.254";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "172.31.254.254";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- host = "192.168.0.0";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "192.168.0.0";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- host = "192.168.10.21";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "192.168.10.21";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
- host = "192.168.254.254";
- assert((Perspectives.is_nonrouted_ip(host) === true), host);
+    host = "192.168.254.254";
+    assert((Perspectives.is_nonrouted_ip(host) === true), host);
 
-
- write_string("Done!");
+    write_string("Done!");
 }
 
 function quorum_basics() {
- write_string("Starting basic quorum tests...");
+    write_string("Starting basic quorum tests...");
 
+    var key = "b1:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+    var key2 = "b2:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+    var key3 = "b3:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+    var cur_time = 10000;
+    var max_stale_sec = 200;
 
- var key = "b1:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
- var key2 = "b2:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
- var key3 = "b3:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
- var cur_time = 10000;
- var max_stale_sec = 200;
+    var key_start_diff = 1000;
+    var key_start_time = (cur_time - key_start_diff);
 
- var key_start_diff = 1000;
- var key_start_time = (cur_time - key_start_diff);
+    var key_end_time = cur_time;
 
- var key_end_time = cur_time;
+    var server_result_list = [
+        { "server": "204.255.124.41:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": 0, "end": key_end_time  }
+                    ] }
+            ]
+        },
+        { "server": "128.2.185.85:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": key_start_time, "end": key_end_time  }
+                    ] }
+            ]
+        }
+    ];
 
- var server_result_list = [ 
-   { "server" : "204.255.124.41:8080", 
-     "obs" : [  { "key" : key,
-		  "timestamps" : [ { "start" : 0 , "end" : key_end_time  } ] } ]
-   }, 
-   { "server" : "128.2.185.85:8080",
-     "obs" : [  { "key" : key,
-		  "timestamps" : [ { "start" : key_start_time , "end" : key_end_time  } ] } ]
-   } 
- ];
+    var quorum_duration = 0;
 
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            server_result_list, 2, max_stale_sec, cur_time);
+    assert((quorum_duration === (cur_time - key_start_time) + 1), "Requiring larger quorum gives a shorter duration");
 
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            server_result_list, 1, max_stale_sec, cur_time);
+    assert((quorum_duration === cur_time + 1), "Requiring smaller quorum gives a longer duration");
+    assert((quorum_duration > (cur_time - max_stale_sec)), "Getting enough quorum voters passes");
 
- var quorum_duration = 0;
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            server_result_list, 10, max_stale_sec, cur_time);
+    assert((quorum_duration === -1), "Getting fewer quorum voters than required fails");
 
+    spacer('When observations end at the current time');
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            server_result_list, 1, max_stale_sec,
+            cur_time);
+    assert((key_end_time > (cur_time - max_stale_sec)), "The key is within the quorum time limit.");
+    assert((quorum_duration >= 1 ), "Searching for an existing key within the time limit has a positive duration");
+    assert((quorum_duration === (cur_time + max_stale_sec + 1)), "The duration is as long as the observation.start to observation.end (Expected " + (cur_time + max_stale_sec + 1) +
+            ", got " + quorum_duration + ")");
 
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list,	2, max_stale_sec,cur_time);
- assert((quorum_duration === (cur_time - key_start_time) + 1), "Requiring larger quorum gives a shorter duration");
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            server_result_list, 1, max_stale_sec,
+            cur_time + max_stale_sec + 1);
+    assert((quorum_duration === -1), "Being over the quorum duration time limit fails");
 
+    // run tests with keys that don't end exactly at the current time
+    spacer('When observations *do not* end at the current time');
+    cur_time += 100;
 
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list, 1, max_stale_sec, cur_time);
- assert((quorum_duration === cur_time + 1), "Requiring smaller quorum gives a longer duration");
- assert((quorum_duration > (cur_time - max_stale_sec)), "Getting enough quorum voters passes");
+    assert((key_end_time > (cur_time - max_stale_sec)), "Key is inside the quorum duration limit.");
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            server_result_list, 1, max_stale_sec,
+            cur_time);
+    assert((quorum_duration >= 1 ), "2. Being at the edge of the quorum duration time limit passes");
+    assert((quorum_duration === (cur_time + max_stale_sec + 1)), "2. The duration is as long as the observation.start to observation.end (i.e. it does NOT also count time that is white/a gap between it's end an the current time). (Expected " + (cur_time + max_stale_sec + 1) +
+            ", got " + quorum_duration + ")");
 
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list, 10, max_stale_sec, cur_time);
- assert((quorum_duration === -1), "Getting fewer quorum voters than required fails");
+    cur_time += 2 * max_stale_sec;
+    assert((key_end_time < (cur_time - max_stale_sec)), "With changes, key is *outside* the quorum duration limit.");
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            server_result_list, 1, max_stale_sec,
+            cur_time + max_stale_sec + 1);
+    assert((quorum_duration === -1), "2. Being over the quorum duration time limit fails");
 
- spacer('When observations end at the current time');
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list,	1, max_stale_sec,
-				cur_time);
- assert((key_end_time > (cur_time - max_stale_sec)), "The key is within the quorum time limit.");
- assert((quorum_duration >= 1 ), "Searching for an existing key within the time limit has a positive duration");
- assert((quorum_duration === (cur_time + max_stale_sec + 1)), "The duration is as long as the observation.start to observation.end (Expected " + (cur_time + max_stale_sec + 1) +
-    ", got " + quorum_duration + ")");
+    quorum_duration = Pers_client_policy.get_quorum_duration(key2,
+            server_result_list, 1, max_stale_sec, cur_time);
+    assert((quorum_duration === -1), "Looking for a key that has no results fails");
 
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list, 1, max_stale_sec,
-        cur_time + max_stale_sec + 1);
- assert((quorum_duration === -1), "Being over the quorum duration time limit fails");
+    var empty_result_list = [];
 
- // run tests with keys that don't end exactly at the current time
- spacer('When observations *do not* end at the current time');
- cur_time += 100;
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            empty_result_list, 1, max_stale_sec, cur_time);
+    assert((quorum_duration === -1), "Passing an empty results list fails");
 
- assert((key_end_time > (cur_time - max_stale_sec)), "Key is inside the quorum duration limit.");
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list, 1, max_stale_sec,
-        cur_time);
- assert((quorum_duration >= 1 ), "2. Being at the edge of the quorum duration time limit passes");
- assert((quorum_duration === (cur_time + max_stale_sec + 1)), "2. The duration is as long as the observation.start to observation.end (i.e. it does NOT also count time that is white/a gap between it's end an the current time). (Expected " + (cur_time + max_stale_sec + 1) +
-    ", got " + quorum_duration + ")");
+    spacer('Observations with gaps (duration is still counted correctly if there is a gap between keys)');
 
- cur_time += 2 * max_stale_sec;
- assert((key_end_time < (cur_time - max_stale_sec)), "With changes, key is *outside* the quorum duration limit.");
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list, 1, max_stale_sec,
-        cur_time + max_stale_sec + 1);
- assert((quorum_duration === -1), "2. Being over the quorum duration time limit fails");
+    max_stale_sec = 600;
+    cur_time = 2000;
+    // leave a gap between the end of the key and the current time
+    var key1_duration = 200;
+    var end_time_1 = (cur_time - 100);
+    var start_time_1 = end_time_1 - key1_duration;
+    var key2_duration = 400;
+    var end_time_2 = (start_time_1 - 150);
+    var orig_end_time_2 = end_time_2;
+    var start_time_2 = end_time_2 - key2_duration;
+    var orig_start_time_2 = start_time_2;
 
+    assert(cur_time > end_time_1, "Gap setup: key1 ends before the current time");
+    assert(end_time_1 > start_time_1, "Gap setup: key1 starts before it ends");
+    assert(start_time_1 > end_time_2, "Gap setup: key2 ends before key1 starts");
+    assert(end_time_2 > start_time_2, "Gap setup: key2 starts before it ends");
+    assert(start_time_2 >= 0, "Gap setup: all times are non-negative");
+    assert(end_time_1 > (cur_time - max_stale_sec), "Gap setup: Target key1 ends inside the cutoff limit");
+    assert((end_time_1 - start_time_1 === key1_duration), "Gap setup: key one lasts " + key1_duration + ".");
+    assert((end_time_2 - start_time_2 === key2_duration), "Gap setup: key two lasts " + key2_duration + ".");
 
+    var gap_result_list = [
+        { "server": "204.255.124.41:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": start_time_1, "end": end_time_1  }
+                    ] }
+            ]
+        },
+        { "server": "128.2.185.85:8080",
+            "obs": [
+                { "key": key2,
+                    "timestamps": [
+                        { "start": start_time_2, "end": end_time_2  }
+                    ] }
+            ]
+        }
+    ];
 
- quorum_duration = Pers_client_policy.get_quorum_duration(key2,
-          server_result_list, 1, max_stale_sec,cur_time);
- assert((quorum_duration === -1), "Looking for a key that has no results fails");
+    //(i.e. only as long as the bar, and only if inside cutoff)
+    var gap_quorum_duration1 = Pers_client_policy.get_quorum_duration(key,
+            gap_result_list, 1, max_stale_sec, cur_time);
+    assert((gap_quorum_duration1 === (end_time_1 - start_time_1 + 1)), "Target key first: |curtime| .. |current key| .. |other key| {cutoff} (should be " +
+            (end_time_1 - start_time_1 + 1) + ", not " + (cur_time - start_time_1 + 1) +
+            ": got " + gap_quorum_duration1 + ").");
 
+    // the 'weakly seen' property is relative to the current time,
+    // so allow a check length going back to the end date of the observation.
+    var weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - end_time_2);
+    var gap_weakly_seen1 = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            gap_result_list, 1, weak_check_time_limit);
+    assert((gap_weakly_seen1 === true), "key is 'weakly seen'");
 
- var empty_result_list = [];
+    assert(end_time_2 > (cur_time - max_stale_sec), "Gap setup: New target key2 ends inside the cutoff limit");
+    var gap_quorum_duration2 = Pers_client_policy.get_quorum_duration(key2,
+            gap_result_list, 1, max_stale_sec, cur_time);
+    assert((gap_quorum_duration2 === (end_time_2 - start_time_2 + 1)), "Target key second: |curtime| .. |other key| .. |current key.. {cutoff} .. |(should be " +
+            (end_time_2 - start_time_2 + 1) + ", not " + (cur_time - start_time_2 + 1) +
+            ": got " + gap_quorum_duration2 + ").");
 
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          empty_result_list, 1, max_stale_sec,cur_time);
- assert((quorum_duration === -1), "Passing an empty results list fails");
+    var gap_weakly_seen2 = Pers_client_policy.key_weakly_seen_by_quorum(key2,
+            gap_result_list, 1, weak_check_time_limit);
+    assert((gap_weakly_seen2 === true), "key2 is 'weakly seen'");
 
- spacer('Observations with gaps (duration is still counted correctly if there is a gap between keys)');
+    // if we had the same result set without the gap, the durations should be the same
+    spacer("Gap and non-gap durations should be the same");
+    end_time_2 = start_time_1; // all other variables from above are the same.
+    start_time_2 = end_time_2 - key2_duration;
 
- max_stale_sec = 600;
- cur_time = 2000;
- // leave a gap between the end of the key and the current time
- var key1_duration = 200;
- var end_time_1 = (cur_time - 100);
- var start_time_1 = end_time_1 - key1_duration;
- var key2_duration = 400;
- var end_time_2 = (start_time_1 - 150);
- var orig_end_time_2 = end_time_2;
- var start_time_2 = end_time_2 - key2_duration;
- var orig_start_time_2 = start_time_2;
+    assert(cur_time > end_time_1, "Nongap setup: key1 ends before the current time");
+    assert(end_time_1 > start_time_1, "Nongap setup: key1 starts before it ends");
+    assert(start_time_1 === end_time_2, "Nongap setup: key2 ends *exactly when* key1 starts");
+    assert(end_time_2 > start_time_2, "Nongap setup: key2 starts before it ends");
+    assert(start_time_2 >= 0, "Nongap setup: all times are non-negative");
+    assert(end_time_1 > (cur_time - max_stale_sec), "Nongap setup: Target key1 ends inside the cutoff limit");
+    assert((end_time_1 - start_time_1 === key1_duration), "Nongap setup: key one lasts " + key1_duration + ".");
+    assert((end_time_2 - start_time_2 === key2_duration), "Nongap setup: key two lasts " + key2_duration + ".");
 
- assert(cur_time > end_time_1, "Gap setup: key1 ends before the current time");
- assert(end_time_1 > start_time_1 , "Gap setup: key1 starts before it ends");
- assert(start_time_1 > end_time_2 , "Gap setup: key2 ends before key1 starts");
- assert(end_time_2 > start_time_2 , "Gap setup: key2 starts before it ends");
- assert(start_time_2 >= 0 , "Gap setup: all times are non-negative");
- assert(end_time_1 > (cur_time - max_stale_sec), "Gap setup: Target key1 ends inside the cutoff limit");
- assert((end_time_1 - start_time_1 === key1_duration), "Gap setup: key one lasts " + key1_duration + ".");
- assert((end_time_2 - start_time_2 === key2_duration), "Gap setup: key two lasts " + key2_duration + ".");
+    var non_gap_result_list = [
+        { "server": "204.255.124.41:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": start_time_1, "end": end_time_1  }
+                    ] }
+            ]
+        },
+        { "server": "128.2.185.85:8080",
+            "obs": [
+                { "key": key2,
+                    "timestamps": [
+                        { "start": start_time_2, "end": end_time_2  }
+                    ] }
+            ]
+        }
+    ];
 
-  var gap_result_list = [
-   { "server" : "204.255.124.41:8080",
-     "obs" : [  { "key" : key,
-      "timestamps" : [ { "start" : start_time_1 , "end" : end_time_1  } ] } ]
-   },
-   { "server" : "128.2.185.85:8080",
-     "obs" : [  { "key" : key2,
-      "timestamps" : [ { "start" : start_time_2 , "end" : end_time_2  } ] } ]
-   }
- ];
+    var nongap_quorum_duration1 = Pers_client_policy.get_quorum_duration(key,
+            non_gap_result_list, 1, max_stale_sec, cur_time);
+    assert((nongap_quorum_duration1 === (end_time_1 - start_time_1 + 1)), "Target key first: |curtime| .. |current key||other key| {cutoff} (should be " +
+            (end_time_1 - start_time_1 + 1) + ", not " + (cur_time - start_time_1 + 1) +
+            ": got " + nongap_quorum_duration1 + ").");
+    assert((nongap_quorum_duration1 === gap_quorum_duration1), "Duration is the same with and without gaps.");
 
-  //(i.e. only as long as the bar, and only if inside cutoff)
-  var gap_quorum_duration1 = Pers_client_policy.get_quorum_duration(key,
-          gap_result_list, 1, max_stale_sec, cur_time);
-  assert((gap_quorum_duration1 === (end_time_1 - start_time_1 + 1)), "Target key first: |curtime| .. |current key| .. |other key| {cutoff} (should be " +
-    (end_time_1 - start_time_1 + 1) + ", not " + (cur_time - start_time_1 + 1) +
-    ": got " + gap_quorum_duration1 + ").");
-
- // the 'weakly seen' property is relative to the current time,
- // so allow a check length going back to the end date of the observation.
- var weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - end_time_2);
- var gap_weakly_seen1 = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          gap_result_list, 1, weak_check_time_limit);
- assert((gap_weakly_seen1 === true), "key is 'weakly seen'");
-
-  assert(end_time_2 > (cur_time - max_stale_sec), "Gap setup: New target key2 ends inside the cutoff limit");
-  var gap_quorum_duration2 = Pers_client_policy.get_quorum_duration(key2,
-          gap_result_list, 1, max_stale_sec, cur_time);
-  assert((gap_quorum_duration2 === (end_time_2 - start_time_2 + 1)), "Target key second: |curtime| .. |other key| .. |current key.. {cutoff} .. |(should be " +
-    (end_time_2 - start_time_2 + 1) + ", not " + (cur_time - start_time_2 + 1) +
-    ": got " + gap_quorum_duration2 + ").");
-
-   var gap_weakly_seen2 = Pers_client_policy.key_weakly_seen_by_quorum(key2,
-          gap_result_list, 1, weak_check_time_limit);
- assert((gap_weakly_seen2 === true), "key2 is 'weakly seen'");
-
-  // if we had the same result set without the gap, the durations should be the same
- spacer("Gap and non-gap durations should be the same");
- end_time_2 = start_time_1; // all other variables from above are the same.
- start_time_2 = end_time_2 - key2_duration;
-
- assert(cur_time > end_time_1, "Nongap setup: key1 ends before the current time");
- assert(end_time_1 > start_time_1 , "Nongap setup: key1 starts before it ends");
- assert(start_time_1 === end_time_2 , "Nongap setup: key2 ends *exactly when* key1 starts");
- assert(end_time_2 > start_time_2 , "Nongap setup: key2 starts before it ends");
- assert(start_time_2 >= 0 , "Nongap setup: all times are non-negative");
- assert(end_time_1 > (cur_time - max_stale_sec), "Nongap setup: Target key1 ends inside the cutoff limit");
- assert((end_time_1 - start_time_1 === key1_duration), "Nongap setup: key one lasts " + key1_duration + ".");
- assert((end_time_2 - start_time_2 === key2_duration), "Nongap setup: key two lasts " + key2_duration + ".");
-
- var non_gap_result_list = [
-   { "server" : "204.255.124.41:8080",
-     "obs" : [  { "key" : key,
-      "timestamps" : [ { "start" : start_time_1 , "end" : end_time_1  } ] } ]
-   },
-   { "server" : "128.2.185.85:8080",
-     "obs" : [  { "key" : key2,
-      "timestamps" : [ { "start" : start_time_2 , "end" : end_time_2  } ] } ]
-   }
- ];
-
-  var nongap_quorum_duration1 = Pers_client_policy.get_quorum_duration(key,
-          non_gap_result_list, 1, max_stale_sec, cur_time);
-  assert((nongap_quorum_duration1 === (end_time_1 - start_time_1 + 1)), "Target key first: |curtime| .. |current key||other key| {cutoff} (should be " +
-    (end_time_1 - start_time_1 + 1) + ", not " + (cur_time - start_time_1 + 1) +
-    ": got " + nongap_quorum_duration1 + ").");
-  assert((nongap_quorum_duration1 === gap_quorum_duration1), "Duration is the same with and without gaps.");
-
-   // the 'weakly seen' property is relative to the current time,
-   // so allow a check length going back to the end date of the observation.
-   var weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - end_time_2);
-   var nongap_weakly_seen1 = Pers_client_policy.key_weakly_seen_by_quorum(key,
+    // the 'weakly seen' property is relative to the current time,
+    // so allow a check length going back to the end date of the observation.
+    weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - end_time_2);
+    var nongap_weakly_seen1 = Pers_client_policy.key_weakly_seen_by_quorum(key,
             non_gap_result_list, 1, weak_check_time_limit);
-   assert((nongap_weakly_seen1 === true), "key is 'weakly seen'");
-   // the important tests - that results with and without gaps are the same.
-   assert((nongap_weakly_seen1 === gap_weakly_seen1), "'weakly seen' result is the same with and without gaps.");
+    assert((nongap_weakly_seen1 === true), "key is 'weakly seen'");
+    // the important tests - that results with and without gaps are the same.
+    assert((nongap_weakly_seen1 === gap_weakly_seen1), "'weakly seen' result is the same with and without gaps.");
 
-  assert(end_time_2 > (cur_time - max_stale_sec), "Nongap setup: New target key2 ends inside the cutoff limit");
-  var nongap_quorum_duration2 = Pers_client_policy.get_quorum_duration(key2,
-          non_gap_result_list, 1, max_stale_sec, cur_time);
-  assert((nongap_quorum_duration2 === (end_time_2 - start_time_2 + 1)), "Target key second: |curtime| .. |other key||current key.. {cutoff} .. |(should be " +
-    (end_time_2 - start_time_2 + 1) + ", not " + (cur_time - start_time_2 + 1) +
-    ": got " + nongap_quorum_duration2 + ").");
-  assert((nongap_quorum_duration2 === gap_quorum_duration2), "Duration is the same with and without gaps.");
+    assert(end_time_2 > (cur_time - max_stale_sec), "Nongap setup: New target key2 ends inside the cutoff limit");
+    var nongap_quorum_duration2 = Pers_client_policy.get_quorum_duration(key2,
+            non_gap_result_list, 1, max_stale_sec, cur_time);
+    assert((nongap_quorum_duration2 === (end_time_2 - start_time_2 + 1)), "Target key second: |curtime| .. |other key||current key.. {cutoff} .. |(should be " +
+            (end_time_2 - start_time_2 + 1) + ", not " + (cur_time - start_time_2 + 1) +
+            ": got " + nongap_quorum_duration2 + ").");
+    assert((nongap_quorum_duration2 === gap_quorum_duration2), "Duration is the same with and without gaps.");
 
-   // the 'weakly seen' property is relative to the current time,
-   // so allow a check length going back to the end date of the observation.
-   var nongap_weakly_seen2 = Pers_client_policy.key_weakly_seen_by_quorum(key2,
+    // the 'weakly seen' property is relative to the current time,
+    // so allow a check length going back to the end date of the observation.
+    var nongap_weakly_seen2 = Pers_client_policy.key_weakly_seen_by_quorum(key2,
             non_gap_result_list, 1, weak_check_time_limit);
-   assert((nongap_weakly_seen2 === true), "key is 'weakly seen'");
-   assert((nongap_weakly_seen2 === gap_weakly_seen2), "'weakly seen' result is the same with and without gaps.");
+    assert((nongap_weakly_seen2 === true), "key is 'weakly seen'");
+    assert((nongap_weakly_seen2 === gap_weakly_seen2), "'weakly seen' result is the same with and without gaps.");
 
-  spacer("Further gap tests");
-  end_time_2 = orig_end_time_2;
-  start_time_2 = orig_start_time_2;
-  max_stale_sec = 200;
-  assert(end_time_2 < (cur_time - max_stale_sec), "Gap setup: After change, target key2 ends *outside* the cutoff limit");
-  quorum_duration = Pers_client_policy.get_quorum_duration(key2,
-          gap_result_list, 1, max_stale_sec, cur_time);
-  assert((quorum_duration === -1), "Results with gaps do not give a duration if they happen after the time cutoff.");
+    spacer("Further gap tests");
+    end_time_2 = orig_end_time_2;
+    start_time_2 = orig_start_time_2;
+    max_stale_sec = 200;
+    assert(end_time_2 < (cur_time - max_stale_sec), "Gap setup: After change, target key2 ends *outside* the cutoff limit");
+    quorum_duration = Pers_client_policy.get_quorum_duration(key2,
+            gap_result_list, 1, max_stale_sec, cur_time);
+    assert((quorum_duration === -1), "Results with gaps do not give a duration if they happen after the time cutoff.");
 
     var gap_result_list2 = [
-   { "server" : "204.255.124.41:8080",
-     "obs" : [  { "key" : key,
-      "timestamps" : [ { "start" : start_time_1 , "end" : end_time_1  } ] } ]
-   },
-   { "server" : "128.2.185.85:8080",
-     "obs" : [  { "key" : key,
-      "timestamps" : [ { "start" : start_time_2 , "end" : end_time_2  } ] } ]
-   }
- ];
+        { "server": "204.255.124.41:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": start_time_1, "end": end_time_1  }
+                    ] }
+            ]
+        },
+        { "server": "128.2.185.85:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": start_time_2, "end": end_time_2  }
+                    ] }
+            ]
+        }
+    ];
 
- // currently this will calculate duration using the oldest matching key inside the
- // cutoff range.
- // TODO: should we use the longest or shortest one instead?
- quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          gap_result_list2, 1, max_stale_sec, cur_time);
-  assert((quorum_duration === (end_time_2 - start_time_2 + 1)), "Target key second: |curtime| .. |current key| .. |current key.. {cutoff} .. |(should be " +
-    (end_time_2 - start_time_2 + 1) + ", not " + (cur_time - start_time_2 + 1) +
-    ": got " + quorum_duration + ").");
- // testing against a result set without gaps doesn't make sense here;
- // the two observations would be joined together.
+    // currently this will calculate duration using the oldest matching key inside the
+    // cutoff range.
+    // TODO: should we use the longest or shortest one instead?
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            gap_result_list2, 1, max_stale_sec, cur_time);
+    assert((quorum_duration === (end_time_2 - start_time_2 + 1)), "Target key second: |curtime| .. |current key| .. |current key.. {cutoff} .. |(should be " +
+            (end_time_2 - start_time_2 + 1) + ", not " + (cur_time - start_time_2 + 1) +
+            ": got " + quorum_duration + ").");
+    // testing against a result set without gaps doesn't make sense here;
+    // the two observations would be joined together.
 
+    //TODO: more gap tests with multiple matching results from multiple notaries
 
+    spacer('Quorums for certificates with short durations');
 
-  //TODO: more gap tests with multiple matching results from multiple notaries
+    var short_start = 10;
+    var short_end = 11;
+    var short_result_list = [
+        { "server": "test1:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": short_start, "end": short_end  }
+                    ] }
+            ]
+        }
+    ];
 
- spacer('Quorums for certificates with short durations');
+    // place cur_time within the 'valid range' cutoff
+    cur_time = 24 * 3600;
+    max_stale_sec = 200;
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            short_result_list, 1, max_stale_sec, cur_time);
+    assert((quorum_duration === -1), "A one-second duration out of the valid time window is inconsistent (got " +
+            quorum_duration + ").");
 
- var short_start = 10;
- var short_end = 11;
- var short_result_list = [
-     { "server" : "test1:8080",
-       "obs" : [  { "key" : key,
-        "timestamps" : [ { "start" : short_start , "end" : short_end  } ] } ]
-     }
-   ];
+    // the 'weakly seen' property is relative to the current time,
+    // so allow a check length going back to the end date of the observation.
+    weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - short_end);
+    var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
+            short_result_list, 1, weak_check_time_limit);
+    assert((weakly_seen === true), "keys with one second duration count as 'weakly seen'");
 
-  // place cur_time within the 'valid range' cutoff
-  cur_time = 24 * 3600;
-  max_stale_sec = 200;
-  quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          short_result_list, 1, max_stale_sec, cur_time);
- assert((quorum_duration === -1), "A one-second duration out of the valid time window is inconsistent (got " +
-    quorum_duration + ").");
+    max_stale_sec = 3 * 24 * 3600;
+    quorum_duration = Pers_client_policy.get_quorum_duration(key,
+            short_result_list, 1, max_stale_sec, cur_time);
+    assert((quorum_duration === 1), "A one-second duration within the valid time window is one second (got " +
+            quorum_duration + ").");
 
- // the 'weakly seen' property is relative to the current time,
- // so allow a check length going back to the end date of the observation.
- var weak_check_time_limit = Pers_util.SEC2DAY(Pers_util.get_unix_time() - short_end);
- var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(key,
-          short_result_list, 1, weak_check_time_limit);
- assert((weakly_seen === true), "keys with one second duration count as 'weakly seen'");
+    cur_time += 24 * 3600;
+    assert(((cur_time - max_stale_sec) < short_end), "(meta) Current time for the next test is still within the valid window.");
+    var quorum_duration2 = Pers_client_policy.get_quorum_duration(key,
+            short_result_list, 1, max_stale_sec, cur_time);
+    assert((quorum_duration === quorum_duration2), "Changing the curtime within the valid window doesn't change the duration of the cert observation (got " +
+            quorum_duration2 + ").");
 
-  max_stale_sec = 3 * 24 * 3600;
-  quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          short_result_list, 1, max_stale_sec, cur_time);
- assert((quorum_duration === 1), "A one-second duration within the valid time window is one second (got " +
-    quorum_duration + ").");
+    spacer('Quorums with a small number of notaries');
 
- cur_time += 24 * 3600;
- assert(((cur_time - max_stale_sec) < short_end), "(meta) Current time for the next test is still within the valid window.");
- var quorum_duration2 = Pers_client_policy.get_quorum_duration(key,
-          short_result_list, 1, max_stale_sec, cur_time);
- assert((quorum_duration === quorum_duration2), "Changing the curtime within the valid window doesn't change the duration of the cert observation (got " +
-    quorum_duration2 + ").");
+    //TODO: write code to save and restore all preferences after each test,
+    //so it doesn't matter which we alter.
+    var pref_string_extra_notaries = "perspectives.additional_notary_list";
+    var pref_string_use_def_notary = "perspectives.use_default_notary_list";
+    var orig_thresh = Perspectives.root_prefs.getIntPref("perspectives.quorum_thresh");
+    var orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
+    var orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
 
- spacer('Quorums with a small number of notaries');
-
- //TODO: write code to save and restore all preferences after each test,
- //so it doesn't matter which we alter.
- var pref_string_extra_notaries = "perspectives.additional_notary_list";
- var pref_string_use_def_notary = "perspectives.use_default_notary_list";
- var orig_thresh = Perspectives.root_prefs.getIntPref("perspectives.quorum_thresh");
- var orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
- var orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
-
- var single_notary = "localhost:8080\n\
+    var single_notary = "localhost:8080\n\
 -----BEGIN PUBLIC KEY-----\n\
 MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGXsegzE6E/6j4vgzi3NqGSn2dz\
 W6gRxkuAL7PB8QmRqtG9ieSQjFB6cTYvkmp7x/LtHqlr9Fa6+/mT4Ma5oKU0RpgY\
@@ -618,52 +646,48 @@ FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\
 JaJ2Lw7kRVMCAwEAAQ==\
 -----END PUBLIC KEY-----";
 
+    try {
+        var small_quorum_thresh = 1;
+        Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", small_quorum_thresh);
+        Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, false);
+        Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, single_notary);
 
- try {
-  var small_quorum_thresh = 1;
-  Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", small_quorum_thresh);
-  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, false);
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, single_notary);
+        var qint = Perspectives.getQuorumAsInt();
+        assert(qint >= 1, small_quorum_thresh +
+                "% Quorum Threhold with 1 notary still returns a required quorum count >= 1 (got " + qint + ").");
 
-  var qint = Perspectives.getQuorumAsInt();
-  assert(qint >= 1, small_quorum_thresh +
-    "% Quorum Threhold with 1 notary still returns a required quorum count >= 1 (got " + qint + ").");
+        var unixtime = Pers_util.get_unix_time();
+        max_stale_sec = 2 * 24 * 3600;
 
-  var unixtime = Pers_util.get_unix_time();
-  var max_stale_sec = 2 * 24 * 3600;
+        var consistent = Pers_client_policy.check_current_consistency(
+                key, server_result_list, 0, max_stale_sec, unixtime);
+        assert((consistent === false), "Quorum size 0 is not consistent.");
 
-  var consistent = Pers_client_policy.check_current_consistency(
-    key, server_result_list, 0, max_stale_sec, unixtime);
-  assert((consistent === false), "Quorum size 0 is not consistent.");
+        var has_quorum = Pers_client_policy.has_quorum_at_time(key,
+                server_result_list, 0, null);
+        assert((has_quorum === false), "Quorum size 0 is fails at any given time.");
 
-  var has_quorum = Pers_client_policy.has_quorum_at_time(key,
-    server_result_list, 0, null);
-  assert((has_quorum === false), "Quorum size 0 is fails at any given time.");
+        quorum_duration = Pers_client_policy.get_quorum_duration(key,
+                server_result_list, 0, max_stale_sec, unixtime);
+        assert((quorum_duration === 0), "Quorum size 0 gives zero duration");
 
-  quorum_duration = Pers_client_policy.get_quorum_duration(key,
-          server_result_list, 0, max_stale_sec, unixtime);
-  assert((quorum_duration === 0), "Quorum size 0 gives zero duration");
+        var full_quorum_thresh = 100;
+        Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", full_quorum_thresh);
+        Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
 
+        qint = Perspectives.getQuorumAsInt();
+        assert(qint === Perspectives.getNotaryList().length, full_quorum_thresh +
+                "% Quorum Threhold with many notaries returns a full required quorum count (got " + qint + ").");
 
+    }
+    finally {
+        Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", orig_thresh);
+        Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, orig_extra_notaries);
+        Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, orig_use_default_notaries);
+    }
 
-  var full_quorum_thresh = 100;
-  Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", full_quorum_thresh);
-  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
-
-  var qint = Perspectives.getQuorumAsInt();
-  assert(qint === Perspectives.getNotaryList().length, full_quorum_thresh +
-    "% Quorum Threhold with many notaries returns a full required quorum count (got " + qint + ").");
-
- }
- finally {
-  Perspectives.root_prefs.setIntPref("perspectives.quorum_thresh", orig_thresh);
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, orig_extra_notaries);
-  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, orig_use_default_notaries);
- }
-
- write_string("Finished");
-} 
-
+    write_string("Finished");
+}
 
 // Test cases: we pass the quorum percentage, but the key is really old.
 // Originally this was found because get_quorum_duration() was passing
@@ -672,137 +696,139 @@ JaJ2Lw7kRVMCAwEAAQ==\
 
 function quorum_oldkey() {
 
- var keybc = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00"; //the key we're looking for
- var keybd = "bd:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
+    var keybc = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00"; //the key we're looking for
+    var keybd = "bd:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
 
- var cur_time = 200 * 24 * 3600; //i.e. 200 days since epoch
- var max_stale_sec = 2 * 24 * 3600; // 2 days
- var q_required = 1;
- var q_duration_required = 100 * 24 * 3600 ;
+    var cur_time = 200 * 24 * 3600; //i.e. 200 days since epoch
+    var max_stale_sec = 2 * 24 * 3600; // 2 days
+    var q_required = 1;
+    var q_duration_required = 100 * 24 * 3600;
 
- var foundkey_start = 100;
+    var foundkey_start = 100;
 
+    // see testcase description inside assert() calls, below, for explanations
+    // of array contents.
+    var results_oldkey = [
+        { "server": "128.2.185.85:8080",
+            "obs": [
+                {"key": keybc,
+                    "timestamps": [
+                        { "start": foundkey_start * 24 * 3600, "end": (foundkey_start + q_duration_required) * 24 * 3600  }
+                    ] }
+            ]
+        }
+    ];
 
- // see testcase description inside assert() calls, below, for explanations
- // of array contents.
- var results_oldkey = [
-   { "server" : "128.2.185.85:8080",
-     "obs" : [  {"key" : keybc,
-      "timestamps" : [ { "start" : foundkey_start * 24 * 3600, "end" : (foundkey_start + q_duration_required) * 24 * 3600  } ] },
-      ]
-   }
- ];
+    var results_oldkey_notpushed = [
+        { "server": "128.2.185.85:8080",
+            "obs": [
+                {"key": keybc,
+                    "timestamps": [
+                        { "start": foundkey_start * 24 * 3600, "end": (foundkey_start + q_duration_required) * 24 * 3600  }
+                    ] }
+            ]
+        },
+        { "server": "204.255.124.41:8080",
+            "obs": [
+                { "key": keybd,
+                    // start date of 10 is arbitrary
+                    "timestamps": [
+                        { "start": 10 * 24 * 3600, "end": foundkey_start * 24 * 3600  }
+                    ] }
+            ]
+        }
+    ];
 
+    // almost the same keys as above, except the unrelated key's time range ends 1 days earlier
+    var results_oldkey_pushedout = [
+        { "server": "204.255.124.41:8080",
+            "obs": [
+                { "key": keybd,
+                    "timestamps": [
+                        { "start": 10 * 24 * 3600, "end": (foundkey_start - 1 ) * 24 * 3600  }
+                    ] }
+            ]
+        },
+        { "server": "128.2.185.85:8080",
+            "obs": [
+                {"key": keybc,
+                    "timestamps": [
+                        { "start": foundkey_start * 24 * 3600, "end": (foundkey_start + q_duration_required) * 24 * 3600  }
+                    ] }
+            ]
+        }
+    ];
 
- var results_oldkey_notpushed = [
-   { "server" : "128.2.185.85:8080",
-     "obs" : [  {"key" : keybc,
-      "timestamps" : [ { "start" : foundkey_start * 24 * 3600, "end" : (foundkey_start + q_duration_required) * 24 * 3600  } ] },
-      ]
-   },
-   { "server" : "204.255.124.41:8080",
-     "obs" : [  { "key" : keybd,
-     // start date of 10 is arbitrary
-      "timestamps" : [ { "start" : 10 * 24 * 3600 , "end" : foundkey_start * 24 * 3600  } ] },
-      ]
-   }
- ];
+    write_string("Starting oldkey quorum tests...");
+    var quorum_duration = 0;
 
- // almost the same keys as above, except the unrelated key's time range ends 1 days earlier
- var results_oldkey_pushedout = [
-   { "server" : "204.255.124.41:8080",
-     "obs" : [  { "key" : keybd,
-      "timestamps" : [ { "start" : 10 * 24 * 3600 , "end" : (foundkey_start - 1 ) * 24 * 3600  } ] },
-      ]
-   },
-   { "server" : "128.2.185.85:8080",
-     "obs" : [
-      {"key" : keybc,
-      "timestamps" : [ { "start" : foundkey_start * 24 * 3600, "end" : (foundkey_start + q_duration_required) * 24 * 3600  } ] },
-      ]
-   }
- ];
+    quorum_duration = Pers_client_policy.get_quorum_duration(keybc, results_oldkey,
+            q_required, max_stale_sec, cur_time);
+    assert((quorum_duration >= q_duration_required),
+            "1) Old key within duration accepted");
 
+    quorum_duration = Pers_client_policy.get_quorum_duration(keybc, results_oldkey,
+            q_required, max_stale_sec, cur_time);
+    assert((quorum_duration <= (q_duration_required * 2)),
+            "2) Old key outside duration rejected");
 
- write_string("Starting oldkey quorum tests...");
- var quorum_duration = 0;
+    quorum_duration = Pers_client_policy.get_quorum_duration(keybc, results_oldkey_notpushed,
+            q_required, max_stale_sec, cur_time);
+    assert((quorum_duration > q_duration_required),
+            "3) Same as (1), but an unrelated key result ends on day target key begins");
 
+    quorum_duration = Pers_client_policy.get_quorum_duration(keybc, results_oldkey_pushedout,
+            q_required, max_stale_sec, cur_time);
+    assert((quorum_duration > q_duration_required),
+            "4) Same as (1), but an unrelated key result ends the day before target key begins");
 
- quorum_duration = Pers_client_policy.get_quorum_duration(keybc, results_oldkey,
-          q_required, max_stale_sec, cur_time);
- assert((quorum_duration >= q_duration_required),
-  "1) Old key within duration accepted");
-
-
- quorum_duration = Pers_client_policy.get_quorum_duration(keybc, results_oldkey,
-          q_required, max_stale_sec, cur_time);
- assert((quorum_duration <= (q_duration_required * 2)),
-  "2) Old key outside duration rejected");
-
-
- quorum_duration = Pers_client_policy.get_quorum_duration(keybc, results_oldkey_notpushed,
-          q_required, max_stale_sec, cur_time);
- assert((quorum_duration > q_duration_required),
-  "3) Same as (1), but an unrelated key result ends on day target key begins");
-
-
- quorum_duration = Pers_client_policy.get_quorum_duration(keybc, results_oldkey_pushedout,
-          q_required, max_stale_sec, cur_time);
- assert((quorum_duration > q_duration_required),
-  "4) Same as (1), but an unrelated key result ends the day before target key begins");
-
- write_string("Finished");
+    write_string("Finished");
 }
 
 function notary_parsing() {
 
-  var pref_string_extra_notaries = "perspectives.additional_notary_list";
-  var pref_string_use_def_notary = "perspectives.use_default_notary_list";
-  var orig_extra_notaries = null;
-  var orig_use_default_notaries = null;
+    var pref_string_extra_notaries = "perspectives.additional_notary_list";
+    var pref_string_use_def_notary = "perspectives.use_default_notary_list";
+    var orig_extra_notaries = null;
+    var orig_use_default_notaries = null;
 
+    write_string("Starting notary parsing tests.");
 
-  write_string("Starting notary parsing tests.");
+    // save preferences so we can restore state afterward
+    orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
+    orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
 
-  // save preferences so we can restore state afterward
-  orig_extra_notaries = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries);
-  orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary);
+    if(orig_extra_notaries === null || orig_use_default_notaries === null) {
+        error("Could not read preferences from Perspectives plugin. Skipping notary parse tests.");
+        g_test_count++;
+        g_fail_count++;
+        return;
+    }
 
-  if (orig_extra_notaries === null || orig_use_default_notaries === null) {
-    error("Could not read preferences from Perspectives plugin. Skipping notary parse tests.");
-    g_test_count++;
-    g_fail_count++;
-    return;
-  }
+    // set preferences to known state so we can run our tests in a controlled env
+    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+    Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
 
+    var notaries = "";
+    var count_before = 0;
 
-  // set preferences to known state so we can run our tests in a controlled env
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
-  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, true);
+    notaries = Perspectives.getNotaryList();
+    assert(notaries.length > 0,
+            "Default notary list gets us > 0 notaries (we have " + notaries.length + ")");
 
-  var notaries = "";
-  var count_before = 0;
+    var nonsense_notary = "aaaaaaaa";
+    // clear the extra notaries list to be sure what we're dealing with
+    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+    count_before = Perspectives.getNotaryList().length;
+    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, nonsense_notary);
+    notaries = Perspectives.getNotaryList();
+    assert(notaries.length === count_before,
+            "Trying to save a garbled notary string doesn't work.");
 
-  notaries = Perspectives.getNotaryList();
-  assert(notaries.length > 0,
-    "Default notary list gets us > 0 notaries (we have " + notaries.length + ")");
-
-
-  var nonsense_notary = "aaaaaaaa";
-  // clear the extra notaries list to be sure what we're dealing with
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
-  count_before = Perspectives.getNotaryList().length;
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, nonsense_notary);
-  notaries = Perspectives.getNotaryList();
-  assert(notaries.length === count_before,
-    "Trying to save a garbled notary string doesn't work.");
-
-
-
-  // TODO bad method of declaration?
-  // We need newlines after the server name and 'BEGIN PUBLIC KEY' lines
-  // for the string to parse properly
-  var notary_dupe = "perspectives1.networknotary.org:8080\n\
+    // TODO bad method of declaration?
+    // We need newlines after the server name and 'BEGIN PUBLIC KEY' lines
+    // for the string to parse properly
+    var notary_dupe = "perspectives1.networknotary.org:8080\n\
 -----BEGIN PUBLIC KEY-----\n\
 MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGXsegzE6E/6j4vgzi3NqGSn2dz\
 W6gRxkuAL7PB8QmRqtG9ieSQjFB6cTYvkmp7x/LtHqlr9Fa6+/mT4Ma5oKU0RpgY\
@@ -811,17 +837,15 @@ FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\
 JaJ2Lw7kRVMCAwEAAQ==\
 -----END PUBLIC KEY-----";
 
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
-  count_before = Perspectives.getNotaryList().length;
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, notary_dupe);
-  notaries = Perspectives.getNotaryList();
-  assert_fixme(notaries.length === count_before,
-    "Trying to add a duplicate notary doesn't work.");
-  //FIXME - note: this currently fails. We want to write code to prevent dupes.
+    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+    count_before = Perspectives.getNotaryList().length;
+    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, notary_dupe);
+    notaries = Perspectives.getNotaryList();
+    assert_fixme(notaries.length === count_before,
+            "Trying to add a duplicate notary doesn't work.");
+    //FIXME - note: this currently fails. We want to write code to prevent dupes.
 
-
-
-  var sparse_notary = "perspectivesFAKETEST.networknotary.org:8080\n\n\n\n\
+    var sparse_notary = "perspectivesFAKETEST.networknotary.org:8080\n\n\n\n\
 -----BEGIN PUBLIC KEY-----\n\n\n\n\n\
 MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGXsegzE6E/6j4vgzi3NqGSn2dz\n\n\n\n\
 W6gRxkuAL7PB8QmRqtG9ieSQjFB6cTYvkmp7x/LtHqlr9Fa6+/mT4Ma5oKU0RpgY\n\n\n\n\
@@ -830,76 +854,73 @@ FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\n\n\n\n\
 JaJ2Lw7kRVMCAwEAAQ==\n\n\n\n\
 -----END PUBLIC KEY-----\n\n\n\n";
 
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
-  count_before = Perspectives.getNotaryList().length;
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, sparse_notary);
-  notaries = Perspectives.getNotaryList();
-  assert(notaries.length === (count_before + 1),
-    "Trying to add a notary with many blank lines works.");
+    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
+    count_before = Perspectives.getNotaryList().length;
+    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, sparse_notary);
+    notaries = Perspectives.getNotaryList();
+    assert(notaries.length === (count_before + 1),
+            "Trying to add a notary with many blank lines works.");
 
+    // -------------
+    // restore state once we're finished all of the tests
+    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, orig_extra_notaries);
+    Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, orig_use_default_notaries);
 
-
-  // -------------
-  // restore state once we're finished all of the tests
-  Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, orig_extra_notaries);
-  Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary, orig_use_default_notaries);
-
-  write_string("Finished");
+    write_string("Finished");
 }
 
 function notary_replies() {
 
-  write_string("Starting notary reply tests");
+    write_string("Starting notary reply tests");
 
-  //TODO: overwrite, or ignore?
-  assert_fixme(false, "Don't accept multiple responses from the same server");
-  //we can test this by temporarily allowing duplicates and sending out two responses.
-  //but it's even better if we can just do it in code.
+    //TODO: overwrite, or ignore?
+    assert_fixme(false, "Don't accept multiple responses from the same server");
+    //we can test this by temporarily allowing duplicates and sending out two responses.
+    //but it's even better if we can just do it in code.
 
-  write_string("Finished");
+    write_string("Finished");
 }
 
+function run_tests() {
+    if(typeof Perspectives != "undefined") {
+        // print debug info to console by default
+        Pers_debug.d_print_flags["error"] = true;
 
+        try {
+            Perspectives.init_data();
 
+            clear();
+            meta_tests();
+            client_sanity();
+            nonrouted_ips();
+            quorum_basics();
+            quorum_oldkey();
+            notary_parsing();
+            notary_replies();
 
-
-function run_tests() { 
-
-  // print debug info to console by default
-  Pers_debug.d_print_flags["error"] = true;
-  
-  try {
-
-    Perspectives.init_data();
-
-    clear();
-    meta_tests();
-    client_sanity();
-    nonrouted_ips();
-    quorum_basics();
-    quorum_oldkey();
-    notary_parsing();
-    notary_replies();
-
-
-    write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "
-      + g_fail_count + " failures. ");
-    if (g_test_count != (g_pass_count + g_fail_count)) {
-      error("Count totals did not match!");
+            write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "
+                    + g_fail_count + " failures. ");
+            if(g_test_count != (g_pass_count + g_fail_count)) {
+                error("Count totals did not match!");
+            }
+        } catch(e) {
+            alert(e);
+            error("tests did not finish: '" + e + "'.");
+        }
+    } else {
+        error("You are probably running the test from browser context, but you need to run it from chrome context. Use 'make test' to to build and install the Perspectives extension and open chrome://perspectives/content/test/test.html");
     }
-  } catch(e) { 
-    alert(e);
-    error("tests did not finish: '" + e + "'.");
-  } 
-} 
-
+}
 </script>
 </head>
 <body>
-  <img src="../img/default.png" TITLE="Perspectives Logo"/>
-  <input type="button" value="Run Tests" onclick="run_tests()">
-  <p> Run with firebug or the web console to see detailed test output if something fails.</p>
-  <h2> Results: </h2>
-  <div id="results">
+<img src="../img/default.png" TITLE="Perspectives Logo"/>
+<input type="button" value="Run Tests" onclick="run_tests()">
+
+<p> Run with firebug or the web console to see detailed test output if something fails.</p>
+
+<h2> Results: </h2>
+
+<div id="results"></div>
 </body>
 </html>

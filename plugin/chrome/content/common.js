@@ -50,7 +50,7 @@ var Pers_debug = {
 var Pers_util = {
 	get_unix_time: function() {
 		var unixtime_ms = (new Date()).getTime(); // Returns milliseconds since the epoch
-		return parseInt(unixtime_ms / 1000);
+		return Math.round(unixtime_ms / 1000);
 	},
 
 	SEC2DAY: function(sec) { return sec / (3600 * 24); },

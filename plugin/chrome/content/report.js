@@ -157,7 +157,7 @@ var Pers_report = {
 				return;
 			}
 
-			var ti = Perspectives.getCurrentTabInfo(window.gBrowser.contentWindow);
+			var ti = Perspectives.getCurrentTabInfo(uri);
 
 			var cert = Perspectives.getCertificate(window.gBrowser);
 			if(!cert) {

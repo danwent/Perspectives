@@ -63,7 +63,7 @@ var Pers_whitelist_dialog = {
 				whitelist = whitelist + "," + regex;
 			}
 			this.root_prefs.setCharPref("perspectives.whitelist", whitelist);
-			window.opener.Perspectives.forceStatusUpdate(window.opener);
+			window.opener.Perspectives.force_status_update(window.opener);
 		} catch(e) { Pers_util.pers_alert("confirm_add: " + e); }
 	},
 
@@ -160,7 +160,7 @@ var Pers_whitelist_dialog = {
 				}
 			}
 			Perspectives.root_prefs.setCharPref("perspectives.whitelist", new_whitelist.join(","));
-			window.Perspectives.forceStatusUpdate(window);
+			window.Perspectives.force_status_update(window);
 		} catch(e) { Pers_util.pers_alert("remove_from_whitelist:" + e); }
 	}
 };

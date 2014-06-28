@@ -54,8 +54,7 @@ var Pers_gen = {
 			return b.ts - a.ts;
 		};
 		most_recent_list.sort(most_recent_ts);
-		Pers_debug.d_print("main", "most_recent_list");
-		Pers_debug.d_print("main", most_recent_list  );
+		//Pers_debug.d_print("main", "most_recent_list:" + JSON.stringify(most_recent_list));
 		var color_count = 0;
 		for(var i = 0; i < most_recent_list.length &&
 			 i < Pers_gen.colors.length; i++) {

@@ -41,7 +41,7 @@ var Pers_pref = {
 	security_class_change: function() {
 		var setting  = document.getElementById("secset").value;
 
-		switch (parseInt(setting)) {
+		switch (parseInt(setting, 10)) {
 		case 2:
 			Pers_pref.menuset(75, 2);
 			break;

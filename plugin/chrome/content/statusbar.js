@@ -26,7 +26,7 @@ var Pers_statusbar = {
 	STATE_WHITELIST :  4,
 
 	force_update : function(event) {
-		Perspectives.forceStatusUpdate(window);
+		Perspectives.force_status_update(window.gBrowser);
 	},
 
 	statusbar_click: function(event) {

@@ -75,7 +75,7 @@ var Pers_results = {
 					Pers_results.notaryStrings.getString("invalidURI") + " (" + error_text + ")";
 				return;
 			}
-			var ti = win.Perspectives.getCurrentTabInfo(win.gBrowser.contentWindow);
+			var ti = win.Perspectives.getCurrentTabInfo(uri);
 			var query_results  = ti.query_results;
 			host.label = ti ? uri.host + ": " + Pers_results.getActionStr(uri, ti) : uri.host;
 

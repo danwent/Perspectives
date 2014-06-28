@@ -155,17 +155,20 @@ var Pers_notify = {
 						try {
 							// run probe
 							Pers_debug.d_print("main", "User gives probe permission");
-							Perspectives.getCurrentTabInfo(browser.contentWindow).has_user_permission = true;
 
 							var uri = browser.currentURI;
+							var ti = Perspectives.getCurrentTabInfo(uri)
+
+							ti.has_user_permission = true;
 							ti.state   = Pers_statusbar.STATE_QUERY;
 							ti.tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [uri.host]);
+							Pers_debug.d_print("main", "Set status in notifyNeedsPermission().");
 							Pers_statusbar.setStatus(ti.state, ti.tooltip);
 
 							var cert = Perspectives.getCertificate(browser);
 							var security_state = browser.securityUI.state;
-							ti.process.publishCert(browser, cert, security_state);
-							Perspectives.queryNotaries(uri, Perspectives.getNotaryList(), ti.process.publishQueryResults);
+							ti.await_obj.publish_cert(browser, cert, security_state);
+							Perspectives.queryNotaries(uri, Perspectives.getNotaryList(), ti.await_obj.publish_serverresultlist);
 						} catch(e) {
 							Pers_debug.d_print("main", "Error on UpdateStatus: " + e);
 						}

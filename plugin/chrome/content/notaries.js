@@ -655,7 +655,7 @@ var Perspectives = {
 
 		// clear cache if it is stale
 		var unix_time = Pers_util.get_unix_time();
-		var max_cache_age_sec = Perspectives.root_prefs.getIntPref("perspectives.max_cache_age_sec");
+		var max_cache_age_sec = Perspectives.root_prefs.getIntPref("extensions.perspectives.max_cache_age_sec");
 		if(ti.query_results && ti.query_results.created < (unix_time - max_cache_age_sec)) {
 			Pers_debug.d_print("main", "Cached query results are stale.  Re-evaluate security.");
 			delete ti.query_results;

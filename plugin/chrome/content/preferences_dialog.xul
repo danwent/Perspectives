@@ -20,12 +20,16 @@
     name="perspectives.required_duration"
     type="int"/>
   <preference
-    id="query-retries"
-    name="extensions.perspectives.query_retries"
-    type="int"/>
-  <preference
     id="query-timeout"
     name="extensions.perspectives.query_timeout_ms"
+    type="int"/>
+    <preference
+      id="query-retries"
+      name="extensions.perspectives.query_retries"
+      type="int"/>
+  <preference
+    id="max-cache-age"
+    name="extensions.perspectives.max_cache_age_sec"
     type="int"/>
   <preference
     id="security-settings"
@@ -117,6 +121,11 @@
       <label value="&QueryRetries;"/>
       <spacer flex="1"/>
       <textbox type="number" preference="query-retries" id="query-retries-text" size="4" />
+    </hbox>
+    <hbox align="right">
+      <label value="&MaxCacheAge;"/>
+      <spacer flex="1"/>
+      <textbox type="number" preference="max-cache-age" id="max-cache-age-text" size="4" />
     </hbox>
   </groupbox>
   <groupbox>

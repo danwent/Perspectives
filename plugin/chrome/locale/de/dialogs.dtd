@@ -14,6 +14,7 @@
 <!ENTITY Lengthoftimequorummustbeachieved  "Nötige Anzahl Tage mit kontinuierlicher Übereinstimmung (Quorum-Dauer):">
 <!ENTITY QueryTimeout                      "Maximale Antwortzeit für die Nachfrage bei Notaren (in Millisekunden): ">
 <!ENTITY QueryRetries                      "Anzahl der Neuversuche wenn die Antwortzeit überschritten wurde: "      >
+<!ENTITY MaxCacheAge                       "Cache-Vorhaltezeit für Ergebnisse der Notare (in Sekunden):"            >
 <!ENTITY OverridingFirefoxSecurityErrors "Firefox Sicherheitsfehler umgehen">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Perspectives erlauben, Sicherheitsfehler automatisch zu umgehen">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Von Perspectives überprüften Zertifikaten dauerhaft vertrauen">

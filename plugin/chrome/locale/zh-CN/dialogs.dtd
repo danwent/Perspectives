@@ -15,6 +15,7 @@
 <!-- TODO translate -->
 <!ENTITY QueryTimeout                      "Timeout for querying notaries (in milliseconds): " >
 <!ENTITY QueryRetries                      "Number of retries if a timeout has exceeded: "     >
+<!ENTITY MaxCacheAge                       "Cache duration for notary results (in seconds):"   >
 <!-- -->
 <!ENTITY OverridingFirefoxSecurityErrors "跳过 Firefox 安全错误">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "允许 Perspectives 自动跳过安全错误">

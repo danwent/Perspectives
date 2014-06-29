@@ -543,7 +543,7 @@ var Perspectives = {
 				ti.tooltip = query_results.tooltip;
 
 				if(!ti.already_trusted) {
-					Pers_notify.do_notify(browser, ti.last_banner_type, Pers_notify.TYPE_NO_REPLIES);
+					Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_NO_REPLIES);
 					ti.last_banner_type = Pers_notify.TYPE_NO_REPLIES;
 				}
 			} else if(query_results.inconsistent_results && !query_results.weakly_seen) {
@@ -553,7 +553,7 @@ var Perspectives = {
 				ti.tooltip = query_results.tooltip;
 
 				if(!ti.already_trusted) {
-					Pers_notify.do_notify(browser, ti.last_banner_type, Pers_notify.TYPE_FAILED);
+					Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_FAILED);
 					ti.last_banner_type = Pers_notify.TYPE_FAILED;
 				}
 			} else if(query_results.inconsistent_results) {
@@ -563,7 +563,7 @@ var Perspectives = {
 				ti.tooltip = query_results.tooltip;
 
 				if(!ti.already_trusted) {
-					Pers_notify.do_notify(browser, ti.last_banner_type, Pers_notify.TYPE_FAILED);
+					Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_FAILED);
 					ti.last_banner_type = Pers_notify.TYPE_FAILED;
 				}
 			} else if(!query_results.cur_consistent) {
@@ -617,7 +617,7 @@ var Perspectives = {
 	// See Documentation for nsIWebProgressListener at:
 	// https://developer.mozilla.org/en/nsIWebProgressListener
 	notaryListener: {
-		query_notaries_by_tabinfo_IO : function(uri, ti) {
+		query_notaries_by_tabinfo_IO : function(uri, ti, browser) {
 			// clear cache if it is stale
 			var unix_time = Pers_util.get_unix_time();
 			var max_cache_age_sec = Perspectives.root_prefs.getIntPref("perspectives.max_cache_age_sec");
@@ -676,7 +676,7 @@ var Perspectives = {
 							ti.state   = Pers_statusbar.STATE_NEUT;
 							ti.tooltip = Perspectives.strbundle.getString("needsPermission");
 
-							Pers_notify.do_notify(aBrowser, ti.last_banner_type, Pers_notify.TYPE_NEEDS_PERMISSION);
+							Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_NEEDS_PERMISSION);
 							ti.last_banner_type = Pers_notify.TYPE_NEEDS_PERMISSION;
 						}
 					}
@@ -752,7 +752,7 @@ var Perspectives = {
 										ti.state   = Pers_statusbar.STATE_QUERY;
 										ti.tooltip = Perspectives.strbundle.getString("noProbeRequestedError");
 
-										Perspectives.notaryListener.query_notaries_by_tabinfo_IO(uri, ti);
+										Perspectives.notaryListener.query_notaries_by_tabinfo_IO(uri, ti, aBrowser);
 									}
 
 									Pers_debug.d_print("main", "Publish cert in onSecurityChange(). state is: " + ti.state);
@@ -772,7 +772,7 @@ var Perspectives = {
 										var flags = Perspectives.do_override(cert, uri, isTemp);
 										if(flags) {
 											Perspectives.setFaviconText(ti.tooltip);
-											Pers_notify.do_notify(aBrowser, ti.last_banner_type, Pers_notify.TYPE_WHITELIST);
+											Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_WHITELIST);
 											ti.last_banner_type = Pers_notify.TYPE_WHITELIST;
 											aBrowser.loadURIWithFlags(uri.spec, flags);
 										}
@@ -835,7 +835,7 @@ var Perspectives = {
 											// otherwise this would trigger an infinite loop of do_override -> onStateChange events
 											// if the site has been verified before
 											Pers_debug.d_print("main", "query_notaries_by_tabinfo_IO() in onStateChange().");
-											Perspectives.notaryListener.query_notaries_by_tabinfo_IO(uri, ti);
+											Perspectives.notaryListener.query_notaries_by_tabinfo_IO(uri, ti, aBrowser);
 										} else {
 											Pers_debug.d_print("main", "Don't query notaries already because user preference is set to wait for certificate security error.");
 											ti.state   = Pers_statusbar.STATE_NEUT;

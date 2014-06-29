@@ -168,7 +168,11 @@ var Pers_notify = {
 							var cert = Perspectives.getCertificate(browser);
 							var security_state = browser.securityUI.state;
 							ti.await_obj.publish_cert(browser, cert, security_state);
-							Perspectives.queryNotaries(uri, Perspectives.getNotaryList(), ti.await_obj.publish_serverresultlist);
+							ti.query_publish_cert = Perspectives.queryNotaries(uri, Perspectives.getNotaryList(), ti.await_obj.publish_serverresultlist);
+
+							var q_required = Perspectives.getQuorumAsInt();
+							var required_duration = Perspectives.root_prefs.getIntPref("perspectives.required_duration");
+							ti.query_publish_cert(cert, q_required, required_duration);
 						} catch(e) {
 							Pers_debug.d_print("main", "Error on UpdateStatus: " + e);
 						}

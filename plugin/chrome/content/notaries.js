@@ -521,7 +521,7 @@ var Perspectives = {
 			var required_duration = Perspectives.root_prefs.
 								getIntPref("perspectives.required_duration");
 			var svg = Pers_gen.get_svg_graph(ti.service_id, server_result_list, 30,
-				unixtime, test_key, max_stale_sec, required_duration);
+				unixtime, test_key, max_stale_sec);
 			ti.query_results = new Perspectives.SslCert(ti.uri.host,
 										ti.uri.port, test_key,
 										str, null,svg, qd_days,

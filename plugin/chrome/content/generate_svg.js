@@ -66,7 +66,7 @@ var Pers_gen = {
 	},
 
 	get_svg_graph: function(service_id, server_result_list, len_days, cur_secs,
-							browser_key, max_stale_sec, required_duration) {
+							browser_key, max_stale_sec) {
 		var x_offset = 230, y_offset = 40;
 		var width = 700;
 		var y_cord = y_offset;
@@ -178,13 +178,11 @@ var Pers_gen = {
 				+ '" rx="5" stroke="black" stroke-width="1px" />\n';
 		} // end per-server
 
-		// draw quorum line
-		if(required_duration > 0) {
-			var x = x_offset + pixels_per_day * required_duration;
-			res += '<path d = "M ' + x + ' ' + (y_offset + 30) +  ' L ' + x
-				+ ' ' + (y_cord + 20)
-				+ '" stroke="black" stroke-width="1"/>\n';
-		}
+		// draw stale_limit line
+		var x = x_offset + pixels_per_day * Pers_util.SEC2DAY(max_stale_sec);
+		res += '<path d = "M ' + x + ' ' + (y_offset + 30) +  ' L ' + x
+			+ ' ' + (y_cord + 20)
+			+ '" stroke="black" stroke-width="1"/>\n';
 
 		// draw Days axis
 		for(var i = 0; i < 11; i++) {

@@ -2,7 +2,7 @@
 **Connect securely to https websites by checking certificates with network notaries.**
 
 This directory includes the code for the Perspectives Firefox and Seamonkey clients.
-For more information see: http://www.perspectives-project.org
+For more information see: [http://www.perspectives-project.org](http://www.perspectives-project.org)
 
 ## DEVELOPMENT
 
@@ -48,12 +48,13 @@ To debug the extension:
 
 To test Perspectives:
 
-* Use 'make test' to build and install the Perspectives extension, as above
-* Open chrome://perspectives/content/test/test.html in your browser
-* Press the 'Run Tests' button
+* Use 'make test' to build Perspectives.xpi.
+* Install the plugin and restart the browser.
+* Open the following URL: [```chrome://perspectives/content/test/test.html```](chrome://perspectives/content/test/test.html)
+* Press the 'Run Tests' button.
+* Optional: If you want to run the testcases without chrome privileges (i.e. without reinstalling) follow the instruction in [issue #130 - Extract test cases which require no chrome privileges](https://github.com/danwent/Perspectives/issues/130).
 
 Test results will be displayed on the page.
-
 
 Some tests are performed at build time - e.g. checking the localization files for the correct format and contents. All tests of the javascript code are run inside the extension - for security reasons they must be installed along with other extension files.
 
@@ -63,6 +64,7 @@ If you have ideas for further tests please let us know!
 
 You can contact the developers on the Perspectives Dev newsgroup:
 
-https://groups.google.com/group/perspectives-dev
-mailto:perspectives-dev@googlegroups.com
+[https://groups.google.com/group/perspectives-dev](https://groups.google.com/group/perspectives-dev)
+
+[mailto:perspectives-dev@googlegroups.com](mailto:perspectives-dev@googlegroups.com)
 

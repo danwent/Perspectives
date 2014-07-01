@@ -26,30 +26,30 @@ var Pers_statusbar = {
 	STATE_WHITELIST : 4,
 
 	force_update : function(event) {
-		Perspectives.forceStatusUpdate(window); 
+		Perspectives.forceStatusUpdate(window);
 	},
 
 	statusbar_click: function(event) {
 		Pers_statusbar.open_results_dialog();
 	},
 
-	// note: when debugging, it is useful to open this dialog as a 
+	// note: when debugging, it is useful to open this dialog as a
 	// window, so we get a Firebug console, etc
-	open_results_dialog: function() { 
+	open_results_dialog: function() {
 		window.openDialog(
 	//	window.open( // for debug
-			"chrome://perspectives/content/results_dialog.xul", 
+			"chrome://perspectives/content/results_dialog.xul",
 	//        	"perspectivesResults", "").focus();  // for debug
 			"perspectivesresults", "centerscreen, chrome, toolbar").focus();
 
 	},
 
-	// note: when debugging, it is useful to open this dialog as a 
+	// note: when debugging, it is useful to open this dialog as a
 	// window, so we get a firebug console, etc
-	open_preferences_dialog: function() { 
+	open_preferences_dialog: function() {
 		window.openDialog(
 	// 	window.open( // for debug
-			"chrome://perspectives/content/preferences_dialog.xul", 
+			"chrome://perspectives/content/preferences_dialog.xul",
 	//       	"perspectivesResults", "").focus();  // for debug
 			"perspectivepreferences", "centerscreen, chrome, toolbar, resizable").focus();
 
@@ -67,25 +67,25 @@ var Pers_statusbar = {
 
 
 	setStatus: function(uri,state, tooltip){
-		if(uri != null && uri != window.gBrowser.currentURI) { 
-		//	Pers_debug.d_print("main", "Ignoring setStatus for '" + uri.spec + 
-		//	"' because current browser tab is for '" + 
-		//	window.gBrowser.currentURI.spec + "'"); 
-			return;  
+		if(uri != null && uri != window.gBrowser.currentURI) {
+		//	Pers_debug.d_print("main", "Ignoring setStatus for '" + uri.spec +
+		//	"' because current browser tab is for '" +
+		//	window.gBrowser.currentURI.spec + "'");
+			return;
 		}
 		if(!tooltip){
 			tooltip = "Perspectives";
 		}
 
 		var imgList = document.querySelectorAll("image.perspective-status-image-class");
-		
+
 		if(!imgList){ //happens when called from a dialog
 			imgList = window.opener.document.
 				querySelectorAll("image.perspective-status-image-class");
 		}
 
 		for (var j = 0; j < imgList.length; ++j) {
-			imgList[j].parentNode.setAttribute("tooltiptext", tooltip); 
+			imgList[j].parentNode.setAttribute("tooltiptext", tooltip);
 			switch(state){
 			case Pers_statusbar.STATE_SEC:
 				Pers_debug.d_print("main", "Secure Status");
@@ -119,8 +119,31 @@ var Pers_statusbar = {
 	},
 
 	openCertificates: function(){
-		openDialog("chrome://pippki/content/certManager.xul", 
+		openDialog("chrome://pippki/content/certManager.xul",
 			"Certificate Manager","centerscreen,chrome");
+	},
+
+	distrusts_all_certificates : function() {
+		var PROMPT = "The CA system is broken"
+		var str = window.prompt(
+			"Perspectives - THIS WILL DISTRUST ALL YOUR BROWSER'S CERTIFICATES! - USE WITH CAUTION!\n" +
+			"If you know what you are doing please enter the following sentence: '" + PROMPT + "'", "");
+		if(str.toLowerCase() === PROMPT.toLowerCase()) {
+			var certDB2 = Components.classes["@mozilla.org/security/x509certdb;1"].getService(Components.interfaces.nsIX509CertDB2);
+			certDB2.QueryInterface(Components.interfaces.nsIX509CertDB);
+			var i = 0;
+			var it = certDB2.getCerts().getEnumerator();
+			while(it.hasMoreElements()) {
+				var cert = it.getNext();
+				certDB2.setCertTrust(cert, cert.CA_CERT    , 0);
+				certDB2.setCertTrust(cert, cert.USER_CERT  , 0);
+				certDB2.setCertTrust(cert, cert.EMAIL_CERT , 0);
+				certDB2.setCertTrust(cert, cert.SERVER_CERT, 0);
+				i += 1;
+			}
+
+			alert(i + " certificates have been distrusted.");
+		}
 	},
 
 	openHelp: function(){

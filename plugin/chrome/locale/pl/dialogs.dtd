@@ -55,6 +55,9 @@
 <!ENTITY ForceNotaryCheck "Wymuś sprawdzenie notarialne">
 <!ENTITY ReportAttack "Zgłoś atak">
 <!ENTITY ViewCertificateStore "Zobacz zapisane certyfikaty">
+<!-- TODO translate -->
+<!ENTITY DistrustAllCertificates "Distrust all certificates">
+<!-- -->
 <!ENTITY About "O Perspectives">
 <!ENTITY AboutMainCredit "Klient Perspectives - rozszerzenie Dana Wendlandta do Firefoxa">
 <!ENTITY ContributorTitle "Współautorzy">

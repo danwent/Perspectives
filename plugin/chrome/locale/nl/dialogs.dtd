@@ -1,4 +1,5 @@
 <!-- This file contains localized strings for Perspectives .xul files. -->
+<!-- TODO translate! -->
 <!ENTITY NotaryResults "Notary Results">
 <!ENTITY ViewNotaryResults "View Notary Results">
 <!ENTITY Preferences "Preferences">
@@ -12,11 +13,9 @@
 <!ENTITY ManualConfiguration "Manual Configuration">
 <!ENTITY Percentageofnotariesthatmustagree "Percentage of notaries that must agree (quorum percentage): ">
 <!ENTITY Lengthoftimequorummustbeachieved  "Days of continuous agreement required (quorum duration): "   >
-<!-- TODO translate -->
 <!ENTITY QueryTimeout                      "Timeout for querying notaries (in milliseconds): ">
 <!ENTITY QueryRetries                      "Number of retries if a timeout has exceeded: "    >
 <!ENTITY MaxCacheAge                       "Cache duration for notary results (in seconds):"  >
-<!-- -->
 <!ENTITY OverridingFirefoxSecurityErrors "Overriding Firefox Security Errors">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Allow Perspectives to automatically override security errors">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Permanently trust certificates validated by Perspectives">
@@ -24,9 +23,7 @@
 <!ENTITY ContactNotariesforallHTTPSsites "Contact Notaries for all HTTPS sites">
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contact Notaries only when a website's certificate causes a security error">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "Always ask before contacting Notaries">
-<!-- TODO translate -->
 <!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode">
-<!-- -->
 <!ENTITY Certificates "Certificates">
 <!ENTITY Servers "Notary Servers">
 <!ENTITY Help "Help">
@@ -54,6 +51,7 @@
 <!ENTITY ForceNotaryCheck "Force Notary Check">
 <!ENTITY ReportAttack "Report Attack">
 <!ENTITY ViewCertificateStore "View Certificate Store">
+<!ENTITY DistrustAllCertificates "Distrust all certificates">
 <!ENTITY About "About Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
 <!ENTITY ContributorTitle "Contributors">

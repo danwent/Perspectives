@@ -55,6 +55,7 @@
 <!ENTITY ReportAttack "Rapporter une attaque">
 <!ENTITY ViewCertificateStore "Afficher la liste des certificats">
 <!-- TODO: these new strings need translation -->
+<!ENTITY DistrustAllCertificates "Distrust all certificates">
 <!ENTITY About "About Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
 <!ENTITY ContributorTitle "Contributors">

@@ -51,6 +51,7 @@
 <!ENTITY ForceNotaryCheck "Force Notary Check">
 <!ENTITY ReportAttack "Report Attack">
 <!ENTITY ViewCertificateStore "View Certificate Store">
+<!ENTITY DistrustAllCertificates "Distrust all certificates">
 <!ENTITY About "About Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
 <!ENTITY ContributorTitle "Contributors">

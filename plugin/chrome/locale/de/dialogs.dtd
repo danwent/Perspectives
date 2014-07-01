@@ -50,6 +50,7 @@
 <!ENTITY ForceNotaryCheck "Nachfrage bei Notaren erzwingen">
 <!ENTITY ReportAttack "Angriff melden">
 <!ENTITY ViewCertificateStore "Zertifikate anzeigen">
+<!ENTITY DistrustAllCertificates "Allen Zertifikaten misstrauen">
 <!ENTITY About "Über Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Erweiterung für Firefox von Dan Wendlandt">
 <!ENTITY ContributorTitle "Mitwirkende">

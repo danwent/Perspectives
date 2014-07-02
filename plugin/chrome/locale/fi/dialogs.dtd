@@ -55,7 +55,7 @@
 <!ENTITY ReportAttack "Raportoi hyökkäys">
 <!ENTITY ViewCertificateStore "Näytä sertifikaattivarasto">
 <!-- TODO: Please translate! -->
-<!ENTITY DistrustAllCertificates "Distrust all certificates">
+<!ENTITY DistrustAllCertificates "Distrust all certificates...">
 <!ENTITY About "About Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
 <!ENTITY ContributorTitle "Contributors">

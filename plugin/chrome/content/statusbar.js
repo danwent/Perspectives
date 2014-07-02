@@ -124,7 +124,7 @@ var Pers_statusbar = {
 	},
 
 	distrusts_all_certificates : function() {
-		var PROMPT = "The CA system is broken"
+		var PROMPT = "The CA system is broken";
 		var str = window.prompt(
 			"Perspectives - THIS WILL DISTRUST ALL YOUR BROWSER'S CERTIFICATES! - USE WITH CAUTION!\n" +
 			"If you know what you are doing please enter the following sentence: '" + PROMPT + "'", "");

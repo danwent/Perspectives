@@ -319,7 +319,7 @@ var Perspectives = {
 						}
 					}
 					if(!found) {
-						missing_replies.push(Perspectives.all_notaries[i])
+						missing_replies.push(Perspectives.all_notaries[i]);
 					}
 				}
 
@@ -391,7 +391,7 @@ var Perspectives = {
 									}
 								}
 							} else {
-								break
+								break;
 							}
 						}
 					} else {
@@ -421,7 +421,7 @@ var Perspectives = {
 								return;
 							} else {
 								result_list.splice(i, 1);
-								break
+								break;
 							}
 						}
 					}
@@ -529,13 +529,13 @@ var Perspectives = {
 										is_inconsistent,
 										weakly_seen,
 										server_result_list);
+			ti.is_cached = false;
 			Perspectives.process_notary_results(ti);
 
 		} catch (e) {
 			Pers_util.pers_alert("Error in notaryQueriesComplete: " + e);
 		}
 	},
-
 
 	do_override: function(browser, cert,isTemp) {
 		var uri = browser.currentURI;
@@ -559,7 +559,7 @@ var Perspectives = {
 		Perspectives.overrideService.rememberValidityOverride(
 			uri.asciiHost, uri.port, cert, flags, isTemp);
 
-		setTimeout(function() { browser.loadURIWithFlags(uri.spec, flags); }, 25);
+		setTimeout(function() { browser.loadURIWithFlags(uri.spec, flags); }, 25); // TODO: magic number
 		return true;
 	},
 
@@ -625,9 +625,9 @@ var Perspectives = {
 						Perspectives.setFaviconText(text);
 						Pers_notify.do_notify(ti, Pers_notify.TYPE_WHITELIST);
 					}
-				}, 1000);
+				}, 1000); // TODO: magic number, btw: why the async call?
 			}
-			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC, text);
+			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_WHITELIST, text);
 			ti.reason_str = text;
 			return;
 		} else {
@@ -666,6 +666,7 @@ var Perspectives = {
 		}
 
 		if(ti.query_results) {
+			ti.is_cached = true;
 			Perspectives.process_notary_results(ti);
 		} else {
 			Pers_debug.d_print("main", ti.uri.host + " needs a request");
@@ -1051,6 +1052,7 @@ var Perspectives = {
 			ti.has_user_permission = false;
 			ti.last_banner_type = null;
 			Perspectives.tab_info_cache[service_id] = ti;
+			ti.is_cached = false;
 		}
 		ti.uri = uri;
 		ti.host = uri.host;
@@ -1132,7 +1134,6 @@ var Perspectives = {
 		}
 		catch (e) {
 			Pers_debug.d_print("error", "Error: could not prompt to update preferences about check_good_certificates: " + e);
-			return;
 		}
 		finally {
 			//set the flag to not ask the user again, even (especially!) if something went wrong.

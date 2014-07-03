@@ -100,7 +100,6 @@ var Pers_statusbar = {
 				imgList[j].setAttribute("src", "chrome://perspectives/content/img/default.png");
 				continue;
 			case Pers_statusbar.STATE_WHITELIST:
-				//TODO: have other code call this
 				Pers_debug.d_print("main", "Whitelist Status");
 				imgList[j].setAttribute("src", "chrome://perspectives/content/img/whitelist.png");
 				continue;

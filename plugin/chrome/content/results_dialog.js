@@ -43,7 +43,7 @@ var Pers_results = {
  		}
 
 		if(ti.uri.scheme != "https") {
-			return Pers_results.strbundle.getFormattedString("notHTTPS", [ ti.uri.scheme ]);
+			return Pers_results.strbundle.getFormattedString("notHTTPS", [ti.uri.scheme]);
 		} else if(ti.is_override_cert && ti.already_trusted) {
 			return Pers_results.strbundle.getString("previouslyInstalledCert");
 		} else if(ti.already_trusted) {
@@ -83,7 +83,8 @@ var Pers_results = {
 			var cert  = ti.query_results;
 			host.label = ti.uri.host;
 			if(ti) {
-				host.label += ": " + Pers_results.getActionStr(ti);
+				debugger
+				host.label += ": " + Pers_results.getActionStr(ti) + (ti.is_cached ? " " + Pers_results.strbundle.getString("cachedResults") : "");
 			}
 			if(cert){
 				info.value  = cert.summary;

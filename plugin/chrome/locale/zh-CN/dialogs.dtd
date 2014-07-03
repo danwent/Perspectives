@@ -25,7 +25,7 @@
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "仅在站点的证书引起安全错误时联系认证服务器">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "联系认证服务器前总是询问用户">
 <!-- TODO translate -->
-<!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode">
+<!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode (and Tor).">
 <!-- -->
 <!ENTITY Certificates "证书">
 <!ENTITY Servers "认证服务器">

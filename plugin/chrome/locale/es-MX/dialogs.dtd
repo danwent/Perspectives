@@ -25,7 +25,7 @@
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contactar a las Notarías solamente cuando el certificado de un sitio web ocasione errores de seguridad">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "Preguntar siempre antes de contactar a las Notarías">
 <!-- TODO translate -->
-<!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode">
+<!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode (and Tor).">
 <!-- -->
 <!ENTITY Certificates "Certificados">
 <!ENTITY Servers "Servidores de Notarías">

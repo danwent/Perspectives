@@ -23,7 +23,7 @@
 <!ENTITY ContactNotariesforallHTTPSsites "Contact Notaries for all HTTPS sites">
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contact Notaries only when a website's certificate causes a security error">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "Always ask before contacting Notaries">
-<!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode">
+<!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode (and Tor).">
 <!ENTITY Certificates "Certificates">
 <!ENTITY Servers "Notary Servers">
 <!ENTITY Help "Help">

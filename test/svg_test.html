@@ -21,30 +21,95 @@
     };
 
     function generate_graph() {
+        var DAY         = 24 * 60 * 60;
+        var BROWSER_KEY = "01:23:45:67:89:ab:cd:ef:01:23:45:67:89:ab:cd:ef";
+        var OTHER_KEY   = BROWSER_KEY.split('').reverse().join('');
+
+        var unixtime      = 1000000000; // 2001-09-09 01:46:40
+        var max_stale_sec = 2 * DAY;
+
         var server_result_list = [
-            { "server": "cmu.ron.lcs.mit.edu:8080",
+            { "server": "same key, non-stale",
                 "obs": [
-                    { "key": "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00",
+                    { "key": BROWSER_KEY,
                         "timestamps": [
-                            { "start": 0, "end": 100000  }
+                            { "start": unixtime - 3 * DAY, "end": unixtime - 0 * DAY }
                         ] }
-                ]
+                ],
+                "is_valid" : true
             },
-            { "server": "hostway.ron.lcs.mit.edu:8080",
+            { "server": "same key, stale",
                 "obs": [
-                    { "key": "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00",
+                    { "key": BROWSER_KEY,
                         "timestamps": [
-                            { "start": 9000, "end": 100000  }
+                            { "start": unixtime - 6 * DAY, "end": unixtime - 3 * DAY }
                         ] }
-                ]
+                ],
+                "is_valid" : true
+            },
+            { "server": "from stale limit",
+                "obs": [
+                    { "key": BROWSER_KEY,
+                        "timestamps": [
+                            { "start": unixtime - max_stale_sec, "end": unixtime - 0 * DAY }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "to stale limit",
+                "obs": [
+                    { "key": BROWSER_KEY,
+                        "timestamps": [
+                            { "start": unixtime - 2 * max_stale_sec, "end": unixtime - 1 * max_stale_sec }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "to stale limit - 1",
+                "obs": [
+                    { "key": BROWSER_KEY,
+                        "timestamps": [
+                            { "start": unixtime - 2 * max_stale_sec, "end": unixtime - 1 * max_stale_sec - 1 }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "other key, non-stale",
+                "obs": [
+                    { "key": OTHER_KEY,
+                        "timestamps": [
+                            { "start": unixtime - 3 * DAY, "end": unixtime - 0 * DAY }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "other key, stale",
+                "obs": [
+                    { "key": OTHER_KEY,
+                        "timestamps": [
+                            { "start": unixtime - 6 * DAY, "end": unixtime - 3 * DAY }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "invalid signature",
+                "obs": [
+                    { "key": BROWSER_KEY,
+                        "timestamps": [
+                            { "start": unixtime - 3 * DAY, "end": unixtime - 0 * DAY }
+                        ] }
+                ],
+                "is_valid" : false
+            },
+            { "server": "no response",
+                "obs": [],
+                "is_valid" : true
             }
         ];
 
-        var key = "bc:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
-        var max_stale_sec     = 2 * 24 * 3600;
         var required_duration = 2;
         var svg = Pers_gen.get_svg_graph("www.test.com:443,2", server_result_list,
-                30, 100100, key, max_stale_sec, required_duration);
+                30, unixtime, BROWSER_KEY, max_stale_sec);
 
         var parser = new DOMParser();
         var svgDoc = parser.parseFromString(svg, "text/xml");
@@ -55,7 +120,7 @@
 </script>
 </head>
 <body>
-    <input type="button" value="Generate Graph" onclick="generate_graph()">
+    <input type="button" value="Generate Graph" onclick="generate_graph();">
     <p>Run with firebug to see detailed test output if something fails.</p>
     <h2>Results: </h2>
     <div id="results"></div>

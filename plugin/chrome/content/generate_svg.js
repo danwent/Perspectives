@@ -50,10 +50,9 @@ var Pers_gen = {
 				}
 			}
 		}
-		var most_recent_ts = function(a, b) {
-			return b.ts - a.ts;
-		};
-		most_recent_list.sort(most_recent_ts);
+		most_recent_list.sort(function(a, b) {
+					return b.ts - a.ts;
+		});
 		//Pers_debug.d_print("main", "most_recent_list:" + JSON.stringify(most_recent_list));
 		var color_count = 0;
 		for(var i = 0; i < most_recent_list.length &&
@@ -62,6 +61,67 @@ var Pers_gen = {
 			color_info[most_recent_list[i].key] = Pers_gen.colors[i];
 		}
 		return color_count;
+	},
+
+	sort_server_result_list: function(server_result_list, browser_key, max_stale_sec, unixtime) {
+		// 1. group notary results by browser's key as most recent key → "browser keys"
+		// 2. group "browser keys" again by keys reaching quorum duration → "reached" + "not-reached"
+		// 3. sort sub-group "reached" and "not-reached" by latest key update
+		// 4. group all other results → "other keys A" + "other keys B"
+		// 5. apply step 2 and 3 again to each group of other keys
+		// 6. sort groups of other keys by the number of results that reached quorum duration (A=4, B=3)
+		// 7. append group of notaries with invalid signatures
+		// 8. append group of notaries with no response (time-outs)
+
+		var otherIdx = 0;
+		var others = {};
+		var groups = _.groupBy(server_result_list, function(server_result) {
+			var ret = "";
+			if(server_result.is_valid != null) {
+				if(server_result.is_valid) {
+					var most_recent_ts  = Pers_client_policy.find_most_recent(server_result);
+					var most_recent_key = Pers_client_policy.find_key_at_time(server_result, most_recent_ts);
+
+					if(most_recent_key === browser_key) {
+						ret = "browser";
+					} else {
+						if(others[most_recent_key] == null) {
+							others[most_recent_key] = otherIdx;
+							otherIdx += 1;
+						}
+
+						ret = "" + others[most_recent_key];
+					}
+				} else {
+					ret = "invalid";
+				}
+			} else {
+				ret = "timeout";
+			}
+
+			return ret;
+		});
+		groups = _.defaults(groups, {"browser": [], "invalid": [], "timeout": []});
+
+		var groups_sorted = {};
+		_.each(groups, function(value, key) {
+			groups_sorted[key] = _.sortBy(value, function(server_result) {
+				return _.max(_.flatten(_.map(server_result.obs, function(ob) {
+					return _.pluck(ob.timestamps, "end");
+				})));
+			}).reverse();
+		});
+
+		var other_groups = _.values(_.omit(groups_sorted, ["browser", "timeout", "invalid"]));
+
+		var other_groups_sorted = _.sortBy(other_groups, function(group) {
+			return _.filter(group, function(server_result) {
+				var most_recent_ts = Pers_client_policy.find_most_recent(server_result);
+				return (unixtime - most_recent_ts < max_stale_sec);
+			}).length;
+		}).reverse();
+
+		return _.flatten([groups_sorted.browser, _.flatten(other_groups_sorted, true), groups_sorted.invalid, groups_sorted.timeout], true);
 	},
 
 	get_svg_graph: function(service_id, server_result_list, len_days, cur_secs,
@@ -156,7 +216,7 @@ var Pers_gen = {
 
 				if(results.is_valid != null && !results.is_valid) {
 					res += '<text x="' + x_offset + '" y="' + (y_cord + 8) + '" font-size="10">'
-							+ "Invalid signature" + '</text>\n'; // TODO: localize
+							+ "Invalid result" + '</text>\n'; // TODO: localize
 				}
 			} // end per-key
 

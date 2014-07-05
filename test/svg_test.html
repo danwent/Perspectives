@@ -1,7 +1,9 @@
 <html>
 <head>
-<script type="text/javascript" src="../plugin/chrome/content/common.js"></script>
-<script type="text/javascript" src="../plugin/chrome/content/generate_svg.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/common.js"        ></script>
+<script type="text/javascript" src="../plugin/chrome/content/generate_svg.js"  ></script>
+<script type="text/javascript" src="../plugin/chrome/content/client_policy.js" ></script>
+<script type="text/javascript" src="../plugin/chrome/content/underscore-min.js"></script>
 <script type="text/javascript">
     d_print_all = true;
     other_cache = { "debug": "" }; // HACK: needed for common.js
@@ -23,13 +25,15 @@
     function generate_graph() {
         var DAY         = 24 * 60 * 60;
         var BROWSER_KEY = "01:23:45:67:89:ab:cd:ef:01:23:45:67:89:ab:cd:ef";
-        var OTHER_KEY   = BROWSER_KEY.split('').reverse().join('');
+        var OTHER_KEY_0 = "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00";
+        var OTHER_KEY_1 = "11:11:11:11:11:11:11:11:11:11:11:11:11:11:11:11";
 
         var unixtime      = 1000000000; // 2001-09-09 01:46:40
         var max_stale_sec = 2 * DAY;
+        var required_duration = 2;
 
         var server_result_list = [
-            { "server": "same key, non-stale",
+            { "server": "browser, reached, latest",
                 "obs": [
                     { "key": BROWSER_KEY,
                         "timestamps": [
@@ -38,67 +42,116 @@
                 ],
                 "is_valid" : true
             },
-            { "server": "same key, stale",
+            { "server": "browser, reached, earlier",
                 "obs": [
                     { "key": BROWSER_KEY,
                         "timestamps": [
-                            { "start": unixtime - 6 * DAY, "end": unixtime - 3 * DAY }
+                            { "start": unixtime - 6 * DAY, "end": unixtime - 1 * DAY }
                         ] }
                 ],
                 "is_valid" : true
             },
-            { "server": "from stale limit",
+            { "server": "browser, not-reached, latest",
                 "obs": [
                     { "key": BROWSER_KEY,
                         "timestamps": [
-                            { "start": unixtime - max_stale_sec, "end": unixtime - 0 * DAY }
+                            { "start": unixtime - (required_duration + 1 + 3) * DAY, "end": unixtime - (required_duration + 1) * DAY }
                         ] }
                 ],
                 "is_valid" : true
             },
-            { "server": "to stale limit",
+            { "server": "browser, not-reached, earlier",
                 "obs": [
                     { "key": BROWSER_KEY,
                         "timestamps": [
-                            { "start": unixtime - 2 * max_stale_sec, "end": unixtime - 1 * max_stale_sec }
+                            { "start": unixtime - (required_duration + 3 + 3) * DAY, "end": unixtime - (required_duration + 3) * DAY }
                         ] }
                 ],
                 "is_valid" : true
             },
-            { "server": "to stale limit - 1",
+            { "server": "other 0, reached, latest",
                 "obs": [
-                    { "key": BROWSER_KEY,
+                    { "key": OTHER_KEY_0,
                         "timestamps": [
-                            { "start": unixtime - 2 * max_stale_sec, "end": unixtime - 1 * max_stale_sec - 1 }
+                            { "start": unixtime - 3 * DAY, "end": unixtime - 0.0 * DAY }
                         ] }
                 ],
                 "is_valid" : true
             },
-            { "server": "other key, non-stale",
+            { "server": "other 0, reached, earlier",
                 "obs": [
-                    { "key": OTHER_KEY,
+                    { "key": OTHER_KEY_0,
                         "timestamps": [
-                            { "start": unixtime - 3 * DAY, "end": unixtime - 0 * DAY }
+                            { "start": unixtime - 6 * DAY, "end": unixtime - 0.5 * DAY }
                         ] }
                 ],
                 "is_valid" : true
             },
-            { "server": "other key, stale",
+            { "server": "other 0, reached, earliest",
                 "obs": [
-                    { "key": OTHER_KEY,
+                    { "key": OTHER_KEY_0,
                         "timestamps": [
-                            { "start": unixtime - 6 * DAY, "end": unixtime - 3 * DAY }
+                            { "start": unixtime - 5 * DAY, "end": unixtime - 1.0 * DAY }
                         ] }
                 ],
                 "is_valid" : true
             },
-            { "server": "invalid signature",
+            { "server": "other 0, not-reached, latest",
                 "obs": [
-                    { "key": BROWSER_KEY,
+                    { "key": OTHER_KEY_0,
                         "timestamps": [
-                            { "start": unixtime - 3 * DAY, "end": unixtime - 0 * DAY }
+                            { "start": unixtime - (required_duration + 1 + 3) * DAY, "end": unixtime - (required_duration + 1) * DAY }
                         ] }
                 ],
+                "is_valid" : true
+            },
+            { "server": "other 0, not-reached, earlier",
+                "obs": [
+                    { "key": OTHER_KEY_0,
+                        "timestamps": [
+                            { "start": unixtime - (required_duration + 3 + 3) * DAY, "end": unixtime - (required_duration + 3) * DAY }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "other 1, reached, latest",
+                "obs": [
+                    { "key": OTHER_KEY_1,
+                        "timestamps": [
+                            { "start": unixtime - 3 * DAY, "end": unixtime - 0.0 * DAY }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "other 1, reached, earlier",
+                "obs": [
+                    { "key": OTHER_KEY_1,
+                        "timestamps": [
+                            { "start": unixtime - 6 * DAY, "end": unixtime - 0.5 * DAY }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "other 1, not-reached, latest",
+                "obs": [
+                    { "key": OTHER_KEY_1,
+                        "timestamps": [
+                            { "start": unixtime - (required_duration + 1 + 3) * DAY, "end": unixtime - (required_duration + 1) * DAY }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "other 1, not-reached, earlier",
+                "obs": [
+                    { "key": OTHER_KEY_1,
+                        "timestamps": [
+                            { "start": unixtime - (required_duration + 3 + 3) * DAY, "end": unixtime - (required_duration + 3) * DAY }
+                        ] }
+                ],
+                "is_valid" : true
+            },
+            { "server": "invalid result",
+                "obs": [],
                 "is_valid" : false
             },
             { "server": "no response",
@@ -107,22 +160,37 @@
             }
         ];
 
-        var required_duration = 2;
-        var svg = Pers_gen.get_svg_graph("www.test.com:443,2", server_result_list,
-                30, unixtime, BROWSER_KEY, max_stale_sec);
+        var shuffled_server_result_list = _.shuffle(server_result_list);
+        var sorted_server_result_list   = Pers_gen.sort_server_result_list(shuffled_server_result_list, BROWSER_KEY, max_stale_sec, unixtime);
+
+        var svgs =
+        {
+            shuffled: Pers_gen.get_svg_graph("www.test.com:443,2", shuffled_server_result_list,
+                    30, unixtime, BROWSER_KEY, max_stale_sec),
+            sorted  : Pers_gen.get_svg_graph("www.test.com:443,2", sorted_server_result_list,
+                    30, unixtime, BROWSER_KEY, max_stale_sec),
+            expected: Pers_gen.get_svg_graph("www.test.com:443,2", server_result_list,
+                    30, unixtime, BROWSER_KEY, max_stale_sec)
+        };
 
         var parser = new DOMParser();
-        var svgDoc = parser.parseFromString(svg, "text/xml");
-        var svgNode = svgDoc.getElementsByTagName("svg")[0];
-        var results = document.getElementById("results");
-        results.appendChild(svgNode);
-}
+        _.each(["shuffled", "sorted", "expected"], function(type) {
+            var svg_doc  = parser.parseFromString(svgs[type], "text/xml");
+            var svg_node = svg_doc.getElementsByTagName("svg")[0];
+            var result   = document.getElementById("svg_" + type);
+            result.appendChild(svg_node);
+        });}
 </script>
 </head>
 <body>
     <input type="button" value="Generate Graph" onclick="generate_graph();">
     <p>Run with firebug to see detailed test output if something fails.</p>
-    <h2>Results: </h2>
-    <div id="results"></div>
+    <h1>Results: </h1>
+    <h2>Shuffled:</h2>
+    <div id="svg_shuffled"></div>
+    <h2>Sorted:</h2>
+    <div id="svg_sorted"></div>
+    <h2>Expected</h2>
+    <div id="svg_expected"></div>
 </body>
 </html>

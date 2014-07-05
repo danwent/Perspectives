@@ -475,14 +475,15 @@ var Perspectives = {
 			    Perspectives.strbundle.getString("quorumDuration"    ) + ": "   + qd_str                         + "\n" +
 			    Perspectives.strbundle.getString("notaryObservations") + ": \n" + obs_text                       + "\n";
 			var required_duration = Perspectives.root_prefs.getIntPref("perspectives.required_duration");
-			var svg = Pers_gen.get_svg_graph(Perspectives.getServiceId(uri), server_result_list, 30,
+			var server_result_list_sorted = Pers_gen.sort_server_result_list(server_result_list, test_key, max_stale_sec, unixtime);
+			var svg = Pers_gen.get_svg_graph(Perspectives.getServiceId(uri), server_result_list_sorted, 30,
 				unixtime, test_key, max_stale_sec, required_duration);
 			var query_results = new Perspectives.SslCert(test_key,
 				str, svg, qd_days,
 				is_cur_consistent,
 				is_inconsistent,
 				weakly_seen,
-				server_result_list);
+				server_result_list_sorted);
 
 			process_results_callback(query_results, cert, uri);
 		} catch(e) {

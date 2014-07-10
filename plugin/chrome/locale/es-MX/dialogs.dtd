@@ -47,7 +47,13 @@
 <!ENTITY SubmitReport "Mandar Reporte">
 <!ENTITY DetailedInformation "Información Detallada">
 <!ENTITY CertificateValidation "Validación de Certificado">
-<!ENTITY AutoTrust "Confiar automáticamente en los certificados de los siguientes sitios">
+<!ENTITY AutoTrust        "Confiar automáticamente en los certificados de los siguientes sitios">
+<!-- TODO translate -->
+<!ENTITY AutoTrustDomain  "Domain">
+<!ENTITY AutoTrustRegex   "Regex">
+<!ENTITY AutoTrustEnabled "Enabled">
+<!ENTITY AutoTrustRemove  "Remove">
+<!-- -->
 <!ENTITY DefaultNotaryServers "Servidores de Notaría por Default">
 <!ENTITY UseDefaultNotaries "Usar la lista de servidores de notaría por default">
 <!ENTITY AdditionalNotaryServers "Servidores de Notaría Adicionales">

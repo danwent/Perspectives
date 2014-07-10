@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://perspectives/content/css/preferences_dialog.css" type="text/css"?>
+
 <!DOCTYPE prefwindow SYSTEM "chrome://perspectives/locale/dialogs.dtd">
 
 <prefwindow
@@ -60,10 +62,6 @@
                     id  ="contact-in-private-browsing-mode"
                     name="extensions.perspectives.contact_in_private_browsing_mode"
                     type="bool"/>
-            <preference
-                    id  ="whitelist"
-                    name="perspectives.whitelist"
-                    type="string"/>
             <preference
                     id  ="additional_notary_list"
                     name="perspectives.additional_notary_list"
@@ -136,7 +134,20 @@
                             <checkbox label     ="&PermanentlytrustcertificatesvalidatedbyPerspectives;"
                                       preference="exception-perm"/>
                             <label value="&AutoTrust;:"/>
-                            <textbox preference="whitelist" id="whitelist" size="40"/>
+                            <tree id="whitelist" rows="10" seltype="multiple" editable="true" hidecolumnpicker="true">
+                                <treecols>
+                                    <!-- Why is the ascending sortDirectionIndicator looking down? => use descending -->
+                                    <treecol id="domain"     label="Domain"  flex="1"        sortDirection="descending"/>
+                                    <treecol id="host_regex" label="Regex"   flex="2"        editable="true"/>
+                                    <treecol id="enabled"    label="Enabled" type="checkbox" editable="true"/>
+                                </treecols>
+
+                                <treechildren/>
+                            </tree>
+                            <hbox>
+                                <spacer flex="1"/>
+                                <button label="&AutoTrustRemove;" onclick="Pers_pref.whitelist_treeView.removeSelected();"/>
+                            </hbox>
                         </groupbox>
                     </vbox>
                     <spacer flex="1"/>

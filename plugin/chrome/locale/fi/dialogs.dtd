@@ -47,7 +47,13 @@
 <!ENTITY SubmitReport "Lähetä raportti">
 <!ENTITY DetailedInformation "Tarkemmat tiedot">
 <!ENTITY CertificateValidation "Sertifikaatin tarkastus">
-<!ENTITY AutoTrust "Luota automaattisesti kaikkiin sertifikaatteihin tällä sivustolla">
+<!ENTITY AutoTrust        "Luota automaattisesti kaikkiin sertifikaatteihin tällä sivustolla">
+<!-- TODO translate -->
+<!ENTITY AutoTrustDomain  "Domain">
+<!ENTITY AutoTrustRegex   "Regex">
+<!ENTITY AutoTrustEnabled "Enabled">
+<!ENTITY AutoTrustRemove  "Remove">
+<!-- -->
 <!ENTITY DefaultNotaryServers "Default Notary Servers">
 <!ENTITY UseDefaultNotaries "Use default notary server list">
 <!ENTITY AdditionalNotaryServers "Additional Notary Servers">

@@ -44,7 +44,11 @@
 <!ENTITY SubmitReport "Submit Report">
 <!ENTITY DetailedInformation "Detailed Information">
 <!ENTITY CertificateValidation "Certificate Validation">
-<!ENTITY AutoTrust "Automatically trust certificates for the following sites">
+<!ENTITY AutoTrust        "Automatically trust certificates for the following sites">
+<!ENTITY AutoTrustDomain  "Domain">
+<!ENTITY AutoTrustRegex   "Regex">
+<!ENTITY AutoTrustEnabled "Enabled">
+<!ENTITY AutoTrustRemove  "Remove">
 <!ENTITY DefaultNotaryServers "Default Notary Servers">
 <!ENTITY UseDefaultNotaries "Use default notary server list">
 <!ENTITY AdditionalNotaryServers "Additional Notary Servers">

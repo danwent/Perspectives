@@ -47,7 +47,13 @@
 <!ENTITY SubmitReport "提交报告">
 <!ENTITY DetailedInformation "详细信息">
 <!ENTITY CertificateValidation "证书验证">
-<!ENTITY AutoTrust "自动信任下列站点的证书">
+<!ENTITY AutoTrust        "自动信任下列站点的证书">
+<!-- TODO translate -->
+<!ENTITY AutoTrustDomain  "Domain">
+<!ENTITY AutoTrustRegex   "Regex">
+<!ENTITY AutoTrustEnabled "Enabled">
+<!ENTITY AutoTrustRemove  "Remove">
+<!-- -->
 <!ENTITY DefaultNotaryServers "默认认证服务器">
 <!ENTITY UseDefaultNotaries "使用默认认证服务器列表">
 <!ENTITY AdditionalNotaryServers "其它认证服务器">

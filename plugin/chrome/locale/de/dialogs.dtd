@@ -43,7 +43,11 @@
 <!ENTITY SubmitReport "Bericht absenden">
 <!ENTITY DetailedInformation "Detaillierte Informationen">
 <!ENTITY CertificateValidation "Zertifikatsüberprüfung">
-<!ENTITY AutoTrust "Zertifikaten von folgenden Webseiten automatisch vertrauen">
+<!ENTITY AutoTrust        "Zertifikaten von folgenden Webseiten automatisch vertrauen">
+<!ENTITY AutoTrustDomain  "Domain">
+<!ENTITY AutoTrustRegex   "Regex">
+<!ENTITY AutoTrustEnabled "Aktiv">
+<!ENTITY AutoTrustRemove  "Löschen">
 <!ENTITY DefaultNotaryServers "Standard-Notarserver">
 <!ENTITY UseDefaultNotaries "Liste der Standard-Notarserver benutzen">
 <!ENTITY AdditionalNotaryServers "Zusätzliche Notarserver">

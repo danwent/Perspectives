@@ -56,9 +56,9 @@
     </hbox>
   </groupbox>
 
-    <script type = "application/x-javascript" src="common.js"/>
-    <script type = "application/x-javascript" src="notaries.js"/>
-    <script type = "application/x-javascript" src="report.js"/>
+    <script type="application/x-javascript" src="common.js"/>
+    <script type="application/x-javascript" src="notaries.js"/>
+    <script type="application/x-javascript" src="report.js"/>
 
 </window>
 

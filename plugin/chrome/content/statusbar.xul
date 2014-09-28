@@ -8,6 +8,8 @@
 	<stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" insertbefore="1"/>
  </stringbundleset> 
 
+ <script type="application/x-javascript" src="extlib/spark-md5.min.js"/>
+
   <script type="application/x-javascript" src="common.js"/>
   <script type="application/x-javascript" src="base64.js" />
   <script type="application/x-javascript" src="client_policy.js" />

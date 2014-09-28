@@ -92,7 +92,7 @@ function spacer(category_name) {
 // if you're lazy and want to print some text while debugging
 function debug(obj) {
 
-  if (obj === null) {
+  if (obj === null || obj === undefined) {
     return;
   }
 
@@ -114,7 +114,7 @@ function debug(obj) {
 }
 
 function deb_console(obj) {
-  if (window.console != undefined) {
+  if (window.console !== undefined) {
     console.log("DEBUG: " + obj);
   }
 }

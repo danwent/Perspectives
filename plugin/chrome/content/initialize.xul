@@ -2,8 +2,10 @@
 
 <overlay id="perspectives-init"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="notaries.js" />
-  <script type="application/x-javascript" src="common.js" />
+  <script type="application/x-javascript" src="extlib/spark-md5.min.js"/>
+
+  <script type="application/x-javascript" src="common.js"/>
+  <script type="application/x-javascript" src="notaries.js"/>
   <script type="text/javascript">
 				
     // don't load or run anything until after the page has loaded

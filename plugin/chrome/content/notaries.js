@@ -437,6 +437,15 @@ var Perspectives = {
 		return q_count;
 	},
 
+	calculateMD5: function(array) {
+		// calculate the MD5 hash of a given array
+		// uses third-party library SparkMD5.
+		// many thanks to them for sharing under a compatible license.
+		var hash = SparkMD5.ArrayBuffer.hash(array, false );
+		hash = hash.toLowerCase().match(/.{1,2}/g).join(':');
+		return hash;
+	},
+
 	notaryQueriesComplete: function(ti) {
 		try {
 			if(Perspectives.strbundle == null) {
@@ -446,8 +455,14 @@ var Perspectives = {
 			var server_result_list = ti.partial_query_results; 
 			delete ti.partial_query_results; 
 			delete ti.timeout_id; 
-			
-			var test_key = ti.cert.md5Fingerprint.toLowerCase();
+
+			var test_key;
+			if (ti.cert["md5Fingerprint"] !== undefined) {
+				test_key = ti.cert.md5Fingerprint.toLowerCase();
+			}
+			else {
+				test_key = this.calculateMD5(ti.cert.getRawDER({}));
+			}
 			// 2 days (FIXME: make this a pref)
 			var max_stale_sec = 2 * 24 * 3600; 
 			var q_required = Perspectives.getQuorumAsInt();
@@ -565,7 +580,14 @@ var Perspectives = {
 			return;
 		}
   
-		var md5        = ti.cert.md5Fingerprint.toLowerCase();
+		var md5;
+		if (ti.cert["md5Fingerprint"] !== undefined) {
+			// use the built-in browser hash if available
+			md5 = ti.cert.md5Fingerprint.toLowerCase();
+		}
+		else {
+			md5 = this.calculateMD5(ti.cert.getRawDER({}));
+		}
 		ti.state      = ti.browser.securityUI.state;
 
 		ti.is_override_cert = Perspectives.overrideService.isCertUsedForOverrides(ti.cert, true, true);

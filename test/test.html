@@ -5,6 +5,8 @@
 <title>Perspectives - Test cases</title>
 
 <!-- Include every file so we can verify that all of the objects are testable in meta_test() -->
+<script type="text/javascript" src="../extlib/spark-md5.min.js"></script>
+
 <script type="text/javascript" src="../about.js"></script>
 <script type="text/javascript" src="../base64.js"></script>
 <script type="text/javascript" src="../client_policy.js"></script>
@@ -92,7 +94,7 @@ function spacer(category_name) {
 // if you're lazy and want to print some text while debugging
 function debug(obj) {
 
-  if (obj === null) {
+  if (obj === null || obj === undefined) {
     return;
   }
 
@@ -114,7 +116,7 @@ function debug(obj) {
 }
 
 function deb_console(obj) {
-  if (window.console != undefined) {
+  if (window.console !== undefined) {
     console.log("DEBUG: " + obj);
   }
 }
@@ -146,6 +148,18 @@ function meta_tests() {
   assert(typeof Pers_statusbar === 'object', "Pers_statusbar is type '" + typeof Pers_statusbar + "'."); //statusbar.js
   assert(typeof Pers_whitelist_dialog === 'object', "Pers_whitelist_dialog is type '" + typeof Pers_whitelist_dialog + "'."); //whitelist_dialog.js FIXME
   assert(typeof Pers_xml === 'object', "Pers_xml is type '" + typeof Pers_xml + "'."); //xml_notary_client.js
+
+  write_string("Finished");
+}
+
+function hash_tests() {
+
+  write_string("Starting hash tests");
+
+  var known_md5_hash = "ffe5f73de2828ae744f3b126a7744fc3"; // verified independently with three external MD5 calculators
+  var md5_test_string = "This is the Perspectives project browser extension MD5 test";
+  var md5_hash = SparkMD5.hash(md5_test_string);
+  assert((md5_hash === known_md5_hash), "MD5 hash of test string: " + known_md5_hash);
 
   write_string("Finished");
 }
@@ -874,6 +888,7 @@ function run_tests() {
 
     clear();
     meta_tests();
+    hash_tests();
     client_sanity();
     nonrouted_ips();
     quorum_basics();

@@ -12,6 +12,11 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.5.2
+-----
+* Add SparkMD5 library as external library to provide MD5 hashing functionality (has been removed in Firefox 32)
+
+
 4.5.1
 -----
 * Add (pl) Polish translation! Many thanks to Jakub and Sonia!

@@ -41,7 +41,7 @@
 	<!--      <menuitem label="Refresh All Notary Data"   oncommand="requery()"/> -->
 		  <menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
 		  <menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
-          <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrusts_all_certificates()" />
+          <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrust_all_certificates()"  />
 		  <menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
 		  <!-- TODO enable once all strings have been localized
 		  <menuitem label="&About;" oncommand="Pers_statusbar.open_about_dialog()"/>
@@ -61,7 +61,7 @@
       			<menuseparator/>
       			<menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
       			<menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
-                <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrusts_all_certificates()" />
+                <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrust_all_certificates()"  />
       			<menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
       			<!-- TODO enable once all strings have been localized
       			<menuitem label="&About;" oncommand="Pers_statusbar.open_about_dialog()"/>
@@ -81,7 +81,7 @@
       			<menuseparator/>
       			<menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
       			<menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
-                <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrusts_all_certificates()" />
+                <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrust_all_certificates()"  />
       			<menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
       			<!-- TODO enable once all strings have been localized
       			<menuitem label="&About;" oncommand="Pers_statusbar.open_about_dialog()"/>

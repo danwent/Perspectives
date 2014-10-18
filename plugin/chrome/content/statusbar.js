@@ -122,26 +122,54 @@ var Pers_statusbar = {
 			"Certificate Manager","centerscreen,chrome");
 	},
 
-	distrusts_all_certificates : function() {
-		var PROMPT = "The CA system is broken";
-		var str = window.prompt(
-			"Perspectives - THIS WILL DISTRUST ALL YOUR BROWSER'S CERTIFICATES! - USE WITH CAUTION!\n" +
-			"If you know what you are doing please enter the following sentence: '" + PROMPT + "'", "");
-		if(str.toLowerCase() === PROMPT.toLowerCase()) {
-			var certDB2 = Components.classes["@mozilla.org/security/x509certdb;1"].getService(Components.interfaces.nsIX509CertDB2);
-			certDB2.QueryInterface(Components.interfaces.nsIX509CertDB);
-			var i = 0;
-			var it = certDB2.getCerts().getEnumerator();
-			while(it.hasMoreElements()) {
-				var cert = it.getNext();
-				certDB2.setCertTrust(cert, cert.CA_CERT    , 0);
-				certDB2.setCertTrust(cert, cert.USER_CERT  , 0);
-				certDB2.setCertTrust(cert, cert.EMAIL_CERT , 0);
-				certDB2.setCertTrust(cert, cert.SERVER_CERT, 0);
-				i += 1;
-			}
+	distrust_all_certificates : function() {
+		if(Perspectives.strbundle == null) {
+			Perspectives.strbundle = document.getElementById("notary_strings");
+		}
 
-			alert(i + " certificates have been distrusted.");
+		try
+		{
+			var prompt = window.prompt(
+				Perspectives.strbundle.getString("distrustAllWarning"    ) + "\n" +
+				Perspectives.strbundle.getString("distrustAllDescription") + "\n" +
+				Perspectives.strbundle.getString("distrustAllPrompt"     ) + " " + Perspectives.strbundle.getString("distrustAllPhrase"));
+			var phrase = Perspectives.strbundle.getString("distrustAllPhrase");
+			if(prompt.toLowerCase() === phrase.toLowerCase()) {
+				var Cc = Components.classes
+				var Ci = Components.interfaces
+
+				var nCerts      = 0;
+				var nDistrusted = 0;
+				var certDB2 = Cc["@mozilla.org/security/x509certdb;1"].getService(Ci.nsIX509CertDB2);
+				certDB2.QueryInterface(Ci.nsIX509CertDB);
+				var it = certDB2.getCerts().getEnumerator();
+				while(it.hasMoreElements())
+				{
+					var cert = it.getNext();
+
+					cert.QueryInterface(Ci.nsIX509Cert2);
+					var trustSSL     = certDB2.isCertTrusted(cert, cert.certType, Ci.nsIX509CertDB.TRUSTED_SSL    );
+					var trustEmail   = certDB2.isCertTrusted(cert, cert.certType, Ci.nsIX509CertDB.TRUSTED_EMAIL  );
+					var trustObjsign = certDB2.isCertTrusted(cert, cert.certType, Ci.nsIX509CertDB.TRUSTED_OBJSIGN);
+					if(trustSSL || trustEmail || trustObjsign)
+					{
+						certDB2.setCertTrust(cert, cert.certType, 0);
+						nDistrusted += 1
+					}
+
+					nCerts += 1;
+				}
+
+				Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("distrustAllSuccess", ['' + nCerts, '' + nDistrusted]));
+			}
+			else
+			{
+				Pers_util.pers_alert(Perspectives.strbundle.getString("distrustAllPhraseWrong"));
+			}
+		} catch(e)
+		{
+			Pers_debug.d_print("error", "Perspectives had an internal error in distrust_all_certificates(): " + e);
+			Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("internalError", ["distrust_all_certificates - " + e]));
 		}
 	},
 

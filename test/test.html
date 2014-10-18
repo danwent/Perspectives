@@ -324,7 +324,7 @@ function nonrouted_ips() {
 
     for(var i = 0; i < ips.length; i++) {
         var ip = ips[i];
-        assert(Perspectives.is_nonrouted_ip(host) === true, host);
+        assert(Perspectives.is_nonrouted_ip(ip) === true, ip);
     }
 
     write_string("Done!");

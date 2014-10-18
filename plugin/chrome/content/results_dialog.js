@@ -83,7 +83,6 @@ var Pers_results = {
 			var cert  = ti.query_results;
 			host.label = ti.uri.host;
 			if(ti) {
-				debugger
 				host.label += ": " + Pers_results.getActionStr(ti) + (ti.is_cached ? " " + Pers_results.strbundle.getString("cachedResults") : "");
 			}
 			if(cert){

@@ -17,13 +17,12 @@ Optional (but strongly recommended!):
 
 To build, just type "make" (assuming of course you have make installed!). This will create a file called 'Perspectives.xpi'.
 
-You can run Perspectives in Firefox using *Menu -> Add-ons -> Extensions -> (Tools icon) -> Install Add-On From File* and open to the ```Perspectives.xpi``` file.
+You can run Perspectives in Firefox using *Menu -> Add-ons -> Extensions -> (Tools icon) -> Install Add-On From File* and opening the ```Perspectives.xpi``` file.
 
 To debug the extension:
 
 * Download the latest [Firefox Aurora build 31](https://www.mozilla.org/firefox/channel/#aurora).
-  * The latest version usually comes with better integration of debugging tools.
-  * **Build 32 is not supported** right now (see [issue #123](https://github.com/danwent/Perspectives/issues/123)).
+  * The latest versions usually come with better integration of debugging tools.
 * Start your new browser with ```firefox31/firefox -P dev -no-remote -purgecaches &```
   * You should see the profile manager on the first start which creates a new profile called "dev".
   * For further information see [MDN - Setting up extension development environment](https://developer.mozilla.org/en/Setting_up_extension_development_environment).

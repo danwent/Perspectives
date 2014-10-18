@@ -9,7 +9,6 @@
  </stringbundleset>
 
   <script type="application/x-javascript" src="common.js"/>
-  <script type="application/x-javascript" src="base64.js" />
   <script type="application/x-javascript" src="client_policy.js" />
   <script type="application/x-javascript" src="xml_notary_client.js" />
   <script type="application/x-javascript" src="generate_svg.js" />

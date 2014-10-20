@@ -795,8 +795,7 @@ JaJ2Lw7kRVMCAwEAAQ==\
     count_before = Perspectives.getNotaryList().length;
     Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, notary_dupe);
     notaries = Perspectives.getNotaryList();
-    assert_fixme(notaries.length === count_before, "Trying to add a duplicate notary doesn't work.");
-    //FIXME - note: this currently fails. We want to write code to prevent dupes.
+    assert(notaries.length === count_before, "Trying to add a duplicate notary doesn't work.");
 
     var sparse_notary = "perspectivesFAKETEST.networknotary.org:8080\n\n\n\n\
 -----BEGIN PUBLIC KEY-----\n\n\n\n\n\

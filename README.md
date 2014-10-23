@@ -23,9 +23,9 @@ Or use 'make install-fx' to build and install in a single step. This assumes Fir
 
 To debug the extension:
 
-* Download the latest [Firefox Aurora build 31](https://www.mozilla.org/firefox/channel/#aurora).
+* Download the latest [Firefox](https://www.mozilla.org/firefox/).
   * The latest versions usually come with better integration of debugging tools.
-* Start your new browser with ```firefox31/firefox -P dev -no-remote -purgecaches &```
+* Start your new browser with ```firefox -P dev -no-remote -purgecaches &```
   * You should see the profile manager on the first start which creates a new profile called "dev".
   * For further information see [MDN - Setting up extension development environment](https://developer.mozilla.org/en/Setting_up_extension_development_environment).
 * In ```~/.mozilla/firefox/r4nd0m5tr.dev/extensions``` create a file called ```perspectives@cmu.edu``` and enter the text ```Path_to_your_Perspectives_clone/plugin/``` (where you cloned the git repo to).

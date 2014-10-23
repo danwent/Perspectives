@@ -27,7 +27,6 @@
  					type="menu"
  					validate="always"
  					label="Perspectives">
-		<!-- <image id="perspective-status-image" /> -->
 		<image 	id="perspective-button-image"
 				class="perspective-status-image-class"
 				src="chrome://perspectives/content/img/default.png"
@@ -39,7 +38,6 @@
 		  <!--<menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />-->
 		  <menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
 		  <menuseparator/>
-	<!--      <menuitem label="Refresh All Notary Data"   oncommand="requery()"/> -->
 		  <menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
 		  <menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
           <menuseparator/>

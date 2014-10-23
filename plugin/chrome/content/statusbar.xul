@@ -1,16 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE prefwindow SYSTEM "chrome://perspectives/locale/dialogs.dtd">
 
-<overlay id="persp-statusbar"  
+<overlay id="persp-statusbar"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
  <stringbundleset id="stringbundleset">
 	<stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" insertbefore="1"/>
- </stringbundleset> 
+ </stringbundleset>
 
  <script type="application/x-javascript" src="extlib/spark-md5.min.js"/>
 
-  <script type="application/x-javascript" src="base64.js"/>
   <script type="application/x-javascript" src="client_policy.js"/>
   <script type="application/x-javascript" src="common.js"/>
   <script type="application/x-javascript" src="generate_svg.js"/>
@@ -34,57 +33,62 @@
 				src="chrome://perspectives/content/img/default.png"
 				style="width:16px; height:16px;" />
 		<menupopup id="perspective-contextmenu-button" position="after_start">
-		  <menuitem label="&ViewNotaryResults;"   oncommand="Pers_statusbar.open_results_dialog()"/>
-		  <menuitem label="&ForceNotaryCheck;"   oncommand="Pers_statusbar.force_update()"/>
-		  <menuitem label="&ReportAttack;"   oncommand="Pers_report.report_attack()"/>
-		  <menuitem label="&Addtowhitelist;"   oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
+		  <menuitem label="&ViewNotaryResults;" oncommand="Pers_statusbar.open_results_dialog()"    />
+		  <menuitem label="&ForceNotaryCheck;"  oncommand="Pers_statusbar.force_update()"           />
+          <!--Report attack always fails at the moment. Hide it until we fix it. issue #122-->
+		  <!--<menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />-->
+		  <menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
 		  <menuseparator/>
-	<!--      <menuitem label="Refresh All Notary Data"   oncommand="requery()"/> --> 
-		  <menuitem label="&Preferences;" oncommand="Pers_statusbar.open_preferences_dialog()"/>
-		  <menuitem label="&ViewCertificateStore;" oncommand="Pers_statusbar.openCertificates()"/>
-		  <menuitem label="&Help;" oncommand="Pers_statusbar.openHelp()"/>
+	<!--      <menuitem label="Refresh All Notary Data"   oncommand="requery()"/> -->
+		  <menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
+		  <menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
+          <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrust_all_certificates()"  />
+		  <menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
 		  <!-- TODO enable once all strings have been localized
 		  <menuitem label="&About;" oncommand="Pers_statusbar.open_about_dialog()"/>
 		  -->
 		</menupopup>
 	</toolbarbutton>
  </toolbarpalette>
- 
- <menupopup id="menu_ToolsPopup"> 
-	<menu id="menu_pers_tools" label="Perspectives" insertbefore="javascriptConsole"> 
-		<menupopup> 
-      			<menuitem label="&ViewNotaryResults;"   oncommand="Pers_statusbar.open_results_dialog()"/>
-      			<menuitem label="&ForceNotaryCheck;"   oncommand="Pers_statusbar.force_update()"/>
-     			<menuitem label="&ReportAttack;"   oncommand="Pers_report.report_attack()"/>
-      			<menuitem label="&Addtowhitelist;"   oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
+
+ <menupopup id="menu_ToolsPopup">
+	<menu id="menu_pers_tools" label="Perspectives" insertbefore="javascriptConsole">
+		<menupopup>
+      			<menuitem label="&ViewNotaryResults;" oncommand="Pers_statusbar.open_results_dialog()"    />
+      			<menuitem label="&ForceNotaryCheck;"  oncommand="Pers_statusbar.force_update()"           />
+                <!--Report attack always fails at the moment. Hide it until we fix it. issue #122-->
+                <!--<menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />-->
+      			<menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
       			<menuseparator/>
-      			<menuitem label="&Preferences;" oncommand="Pers_statusbar.open_preferences_dialog()"/>
-      			<menuitem label="&ViewCertificateStore;" oncommand="Pers_statusbar.openCertificates()"/>
-      			<menuitem label="&Help;" oncommand="Pers_statusbar.openHelp()"/>
+      			<menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
+      			<menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
+                <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrust_all_certificates()"  />
+      			<menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
       			<!-- TODO enable once all strings have been localized
       			<menuitem label="&About;" oncommand="Pers_statusbar.open_about_dialog()"/>
       			-->
-		</menupopup> 
-	</menu> 
- </menupopup> 
+		</menupopup>
+	</menu>
+ </menupopup>
 
- <popup id="contentAreaContextMenu"> 
-	<menu id="menu_pers_context" label="Perspectives"> 
-		<menupopup> 
-      			<menuitem label="&ViewNotaryResults;"   oncommand="Pers_statusbar.open_results_dialog()"/>
-      			<menuitem label="&ForceNotaryCheck;"   oncommand="Pers_statusbar.force_update()"/>
-     			<menuitem label="&ReportAttack;"   oncommand="Pers_report.report_attack()"/>
-      			<menuitem label="&Addtowhitelist;"   oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
+ <popup id="contentAreaContextMenu">
+	<menu id="menu_pers_context" label="Perspectives">
+		<menupopup>
+      			<menuitem label="&ViewNotaryResults;" oncommand="Pers_statusbar.open_results_dialog()"    />
+      			<menuitem label="&ForceNotaryCheck;"  oncommand="Pers_statusbar.force_update()"           />
+                <!--Report attack always fails at the moment. Hide it until we fix it. issue #122-->
+     			<!--<menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />-->
+      			<menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
       			<menuseparator/>
-      			<menuitem label="&Preferences;" oncommand="Pers_statusbar.open_preferences_dialog()"/>
-      			<menuitem label="&ViewCertificateStore;" oncommand="Pers_statusbar.openCertificates()"/>
-      			<menuitem label="&Help;" oncommand="Pers_statusbar.openHelp()"/>
+      			<menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
+      			<menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
+                <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrust_all_certificates()"  />
+      			<menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
       			<!-- TODO enable once all strings have been localized
       			<menuitem label="&About;" oncommand="Pers_statusbar.open_about_dialog()"/>
       			-->
-		</menupopup> 
-	</menu> 
-
+		</menupopup>
+	</menu>
  </popup>
 
 </overlay>

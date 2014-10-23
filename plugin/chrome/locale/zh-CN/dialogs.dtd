@@ -11,7 +11,12 @@
 <!ENTITY HighAvailability "低级(高度可用)">
 <!ENTITY ManualConfiguration "手动设置">
 <!ENTITY Percentageofnotariesthatmustagree "认证服务器信任的最低百分比(最小百分比)：">
-<!ENTITY Lengthoftimequorummustbeachieved "信任所需的最低持续时间(最短持续时间)：">
+<!ENTITY Lengthoftimequorummustbeachieved  "信任所需的最低持续时间(最短持续时间)："  >
+<!-- TODO translate -->
+<!ENTITY QueryTimeout                      "Timeout for querying notaries (in milliseconds): " >
+<!ENTITY QueryRetries                      "Number of retries if a timeout has exceeded: "     >
+<!ENTITY MaxCacheAge                       "Cache duration for notary results (in seconds):"   >
+<!-- -->
 <!ENTITY OverridingFirefoxSecurityErrors "跳过 Firefox 安全错误">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "允许 Perspectives 自动跳过安全错误">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "永久信任 Perspectives 验证的证书">
@@ -19,6 +24,9 @@
 <!ENTITY ContactNotariesforallHTTPSsites "对所有的 HTTPS 站点都联系认证服务器">
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "仅在站点的证书引起安全错误时联系认证服务器">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "联系认证服务器前总是询问用户">
+<!-- TODO translate -->
+<!ENTITY ContactNotariesInPrivateBrowsingMode "Also contact notaries while in private browsing mode.">
+<!-- -->
 <!ENTITY Certificates "证书">
 <!ENTITY Servers "认证服务器">
 <!ENTITY Help "帮助">
@@ -39,7 +47,13 @@
 <!ENTITY SubmitReport "提交报告">
 <!ENTITY DetailedInformation "详细信息">
 <!ENTITY CertificateValidation "证书验证">
-<!ENTITY AutoTrust "自动信任下列站点的证书">
+<!ENTITY AutoTrust        "自动信任下列站点的证书">
+<!-- TODO translate -->
+<!ENTITY AutoTrustDomain  "Domain">
+<!ENTITY AutoTrustRegex   "Regex">
+<!ENTITY AutoTrustEnabled "Enabled">
+<!ENTITY AutoTrustRemove  "Remove">
+<!-- -->
 <!ENTITY DefaultNotaryServers "默认认证服务器">
 <!ENTITY UseDefaultNotaries "使用默认认证服务器列表">
 <!ENTITY AdditionalNotaryServers "其它认证服务器">
@@ -47,6 +61,7 @@
 <!ENTITY ReportAttack "报告攻击">
 <!ENTITY ViewCertificateStore "查看证书">
 <!-- TODO: these new strings need translation -->
+<!ENTITY DistrustAllCertificates "Distrust all certificates...">
 <!ENTITY About "About Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
 <!ENTITY ContributorTitle "Contributors">

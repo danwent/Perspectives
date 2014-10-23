@@ -35,26 +35,26 @@ var Pers_results = {
 		after.appendChild(svg);
 	},
 
-	// returns a string that describes whether Perspectives installed a 
-	// security exception 
+	// returns a string that describes whether Perspectives installed a
+	// security exception
 	getActionStr: function(ti) {
 		if(Pers_results.strbundle == null) {
  			Pers_results.strbundle = document.getElementById("results_strings");
  		}
 
-		if(ti.uri.scheme != "https") {  
-			return Pers_results.strbundle.getFormattedString("notHTTPS", [ ti.uri.scheme ]);
-		} else if(ti.is_override_cert && ti.already_trusted) { 
+		if(ti.uri.scheme != "https") {
+			return Pers_results.strbundle.getFormattedString("notHTTPS", [ti.uri.scheme]);
+		} else if(ti.is_override_cert && ti.already_trusted) {
 			return Pers_results.strbundle.getString("previouslyInstalledCert");
-		} else if(ti.already_trusted) { 
+		} else if(ti.already_trusted) {
 			return Pers_results.strbundle.getString("browserTrusts");
-		} else if(ti.is_override_cert && ti.notary_valid && ti.exceptions_enabled && ti.isTemp) { 
+		} else if(ti.is_override_cert && ti.notary_valid && ti.exceptions_enabled && ti.isTemp) {
 			return Pers_results.strbundle.getString("tempSecurityException");
-		} else if(ti.is_override_cert && ti.notary_valid && ti.exceptions_enabled && !ti.isTemp){ 
+		} else if(ti.is_override_cert && ti.notary_valid && ti.exceptions_enabled && !ti.isTemp){
 			return Pers_results.strbundle.getString("permanentSecurityException");
-		} else { 
+		} else {
 			return Pers_results.strbundle.getString("noException");
-		} 
+		}
 	},
 
 	load_results_dialog: function(){
@@ -71,20 +71,20 @@ var Pers_results = {
 			var info  = document.getElementById("perspective-description");
 			var liner = document.getElementById("perspective-quorum-duration");
 			var host  = document.getElementById("perspective-information-caption");
-		
-			var win = window.opener; 
-			var error_text = win.Perspectives.detectInvalidURI(win);  
-			if(error_text) { 
+
+			var win = window.opener;
+			var error_text = win.Perspectives.detectInvalidURI(win);
+			if(error_text) {
 				info.value = "Perspectives: " +
 					Pers_results.notaryStrings.getString("invalidURI") + " (" + error_text + ")";
-				return; 
-			} 
+				return;
+			}
 			var ti = win.Perspectives.getCurrentTabInfo(win);
-			var cert  = ti.query_results; 
+			var cert  = ti.query_results;
 			host.label = ti.uri.host;
-			if(ti) { 
-				host.label += ": " + Pers_results.getActionStr(ti); 
-			} 
+			if(ti) {
+				host.label += ": " + Pers_results.getActionStr(ti) + (ti.is_cached ? " " + Pers_results.strbundle.getString("cachedResults") : "");
+			}
 			if(cert){
 				info.value  = cert.summary;
 				liner.value = cert.tooltip;
@@ -96,20 +96,19 @@ var Pers_results = {
 					radio.selectedIndex = 0;
 				}
 			} else if (ti.reason_str) {
-				info.value = ti.reason_str; 
-			} 
+				info.value = ti.reason_str;
+			}
 
-		} catch(e) { 
-			Pers_debug.d_print("error", "Error loading results dialog"); 
-			Pers_debug.d_print("error", e); 
+		} catch(e) {
+			Pers_debug.d_print("error", "Error loading results dialog");
+			Pers_debug.d_print("error", e);
 			var errmsg = "";
 			if (Pers_results.strbundle != null) {
 				errmsg = Pers_results.strbundle.getString("errorLoadingResultsDialog") + ": ";
 			}
 			Pers_util.pers_alert(errmsg + e);
-		}  
-  
-		return true;
-	},
+		}
 
+		return true;
+	}
 }

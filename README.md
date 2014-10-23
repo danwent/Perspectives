@@ -19,6 +19,8 @@ To build, just type "make" (assuming of course you have make installed!). This w
 
 You can run Perspectives in Firefox using *Menu -> Add-ons -> Extensions -> (Tools icon) -> Install Add-On From File* and opening the ```Perspectives.xpi``` file.
 
+Or use 'make install-fx' to build and install in a single step. This assumes Firefox exists in your path.
+
 To debug the extension:
 
 * Download the latest [Firefox Aurora build 31](https://www.mozilla.org/firefox/channel/#aurora).
@@ -47,7 +49,7 @@ To debug the extension:
 
 To test Perspectives:
 
-* Use 'make test' to build Perspectives.xpi.
+* Use 'make test' to build Perspectives.xpi, or 'make test install-fx' to build and install all in one step (this assumes Firefox exists in your path).
 * Install the plugin and restart the browser.
 * Open the following URL: [```chrome://perspectives/content/test/test.html```](chrome://perspectives/content/test/test.html)
 * Press the 'Run Tests' button.

@@ -714,7 +714,7 @@ var Perspectives = {
 			var contact_private = Perspectives.root_prefs
 				.getBoolPref("extensions.perspectives.contact_in_private_browsing_mode");
 			if(!contact_private) {
-				var is_private = true; // default to true, better err on the save side
+				var is_private = true; // default to true, better err on the safe side
 				try { // Firefox 20+
 					Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 					is_private = PrivateBrowsingUtils.isWindowPrivate(win);

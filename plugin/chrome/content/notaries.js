@@ -730,7 +730,7 @@ var Perspectives = {
 
 				if(is_private) {
 					Pers_debug.d_print("main", "don't contact notaries in private browsing mode");
-					var text = Perspectives.strbundle.getString("needsPermission"); // TODO: maybe add an additional localization hinting to private browsing mode
+					var text = Perspectives.strbundle.getString("privateBrowsingQueriesDisabled");
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 					ti.reason_str = text;
 					return;

@@ -176,7 +176,6 @@
                                         preference="show-permission-reminder"/>
                             </hbox>
                             <hbox>
-                                <label value="   "/>
                                 <checkbox
                                         id        ="contact-in-private-browsing-mode-checkbox"
                                         label     ="&ContactNotariesInPrivateBrowsingMode;"

@@ -140,14 +140,16 @@ var Pers_statusbar = {
 
 				var nCerts      = 0;
 				var nDistrusted = 0;
-				var certDB2 = Cc["@mozilla.org/security/x509certdb;1"].getService(Ci.nsIX509CertDB2);
+				// nsIX509CertDB2 functionality moved to nsIX509CertDB in Firefox 33
+				var certDB2 = Cc["@mozilla.org/security/x509certdb;1"].getService(Ci.nsIX509CertDB || Ci.nsIX509CertDB2);
 				certDB2.QueryInterface(Ci.nsIX509CertDB);
 				var it = certDB2.getCerts().getEnumerator();
 				while(it.hasMoreElements())
 				{
 					var cert = it.getNext();
 
-					cert.QueryInterface(Ci.nsIX509Cert2);
+					// nsIX509Cert2 functionality moved to nsIX509Cert in Firefox 33
+					cert.QueryInterface(Ci.nsIX509Cert || Ci.nsIX509Cert2);
 					var trustSSL     = certDB2.isCertTrusted(cert, cert.certType, Ci.nsIX509CertDB.TRUSTED_SSL    );
 					var trustEmail   = certDB2.isCertTrusted(cert, cert.certType, Ci.nsIX509CertDB.TRUSTED_EMAIL  );
 					var trustObjsign = certDB2.isCertTrusted(cert, cert.certType, Ci.nsIX509CertDB.TRUSTED_OBJSIGN);

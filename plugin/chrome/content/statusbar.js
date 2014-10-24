@@ -132,7 +132,8 @@ var Pers_statusbar = {
 			var prompt = window.prompt(
 				Perspectives.strbundle.getString("distrustAllWarning"    ) + "\n" +
 				Perspectives.strbundle.getString("distrustAllDescription") + "\n" +
-				Perspectives.strbundle.getString("distrustAllPrompt"     ) + " " + Perspectives.strbundle.getString("distrustAllPhrase"));
+				Perspectives.strbundle.getString("distrustAllPrompt"     ) + "\n\"" +
+				Perspectives.strbundle.getString("distrustAllPhrase") + "\"");
 			var phrase = Perspectives.strbundle.getString("distrustAllPhrase");
 			if(prompt.toLowerCase() === phrase.toLowerCase()) {
 				var Cc = Components.classes

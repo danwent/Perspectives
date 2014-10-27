@@ -94,3 +94,15 @@ Distrust All Notaries
 - If the phrase does match, are certs distrusted?
 	- Does the user see a message stating the number of certs that were distrusted?
 
+
+Private Browsing
+----------------
+	a) For browsers that support "private browsing" mode (i.e. Firefox):
+		- In private mode, if private queries are allowed, do they happen?
+		- In private mode, if private lookups are not allowed, are the not sent?
+			- Does the user see a tooltip message explaining why?
+			- Are they still sent if the user selects 'Force notary checky'?
+		- In regular mode, are queries sent regardless of the 'allow' setting?
+
+	b) For browsers that do not support "private browsing" mode (i.e. SeaMonkey):
+		- Are queries sent regardless of the 'allow' setting?

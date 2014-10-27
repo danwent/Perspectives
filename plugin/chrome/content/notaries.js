@@ -172,8 +172,11 @@ var Perspectives = {
 				return null;
 			}
 
-			Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
-			recentCertsSvc = certDB.getRecentBadCerts(PrivateBrowsingUtils.isWindowPrivate(window));
+			// nsIRecentBadCerts functionality removed in Firefox 33
+			if (typeof certDB.getRecentBadCerts === "function") {
+				Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
+				recentCertsSvc = certDB.getRecentBadCerts(PrivateBrowsingUtils.isWindowPrivate(window));
+			}
 		}
 		else {
 			Pers_debug.d_print("error", "No way to get invalid cert status!");

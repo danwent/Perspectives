@@ -12,6 +12,18 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+NEXT
+----
+* Fill in CHANGELOG history from versions before 4.3
++ Update checkloc library: new test to check string substitutions inside .properties files
+* Fix incorrect string substitution in zh-CN localization (caught by the new checkloc test)
+* Move all exteral libraries to a clear 'extlib' folder; denote licenses
+* Remove unused preference 'perspectives.svg'
++ Add Perspectives logo image to help page
+* Convert translation file to markdown format
++ Unlock the 'About' dialog
+
+
 4.6
 ---
 + Add option to contact notaries when in private browsing (off by default)
@@ -30,7 +42,7 @@ We attempt to use meaningful version numbers, following semver.org:
 * Convert some alerts to Perspectives wrapped alerts
 * Prevent the addition of duplicate notaries
 * Correctly detected and set status for "quorum not reached" in non-english languages.
-* Temporarily remove all 'Report Attack' functionality, until the feature is fixed
+X Temporarily remove all 'Report Attack' functionality, until the feature is fixed
 * Check if result signature and timestamps are correct when processing notary results, and visually mark as red if either is incorrect
 * Warn on mismatching notary public keys
 + Remove red from color result keys, as it's now used for "invalid signature"
@@ -45,11 +57,14 @@ We attempt to use meaningful version numbers, following semver.org:
 * Clean up unit tests so many tests are more clear, better organized, and/or easier to maintain
 * Refactor test file so more tests can be run without installing the extension (i.e. separate chrome-dependent functionality from non-chrome-dependent functionality)
 * Many areas of code cleanup (add hasOwnProperty checks; fix === checks)
+* Remove dead statusbar elements
+* Remove unused function loadNotaryListFromURI()
 
 
 4.5.2
 -----
 * Add SparkMD5 library as external library to provide MD5 hashing functionality (has been removed in Firefox 32)
+* Strip away copyrighted ICC profile from images (thanks David P!)
 
 
 4.5.1

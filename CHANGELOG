@@ -24,7 +24,6 @@ We attempt to use meaningful version numbers, following semver.org:
 	+ Whitelist entries can be clicked to activate or deactivate
 	+ Table supports multi row selection and removal
 	+ Added localizations (en, de) for columns and remove button
-+ Add functionality to quickly and easily distrust all built-in certificates
 * Highly visible notifications when certificates fail (multiple certificates, one not recently seen; multiple certificates)
 * Extract remaining hardcoded strings for localization
 * Some German (de) localization fixes

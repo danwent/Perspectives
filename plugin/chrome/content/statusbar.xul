@@ -39,8 +39,10 @@
 		  <menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
 		  <menuseparator/>
 		  <menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
+          <!-- Hide distrust feature until github #143 has been fixed
           <menuseparator/>
           <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrust_all_certificates()"  />
+          -->
           <menuseparator/>
           <menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
 		  <menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
@@ -61,8 +63,10 @@
       			<menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
       			<menuseparator/>
       			<menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
+                <!-- Hide distrust feature until github #143 has been fixed
                 <menuseparator/>
                 <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrust_all_certificates()"  />
+                -->
                 <menuseparator/>
                 <menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
       			<menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
@@ -83,8 +87,10 @@
       			<menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
       			<menuseparator/>
       			<menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
+                <!-- Hide distrust feature until github #143 has been fixed
                 <menuseparator/>
                 <menuitem label="&DistrustAllCertificates;" oncommand="Pers_statusbar.distrust_all_certificates()"  />
+                -->
                 <menuseparator/>
                 <menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
       			<menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />

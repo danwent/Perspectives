@@ -797,20 +797,33 @@ function notary_parsing() {
     // TODO bad method of declaration?
     // We need newlines after the server name and 'BEGIN PUBLIC KEY' lines
     // for the string to parse properly
-    var notary_dupe = "perspectives1.networknotary.org:8080\n\
+    var test_notary_one = "testnotaryone.nowhere.org:8080\n\
 -----BEGIN PUBLIC KEY-----\n\
 MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGXsegzE6E/6j4vgzi3NqGSn2dz\
 W6gRxkuAL7PB8QmRqtG9ieSQjFB6cTYvkmp7x/LtHqlr9Fa6+/mT4Ma5oKU0RpgY\
 MyfYnEk0iiNWG2fj4mRpTscHfcEJfKP13OGAYP1ZuHksTXSYsaKfIwiVKMLgQ/hA\
 FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\
 JaJ2Lw7kRVMCAwEAAQ==\
------END PUBLIC KEY-----";
+-----END PUBLIC KEY-----\n"; // end with a newline so we can concatenate
 
-    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, "");
-    count_before = Perspectives.getNotaryList().length;
-    Perspectives.root_prefs.setCharPref(pref_string_extra_notaries, notary_dupe);
-    notaries = Perspectives.getNotaryList();
-    assert(notaries.length === count_before, "Trying to add a duplicate notary doesn't work.");
+        var test_notary_two = "testnotarytwo.nowhere.org:8080\n\
+-----BEGIN PUBLIC KEY-----\n\
+MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGXsegzE6E/6j4vgzi3NqGSn2dz\
+W6gRxkuAL7PB8QmRqtG9ieSQjFB6cTYvkmp7x/LtHqlr9Fa6+/mT4Ma5oKU0RpgY\
+MyfYnEk0iiNWG2fj4mRpTscHfcEJfKP13OGAYP1ZuHksTXSYsaKfIwiVKMLgQ/hA\
+FHBSCs9X+bvVMgPOiEpxZXfaynOQ3TLGYtVywLRwW5yvlRq4E9z0rtvwR1bn1hVd\
+JaJ2Lw7kRVMCAwEAAQ==\
+-----END PUBLIC KEY-----\n";
+
+    var single_notary = Pers_util.loadNotaryListFromString(test_notary_one);
+    assert(single_notary.length === 1, "Trying to parse a single notary works.");
+
+    assert(test_notary_one !== test_notary_two, "(meta) test notaries are distinct.");
+    var distinct_notaries = Pers_util.loadNotaryListFromString(test_notary_one + test_notary_two);
+    assert(distinct_notaries.length > 1, "Trying to parse multiple distinct notaries works.");
+
+    var duplicate_notaries = Pers_util.loadNotaryListFromString(test_notary_one + test_notary_one + test_notary_one);
+    assert(duplicate_notaries.length === 1, "Trying to parse a duplicate notary is ignored.");
 
     var sparse_notary = "perspectivesFAKETEST.networknotary.org:8080\n\n\n\n\
 -----BEGIN PUBLIC KEY-----\n\n\n\n\n\

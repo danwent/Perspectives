@@ -40,7 +40,7 @@ We attempt to use meaningful version numbers, following semver.org:
 + Add more info in README on how to debug and test
 + Draw stale-limit line across notary results
 * Remove use of base64.js; entirely replaced by internal browser functions
-+ Visually indicate cached results in the resultst dialog
++ Visually indicate cached results in the results dialog
 + Visually indicate whitelisted entries with a different icon
 * Clean up unit tests so many tests are more clear, better organized, and/or easier to maintain
 * Refactor test file so more tests can be run without installing the extension (i.e. separate chrome-dependent functionality from non-chrome-dependent functionality)

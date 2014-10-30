@@ -1,12 +1,25 @@
 # Perspectives
 **Connect securely to https websites by checking certificates with network notaries.**
 
-This directory includes the code for the Perspectives Firefox and Seamonkey clients.
-For more information see: [http://www.perspectives-project.org](http://www.perspectives-project.org)
+*Perspectives* is a browser extension that helps to verify whether your connection to any web site really is secure. It does this by checking the connection *certificate* with multiple observers hosted around the world. For more information see: [http://www.perspectives-project.org](http://www.perspectives-project.org).
 
-## DEVELOPMENT
+## Install
+You can install Perspectives for Firefox and SeaMonkey at [addons.mozilla.org](https://addons.mozilla.org/en-US/firefox/addon/perspectives/). Future support for other browsers is also planned.
 
-Requirements:
+## Contact
+You can contact the developers or post questions for discussion on the Perspectives Dev newsgroup:
+
+* [https://groups.google.com/group/perspectives-dev](https://groups.google.com/group/perspectives-dev)
+* [perspectives-dev@googlegroups.com](mailto:perspectives-dev@googlegroups.com)
+
+You can file bugs and send pull requests through GitHub:
+* https://github.com/danwent/Perspectives
+
+## Development
+
+This README explains how to work with Perspectives code.
+
+### Requirements
 * a POSIX command line environment
 * make
 * zip
@@ -14,13 +27,17 @@ Requirements:
 Optional (but strongly recommended!):
 * python and the python 'lxml' library (to run the build tests)
 
+### Building
+To build, just type ```make``` (assuming of course you have make installed!). This will create a file called 'Perspectives.xpi'.
 
-To build, just type "make" (assuming of course you have make installed!). This will create a file called 'Perspectives.xpi'.
+###Installing local builds
+You can install Perspectives in Firefox in many ways:
 
-You can run Perspectives in Firefox using *Menu -> Add-ons -> Extensions -> (Tools icon) -> Install Add-On From File* and opening the ```Perspectives.xpi``` file.
+* Using *Menu -> Add-ons -> Extensions -> (Tools icon) -> Install Add-On From File* and opening the ```Perspectives.xpi``` file.
+* Drag ```Perspectives.xpi``` into your browser
+* Use ```make install-fx``` from the command line to build and install in a single step. This assumes Firefox exists in your path.
 
-Or use 'make install-fx' to build and install in a single step. This assumes Firefox exists in your path.
-
+###Debugging
 To debug the extension:
 
 * Download the latest [Firefox](https://www.mozilla.org/firefox/).
@@ -45,27 +62,18 @@ To debug the extension:
   * Use the ```debugger``` keyword in Javascript to make the debugger automatically jump to the file and codeline. You need to have "Browser Toolbox" already open though!
   * You can also move the *Developer menu* into the toolbar to skip one menu step.
 
-## TESTING
+## Testing
 
 To test Perspectives:
 
-* Use 'make test' to build Perspectives.xpi, or 'make test install-fx' to build and install all in one step (this assumes Firefox exists in your path).
+* Use ```make test``` to build Perspectives.xpi, or ```make test install-fx``` to build and install all in one step (this assumes Firefox exists in your path).
 * Install the plugin and restart the browser.
-* Open the following URL: [```chrome://perspectives/content/test/test.html```](chrome://perspectives/content/test/test.html)
-* Press the 'Run Tests' button.
+* Open the following URL: [chrome://perspectives/content/test/test.html](chrome://perspectives/content/test/test.html)
+* Press the 'Run Tests' button. Test results will be displayed on the page.
 * Optional: If you want to run the testcases without chrome privileges (i.e. without reinstalling) follow the instruction in [issue #130 - Extract test cases which require no chrome privileges](https://github.com/danwent/Perspectives/issues/130).
+* The file ```test/Manual Test Cases.txt``` has lists of other tests to run through when doing a full test pass.
 
-Test results will be displayed on the page.
-
-Some tests are performed at build time - e.g. checking the localization files for the correct format and contents. All tests of the javascript code are run inside the extension - for security reasons they must be installed along with other extension files.
+Some tests are performed at build time - e.g. checking localization files for the correct format and contents. All tests of the javascript code are run inside the extension - for security reasons they must be installed along with other extension files.
 
 If you have ideas for further tests please let us know!
-
-## CONTACT
-
-You can contact the developers on the Perspectives Dev newsgroup:
-
-[https://groups.google.com/group/perspectives-dev](https://groups.google.com/group/perspectives-dev)
-
-[mailto:perspectives-dev@googlegroups.com](mailto:perspectives-dev@googlegroups.com)
 

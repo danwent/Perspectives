@@ -12,6 +12,41 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.6
+---
++ Add option to contact notaries when in private browsing (off by default)
++ Expose timeout duration and number of query retries as a user preference
++ Expose maximum caching duration as a user preference
++ Improve whitelist interface:
+	* Convert whitelist textfield into a table with columns
+	+ Domain column is sortable
+	+ Regexes can be clicked and edited
+	+ Whitelist entries can be clicked to activate or deactivate
+	+ Table supports multi row selection and removal
+	+ Added localizations (en, de) for columns and remove button
+* Highly visible notifications when certificates fail (multiple certificates, one not recently seen; multiple certificates)
+* Extract remaining hardcoded strings for localization
+* Some German (de) localization fixes
+* Convert some alerts to Perspectives wrapped alerts
+* Prevent the addition of duplicate notaries
+* Correctly detected and set status for "quorum not reached" in non-english languages.
+* Temporarily remove all 'Report Attack' functionality, until the feature is fixed
+* Check if result signature and timestamps are correct when processing notary results, and visually mark as red if either is incorrect
+* Warn on mismatching notary public keys
++ Remove red from color result keys, as it's now used for "invalid signature"
++ Display required quorum duration in notary results
+* Rescue the svg/image test page
++ Convert README to markdown file
++ Add more info in README on how to debug and test
++ Draw stale-limit line across notary results
+* Remove use of base64.js; entirely replaced by internal browser functions
++ Visually indicate cached results in the results dialog
++ Visually indicate whitelisted entries with a different icon
+* Clean up unit tests so many tests are more clear, better organized, and/or easier to maintain
+* Refactor test file so more tests can be run without installing the extension (i.e. separate chrome-dependent functionality from non-chrome-dependent functionality)
+* Many areas of code cleanup (add hasOwnProperty checks; fix === checks)
+
+
 4.5.2
 -----
 * Add SparkMD5 library as external library to provide MD5 hashing functionality (has been removed in Firefox 32)

@@ -13,7 +13,6 @@ UI
 --
 - Each of the Perspectives dialog windows can be opened:
 	- 'View Notary Results'
-	- 'Report Attack'
 	- 'Add to Whitelist'
 	- 'Preferences'
 	- 'View Certificate Store'
@@ -26,19 +25,9 @@ UI
 	- Except 'View Certificate Store', which displays the Firefox icon
 
 
-'Report Attack' tests:
-  Should NOT let you send a report for:
-    - HTTP website
-    - HTTPS website, before Perspectives has finished querying
-    - Invalid URL, such as 'aaa' or blank
-    - file:// URL
-
-  *Should* let you send a report for:
-    - HTTPS website, after Perspectives has finished querying
-
-
 'Add To Whitelist' tests:
-- Try the same page types as above; all non-https pages should be rejected as invalid URLs
+	- Try the same page types as above; all non-https pages should be rejected as invalid URLs
+	- Do whitelisted sites display the Perspectives whitelist icon?
 
 
 'Always ask before contacting Notaries':
@@ -63,6 +52,20 @@ Preferences:
 - Both Quorum Percentage and Duration must be integers
 
 
+Results
+-------
+- Is the 'stale results limit' line drawn vertically in the notary results?
+
+
+Whitelist Preferences
+---------------------
+- Can the user double click a Domain or Regex line to edit that value?
+- Can the user click the Enabled column to enable or disable the whitelist?
+- Can the user click the Domain column to toggle sorting by ascending or descending Domain?
+- Can the user ctrl-click to select multiple rows?
+- Does clicking the Remove button delete all selected rows?
+
+
 Queries
 ---------
 - If we get at least one response and one timeout, we should only send requeries to notaries that have not given a response yet.
@@ -83,3 +86,16 @@ x If the profile/user changes their Toolbar to show Text or Icons and Text, the 
 Invalid Certificates
 --------------------
 - One easy way to test against 'invalid certificates' is to set your clock back before a certificate was issued. This can also generate a SecurityChange event.
+
+
+Private Browsing
+----------------
+	a) For browsers that support "private browsing" mode (e.g. Firefox):
+		- In private mode, if private queries are allowed, do they happen?
+		- In private mode, if private lookups are not allowed, are the not sent?
+			- Does the user see a tooltip message explaining why?
+			- Are they still sent if the user selects 'Force notary check'?
+		- In regular mode, are queries sent regardless of the 'allow' setting?
+
+	b) For browsers that do not support "private browsing" mode (e.g. SeaMonkey):
+		- Are queries sent regardless of the 'allow' setting?

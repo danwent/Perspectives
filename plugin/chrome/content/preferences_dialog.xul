@@ -1,168 +1,218 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://perspectives/content/css/preferences_dialog.css" type="text/css"?>
+
 <!DOCTYPE prefwindow SYSTEM "chrome://perspectives/locale/dialogs.dtd">
 
-<prefwindow id = "perspectives-properties" 
-	title          = "Perspectives &Preferences;"
-	xmlns          = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	buttons        = ","
-	onload         = "Pers_pref.load_preferences()" 
-	ondialogaccept = "return Pers_pref.save_button_clicked();"
+<prefwindow
+    id            ="perspectives-properties"
+	title         ="Perspectives &Preferences;"
+	xmlns         ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	buttons       =","
+	onload        ="Pers_pref.load_preferences();"
+	ondialogaccept="return Pers_pref.save_button_clicked();"
 >
-<prefpane id="perspective-main-prefpane"> 
-<preferences> 
-  <preference 
-    id="quorum-thresh"   
-    name="perspectives.quorum_thresh" 
-    type="int"/>
-  <preference 
-    id="quorum-duration" 
-    name="perspectives.required_duration"
-    type="int"/>
-  <preference 
-    id="security-settings"
-    name="perspectives.security_settings"
-    type="int"/>
-  <preference 
-    id="exception-perm"
-    name="perspectives.exceptions.permanent"
-    type="bool"/>
-  <preference 
-    id="exception-enabled"
-    name="perspectives.exceptions.enabled"
-    type="bool"/>
-  <preference 
-    id="check-good"
-    name="perspectives.check_good_certificates"
-    type="bool"/>
-  <preference 
-    id="require-user-permission"
-    name="perspectives.require_user_permission"
-    type="bool"/>
-  <preference
-    id="show-permission-reminder"
-    name="extensions.perspectives.show_permission_reminder"
-    type="bool"/>
-  <preference 
-    id="whitelist"
-    name="perspectives.whitelist"
-    type="string"/>
-  <preference 
-    id="additional_notary_list"
-    name="perspectives.additional_notary_list"
-    type="string"/>
-  <preference 
-    id="use-default-notary-list"
-    name="perspectives.use_default_notary_list"
-    type="bool"/>
-  <preference 
-    id="enable-default-list-auto-update"
-    name="perspectives.enable_default_list_auto_update"
-    type="bool"/>
-</preferences>
+    <prefpane id="perspective-main-prefpane">
+        <preferences>
+            <preference
+                    id  ="quorum-thresh"
+                    name="perspectives.quorum_thresh"
+                    type="int"/>
+            <preference
+                    id  ="quorum-duration"
+                    name="perspectives.required_duration"
+                    type="int"/>
+            <preference
+                    id  ="query-timeout"
+                    name="extensions.perspectives.query_timeout_ms"
+                    type="int"/>
+            <preference
+                    id  ="query-retries"
+                    name="extensions.perspectives.query_retries"
+                    type="int"/>
+            <preference
+                    id  ="max-cache-age"
+                    name="extensions.perspectives.max_cache_age_sec"
+                    type="int"/>
+            <preference
+                    id  ="security-settings"
+                    name="perspectives.security_settings"
+                    type="int"/>
+            <preference
+                    id  ="exception-perm"
+                    name="perspectives.exceptions.permanent"
+                    type="bool"/>
+            <preference
+                    id  ="exception-enabled"
+                    name="perspectives.exceptions.enabled"
+                    type="bool"/>
+            <preference
+                    id  ="check-good"
+                    name="perspectives.check_good_certificates"
+                    type="bool"/>
+            <preference
+                    id  ="require-user-permission"
+                    name="perspectives.require_user_permission"
+                    type="bool"/>
+            <preference
+                    id  ="show-permission-reminder"
+                    name="extensions.perspectives.show_permission_reminder"
+                    type="bool"/>
+            <preference
+                    id  ="contact-in-private-browsing-mode"
+                    name="extensions.perspectives.contact_in_private_browsing_mode"
+                    type="bool"/>
+            <preference
+                    id  ="additional_notary_list"
+                    name="perspectives.additional_notary_list"
+                    type="string"/>
+            <preference
+                    id  ="use-default-notary-list"
+                    name="perspectives.use_default_notary_list"
+                    type="bool"/>
+            <preference
+                    id  ="enable-default-list-auto-update"
+                    name="perspectives.enable_default_list_auto_update"
+                    type="bool"/>
+        </preferences>
 
-<stringbundleset id="stringbundleset">
-    <stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" />
-</stringbundleset>
+        <stringbundleset id="stringbundleset">
+            <stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" />
+        </stringbundleset>
 
-<tabbox id="tablist"> 
- <tabs> 
-  <tab label="&CertificateValidation;"/>
-  <tab label="&Servers;"/>
- </tabs>
- <tabpanels> 
-  <tabpanel id="securitytab"> 
+        <tabbox id="tablist">
+            <tabs>
+                <tab label="&CertificateValidation;"/>
+                <tab label="&Servers;"/>
+            </tabs>
+            <tabpanels>
+                <tabpanel id="securitytab">
+                    <vbox>
+                        <groupbox>
+                            <caption label="&SecuritySettings;" style="font-weight: bold"/>
+                            <menulist
+                                    id        ="secset"
+                                    preference="security-settings"
+                                    oncommand ="Pers_pref.security_class_change();">
+                                <menupopup>
+                                    <menuitem label="&HighSecurity;"        value= "2"/>
+                                    <menuitem label="&MediumSecurity;"      value= "1"/>
+                                    <menuitem label="&HighAvailability;"    value= "0"/>
+                                    <menuitem label="&ManualConfiguration;" value="-1"/>
+                                </menupopup>
+                            </menulist>
+                            <hbox align="right">
+                                <label value="&Percentageofnotariesthatmustagree;"/>
+                                <spacer flex="1"/>
+                                <textbox type="number" preference="quorum-thresh" id="quorum-thresh-text" size="4"/>
+                            </hbox>
+                            <hbox align="right">
+                                <label value="&Lengthoftimequorummustbeachieved;"/>
+                                <spacer flex="1"/>
+                                <textbox type="number" preference="quorum-duration" id="quorum-duration-text" size="4"/>
+                            </hbox>
+                            <hbox align="right">
+                                <label value="&QueryTimeout;"/>
+                                <spacer flex="1"/>
+                                <textbox type="number" preference="query-timeout" id="query-timeout-text" size="4"/>
+                            </hbox>
+                            <hbox align="right">
+                                <label value="&QueryRetries;"/>
+                                <spacer flex="1"/>
+                                <textbox type="number" preference="query-retries" id="query-retries-text" size="4"/>
+                            </hbox>
+                            <hbox align="right">
+                                <label value="&MaxCacheAge;"/>
+                                <spacer flex="1"/>
+                                <textbox type="number" preference="max-cache-age" id="max-cache-age-text" size="4"/>
+                            </hbox>
+                        </groupbox>
+                        <groupbox>
+                            <caption label="&OverridingFirefoxSecurityErrors;" style="font-weight: bold"/>
+                            <checkbox label     ="&AllowPerspectivestoautomaticallyoverridesecurityerrors;"
+                                      preference="exception-enabled"/>
+                            <checkbox label     ="&PermanentlytrustcertificatesvalidatedbyPerspectives;"
+                                      preference="exception-perm"/>
+                            <label value="&AutoTrust;:"/>
+                            <tree id="whitelist" rows="10" seltype="multiple" editable="true" hidecolumnpicker="true">
+                                <treecols>
+                                    <!-- Why is the ascending sortDirectionIndicator looking down? => use descending -->
+                                    <treecol id="domain"     label="Domain"  flex="1"        sortDirection="descending"/>
+                                    <treecol id="host_regex" label="Regex"   flex="2"        editable="true"/>
+                                    <treecol id="enabled"    label="Enabled" type="checkbox" editable="true"/>
+                                </treecols>
 
-  <vbox>
-  <groupbox > 
-    <caption label="&SecuritySettings;" style="font-weight: bold"/>
-    <menulist id="secset"  
-      preference = "security-settings"
-      oncommand  = "Pers_pref.security_class_change()"> 
-      <menupopup>
-      <menuitem label="&HighSecurity;"        value="2"/> 
-      <menuitem label="&MediumSecurity;"      value="1"/>
-      <menuitem label="&HighAvailability;"    value="0"/>
-      <menuitem label="&ManualConfiguration;" value="-1"/>
-      </menupopup> 
-    </menulist>
-    <hbox align="right">
-      <label value="&Percentageofnotariesthatmustagree;"/>
-      <spacer flex="1"/>
-      <textbox preference="quorum-thresh" id="quorum-thresh-text" size="4"/>
-    </hbox>
-    <hbox align="right">
-      <label value="&Lengthoftimequorummustbeachieved;"/>
-      <spacer flex="1"/>
-      <textbox preference="quorum-duration" id="quorum-duration-text" size="4" />
-    </hbox> 
-  </groupbox> 
-  <groupbox>
-    <caption  label="&OverridingFirefoxSecurityErrors;" style="font-weight: bold"/>
-    <checkbox label="&AllowPerspectivestoautomaticallyoverridesecurityerrors;" 
-      preference="exception-enabled"/>
-    <checkbox label="&PermanentlytrustcertificatesvalidatedbyPerspectives;" 
-      preference="exception-perm"/>
-     <label value="&AutoTrust;:" />
-      <textbox preference="whitelist" id="whitelist" size="40" />
-  </groupbox>
+                                <treechildren/>
+                            </tree>
+                            <hbox>
+                                <spacer flex="1"/>
+                                <button label="&AutoTrustRemove;" onclick="Pers_pref.whitelist_treeView.removeSelected();"/>
+                            </hbox>
+                        </groupbox>
+                    </vbox>
+                    <spacer flex="1"/>
+                </tabpanel>
 
-  </vbox>
-  <spacer flex="1"/>
-</tabpanel>
+                <tabpanel id="notarytab">
+                    <vbox flex="1">
+                        <groupbox>
+                            <caption label="&WhentoContactNotaries;" style="font-weight: bold"/>
+                            <radiogroup preference="check-good">
+                                <radio label="&ContactNotariesforallHTTPSsites;" value="true"/>
+                                <radio label="&ContactNotariesonlywhenawebsitescertificatecausesasecurityerror;" value="false"/>
+                            </radiogroup>
+                            <checkbox
+                                    id        ="require-user-permission-checkbox"
+                                    label     ="&AlwaysasktheuserbeforecontactingNotaries;"
+                                    preference="require-user-permission"
+                                    oncommand ="Pers_pref.disable_reminder_box();"/>
+                            <hbox>
+                                <!-- just use a blank label to indent the sub-checkbox,
+                                     so it's obvious that it belongs to the parent -->
+                                <label value="   "/>
+                                <checkbox
+                                        id        ="show-permission-reminder-checkbox"
+                                        label     ="&DisplayPermissionReminder;"
+                                        preference="show-permission-reminder"/>
+                            </hbox>
+                            <hbox>
+                                <checkbox
+                                        id        ="contact-in-private-browsing-mode-checkbox"
+                                        label     ="&ContactNotariesInPrivateBrowsingMode;"
+                                        preference="contact-in-private-browsing-mode"/>
+                            </hbox>
+                        </groupbox>
 
-<tabpanel id="notarytab"> 
+                        <groupbox>
+                            <caption label="&DefaultNotaryServers;" style="font-weight: bold"/>
+                            <!-- make textboxes wide enough to hold default key formatting -->
+                            <textbox
+                                    id       ="default_notary_list"
+                                    multiline="true"
+                                    style    ="width: 85ex; height: 25ex; color: grey;" readonly="true" flex="1"/>
+                            <checkbox label="&UseDefaultNotaries;" preference="use-default-notary-list"/>
+                            <!-- <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()" id="enable_default_list_auto_update" preference="enable-default-list-auto-update"/> -->
+                        </groupbox>
+                        <groupbox>
+                            <caption label="&AdditionalNotaryServers;" style="font-weight: bold"/>
+                            <textbox
+                                    id        ="additional_notary_list"
+                                    multiline ="true"
+                                    style     ="width: 85ex; height: 25ex;"
+                                    preference="additional_notary_list" flex="1"/>
+                        </groupbox>
+                    </vbox>
 
-<vbox flex="1">
-  <groupbox>
-    <caption label="&WhentoContactNotaries;" style="font-weight: bold"/>
-    <radiogroup preference="check-good">
-      <radio label="&ContactNotariesforallHTTPSsites;" value="true"/>
-     <radio label="&ContactNotariesonlywhenawebsitescertificatecausesasecurityerror;" value="false"/>
-    </radiogroup>
-     <checkbox id="require-user-permission-checkbox"
-        label="&AlwaysasktheuserbeforecontactingNotaries;"
-        preference="require-user-permission"
-        oncommand="Pers_pref.disable_reminder_box()"/>
+                </tabpanel>
+            </tabpanels>
+        </tabbox>
         <hbox>
-          <!-- just use a blank label to indent the sub-checkbox,
-          so it's obvious that it belongs to the parent -->
-          <label value="   "/>
-          <checkbox id="show-permission-reminder-checkbox"
-            label="&DisplayPermissionReminder;"
-            preference="show-permission-reminder"/>
+            <!-- For consistency, always put Cancel to the right of the action button -->
+            <button label="&OK;"     onclick="acceptDialog();"/>
+            <button label="&Cancel;" onclick="window.close();"/>
         </hbox>
-  </groupbox>
+    </prefpane>
 
-  <groupbox> 
-    <caption label="&DefaultNotaryServers;" style="font-weight: bold"/>
-    <!-- make textboxes wide enough to hold default key formatting -->
-    <textbox id="default_notary_list" multiline="true"
-      style="width: 85ex; height: 25ex; color: grey;" readonly="true" flex="1"/>
-    <checkbox label="&UseDefaultNotaries;" preference="use-default-notary-list"/>
-<!--    <checkbox label="Enabled auto-update for default list." oncommand="Pers_pref.auto_update_changed()" 
-	       id="enable_default_list_auto_update" preference="enable-default-list-auto-update"/>
--->
-  </groupbox> 
-  <groupbox> 
-    <caption label="&AdditionalNotaryServers;" style="font-weight: bold"/>
-    <textbox id="additional_notary_list" multiline="true" style="width: 85ex; height: 25ex;" preference="additional_notary_list" flex="1" />
-  </groupbox> 
-</vbox> 
-
-</tabpanel> 
-</tabpanels> 
-</tabbox> 
-<hbox> 
-  <!-- For consistency, always put Cancel to the right of the action button -->
-  <button label = "&OK;" onclick="acceptDialog()"/>
-  <button label = "&Cancel;" onclick="window.close();"/>
-</hbox>
-
-</prefpane>
-
-<script type="application/x-javascript" src="base64.js"/>
-<script type="application/x-javascript" src="common.js"/>
-<script type="application/x-javascript" src="preferences_dialog.js"/>
-
-</prefwindow> 
+    <script type="application/x-javascript" src="preferences_dialog.js"></script>
+    <script type="application/x-javascript" src="common.js"            ></script>
+</prefwindow>

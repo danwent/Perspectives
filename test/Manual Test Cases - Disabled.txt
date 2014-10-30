@@ -1,0 +1,22 @@
+The features or functions listed here are currently disabled. You do not need to run these tests (and probably can't without some local editing). Tests are kept here so they are not lost. They can be moved back to the main Manual Tests document once the features are re-activated.
+
+
+Report Attack
+--------------
+- Should NOT let you send a report for:
+    - HTTP website
+    - HTTPS website, before Perspectives has finished querying
+    - Invalid URL, such as 'aaa' or blank
+    - file:// URL
+
+- *Should* let you send a report for:
+    - HTTPS website, after Perspectives has finished querying
+
+Distrust All Notaries
+---------------------
+- Does clicking the option open a prompt that warns the user?
+- If the user cancels, does nothing happen?
+- If the entered phrase doesn't match, is a message displayed and the distrust cancelled?
+- If there is an error, do we display it and abort the distrust?
+- If the phrase does match, are certs distrusted?
+	- Does the user see a message stating the number of certs that were distrusted?

@@ -11,7 +11,12 @@
 <!ENTITY HighAvailability "Alta Disponibilidad">
 <!ENTITY ManualConfiguration "Configuración Manual">
 <!ENTITY Percentageofnotariesthatmustagree "Porcentage de notarías que deben estar de acuerdo (porcentage de quórum): ">
-<!ENTITY Lengthoftimequorummustbeachieved "Días requeridos de acuerdo contínuo (duración de quórum): ">
+<!ENTITY Lengthoftimequorummustbeachieved  "Días requeridos de acuerdo contínuo (duración de quórum): "                >
+<!-- TODO translate -->
+<!ENTITY QueryTimeout                      "Timeout for querying notaries (in milliseconds): " >
+<!ENTITY QueryRetries                      "Number of retries if a timeout has exceeded: "     >
+<!ENTITY MaxCacheAge                       "Cache duration for notary results (in seconds):"   >
+<!-- -->
 <!ENTITY OverridingFirefoxSecurityErrors "Reemplazando los errores de seguridad de Firefox">
 <!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Permitir que Perspectives reemplaze automáticamente los errores de seguridad">
 <!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Aceptar permanentemente los certificados validados por Perspectives">
@@ -19,6 +24,9 @@
 <!ENTITY ContactNotariesforallHTTPSsites "Contactar a las Notarías para todos los sitios HTTPS">
 <!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Contactar a las Notarías solamente cuando el certificado de un sitio web ocasione errores de seguridad">
 <!ENTITY AlwaysasktheuserbeforecontactingNotaries "Preguntar siempre antes de contactar a las Notarías">
+<!-- TODO translate -->
+<!ENTITY ContactNotariesInPrivateBrowsingMode "Allow contacting notaries when in private browsing mode.">
+<!-- -->
 <!ENTITY Certificates "Certificados">
 <!ENTITY Servers "Servidores de Notarías">
 <!ENTITY Help "Ayuda">
@@ -39,7 +47,13 @@
 <!ENTITY SubmitReport "Mandar Reporte">
 <!ENTITY DetailedInformation "Información Detallada">
 <!ENTITY CertificateValidation "Validación de Certificado">
-<!ENTITY AutoTrust "Confiar automáticamente en los certificados de los siguientes sitios">
+<!ENTITY AutoTrust        "Confiar automáticamente en los certificados de los siguientes sitios">
+<!-- TODO translate -->
+<!ENTITY AutoTrustDomain  "Domain">
+<!ENTITY AutoTrustRegex   "Regex">
+<!ENTITY AutoTrustEnabled "Enabled">
+<!ENTITY AutoTrustRemove  "Remove">
+<!-- -->
 <!ENTITY DefaultNotaryServers "Servidores de Notaría por Default">
 <!ENTITY UseDefaultNotaries "Usar la lista de servidores de notaría por default">
 <!ENTITY AdditionalNotaryServers "Servidores de Notaría Adicionales">
@@ -47,6 +61,7 @@
 <!ENTITY ReportAttack "Reportar Ataque">
 <!ENTITY ViewCertificateStore "Ver Lista de Certificados">
 <!-- TODO: these new strings need translation -->
+<!ENTITY DistrustAllCertificates "Distrust all certificates...">
 <!ENTITY About "About Perspectives">
 <!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
 <!ENTITY ContributorTitle "Contributors">

@@ -29,7 +29,6 @@ var Pers_pref = {
 		// enable or disable the sub-checkbox based on the value of the parent
 		var checked = document.getElementById("require-user-permission-checkbox").checked;
 		document.getElementById("show-permission-reminder-checkbox"        ).disabled = !checked;
-		document.getElementById("contact-in-private-browsing-mode-checkbox").disabled =  checked;
 	},
 
 	menuset: function(qu, du){

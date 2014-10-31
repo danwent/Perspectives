@@ -491,9 +491,9 @@ var Perspectives = {
 				Perspectives.strbundle = document.getElementById("notary_strings");
 			}
 
-			var server_result_list = ti.partial_query_results; 
-			delete ti.partial_query_results; 
-			delete ti.timeout_id; 
+			var server_result_list = ti.partial_query_results;
+			delete ti.partial_query_results;
+			delete ti.timeout_id;
 
 			var test_key;
 			if (ti.cert["md5Fingerprint"] !== undefined) {
@@ -526,11 +526,18 @@ var Perspectives = {
 				obs_text += "\nNotary: " + server_result_list[i].server + "\n";
 				obs_text += Pers_xml.resultToString(server_result_list[i]);
 			}
-			var qd_str = is_cur_consistent
-				? (qd_days > 5 || qd_days === 0
-					? Math.round(qd_days)
-					: qd_days.toFixed(1)) + " days"
-				: "none";
+			var qd_str = "none";
+			if (is_cur_consistent)
+			{
+				if (qd_days > 5 || qd_days === 0)
+				{
+					qd_str = Math.round(qd_days) + " days";
+				}
+				else
+				{
+					qd_str = qd_days.toFixed(1) + " days";
+				}
+			}
 			var str = Perspectives.strbundle.getString("notaryLookupFor") +
 				": " + ti.service_id + "\n";
 				str += Perspectives.strbundle.getString("LegendBrowsersKey") +
@@ -622,7 +629,7 @@ var Perspectives = {
 			ti.reason_str = text;
 			return;
 		}
-  
+
 		var md5;
 		if (ti.cert["md5Fingerprint"] !== undefined) {
 			// use the built-in browser hash if available

@@ -46,9 +46,8 @@
           <menuseparator/>
           <menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
 		  <menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
-		  <!-- TODO enable once all strings have been localized
+      <menuseparator/>
 		  <menuitem label="&About;" oncommand="Pers_statusbar.open_about_dialog()"/>
-		  -->
 		</menupopup>
 	</toolbarbutton>
  </toolbarpalette>
@@ -70,9 +69,8 @@
                 <menuseparator/>
                 <menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
       			<menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
-      			<!-- TODO enable once all strings have been localized
+            <menuseparator/>
       			<menuitem label="&About;" oncommand="Pers_statusbar.open_about_dialog()"/>
-      			-->
 		</menupopup>
 	</menu>
  </menupopup>
@@ -94,9 +92,8 @@
                 <menuseparator/>
                 <menuitem label="&Preferences;"             oncommand="Pers_statusbar.open_preferences_dialog()"    />
       			<menuitem label="&Help;"                    oncommand="Pers_statusbar.openHelp()"                   />
-      			<!-- TODO enable once all strings have been localized
+            <menuseparator/>
       			<menuitem label="&About;" oncommand="Pers_statusbar.open_about_dialog()"/>
-      			-->
 		</menupopup>
 	</menu>
  </popup>

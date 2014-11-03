@@ -57,7 +57,7 @@
 <!ENTITY ViewCertificateStore "View Certificate Store">
 <!ENTITY DistrustAllCertificates "Distrust all certificates...">
 <!ENTITY About "About Perspectives">
-<!ENTITY AboutMainCredit "Perspectives Client - Firefox Extension, by Dan Wendlandt">
+<!ENTITY AboutMainCredit "Perspectives Browser Client, by Dan Wendlandt">
 <!ENTITY ContributorTitle "Contributors">
 <!ENTITY ContributorSubTitle "(listed alphabetically by last name)">
 <!ENTITY ContributorText "Many thanks to the following people who contributed bug reports, documentation, code patches, and/or ideas">

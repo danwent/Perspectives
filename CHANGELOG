@@ -12,6 +12,18 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+NEXT
+----
+* Fill in CHANGELOG history from versions before 4.3
++ Update checkloc library: new test to check string substitutions inside .properties files
+* Fix incorrect string substitution in zh-CN localization (caught by the new checkloc test)
+* Move all exteral libraries to a clear 'extlib' folder; denote licenses
+* Remove unused preference 'perspectives.svg'
++ Add Perspectives logo image to help page
+* Convert translation file to markdown format
++ Unlock the 'About' dialog
+
+
 4.6
 ---
 + Add option to contact notaries when in private browsing (off by default)
@@ -30,7 +42,7 @@ We attempt to use meaningful version numbers, following semver.org:
 * Convert some alerts to Perspectives wrapped alerts
 * Prevent the addition of duplicate notaries
 * Correctly detected and set status for "quorum not reached" in non-english languages.
-* Temporarily remove all 'Report Attack' functionality, until the feature is fixed
+X Temporarily remove all 'Report Attack' functionality, until the feature is fixed
 * Check if result signature and timestamps are correct when processing notary results, and visually mark as red if either is incorrect
 * Warn on mismatching notary public keys
 + Remove red from color result keys, as it's now used for "invalid signature"
@@ -45,11 +57,14 @@ We attempt to use meaningful version numbers, following semver.org:
 * Clean up unit tests so many tests are more clear, better organized, and/or easier to maintain
 * Refactor test file so more tests can be run without installing the extension (i.e. separate chrome-dependent functionality from non-chrome-dependent functionality)
 * Many areas of code cleanup (add hasOwnProperty checks; fix === checks)
+* Remove dead statusbar elements
+* Remove unused function loadNotaryListFromURI()
 
 
 4.5.2
 -----
 * Add SparkMD5 library as external library to provide MD5 hashing functionality (has been removed in Firefox 32)
+* Strip away copyrighted ICC profile from images (thanks David P!)
 
 
 4.5.1
@@ -168,3 +183,78 @@ X Localization tests temporarily removed so we can ship to patch the security bu
 + ignore blank lines when parsing notaries (GH 42)
 * merge duplicate help pages, copyedit content, and update links
 * add .css stylesheet for help pages; add some basic format/coloring
+
+
+4.2
+---
++ Add toolbar button that can be placed anywhere
+
+
+4.1.1
+-----
+* Fix spelling/grammar issues (thanks David L!)
+* Add license and copyright info to each JS file
+* Update COPYING license file to GPL3, to match source code headers
++ Split preferences into two tabs
++ Add ability to specify additional notaries
++ Add ability to enable/disable default notaries
+
+
+4.1
+---
++ Add Perspectives sub-menu to Firefox tools menu and browser context menu
+* Prevent firefox from showing the spinning icon when accessing pages like about:blank (GH 22)
++ Change timeout behavior so that the individual query timeout is shorter, but we requery the notary multiple times
+* Don't show more than one decimal place for quorum duration
+* Fix bug: Do not mark replies as inconsistent if a notary has only seen one key for a site
+* Fix some bugs with whitelisting
+* Improve whitelist functionality for IP addresses
+* Prevent showing the same banner multiple times in a row
+* Correctly show the progress icon when a check is explicitly requested
+* Fix typos in comments and help file (thanks David L!)
+* Fix exception thrown when URL bar accesses a 'file' URL (GH 8)
+* Do not query on mixed content pages when the certificate is already trusted
+* Correctly declare STATE_QUERY
+
+
+4.0
+---
++ Now published on addons.mozilla.org!
++ Add SeaMonkey support (thanks Igor!)
++ Add whitelist functionality
+* Update default settings to query notary servers for all https websites
+* Fix undefined reference to STATE_STOP
+
+
+3.3
+-----
+* Fix Perspectives to work on Firefox 4.0
++ Add basic functionality for reporting attacks
+* Fix results dialog formatting that was truncating messages
+* Override Firefox security error even if insecure embedded content is included
+
+
+3.2
+---
++ Expire cached notary data after a user-configurable period (default 10,000 seconds)
++ Implement 'weak consistency' to validate keys for sites that consistently use many different certificates
++ Add GPL 2 license file
+
+
+3.1
+---
++ Add menu option to force a query; useful if you only periodically want to contact notaries, or to refresh results (thanks Ryan!)
++ Show spinner icon when Perspectives is querying notaries
++ Always show the browser key in the notary results graph
+* Make sure we cannot count multiple replies from the same notary
+* Remove old, hardcoded whitelist functionality
+* Stop using Mozilla DNS interface to query each DNS address (this leaked DNS info)
+* Fix bug where Perspectives gets stuck in the 'Connecting...' status
+* Don't show the green checkmark if HTTPS page includes insecure content
+* Fix bug that grabbed certificate information too early, sometimes showing the cert of the previous site
+* Fix tooltip typo
+
+
+Earlier
+-------
+Unknown

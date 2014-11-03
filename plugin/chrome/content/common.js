@@ -309,7 +309,7 @@ var Pers_keypress = {
         if (key) {
 
             // let the Esc key close the window
-            if (key == Pers_keypress.ESC_KEYCODE) {
+            if (key === Pers_keypress.ESC_KEYCODE) {
                 window.close();
             }
         }

@@ -4,7 +4,7 @@
 *Perspectives* is a browser extension that helps to verify whether your connection to any web site really is secure. It does this by checking the connection *certificate* with multiple observers hosted around the world. For more information see: [http://www.perspectives-project.org](http://www.perspectives-project.org).
 
 ## Install
-You can install Perspectives for Firefox and SeaMonkey at [addons.mozilla.org](https://addons.mozilla.org/en-US/firefox/addon/perspectives/). Future support for other browsers is also planned.
+You can install Perspectives for [Firefox](https://addons.mozilla.org/en-US/firefox/addon/perspectives/) or [SeaMonkey](https://addons.mozilla.org/en-US/seamonkey/addon/perspectives/) at addons.mozilla.org. Future support for other browsers is also planned.
 
 ## Contact
 You can contact the developers or post questions for discussion on the Perspectives Dev newsgroup:
@@ -15,7 +15,11 @@ You can contact the developers or post questions for discussion on the Perspecti
 You can file bugs and send pull requests through GitHub:
 * https://github.com/danwent/Perspectives
 
-## Development
+## Translate
+
+We warmly welcome anyone willing to help translate Perspectives. Please see the [translation doc for instructions](TRANSLATING.md).
+
+## Develop
 
 This README explains how to work with Perspectives code.
 
@@ -62,7 +66,7 @@ To debug the extension:
   * Use the ```debugger``` keyword in Javascript to make the debugger automatically jump to the file and codeline. You need to have "Browser Toolbox" already open though!
   * You can also move the *Developer menu* into the toolbar to skip one menu step.
 
-## Testing
+## Test
 
 To test Perspectives:
 

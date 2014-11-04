@@ -271,6 +271,8 @@ function client_sanity() {
 
     assert_setup(short_start <= short_end, "Short keys start before they end.");
     assert_setup(old_start <= old_end, "Old keys start before they end.");
+
+    spacer("weakly seen results");
     var weakly_seen0 = Pers_client_policy.key_weakly_seen_by_quorum(key, short_result_list, 1, -10);
     assert(weakly_seen0 === false, "Negative Check lengths can't be weakly seen");
 
@@ -303,6 +305,61 @@ function client_sanity() {
     assert_setup(check_length3 === days_last_seen , "check length === ending day of observation.");
     weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key, second_result_list, 2, check_length3);
     assert(weakly_seen_test === true        , "Keys seen by quorum_size notaries exactly in the past X days DO count as weakly seen.");
+
+    spacer("inconsistent results");
+    var key2 = "b1:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:11";
+    var third_result_list = [
+        { "server": "test1:8080",
+            "obs": [
+                { "key": key,
+                    "timestamps": [
+                        { "start": old_start, "end": old_end  }
+                    ] },
+                { "key": key2,
+                    "timestamps": [
+                        { "start": old_start, "end": old_end  }
+                    ] },
+            ]
+        }
+    ];
+
+    var check_length = 10;
+    var regular_max = 8;
+    var big_max = 12;
+    var empty_result_list = [];
+
+    assert_setup(big_max > check_length, "big_max is greater than check length");
+    assert_setup(regular_max < check_length, "regular_max is less than check length");
+
+    var is_inconsistent0 = Pers_client_policy.inconsistency_check(empty_result_list, regular_max, big_max);
+    assert(is_inconsistent0 === false, "Empty result lists are not inconsistent.");
+
+    var is_inconsistent1 = Pers_client_policy.inconsistency_check(third_result_list, big_max, check_length);
+    assert(is_inconsistent1 === false, "Max timespan cannot be greater than check length.");
+
+    assert_setup(third_result_list[0].obs.length > 1, "Result set has more than one observation.");
+    var is_inconsistent2 = Pers_client_policy.inconsistency_check(third_result_list, regular_max, check_length);
+    assert(is_inconsistent2 === true, "Results are marked inconsistent if there was no timespan longer than 'max_timespan' in the last 'check_length' days.");
+
+    var valid_duration = duration - 1;
+    assert_setup(valid_duration < check_length, "duration < check_length");
+    var is_inconsistent3 = Pers_client_policy.inconsistency_check(third_result_list, valid_duration, check_length);
+    assert(is_inconsistent3 === false, "Same results are *not* inconsistent if timespan is shortened. At least one timespan longer than max in the past check length days.");
+
+    // hacky deep-copy of the array, so we don't modify the original data.
+    // we're not very worried about speed, since this is a test.
+    var single_result_list = JSON.parse(JSON.stringify(third_result_list));
+    var len_before = single_result_list[0].obs.length;
+    single_result_list[0].obs.splice(1,1);
+    var len_after = single_result_list[0].obs.length;
+
+    assert_setup(len_before === (len_after + 1), "observation removed from results");
+    assert_setup(len_after === 1, "only a single observation in results");
+    assert_setup(third_result_list[0].obs.length === len_before, "original data was not modified.");
+
+    var is_inconsistent4 = Pers_client_policy.inconsistency_check(single_result_list, regular_max, check_length);
+    assert(is_inconsistent4 === false, "False if there was no timespan longer than 'max_timespan' in the last 'check_length' days BUT only one key total in the replies.");
+
 }
 
 function nonrouted_ips() {

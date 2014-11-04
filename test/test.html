@@ -392,6 +392,9 @@ function quorum_basics() {
 
     var quorum_duration = 0;
 
+    assert_setup(key_end_time > 0, "key_end_time > 0");
+    assert_setup(key_end_time > key_beg_time, "key_end_time >  key_beg_time");
+
     quorum_duration = Pers_client_policy.get_quorum_duration(key1, server_result_list, 2, max_stale_sec, cur_time);
     assert(quorum_duration === cur_time - key_beg_time + 1  , "Requiring larger quorum gives a shorter duration");
 
@@ -607,6 +610,8 @@ function quorum_basics() {
         }
     ];
 
+    assert_setup(short_end >= short_start, "short key ends after it begins ");
+
     // place cur_time within the 'valid range' cutoff
     cur_time      =   1 * DAY_SECS;
     max_stale_sec = 200;
@@ -758,6 +763,26 @@ function quorum_oldkey() {
 
     write_string("Starting oldkey quorum tests...");
     var quorum_duration = 0;
+
+    assert_setup(results_oldkey[0].obs[0].timestamps[0].end >=
+     results_oldkey[0].obs[0].timestamps[0].start,
+       "oldkey ends after it starts");
+
+    assert_setup(results_oldkey_notpushed[0].obs[0].timestamps[0].end >=
+       results_oldkey_notpushed[0].obs[0].timestamps[0].start,
+       "results_oldkey_notpushed 0 ends after it starts");
+
+    assert_setup(results_oldkey_notpushed[1].obs[0].timestamps[0].end >=
+       results_oldkey_notpushed[1].obs[0].timestamps[0].start,
+       "results_oldkey_notpushed 1 ends after it starts");
+
+     assert_setup(results_oldkey_pushedout[0].obs[0].timestamps[0].end >=
+       results_oldkey_pushedout[0].obs[0].timestamps[0].start,
+       "results_oldkey_pushedout 0 ends after it starts");
+
+    assert_setup(results_oldkey_pushedout[1].obs[0].timestamps[0].end >=
+       results_oldkey_pushedout[1].obs[0].timestamps[0].start,
+       "results_oldkey_pushedout 1 ends after it starts");
 
     quorum_duration = Pers_client_policy.get_quorum_duration(keybc, results_oldkey, q_required, max_stale_sec, cur_time);
     assert(quorum_duration >= q_duration_required    , "1) Old key within duration accepted");

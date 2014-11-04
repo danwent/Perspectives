@@ -122,6 +122,20 @@ function assert(test, case_name) {
     }
 }
 
+// convenience functions:
+// add an easy way to denote that asserts are intended to verify test setup
+// and test data, to make sure conditions are valid before we test.
+// i.e. these asserts are not intended to directly verify functionality.
+// this is purely a cosmetic difference to make it easier to think about
+// what tests we are writing.
+function assert_setup(test, case_name) {
+    return assert(test, '<span style="color: grey">[test setup]</span> ' + case_name);
+}
+
+function assert_meta(test, case_name) {
+    return assert_setup(test, case_name);
+}
+
 // make it easy to print error strings
 function error(str) {
     write_string('<b style="color: red">ERROR:</b>' + str);
@@ -255,8 +269,8 @@ function client_sanity() {
         }
     ];
 
-    assert(short_start <= short_end, "(meta) Short keys start before they end.");
-    assert(old_start <= old_end, "(meta) Old keys start before they end.");
+    assert_setup(short_start <= short_end, "Short keys start before they end.");
+    assert_setup(old_start <= old_end, "Old keys start before they end.");
     var weakly_seen0 = Pers_client_policy.key_weakly_seen_by_quorum(key, short_result_list, 1, -10);
     assert(weakly_seen0 === false, "Negative Check lengths can't be weakly seen");
 
@@ -271,22 +285,22 @@ function client_sanity() {
     assert(weakly_seen3 === false, "Quorum size 0 can't be weakly seen");
 
     var check_length0 = days_last_seen + 1; //days
-    assert(check_length0 >= days_last_seen  , "(meta) Test setup: check length >= ending day of observation.");
+    assert_setup(check_length0 >= days_last_seen  , "check length >= ending day of observation.");
     var weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key, second_result_list, 3, check_length0);
     assert(weakly_seen_test === false       , "Keys seen but by fewer than quorum_size notaries do not count as weakly seen.");
 
     var check_length1 = days_last_seen - 1; //days
-    assert(check_length1 <= days_last_seen  , "(meta) Test setup: check length <= ending day of observation.");
+    assert_setup(check_length1 <= days_last_seen  , "check length <= ending day of observation.");
     weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key, second_result_list, 2, check_length1);
     assert(weakly_seen_test === false       , "Keys seen by quorum_size notaries but not in the past X days do not count as weakly seen.");
 
     var check_length2 = days_last_seen + 1; //days
-    assert(check_length2 >= days_last_seen  , "(meta) Test setup: check length >= ending day of observation.");
+    assert_setup(check_length2 >= days_last_seen  , "check length >= ending day of observation.");
     weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key, second_result_list, 2, check_length2);
     assert(weakly_seen_test === true        , "Keys seen by quorum_size notaries AND in the past X days DO count as weakly seen.");
 
     var check_length3 = days_last_seen; //days
-    assert(check_length3 === days_last_seen , "(meta) Test setup: check length === ending day of observation.");
+    assert_setup(check_length3 === days_last_seen , "check length === ending day of observation.");
     weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key, second_result_list, 2, check_length3);
     assert(weakly_seen_test === true        , "Keys seen by quorum_size notaries exactly in the past X days DO count as weakly seen.");
 }
@@ -435,14 +449,14 @@ function quorum_basics() {
     var beg_time_2        = end_time_2 - key2_duration;
     var orig_beg_time_2   = beg_time_2;
 
-    assert(cur_time   >  end_time_1                 , "Gap setup: key1 ends before the current time"       );
-    assert(end_time_1 >  beg_time_1                 , "Gap setup: key1 begins before it ends"              );
-    assert(beg_time_1 >  end_time_2                 , "Gap setup: key2 ends before key1 begins"            );
-    assert(end_time_2 >  beg_time_2                 , "Gap setup: key2 begins before it ends"              );
-    assert(beg_time_2 >= 0                          , "Gap setup: all times are non-negative"              );
-    assert(end_time_1 >  cur_time - max_stale_sec   , "Gap setup: Target key1 ends inside the cutoff limit");
-    assert(end_time_1 - beg_time_1 === key1_duration, "Gap setup: key one lasts " + key1_duration + "."    );
-    assert(end_time_2 - beg_time_2 === key2_duration, "Gap setup: key two lasts " + key2_duration + "."    );
+    assert_setup(cur_time   >  end_time_1                 , "Gap setup: key1 ends before the current time"       );
+    assert_setup(end_time_1 >  beg_time_1                 , "Gap setup: key1 begins before it ends"              );
+    assert_setup(beg_time_1 >  end_time_2                 , "Gap setup: key2 ends before key1 begins"            );
+    assert_setup(end_time_2 >  beg_time_2                 , "Gap setup: key2 begins before it ends"              );
+    assert_setup(beg_time_2 >= 0                          , "Gap setup: all times are non-negative"              );
+    assert_setup(end_time_1 >  cur_time - max_stale_sec   , "Gap setup: Target key1 ends inside the cutoff limit");
+    assert_setup(end_time_1 - beg_time_1 === key1_duration, "Gap setup: key one lasts " + key1_duration + "."    );
+    assert_setup(end_time_2 - beg_time_2 === key2_duration, "Gap setup: key two lasts " + key2_duration + "."    );
 
     var gap_result_list = [
         { "server": "204.255.124.41:8080",
@@ -474,7 +488,7 @@ function quorum_basics() {
     var gap_weakly_seen1      = Pers_client_policy.key_weakly_seen_by_quorum(key1, gap_result_list, 1, weak_check_time_limit);
     assert(gap_weakly_seen1 === true                             , "key is 'weakly seen'");
 
-    assert(end_time_2 > cur_time - max_stale_sec                 , "Gap setup: New target key2 ends inside the cutoff limit");
+    assert_setup(end_time_2 > cur_time - max_stale_sec                 , "Gap setup: New target key2 ends inside the cutoff limit");
     var gap_quorum_duration2 = Pers_client_policy.get_quorum_duration(key2, gap_result_list, 1, max_stale_sec, cur_time);
     // FIXME: assert fails, see above
     assert(gap_quorum_duration2 === end_time_2 - beg_time_2 + 1  , "Target key second: |curtime| .. |other key| .. |current key.. {cutoff} .. |(should be " + (end_time_2 - beg_time_2 + 1) + ", not " + (cur_time - beg_time_2 + 1) + ": got " + gap_quorum_duration2 + ").");
@@ -487,14 +501,14 @@ function quorum_basics() {
     end_time_2 = beg_time_1; // all other variables from above are the same.
     beg_time_2 = end_time_2 - key2_duration;
 
-    assert(cur_time   >   end_time_1                , "Nongap setup: key1 ends before the current time");
-    assert(end_time_1 >   beg_time_1                , "Nongap setup: key1 begins before it ends");
-    assert(beg_time_1 === end_time_2                , "Nongap setup: key2 ends *exactly when* key1 begins");
-    assert(end_time_2 >   beg_time_2                , "Nongap setup: key2 begins before it ends");
-    assert(beg_time_2 >=  0                         , "Nongap setup: all times are non-negative");
-    assert(end_time_1 >   cur_time - max_stale_sec  , "Nongap setup: Target key1 ends inside the cutoff limit");
-    assert(end_time_1 - beg_time_1 === key1_duration, "Nongap setup: key one lasts " + key1_duration + ".");
-    assert(end_time_2 - beg_time_2 === key2_duration, "Nongap setup: key two lasts " + key2_duration + ".");
+    assert_setup(cur_time   >   end_time_1                , "Nongap setup: key1 ends before the current time");
+    assert_setup(end_time_1 >   beg_time_1                , "Nongap setup: key1 begins before it ends");
+    assert_setup(beg_time_1 === end_time_2                , "Nongap setup: key2 ends *exactly when* key1 begins");
+    assert_setup(end_time_2 >   beg_time_2                , "Nongap setup: key2 begins before it ends");
+    assert_setup(beg_time_2 >=  0                         , "Nongap setup: all times are non-negative");
+    assert_setup(end_time_1 >   cur_time - max_stale_sec  , "Nongap setup: Target key1 ends inside the cutoff limit");
+    assert_setup(end_time_1 - beg_time_1 === key1_duration, "Nongap setup: key one lasts " + key1_duration + ".");
+    assert_setup(end_time_2 - beg_time_2 === key2_duration, "Nongap setup: key two lasts " + key2_duration + ".");
 
     var non_gap_result_list = [
         { "server": "204.255.124.41:8080",
@@ -528,7 +542,7 @@ function quorum_basics() {
     assert(nongap_weakly_seen1 === true                           , "key is 'weakly seen'");
     // the important tests - that results with and without gaps are the same.
     assert(nongap_weakly_seen1 === gap_weakly_seen1               , "'weakly seen' result is the same with and without gaps.");
-    assert(end_time_2 > cur_time - max_stale_sec                  , "Nongap setup: New target key2 ends inside the cutoff limit");
+    assert_setup(end_time_2 > cur_time - max_stale_sec                  , "Nongap setup: New target key2 ends inside the cutoff limit");
 
     var nongap_quorum_duration2 = Pers_client_policy.get_quorum_duration(key2, non_gap_result_list, 1, max_stale_sec, cur_time);
     assert(nongap_quorum_duration2 === end_time_2 - beg_time_2 + 1, "Target key second: |curtime| .. |other key||current key.. {cutoff} .. |(should be " + (end_time_2 - beg_time_2 + 1) + ", not " + (cur_time - beg_time_2 + 1) + ": got " + nongap_quorum_duration2 + ").");
@@ -544,7 +558,7 @@ function quorum_basics() {
     end_time_2 = orig_end_time_2;
     beg_time_2 = orig_beg_time_2;
     max_stale_sec = 200;
-    assert(end_time_2 < cur_time - max_stale_sec, "Gap setup: After change, target key2 ends *outside* the cutoff limit");
+    assert_setup(end_time_2 < cur_time - max_stale_sec, "Gap setup: After change, target key2 ends *outside* the cutoff limit");
     quorum_duration = Pers_client_policy.get_quorum_duration(key2, gap_result_list, 1, max_stale_sec, cur_time);
     assert(quorum_duration === -1               , "Results with gaps do not give a duration if they happen after the time cutoff.");
 
@@ -612,7 +626,7 @@ function quorum_basics() {
     assert(quorum_duration === 1               , "A one-second duration within the valid time window is one second (got " + quorum_duration + ").");
 
     cur_time += 1 * DAY_SECS;
-    assert(cur_time - max_stale_sec < short_end, "(meta) Current time for the next test is still within the valid window.");
+    assert_setup(cur_time - max_stale_sec < short_end, "Current time for the next test is still within the valid window.");
     var quorum_duration2 = Pers_client_policy.get_quorum_duration(key1, short_result_list, 1, max_stale_sec, cur_time);
     // FIXME: assert fails, see above
     assert(quorum_duration === quorum_duration2, "Changing the curtime within the valid window doesn't change the duration of the cert observation (got " + quorum_duration2 + ").");
@@ -821,7 +835,7 @@ JaJ2Lw7kRVMCAwEAAQ==\
     var single_notary = Pers_util.loadNotaryListFromString(test_notary_one);
     assert(single_notary.length === 1, "Trying to parse a single notary works.");
 
-    assert(test_notary_one !== test_notary_two, "(meta) test notaries are distinct.");
+    assert_setup(test_notary_one !== test_notary_two, "test notaries are distinct.");
     var distinct_notaries = Pers_util.loadNotaryListFromString(test_notary_one + test_notary_two);
     assert(distinct_notaries.length > 1, "Trying to parse multiple distinct notaries works.");
 

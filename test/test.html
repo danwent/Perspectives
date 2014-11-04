@@ -219,12 +219,13 @@ function client_sanity() {
     var key = "b1:7f:b1:15:25:4e:7b:fb:93:83:ac:5c:26:df:f7:00";
     var curtime = Pers_util.get_unix_time();
     var short_start = curtime - 1;
+    var short_end = curtime;
     var short_result_list = [
         { "server": "test1:8080",
             "obs": [
                 { "key": key,
                     "timestamps": [
-                        { "start": short_start, "end": curtime  }
+                        { "start": short_start, "end": short_end  }
                     ] }
             ]
         }
@@ -232,8 +233,8 @@ function client_sanity() {
 
     var days_last_seen = 3;
     var duration       = 2; // days
-    var old_end   = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen           );
-    var old_start = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen - duration);
+    var old_start = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen);
+    var old_end = Pers_util.get_unix_time() - Pers_util.DAY2SEC(days_last_seen - duration);
 
     var second_result_list = [
         { "server": "test1:8080",
@@ -254,6 +255,8 @@ function client_sanity() {
         }
     ];
 
+    assert(short_start <= short_end, "(meta) Short keys start before they end.");
+    assert(old_start <= old_end, "(meta) Old keys start before they end.");
     var weakly_seen0 = Pers_client_policy.key_weakly_seen_by_quorum(key, short_result_list, 1, -10);
     assert(weakly_seen0 === false, "Negative Check lengths can't be weakly seen");
 

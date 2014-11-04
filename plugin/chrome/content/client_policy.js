@@ -261,6 +261,14 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 // 'max_timespan' in the last 'check_length' days.  Only return 'true' if
 // there is more than one key that has been seen though.
 inconsistency_check : function(results, max_timespan, check_length) {
+
+	if (max_timespan > check_length) {
+		Pers_debug.d_print("error",
+				"Inconsistency check max timespan '" + max_timespan +
+				"' cannot be greater than check length '" + check_length + "'!");
+		return false;
+	}
+
 	var unique_keys = {}; 	
 	for(var i = 0; i < results.length; i++) {
 		for(var j = 0; j < results[i].obs.length; j++) { 

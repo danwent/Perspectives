@@ -307,7 +307,7 @@ function client_sanity() {
 
     var check_length1 = day_last_seen - 1; //days
     assert_setup(check_length1 >= 1, "check length >= 1");
-    assert_setup(check_length1 <= day_last_seen  , "check length <= ending day of observation.");
+    assert_setup(check_length1 < day_last_seen  , "check length < ending day of observation.");
     weakly_seen_test = Pers_client_policy.key_weakly_seen_by_quorum(key, second_result_list, equal_quorum_size, check_length1);
     assert(weakly_seen_test === false       , "Keys seen by quorum_size notaries but not in the past X days do not count as weakly seen.");
 

@@ -248,8 +248,8 @@ function client_sanity() {
     var day_first_seen = 4; // days ago
     var duration       = 2; // days
     var day_last_seen = day_first_seen - duration;
-    var old_start = Pers_util.get_unix_time() - Pers_util.DAY2SEC(day_first_seen);
-    var old_end = Pers_util.get_unix_time() - Pers_util.DAY2SEC(day_last_seen);
+    var old_start = curtime - Pers_util.DAY2SEC(day_first_seen);
+    var old_end = curtime - Pers_util.DAY2SEC(day_last_seen);
 
     var second_result_list = [
         { "server": "test1:8080",

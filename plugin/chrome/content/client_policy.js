@@ -256,10 +256,10 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 	return (seen_count >= quorum_size);
 },
 
-// returns true if 'results' contains replies that are all 'inconsistent', which
-// according to our definition means that there was no timespan longer than
-// 'max_timespan' in the last 'check_length' days.  Only return 'true' if
-// there is more than one key that has been seen though.
+// return true if 'results' contains replies that are all 'inconsistent'.
+// inconsistent means:
+//   1) more than one key has been seen
+//   2) there was no timespan longer than 'max_timespan' in the last 'check_length' days
 inconsistency_check : function(results, max_timespan, check_length) {
 
 	if (max_timespan > check_length) {

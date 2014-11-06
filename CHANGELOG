@@ -22,6 +22,9 @@ NEXT
 + Add Perspectives logo image to help page
 * Convert translation file to markdown format
 + Unlock the 'About' dialog
+* Fix some test data, fix tests, add new tests for client policy code
+* Add a way to distinguish test setup from the tests themselves
+* Add sanity check for inconsistency function so max_timespan cannot be larger than check length
 
 
 4.6

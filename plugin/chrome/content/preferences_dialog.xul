@@ -104,7 +104,8 @@
                             <hbox align="right">
                                 <label value="&Percentageofnotariesthatmustagree;"/>
                                 <spacer flex="1"/>
-                                <textbox type="number" preference="quorum-thresh" id="quorum-thresh-text" size="4"/>
+                                <!-- TODO: link input max/mins to the same variables used by Pers_pref. -->
+                                <textbox type="number" preference="quorum-thresh" id="quorum-thresh-text" size="4" min="1" max="100"/>
                             </hbox>
                             <hbox align="right">
                                 <label value="&Lengthoftimequorummustbeachieved;"/>

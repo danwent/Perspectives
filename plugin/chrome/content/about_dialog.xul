@@ -56,6 +56,10 @@
       value     = ""
       height    = "130"/>
 
+    <hbox>
+      <label id="help-translate" class="hover-link" tooltiptext="&HelpTranslatePerspectives;" onclick="Pers_util.open_url('https://github.com/danwent/Perspectives/blob/master/TRANSLATING.md')">&HelpTranslatePerspectives;</label>
+    </hbox>
+
     <hbox align="right">
         <button id="Close" label="&Close;" onclick="window.close()"/>
     </hbox>

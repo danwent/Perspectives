@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2011 Dave Schaefer
+#   Copyright (C) 2014 Dave Schaefer
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -16,8 +16,10 @@
 
 """
 Validate Mozilla-style localization files to make sure all localizations
-have the same keys in the same places.
+have the same strings in the same places.
+"""
 
+"""
 Current test cases for each localization:
 	- Loc has no extra files
 	- Loc has no missing files
@@ -35,6 +37,7 @@ Current test cases for each localization:
 		1. no % on a line
 		2. double %% to escape and print a regular %
 		3. %S or %n$S , where n is a number, for formatted string replacement.
+	- .properties values use the same count and type of string substitutions across languages
 	- No files contain the Byte Order Marker (BOM)
 
 Unimplemented:
@@ -59,6 +62,13 @@ except ImportError:
 	logging.warning("python lxml library not found; localization tests cannot be run. Please install the python 'lxml' library to run localization tests.")
 	sys.exit(0)
 
+
+# Attempt to version meaningfully, following semver.org:
+# Given a version number MAJOR.MINOR.PATCH, increment the:
+# MAJOR version when you make backwards-incompatible changes,
+# MINOR version when you add functionality in a backwards-compatible manner
+# PATCH version when you make backwards-compatible bug fixes.
+VERSION = "1.1"
 
 # When storing localization strings,
 # use 'filename/keyname' as the hash key, as that's the value
@@ -112,16 +122,15 @@ def _extract_dtd_parse_error_info(err):
 		return "Syntax error starting at Line {0}, Col {1}: {2}\n{3}".format(\
 			line, column, err.message, err.error_log)
 
-def _get_loc_keys(loc_dir):
+def _get_loc_keys(loc_dir, keys, properties_file_subs):
 	"""
 	Read the localization string keys and values from all files in a directory
-	and return them as a dictionary.
+	and populate the appropriate dictionaries.
 
 	This function only reads data from Mozilla-style localization files:
 	XML DTD and .properties files.
 	"""
 	loc_files = []
-	keys = {}
 
 	# we assume that loc directries do not have sub-directories
 	for (root, dirs, files) in os.walk(loc_dir):
@@ -168,14 +177,14 @@ def _get_loc_keys(loc_dir):
 						file_path, _extract_dtd_parse_error_info(ex)))
 
 		elif (file_path.endswith('.properties')):
-			keys = _parse_properties_file(keys, file_path)
+			_parse_properties_file(file_path, keys, properties_file_subs)
 		else:
 			# not neccesarily a failure - there may just be extra files lying around.
 			logging.warning("File {0} is not a .dtd or .properties file. Ignoring.".format(file_path))
 
-	return keys
+	return
 
-def _parse_properties_file(keys, file_path):
+def _parse_properties_file(file_path, keys, subs):
 	"""
 	Extract localization string keys and values from a mozilla-style ".properties" file
 	https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Tutorial/Property_Files
@@ -191,6 +200,7 @@ def _parse_properties_file(keys, file_path):
 		data = re.sub(PROP_COMMENT, '', data)
 		data = re.split(PROP_SEP, data)
 		for line in data:
+			subs_list = [] # list of string substitutions
 			match = PROP_LINE.match(line)
 			if (match):
 				key = file_name + LSEP + match.group(1)
@@ -220,6 +230,7 @@ def _parse_properties_file(keys, file_path):
 						if (x + 1 < len(value)) and value[x+1] == '%':
 							x += 1 # double %% for escape sequence; print actual %
 						elif pmatch:
+							subs_list.append(pmatch.group(1).replace('$', ''))
 							# advance 1 char for the trailing S
 							# plus however many chars make up the numerical reference (if any)
 							x += 1
@@ -235,6 +246,8 @@ def _parse_properties_file(keys, file_path):
 
 					if valid:
 						keys[key] = value
+						subs_list.sort()
+						subs[key] = ''.join(subs_list)
 
 				else:
 					keys[key] = value
@@ -242,8 +255,8 @@ def _parse_properties_file(keys, file_path):
 				_log_error("line '{0}' does not match any patterns for {1}".format(\
 					line, file_path))
 
-		return keys
-
+	return
+			
 
 def validate_loc_files(loc_dir):
 	"""Validate localization contents."""
@@ -252,8 +265,9 @@ def validate_loc_files(loc_dir):
 
 	langs = {}
 	langfiles = {}
-	baseline = {}
-	baseline['files'] = []
+	baseline_files = []
+	baseline_keys = {}
+	baseline_subs = {}
 
 	print "Starting Localization tests..."
 
@@ -279,33 +293,42 @@ def validate_loc_files(loc_dir):
 		raise AssertionError("Base language folder '{0}' was not found in {1}".format(\
 			BASE_LOC, loc_dir))
 
-	baseline['name'] = BASE_LOC
-	baseline['files'].extend(langfiles[baseline['name']])
+	baseline_name = BASE_LOC
+	baseline_files.extend(langfiles[baseline_name])
 	del langs[BASE_LOC] # don't test the baseline localization against itself
+	
+	if (len(baseline_files) < 1):
+		raise AssertionError("Did not find any files in '{0}'!".format(baseline_name))
 
-	if (len(baseline['files']) < 1):
-		raise AssertionError("Did not find any files in '{0}'!".format(baseline['name']))
-
-	baseline['keys'] = _get_loc_keys(os.path.join(loc_dir, baseline['name']))
+	_get_loc_keys(os.path.join(loc_dir, baseline_name), baseline_keys, baseline_subs)
 
 	if (any_errors):
 		return True # error message has already been printed above
 
 	print "{0} keys found in baseline '{1}'.".format(\
-		len(baseline['keys']), baseline['name'])
+		len(baseline_keys), baseline_name)
 
 	for lang in langs:
-		keys = _get_loc_keys(os.path.join(loc_dir, lang))
+		keys = {}
+		subs = {}
+		_get_loc_keys(os.path.join(loc_dir, lang), keys, subs)
 
 		for key in keys:
-			if (key not in baseline['keys']):
+			if (key not in baseline_keys):
 				_log_error("Key '{0}' in '{1}' but not in '{2}'".format(\
-					key, lang, baseline['name']))
+					key, lang, baseline_name))
 
-		for key in baseline['keys']:
+		for key in baseline_keys:
 			if (key not in keys):
 				_log_error("Key '{0}' in '{1}' but not in '{2}'".format(\
-					key, baseline['name'], lang))
+					key, baseline_name, lang))
+
+		# make sure .properties string substitutions match
+		# keys that don't exist in one loc will already have been caught above
+		for key in subs:
+			if subs[key] != baseline_subs[key]:
+				_log_error("String substitution does not match for '{0}' in '{1}' vs '{2}'.\n{1}:{3}\n{2}:{4}".format(\
+					key, lang, baseline_name, subs[key], baseline_subs[key]))
 
 	print "Done!"
 	return any_errors

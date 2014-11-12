@@ -8,17 +8,16 @@
 	<stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" insertbefore="1"/>
  </stringbundleset>
 
- <script type="application/x-javascript" src="extlib/spark-md5.min.js"/>
-
-  <script type="application/x-javascript" src="client_policy.js"/>
-  <script type="application/x-javascript" src="common.js"/>
-  <script type="application/x-javascript" src="generate_svg.js"/>
-  <script type="application/x-javascript" src="notaries.js"/>
-  <script type="application/x-javascript" src="notify.js"/>
-  <script type="application/x-javascript" src="report.js"/>
-  <script type="application/x-javascript" src="statusbar.js"/>
-  <script type="application/x-javascript" src="whitelist_dialog.js"/>
-  <script type="application/x-javascript" src="xml_notary_client.js"/>
+  <script type="application/x-javascript" src="client_policy.js"></script>
+  <script type="application/x-javascript" src="common.js"></script>
+  <script type="application/x-javascript" src="generate_svg.js"></script>
+  <script type="application/x-javascript" src="notaries.js"></script>
+  <script type="application/x-javascript" src="notify.js"></script>
+  <script type="application/x-javascript" src="report.js"></script>
+  <script type="application/x-javascript" src="statusbar.js"></script>
+  <script type="application/x-javascript" src="whitelist_dialog.js"></script>
+  <script type="application/x-javascript" src="xml_notary_client.js"></script>
+  <script type="application/x-javascript" src="extlib/spark-md5.min.js"></script>
 
  <toolbarpalette id="BrowserToolbarPalette">
  	<toolbarbutton 	class="perspective-status"

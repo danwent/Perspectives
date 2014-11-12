@@ -16,51 +16,52 @@
 *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var Perspectives = {
- 	MY_ID: "perspectives@cmu.edu",
-	strbundle : null, // this isn't loaded when things are initialized
+//NOTE: Firefox pre-defines Cc and Ci, but SeaMonkey does not.
+//We create local variables here so SeaMonkey clients don't throw 'variable is not defined' exceptions
+var Cc = Components.classes;
+var Ci = Components.interfaces;
+var Cu = Components.utils;
 
+var Perspectives = {
+	MY_ID: "perspectives@cmu.edu",
+	strbundle: null, // this isn't loaded when things are initialized
 
 	// IP addresses that can't be queried by notary machines
 	// (unless the notary is specifically set up on a private network)
 	// so don't ask about them.
 	// FIXME: these regexes should be less generous
-	nonrouted_ips : [ /^192\.168\./, /^10\./, /^172\.1[6-9]\./,
-			/^172\.2[0-9]\./, /^172\.3[0-1]\./, /^169\.254\./,
-			/^127\.0\.0\.1$/], // could add many more
-
-	// list of objects representing each notary server's name + port and public
-	// key this list is populated by fillNotaryList() based on a file shipped with the
-	// extension
-	all_notaries : [],
+	nonrouted_ips: [/^192\.168\./, /^10\./, /^172\.1[6-9]\./,
+		/^172\.2[0-9]\./, /^172\.3[0-1]\./, /^169\.254\./,
+		/^127\.0\.0\.1$/], // could add many more
 
 	// Data
 
 	// See init_data().
 	// Always call init_data() before working with these variables!
-	root_prefs : null,
-	overrideService : null,
+	root_prefs     : null,
+	overrideService: null,
+	recentSSLStatus : null, // HACK (lambdor): getRecentBadCert has been removed in FF33 thus save here
 
 	/*
-	Note: calls to Components.classes.getService() require special permissions.
-	If we set the value of data properties at object creation time,
-	(i.e. as part of the variable definition statements, above)
-	anything that doesn't have permission, such as an HTML file including
-	notaries.js as a script, will fail and not be able to use this object.
-	Thus, we initialize data properties inside a function instead,
-	so the caller can have control over when that happens
-	and ask for permission beforehand if necessary.
-	This helps to ensure Perspectives can be properly parsed and used
-	in many situations.
-	*/
+	 Note: calls to Cc.getService() require special permissions.
+	 If we set the value of data properties at object creation time,
+	 (i.e. as part of the variable definition statements, above)
+	 anything that doesn't have permission, such as an HTML file including
+	 notaries.js as a script, will fail and not be able to use this object.
+	 Thus, we initialize data properties inside a function instead,
+	 so the caller can have control over when that happens
+	 and ask for permission beforehand if necessary.
+	 This helps to ensure Perspectives can be properly parsed and used
+	 in many situations.
+	 */
 	init_data: function() {
 		var success = true;
 
 		if(Perspectives.root_prefs == null) {
 			var prefstr = "@mozilla.org/preferences-service;1";
-			if(prefstr in Components.classes) {
-				Perspectives.root_prefs = Components.classes[prefstr].
-					getService(Components.interfaces.nsIPrefBranchInternal);
+			if(prefstr in Cc) {
+				Perspectives.root_prefs = Cc[prefstr].
+					getService(Ci.nsIPrefBranchInternal);
 			}
 			else {
 				Pers_debug.d_print("error",
@@ -71,9 +72,9 @@ var Perspectives = {
 
 		if(Perspectives.overrideService == null) {
 			var servstr = "@mozilla.org/security/certoverride;1";
-			if(servstr in Components.classes) {
-				Perspectives.overrideService = Components.classes[servstr].
-					getService(Components.interfaces.nsICertOverrideService);
+			if(servstr in Cc) {
+				Perspectives.overrideService = Cc[servstr].
+					getService(Ci.nsICertOverrideService);
 			}
 			else {
 				Pers_debug.d_print("error",
@@ -86,25 +87,20 @@ var Perspectives = {
 		return success;
 	},
 
-	state : {
-		STATE_IS_BROKEN :
-			Components.interfaces.nsIWebProgressListener.STATE_IS_BROKEN,
-		STATE_IS_INSECURE :
-			Components.interfaces.nsIWebProgressListener.STATE_IS_INSECURE,
-		STATE_IS_SECURE :
-			Components.interfaces.nsIWebProgressListener.STATE_IS_SECURE
+	state: {
+		STATE_IS_BROKEN   : Ci.nsIWebProgressListener.STATE_IS_BROKEN,
+		STATE_IS_INSECURE : Ci.nsIWebProgressListener.STATE_IS_INSECURE,
+		STATE_IS_SECURE   : Ci.nsIWebProgressListener.STATE_IS_SECURE
 	},
 
 	is_nonrouted_ip: function(ip_str) {
-		for(var i = 0; i < Perspectives.nonrouted_ips.length; i++) {
-			if(ip_str.match(Perspectives.nonrouted_ips[i])) {
-				return true;
-			}
-		}
-		return false;
+		return _.any(Perspectives.nonrouted_ips, function(nrip) {
+			return ip_str.match(nrip);
+		});
 	},
 
-	tab_info_cache : {},
+	tab_info_cache: [],
+	redirects     : [],
 
 	//Sets the tooltip and the text of the favicon popup on https sites
 	setFaviconText: function(str) {
@@ -136,38 +132,34 @@ var Perspectives = {
 	// cached result data
 	// FIXME: this should be merged with TabInfo, once TabInfo is made into a
 	// real object
-	SslCert: function(host, port, md5, summary, tooltip, svg, duration, cur_consistent,
-					inconsistent_results,weakly_seen, server_result_list) {
-		this.host     = host;  // now saved with ti, so remove this?
-		this.port     = port;  // now saved with ti, so remove this?
-		this.md5      = md5;
-		this.cur_consistent   = cur_consistent;
+	SslCert: function(md5, summary, svg, duration, cur_consistent, inconsistent_results, weakly_seen, server_result_list) {
+		this.md5                  = md5;
+		this.cur_consistent       = cur_consistent;
 		this.inconsistent_results = inconsistent_results;
-		this.weakly_seen = weakly_seen;
-		this.duration = duration;
-		this.summary  = summary;  // this doesn't really need to be cached
-		this.tooltip  = tooltip;
-		this.svg      = svg;  // this doesn't really need to be cached
-		this.server_result_list = server_result_list;
-		this.created = Pers_util.get_unix_time();
+		this.weakly_seen          = weakly_seen;
+		this.duration             = duration;
+		this.summary              = summary; // this doesn't really need to be cached
+		this.tooltip              = '';
+		this.svg                  = svg;     // this doesn't really need to be cached
+		this.server_result_list   = server_result_list;
+		this.created              = Pers_util.get_unix_time();
 	},
 
 	get_invalid_cert_SSLStatus: function(uri) {
 		var recentCertsSvc = null;
+		var badCertServiceMissing = false;
 
 		// firefox <= 19 and seamonkey
-		if(typeof Components.classes["@mozilla.org/security/recentbadcerts;1"]
-			!== "undefined") {
+		if(typeof Cc["@mozilla.org/security/recentbadcerts;1"] !== "undefined") {
 
-			recentCertsSvc = Components.classes["@mozilla.org/security/recentbadcerts;1"]
-				.getService(Components.interfaces.nsIRecentBadCertsService);
+			recentCertsSvc = Cc["@mozilla.org/security/recentbadcerts;1"]
+				.getService(Ci.nsIRecentBadCertsService);
 		}
 		// firefox >= v20
-		else if(typeof Components.classes["@mozilla.org/security/x509certdb;1"]
-			!== "undefined") {
+		else if(typeof Cc["@mozilla.org/security/x509certdb;1"] !== "undefined") {
 
-			var certDB = Components.classes["@mozilla.org/security/x509certdb;1"]
-				.getService(Components.interfaces.nsIX509CertDB);
+			var certDB = Cc["@mozilla.org/security/x509certdb;1"]
+				.getService(Ci.nsIX509CertDB);
 			if(!certDB) {
 				return null;
 			}
@@ -177,20 +169,22 @@ var Perspectives = {
 				Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 				recentCertsSvc = certDB.getRecentBadCerts(PrivateBrowsingUtils.isWindowPrivate(window));
 			}
+			else
+			{
+				badCertServiceMissing = true;
+			}
 		}
 		else {
 			Pers_debug.d_print("error", "No way to get invalid cert status!");
 			return null;
 		}
 
-		if(!recentCertsSvc) {
+		if(!recentCertsSvc && !badCertServiceMissing) {
 			return null;
 		}
 
-		var port = (uri.port == -1) ? 443 : uri.port;
-
-		var hostWithPort = uri.host + ":" + port;
-		var gSSLStatus = recentCertsSvc.getRecentBadCert(hostWithPort);
+		var hostWithPort = uri.host + ":" + ((uri.port === -1) ? 443 : uri.port);
+		var gSSLStatus = badCertServiceMissing ? Perspectives.recentSSLStatus : recentCertsSvc.getRecentBadCert(hostWithPort);
 		if(!gSSLStatus) {
 			return null;
 		}
@@ -203,23 +197,27 @@ var Perspectives = {
 		if(!gSSLStatus) {
 			return null;
 		}
-		return gSSLStatus.QueryInterface(Components.interfaces.nsISSLStatus)
-				.serverCert;
+		return gSSLStatus.QueryInterface(Ci.nsISSLStatus)
+			.serverCert;
 	},
 
 	// gets current certificate, if it PASSED the browser check
 	psv_get_valid_cert: function(ui) {
 		try {
-			ui.QueryInterface(Components.interfaces.nsISSLStatusProvider);
+			ui.QueryInterface(Ci.nsISSLStatusProvider);
 			if(!ui.SSLStatus) {
 				return null;
 			}
 			return ui.SSLStatus.serverCert;
 		}
-		catch (e) {
+		catch(e) {
 			Pers_debug.d_print("error", "Perspectives Error: " + e);
 			return null;
 		}
+	},
+
+	getServiceId: function(uri) {
+		return uri.host + ":" + ((uri.port === -1) ? 443 : uri.port) + ",2"; // TODO: Magic number?
 	},
 
 	getCertificate: function(browser) {
@@ -237,216 +235,185 @@ var Perspectives = {
 	},
 
 	getNotaryList: function() {
-		var all_notaries = [];
+		var ret = [];
 		try {
 			var list_txt = Perspectives.root_prefs.getCharPref("perspectives.additional_notary_list");
 			var additional_notaries = Pers_util.loadNotaryListFromString(list_txt);
-			all_notaries = all_notaries.concat(additional_notaries);
+			ret = ret.concat(additional_notaries);
+
+			var use_default_notaries = Perspectives.root_prefs.getBoolPref("perspectives.use_default_notary_list");
+			if(use_default_notaries) {
+
+				var default_notaries = Pers_util.loadNotaryListFromString(
+					Perspectives.root_prefs.getCharPref("perspectives.default_notary_list"));
+				ret = ret.concat(default_notaries);
+			}
 		} catch(e) {
 			Pers_debug.d_print("error", "Error parsing additional notaries: " + e);
 		}
-
-		var use_default_notaries = Perspectives.root_prefs.getBoolPref("perspectives.use_default_notary_list");
-		if(use_default_notaries) {
-			try {
-				var default_notaries = Pers_util.loadNotaryListFromString(
-					Perspectives.root_prefs.getCharPref("perspectives.default_notary_list"));
-				all_notaries = all_notaries.concat(default_notaries);
-			} catch(e) {
-				Pers_debug.d_print("error", "Error parsing default notaries: " + e);
-			}
-		}
-
-		return all_notaries;
+		return ret;
 	},
 
+	queryNotaries: function(uri, notaries, publish_serverresultlist) {
+		// Creates a new closure which has to be called for every reponse.
+		// The closure keeps track of the number of tries internally
+		// and calls the provided "processResults" callback when all requests are finished.
+		var query_notaries_closure = (function(notaries, uri, publish_serverresultlist) {
+			var server_result_list = _.map(notaries, function(notary) {
+				return {server: notary.host, obs: []};
+			});
 
-	queryNotaries: function(ti) {
-		if(!ti.cert) {
-			Pers_debug.d_print("error","No certificate found for: " + ti.uri.host);
-			return;
-		}
+			var cert_              = null;
+			var q_required_        = 0;
+			var required_duration_ = Infinity;
 
-		if(ti.partial_query_results != null) {
-			Pers_debug.d_print("main",
-				"Query already in progress for '" + ti.uri.host + "' not querying again");
-			return;
-		}
+			var num_tries  = Perspectives.root_prefs.getIntPref("extensions.perspectives.query_retries");
+			var timeout_id = null;
 
-		// send a request to each notary
-		ti.partial_query_results = [];
-		for(var i = 0; i < Perspectives.all_notaries.length; i++) {
-			Pers_debug.d_print("main", "Sending query to notary " + Perspectives.all_notaries[i].host);
-			this.querySingleNotary(Perspectives.all_notaries[i],ti);
-		}
+			var timeout = function() {
+				Pers_debug.d_print("query", "timeout #" + (Perspectives.root_prefs.getIntPref("extensions.perspectives.query_retries") - num_tries) +
+					" querying for '" + timeout_id + "'");
+				Pers_debug.d_print("query", server_result_list);
 
-		ti.timeout_id = window.setTimeout(function() {
-			Perspectives.notaryQueryTimeout(ti,0);
-		}, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms") );
+				if(num_tries > 0) {
+					num_tries--;
+					timeout_id = setTimeout(timeout, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms"));
+
+					var hostsTodo    = _.pluck(_.filter(server_result_list, function(server_result) {
+						return server_result.obs.length === 0;
+					}), "server");
+					var notariesTodo = _.filter(notaries, function(notary) {
+						return _.contains(hostsTodo, notary.host);
+					});
+					_.each(notariesTodo, function(notary) {
+						Perspectives.querySingleNotary(uri, notary.host, publish_server_result);
+					});
+				}
+				else {
+					Pers_debug.d_print("main", "Publish server_result_list in query_notaries_closure() (timeout).");
+					publish_serverresultlist(server_result_list);
+				}
+			};
+			timeout_id = setTimeout(timeout, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms"));
+
+			var publish_server_result = function(notary_host, new_server_result) {
+					if(num_tries > 0) {
+						if(new_server_result != null) {
+							var old_server_result = _.find(server_result_list, function(sr) {
+								return sr.server === notary_host;
+							});
+							if(old_server_result.obs.length === 0 && !old_server_result.is_valid) {
+								Pers_debug.d_print("query", "adding result from: " + notary_host);
+								old_server_result.obs      = new_server_result.obs;
+								old_server_result.is_valid = new_server_result.is_valid;
+							}
+							else {
+								Pers_debug.d_print("query",
+									"Ignoring duplicate or invalid reply for '" +
+										Perspectives.getServiceId(uri) + "' from '" +
+										new_server_result.server + "'");
+							}
+						}
+
+						var strong_trust = false;
+						if(cert_ != null) {
+							// check current results against quorum
+							// TODO: extract as function
+							// code snippet taken from notaryQueriesComplete
+							var test_key = cert_.md5Fingerprint.toLowerCase();
+							var max_stale_sec = 2 * 24 * 3600; // 2 days (FIXME: make this a pref)
+							var unixtime = Pers_util.get_unix_time();
+							var quorum_duration = Pers_client_policy.get_quorum_duration(test_key,
+								server_result_list, q_required_, max_stale_sec, unixtime);
+							var is_cur_consistent = quorum_duration !== -1;
+							var qd_days = quorum_duration / (3600 * 24);
+
+							// code snippet taken from process_results_main
+							strong_trust = is_cur_consistent && (qd_days >= required_duration_);
+
+							if(strong_trust) {
+								Pers_debug.d_print("main", "Ermahgerd - Reached strong_trust already!");
+							}
+						}
+
+						// check if all notaries answered already
+						var num_finished = _.find(server_result_list, function(sr) {
+							return sr.obs.length > 0;
+						}).length;
+
+						if(strong_trust || num_finished === notaries.length) {
+							window.clearTimeout(timeout_id);
+							Pers_debug.d_print("main", "Publish server_result_list in query_notaries_closure() (all or quorum reached).");
+							publish_serverresultlist(server_result_list);
+						}
+					}
+				};
+
+			var publish_cert = function(cert, q_required, required_duration) {
+					cert_              = cert;
+					q_required_        = q_required;
+					required_duration_ = required_duration;
+				};
+
+			return { publish_server_result: publish_server_result, publish_cert: publish_cert };
+		})(notaries, uri, publish_serverresultlist);
+
+		_.each(notaries, function(notary) {
+			Perspectives.querySingleNotary(uri, notary, query_notaries_closure.publish_server_result);
+		});
+
+		return query_notaries_closure.publish_cert;
 	},
 
-	querySingleNotary: function(notary_server, ti) {
-		var port = (ti.uri.port == -1) ? 443 : ti.uri.port;
-		var full_url = notary_server.host +
-				"?host=" + ti.uri.host + "&port=" + port + "&service_type=2&";
-		if(full_url.substring(0,4) !== 'http') {
+	querySingleNotary: function(uri, notary, publish_server_result) {
+		var full_url = notary.host +
+			"?host=" + uri.host + "&port=" + ((uri.port === -1) ? 443 : uri.port) + "&service_type=2&";
+		if(full_url.substring(0, 4) !== 'http') {
 			// default to unencrypted queries if nothing is specified,
 			// since we don't know if the server supports HTTPS.
 			full_url = "http://" + full_url;
 		}
 		Pers_debug.d_print("query", "sending query: '" + full_url + "'");
-		var req  = new XMLHttpRequest();
+		var req = new XMLHttpRequest();
 		req.open("GET", full_url, true);
-		req.onreadystatechange = (function(evt) {
-					Perspectives.notaryAjaxCallback(ti, req, notary_server, ti.has_user_permission);
-		});
+		req.onreadystatechange = function() {
+			Perspectives.notaryAjaxCallback(req, notary, Perspectives.getServiceId(uri), publish_server_result);
+		};
 		req.send(null);
 	},
 
-
-	notaryQueryTimeout: function(ti, num_timeouts) {
-			try {
-				Pers_debug.d_print("query", "timeout #" + num_timeouts +
-						" querying for '" + ti.service_id + "'");
-				Pers_debug.d_print("query", ti.partial_query_results);
-
-				if(ti.partial_query_results == null) {
-					ti.partial_query_results = []; // may have been deleted between now and then
-				}
-
-				// find out which notaries we still need a reply from
-				var missing_replies = [];
-				for(var i = 0; i < Perspectives.all_notaries.length; i++) {
-					var found = false;
-					for(var j = 0; j < ti.partial_query_results.length; j++) {
-						if(Perspectives.all_notaries[i].host ==
-								ti.partial_query_results[j].server) {
-							found = true;
-							break;
-						}
-					}
-					if(!found) {
-						missing_replies.push(Perspectives.all_notaries[i]);
-					}
-				}
-
-				var is_final_timeout = (num_timeouts == Perspectives.root_prefs.getIntPref("extensions.perspectives.query_retries"));
-				if(is_final_timeout) {
-					// time is up, so just add empty results for missing
-					// notaries and begin processing results
-					for(var i = 0; i < missing_replies.length; i++) {
-						// add empty result for this notary
-						var res = { "server" : missing_replies[i].host,
-								"obs" : [] };
-						ti.partial_query_results.push(res);
-					}
-					Perspectives.notaryQueriesComplete(ti);
-				} else {
-					// send another query to any of the servers we are missing.
-					// reset the timeout, incrementing the count of the number
-					// of timeouts we have seen
-					for(var i = 0; i < missing_replies.length; i++) {
-						this.querySingleNotary(missing_replies[i],ti);
-					}
-
-					ti.timeout_id = window.setTimeout(function() {
-						Perspectives.notaryQueryTimeout(ti, num_timeouts + 1);
-					}, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms") );
-				}
-
-			} catch (e) {
-				Pers_debug.d_print("query", "error handling timeout");
-				Pers_debug.d_print("query", e);
-			}
-	},
-
-	notaryAjaxCallback: function(ti, req, notary_server) {
-
-		if(req.readyState == 4) {
-			if(req.status == 200) {
+	notaryAjaxCallback: function(req, notary, service_id, publish_server_result) {
+		if(req.readyState === 4) {
+			if(req.status === 200) {
 				try {
-
-					//NOTE: Firefox pre-defines Cc and Ci, but SeaMonkey does not.
-					//We create local variables here so SeaMonkey clients don't throw 'variable not defined' exceptions
-					const Cc = Components.classes, Ci = Components.interfaces;
-
 					Pers_debug.d_print("querylarge", req.responseText);
 					var server_node = req.responseXML.documentElement;
 					var server_result = Pers_xml.
-							parse_server_node(server_node, "1");
+						parse_server_node(server_node, "1");
 					var bin_result = Pers_xml.
-							pack_result_as_binary(server_result, ti.service_id);
+						pack_result_as_binary(server_result, service_id);
 					Pers_debug.d_print("querylarge",
-						Pers_xml.resultToString(server_result, false));
+						Pers_xml.resultToString(server_result));
 					var verifier =
 						Cc["@mozilla.org/security/datasignatureverifier;1"].
 							createInstance(Ci.nsIDataSignatureVerifier);
 					var result = verifier.verifyData(bin_result,
-							server_result.signature, notary_server.public_key);
-					if(result) {
-						// TODO: move into a check function
-						// ... and import UnderscoreJS and use functional style programming
-						server_result.is_valid = true;
-						for(var i = 0; i < server_result.obs.length; i++) {
-							var obs = server_result.obs[i];
-							if(server_result.is_valid) {
-								for(var j = 0; j < obs.timestamps.length; j++) {
-									var ts = obs.timestamps[j];
-									if(ts.end < ts.start) {
-										server_result.is_valid = false;
-										break;
-									}
-								}
-							} else {
-								break;
-							}
-						}
+						server_result.signature, notary.public_key);
+					if(result && _.isArray(server_result.obs)) {
+						server_result.is_valid = _.all(server_result.obs, function(o) {
+							return (_.isArray(o.timestamps) && _.all(o.timestamps, function(ts) {
+								return ts.end > ts.start;
+							}));
+						});
 					} else {
 						Pers_debug.d_print("error", "Invalid signature from : " +
-													notary_server.host);
+							notary.host);
 						server_result.is_valid = false;
 					}
-					server_result.server = notary_server.host;
+					server_result.server = notary.host;
 
-					var result_list = ti.partial_query_results;
-					if(result_list == null) {
-						Pers_debug.d_print("query",
-							"Query reply from '" + notary_server.host +
-							"' for '" + ti.service_id +
-								"' has no query result data");
-						return;
-					}
-				 	var i;
-					for(i = 0; i < result_list.length; i++) {
-						if(result_list[i].server === server_result.server) {
-							// also check if previous response was valid
-							if(result_list[i].is_valid === true) {
-								Pers_debug.d_print("query",
-								  	"Ignoring duplicate reply for '" +
-										ti.service_id + "' from '"   +
-										server_result.server + "'");
-								return;
-							} else {
-								result_list.splice(i, 1);
-								break;
-							}
-						}
-					}
-					Pers_debug.d_print("query","adding result from: " +
-							notary_server.host);
-
-					result_list.push(server_result);
-
-					var num_replies = ti.partial_query_results.length;
-					Pers_debug.d_print("query", "num_replies = " + num_replies +
-								" total = " + Perspectives.all_notaries.length);
-					if(num_replies == Perspectives.all_notaries.length) {
-						Pers_debug.d_print("query","got all server replies");
-						window.clearTimeout(ti.timeout_id);
-						Perspectives.notaryQueriesComplete(ti);
-					}
-
-				} catch (e) {
+					publish_server_result(notary.host, server_result);
+				} catch(e) {
 					Pers_debug.d_print("error", "exception in notaryAjaxCallback: " + e);
 				}
 			} else { // HTTP ERROR CODE
@@ -463,7 +430,7 @@ var Perspectives = {
 		//FIXME: we can cache the value inside getNotaryList() if calling is too slow.
 		var notary_count = this.getNotaryList().length;
 		var q_thresh = Perspectives.root_prefs.
-				getIntPref("perspectives.quorum_thresh") / 100;
+			getIntPref("perspectives.quorum_thresh") / 100;
 		var q_count = Math.round(notary_count * q_thresh);
 
 		if(q_count < MIN_NOTARY_COUNT) {
@@ -480,20 +447,18 @@ var Perspectives = {
 		// calculate the MD5 hash of a given array
 		// uses third-party library SparkMD5.
 		// many thanks to them for sharing under a compatible license.
-		var hash = SparkMD5.ArrayBuffer.hash(array, false );
+		var hash = SparkMD5.ArrayBuffer.hash(array, false);
 		hash = hash.toLowerCase().match(/.{1,2}/g).join(':');
 		return hash;
 	},
 
-	notaryQueriesComplete: function(ti) {
+	notaryQueriesComplete: function(uri, server_result_list, cert, process_results_callback) {
 		try {
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
 			}
 
-			var server_result_list = ti.partial_query_results;
-			delete ti.partial_query_results;
-			delete ti.timeout_id;
+			Pers_debug.d_print("main", "all notary queries complete");
 
 			var test_key;
 			if (ti.cert["md5Fingerprint"] !== undefined) {
@@ -501,24 +466,22 @@ var Perspectives = {
 			}
 			else {
 				test_key = this.calculateMD5(ti.cert.getRawDER({}));
-			}
-
-			// 2 days (FIXME: make this a pref)
+			}			// 2 days (FIXME: make this a pref)
 			var max_stale_sec = 2 * 24 * 3600;
 			var q_required = Perspectives.getQuorumAsInt();
 			var unixtime = Pers_util.get_unix_time();
 			var quorum_duration = Pers_client_policy.get_quorum_duration(test_key,
-					server_result_list, q_required, max_stale_sec,unixtime);
+				server_result_list, q_required, max_stale_sec, unixtime);
 			var is_cur_consistent = quorum_duration !== -1;
 
 			var weak_check_time_limit = Perspectives.root_prefs.
-						getIntPref("perspectives.weak_consistency_time_limit");
+				getIntPref("perspectives.weak_consistency_time_limit");
 			var inconsistent_check_max = Perspectives.root_prefs.
-					getIntPref("perspectives.max_timespan_for_inconsistency_test");
+				getIntPref("perspectives.max_timespan_for_inconsistency_test");
 			var is_inconsistent = Pers_client_policy.inconsistency_check(server_result_list,
-							inconsistent_check_max, weak_check_time_limit);
+				inconsistent_check_max, weak_check_time_limit);
 			var weakly_seen = Pers_client_policy.key_weakly_seen_by_quorum(test_key,
-						server_result_list, q_required, weak_check_time_limit);
+				server_result_list, q_required, weak_check_time_limit);
 
 			var qd_days = quorum_duration / (3600 * 24);
 			var obs_text = "";
@@ -538,268 +501,86 @@ var Perspectives = {
 					qd_str = qd_days.toFixed(1) + " days";
 				}
 			}
-			var str = Perspectives.strbundle.getString("notaryLookupFor") +
-				": " + ti.service_id + "\n";
-				str += Perspectives.strbundle.getString("LegendBrowsersKey") +
-					" = '" + test_key + "'\n";
-				str += Perspectives.strbundle.getString("results") + ":\n";
-				str += Perspectives.strbundle.getString("quorumDuration") +
-					": " + qd_str + "\n";
-				str += Perspectives.strbundle.getString("notaryObservations") +
-					": \n" + obs_text + "\n";
-			//Pers_debug.d_print("main","\n" + str + "\n");
-			var required_duration = Perspectives.root_prefs.
-								getIntPref("perspectives.required_duration");
-			var svg = Pers_gen.get_svg_graph(ti.service_id, server_result_list, 30,
+			var str =
+				Perspectives.strbundle.getString("notaryLookupFor"   ) + ": "   + Perspectives.getServiceId(uri) + "\n" +
+			    Perspectives.strbundle.getString("LegendBrowsersKey" ) + ": '"  + test_key + "'" +               + "\n" +
+			    Perspectives.strbundle.getString("results"           ) + ":"                                     + "\n" +
+			    Perspectives.strbundle.getString("quorumDuration"    ) + ": "   + qd_str                         + "\n" +
+			    Perspectives.strbundle.getString("notaryObservations") + ": \n" + obs_text                       + "\n";
+			var required_duration = Perspectives.root_prefs.getIntPref("perspectives.required_duration");
+			var server_result_list_sorted = Pers_gen.sort_server_result_list(server_result_list, test_key, max_stale_sec, unixtime);
+			var svg = Pers_gen.get_svg_graph(Perspectives.getServiceId(uri), server_result_list_sorted, 30,
 				unixtime, test_key, max_stale_sec);
-			ti.query_results = new Perspectives.SslCert(ti.uri.host,
-										ti.uri.port, test_key,
-										str, null,svg, qd_days,
-										is_cur_consistent,
-										is_inconsistent,
-										weakly_seen,
-										server_result_list);
-			ti.is_cached = false;
-			Perspectives.process_notary_results(ti);
+			var query_results = new Perspectives.SslCert(test_key,
+				str, svg, qd_days,
+				is_cur_consistent,
+				is_inconsistent,
+				weakly_seen,
+				server_result_list_sorted);
 
-		} catch (e) {
+			process_results_callback(query_results, cert, uri);
+		} catch(e) {
 			Pers_util.pers_alert("Error in notaryQueriesComplete: " + e);
 		}
 	},
 
-	do_override: function(browser, cert,isTemp) {
-		var uri = browser.currentURI;
+	do_override: function(cert, uri, isTemp) {
 		Pers_debug.d_print("main", "Do Override\n");
 
-		var gSSLStatus = Perspectives.get_invalid_cert_SSLStatus(uri);
-		if(gSSLStatus == null) {
-			return false;
-		}
 		var flags = 0;
-		if(gSSLStatus.isUntrusted) {
-			flags |= Perspectives.overrideService.ERROR_UNTRUSTED;
-		}
-		if(gSSLStatus.isDomainMismatch) {
-			flags |= Perspectives.overrideService.ERROR_MISMATCH;
-		}
-		if(gSSLStatus.isNotValidAtThisTime) {
-			flags |= Perspectives.overrideService.ERROR_TIME;
+		var gSSLStatus = Perspectives.get_invalid_cert_SSLStatus(uri);
+		if(gSSLStatus != null) {
+			if(gSSLStatus.isUntrusted) {
+				flags |= Perspectives.overrideService.ERROR_UNTRUSTED;
+			}
+			if(gSSLStatus.isDomainMismatch) {
+				flags |= Perspectives.overrideService.ERROR_MISMATCH;
+			}
+			if(gSSLStatus.isNotValidAtThisTime) {
+				flags |= Perspectives.overrideService.ERROR_TIME;
+			}
+
+			Perspectives.overrideService.rememberValidityOverride(
+				uri.asciiHost, uri.port, cert, flags, isTemp);
 		}
 
-		Perspectives.overrideService.rememberValidityOverride(
-			uri.asciiHost, uri.port, cert, flags, isTemp);
-
-		setTimeout(function() { browser.loadURIWithFlags(uri.spec, flags); }, 25); // TODO: magic number
-		return true;
+		return flags;
 	},
 
-
-	// Updates the status of the current page
-	updateStatus: function(win, is_forced) {
-
-		if(Perspectives.strbundle == null) {
-			Perspectives.strbundle = document.getElementById("notary_strings");
-		}
-
-		Pers_debug.d_print("main", "Update Status");
-
-		var error_text = Perspectives.detectInvalidURI(win);
-		if(error_text) {
-			var text = Perspectives.strbundle.
-				getFormattedString("waitingOnURLData", [ error_text ]);
-			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, text);
-			return;
-		}
-		var ti = Perspectives.getCurrentTabInfo(win);
-		if(ti.uri.scheme !== "https") {
-			var text = Perspectives.strbundle.
-				getFormattedString("nonHTTPSError", [ ti.uri.host, ti.uri.scheme ]);
-			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
-			ti.reason_str = text;
-			return;
-		}
-
-		Pers_debug.d_print("main", "Update Status: " + ti.uri.spec);
-
-		ti.cert       = Perspectives.getCertificate(ti.browser);
-		if(!ti.cert) {
-			var text = Perspectives.strbundle.
-				getFormattedString("noCertError", [ti.uri.host]);
-			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
-			ti.reason_str = text;
-			return;
-		}
-
-		var md5;
-		if (ti.cert["md5Fingerprint"] !== undefined) {
-			// use the built-in browser hash if available
-			md5 = ti.cert.md5Fingerprint.toLowerCase();
-		}
-		else {
-			md5 = this.calculateMD5(ti.cert.getRawDER({}));
-		}
-
-		ti.state      = ti.browser.securityUI.state;
-
-		ti.is_override_cert = Perspectives.overrideService.isCertUsedForOverrides(ti.cert, true, true);
-		Pers_debug.d_print("main",
-			"is_override_cert = " + ti.is_override_cert);
-		var check_good = Perspectives.root_prefs.
-			getBoolPref("perspectives.check_good_certificates");
-
-
-		// see if the browser has this cert installed prior to this browser session
-		// seems like we can't tell the difference between an exception added by the user
-		// manually and one we installed permanently during a previous browser run.
-		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && !(ti.is_override_cert);
-
-		if(Perspectives.is_whitelisted_by_user(ti.uri.host)) {
-			var text = Perspectives.strbundle.
-				getFormattedString("configuredToWhitelistWithHost", [ti.uri.host]);
-			if(! (ti.already_trusted || ti.is_override_cert)) {
-				var isTemp = !Perspectives.root_prefs.getBoolPref("perspectives.exceptions.permanent");
-				setTimeout(function() {
-					if(Perspectives.do_override(ti.browser, ti.cert, isTemp)) {
-						Perspectives.setFaviconText(text);
-						Pers_notify.do_notify(ti, Pers_notify.TYPE_WHITELIST);
-					}
-				}, 1000); // TODO: magic number, btw: why the async call?
-			}
-			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_WHITELIST, text);
-			ti.reason_str = text;
-			return;
-		} else {
-
-			// Note: we no longer do a DNS look-up to to see if a DNS name maps
-			// to an RFC 1918 address, as this 'leaked' DNS info for users running
-			// anonymizers like Tor.  It was always just an insecure guess anyway.
-			var unreachable = Perspectives.is_nonrouted_ip(ti.uri.host);
-			if(unreachable) {
-				var text = Perspectives.strbundle.
-					getFormattedString("rfc1918Error", [ti.uri.host]);
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
-				ti.reason_str = text;
-				return;
-			}
-		}
-
-		if(!check_good && ti.already_trusted && !is_forced) {
-			var text = Perspectives.strbundle.
-				getString("noProbeRequestedError");
-			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
-			ti.reason_str = text;
-			return;
-		}
-
-		// clear cache if it is stale
-		var unix_time = Pers_util.get_unix_time();
-		var max_cache_age_sec = Perspectives.root_prefs.getIntPref("extensions.perspectives.max_cache_age_sec");
-		if(ti.query_results && ti.query_results.created < (unix_time - max_cache_age_sec)) {
-			Pers_debug.d_print("main", "Cached query results are stale.  Re-evaluate security.");
-			delete ti.query_results;
-		}
-		if(ti.query_results && ti.query_results.md5 !== md5) {
-			Pers_debug.d_print("main", "Current and cached key disagree.  Re-evaluate security.");
-			delete ti.query_results;
-		}
-
-		if(ti.query_results) {
-			ti.is_cached = true;
-			Perspectives.process_notary_results(ti);
-		} else {
-			Pers_debug.d_print("main", ti.uri.host + " needs a request");
-			var needs_perm = Perspectives.root_prefs
-					.getBoolPref("perspectives.require_user_permission");
-
-			if(needs_perm && !ti.has_user_permission) {
-				Pers_debug.d_print("main", "needs user permission");
-				Pers_notify.do_notify(ti, Pers_notify.TYPE_NEEDS_PERMISSION);
-				var text = Perspectives.strbundle.getString("needsPermission");
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
-				ti.reason_str = text;
-				return;
-			}
-
-			// respect private browsing mode
-			var contact_private = Perspectives.root_prefs
-				.getBoolPref("extensions.perspectives.contact_in_private_browsing_mode");
-			if(!contact_private) {
-				var is_private = true; // default to true, better err on the safe side
-				try { // Firefox 20+
-					Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
-					is_private = PrivateBrowsingUtils.isWindowPrivate(win);
-				} catch(e) { // pre Firefox 20
-					try {
-						is_private = Components.classes["@mozilla.org/privatebrowsing;1"].
-							getService(Components.interfaces.nsIPrivateBrowsingService).
-							privateBrowsingEnabled;
-					} catch(e) {
-						Pers_debug.d_print("main", "Can't retrieve private browsing mode. Assume 'private browsing mode activated'.");
-					}
-				}
-
-				if(is_private) {
-					Pers_debug.d_print("main", "don't contact notaries in private browsing mode");
-					var text = Perspectives.strbundle.getString("privateBrowsingQueriesDisabled");
-					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
-					ti.reason_str = text;
-					return;
-				}
-			}
-
-			// make sure we're using the most recent notary list
-			Perspectives.all_notaries = this.getNotaryList();
-			if(Perspectives.all_notaries.length === 0) {
-				var text = Perspectives.strbundle.
-					getString("listOfNotariesIsEmpty");
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
-				return;
-			}
-
-			Pers_debug.d_print("main", "Contacting notaries");
-			// this call is asynchronous.  after hearing from the
-			// notaries, the logic picks up again with the function
-			// 'process_notary_results()' below
-			this.queryNotaries(ti);
-		}
-	},
-
-	process_notary_results: function(ti) {
+	process_results_main: function(ti, browser, security_state, query_results, cert, uri) {
 		try {
-			if(!ti.already_trusted && !ti.query_results.identityText &&
-				Perspectives.getFaviconText().indexOf("Perspectives") < 0) {
-				ti.query_results.identityText =
+			ti.query_results = query_results;
+			if(!ti.already_trusted && Perspectives.getFaviconText().indexOf("Perspectives") < 0) {
+				query_results.identityText =
 					Perspectives.setFaviconText(Perspectives.getFaviconText() +
-					"\n\n" + Perspectives.strbundle.getString("verificationSuccess"));
+						"\n\n" + Perspectives.strbundle.getString("verificationSuccess"));
 			}
-			var required_duration   =
+			var required_duration =
 				Perspectives.root_prefs.
 					getIntPref("perspectives.required_duration");
 
-			var strong_trust = ti.query_results.cur_consistent &&
-						(ti.query_results.duration >= required_duration);
+			var strong_trust = query_results.cur_consistent &&
+				(query_results.duration >= required_duration);
 			var pref_https_weak = Perspectives.root_prefs.
-					getBoolPref("perspectives.trust_https_with_weak_consistency");
-			var weak_trust = ti.query_results.inconsistent_results && ti.query_results.weakly_seen;
+				getBoolPref("perspectives.trust_https_with_weak_consistency");
+			var weak_trust = query_results.inconsistent_results && query_results.weakly_seen;
 
 			if(strong_trust) {
 				// FIXME: need to clear any contrary banners
-				var mixed_security =  ti.state & Perspectives.state.STATE_IS_BROKEN;
-				if(!ti.is_override_cert && (ti.state & Perspectives.state.STATE_IS_INSECURE)) {
-					ti.exceptions_enabled = Perspectives.root_prefs.
-						getBoolPref("perspectives.exceptions.enabled");
-					if(ti.exceptions_enabled) {
+				var mixed_security = security_state & Perspectives.state.STATE_IS_BROKEN;
+				if(!ti.is_override_cert && (security_state & Perspectives.state.STATE_IS_INSECURE)) {
+					var exceptions_enabled = Perspectives.root_prefs.getBoolPref("perspectives.exceptions.enabled");
+					if(exceptions_enabled) {
 						ti.override_used = true;
 						var isTemp = !Perspectives.root_prefs.
 							getBoolPref("perspectives.exceptions.permanent");
-						Perspectives.do_override(ti.browser, ti.cert, isTemp);
-						ti.query_results.identityText = Perspectives.strbundle.
+						var flags = Perspectives.do_override(cert, uri, isTemp);
+						setTimeout(function() {
+							browser.loadURIWithFlags(uri.spec, flags);
+						}, 25); // TODO: magic number or why not 0?
+
+						query_results.identityText = Perspectives.strbundle.
 							getString("exceptionAdded");
-						// don't give drop-down if user gave explicit
-						// permission to query notaries
-						if(ti.firstLook && !ti.has_user_permission) {
-							Pers_notify.do_notify(ti, Pers_notify.TYPE_OVERRIDE);
-						}
 					}
 				}
 
@@ -815,231 +596,467 @@ var Perspectives = {
 					// from applying the results and can add better tests for these,
 					// wrap setting the status and the tooltip in their own function
 					// so no steps are forgotten
-					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedButInsecureEmbedded");
-					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, ti.query_results.tooltip);
-					// this will flicker, as we can't rely on just doing it on 'firstLook'
-					// due to Firefox oddness
-					if(ti.override_used) {
-						Pers_notify.do_notify(ti, Pers_notify.TYPE_OVERRIDE_MIXED);
-					}
-				}  else {
-					ti.query_results.tooltip = Perspectives.strbundle.
-						getFormattedString("verifiedMessage", [ti.query_results.duration.toFixed(1), required_duration]);
-					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC,
-						ti.query_results.tooltip);
+					query_results.tooltip = Perspectives.strbundle.getString("trustedButInsecureEmbedded");
+					ti.state   = Pers_statusbar.STATE_NEUT;
+					ti.tooltip = query_results.tooltip;
+				} else {
+					query_results.tooltip = Perspectives.strbundle.
+						getFormattedString("verifiedMessage",
+							[query_results.duration.toFixed(1), required_duration]);
+					ti.state   = Pers_statusbar.STATE_SEC;
+					ti.tooltip = query_results.tooltip;
 				}
 			} else if(ti.already_trusted && weak_trust && pref_https_weak) {
 				// FIXME: need to clear any contrary banners
 				if(ti.state & Perspectives.state.STATE_IS_BROKEN) {
-					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedWeaklyButInsecureEmbedded");
-					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT,
-						ti.query_results.tooltip);
-				}  else {
-					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedMultipleByBrowser");
-					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC,
-						ti.query_results.tooltip);
+					query_results.tooltip = Perspectives.strbundle.getString("trustedWeaklyButInsecureEmbedded");
+					ti.state   = Pers_statusbar.STATE_NEUT;
+					ti.tooltip = query_results.tooltip;
+				} else {
+					query_results.tooltip = Perspectives.strbundle.getString("trustedMultipleByBrowser");
+					ti.state   = Pers_statusbar.STATE_SEC;
+					ti.tooltip = query_results.tooltip;
 				}
 			} else if(ti.query_results.summary.indexOf(Perspectives.strbundle.getString("sslKey")) === -1) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip =
+				query_results.tooltip =
 					Perspectives.strbundle.getString("noRepliesWarning");
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC,
-					ti.query_results.tooltip);
+				ti.state   = Pers_statusbar.STATE_NSEC;
+				ti.tooltip = query_results.tooltip;
+
 				if(!ti.already_trusted) {
-					Pers_notify.do_notify(ti, Pers_notify.TYPE_NO_REPLIES);
+					Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_NO_REPLIES);
+					ti.last_banner_type = Pers_notify.TYPE_NO_REPLIES;
 				}
-			} else if(ti.query_results.inconsistent_results && !ti.query_results.weakly_seen) {
+			} else if(query_results.inconsistent_results && !query_results.weakly_seen) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = Perspectives.strbundle.getString("untrustedMultipleNotSeen");
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, ti.query_results.tooltip);
+				query_results.tooltip = Perspectives.strbundle.getString("untrustedMultipleNotSeen");
+				ti.state   = Pers_statusbar.STATE_NSEC;
+				ti.tooltip = query_results.tooltip;
+
 				if(!ti.already_trusted) {
-					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
+					Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_FAILED);
+					ti.last_banner_type = Pers_notify.TYPE_FAILED;
 				}
-			} else if(ti.query_results.inconsistent_results) {
+			} else if(query_results.inconsistent_results) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = Perspectives.strbundle.getString("untrustedMultipleNotVerifiable");
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, ti.query_results.tooltip);
+				query_results.tooltip = Perspectives.strbundle.getString("untrustedMultipleNotVerifiable");
+				ti.state   = Pers_statusbar.STATE_NSEC;
+				ti.tooltip = query_results.tooltip;
+
 				if(!ti.already_trusted) {
-					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
+					Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_FAILED);
+					ti.last_banner_type = Pers_notify.TYPE_FAILED;
 				}
-			} else if(!ti.query_results.cur_consistent) {
+			} else if(!query_results.cur_consistent) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip =
+				query_results.tooltip =
 					Perspectives.strbundle.getString("inconsistentWarning");
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC,
-					ti.query_results.tooltip);
-				// we may reconsider this in the future, but currently we don't do a
-				// drop-down if things aren't consistent but the browser already trusts the cert.
-				if(!ti.already_trusted && ti.firstLook) { // ti.firstLook is never set => delete?
-					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
-				}
-			} else if(ti.query_results.duration < required_duration) {
+				ti.state   = Pers_statusbar.STATE_NSEC;
+				ti.tooltip = query_results.tooltip;
+			} else if(query_results.duration < required_duration) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = Perspectives.strbundle.
-					getFormattedString("thresholdWarning", [ti.query_results.duration.toFixed(1), required_duration]);
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC,
-					ti.query_results.tooltip);
-				if(!ti.already_trusted && ti.firstLook) {
-					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
-				}
+				query_results.tooltip = Perspectives.strbundle.
+					getFormattedString("thresholdWarning",
+						[query_results.duration.toFixed(1), required_duration]);
+				ti.state   = Pers_statusbar.STATE_NSEC;
+				ti.tooltip = query_results.tooltip;
 			} else {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = Perspectives.strbundle.
-					getFormattedString("errorParsingNotaryEntry", [ti.uri.host]);
-				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_ERROR,
-					ti.query_results.tooltip);
+				query_results.tooltip = Perspectives.strbundle.
+					getFormattedString("errorParsingNotaryEntry", [uri.asciiHost]);
+				ti.state   = Pers_statusbar.STATE_ERROR;
+				ti.tooltip = query_results.tooltip;
 
 				// Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED); // warn on error?
 			}
 
-			if(ti.query_results.identityText) {
-				Perspectives.setFaviconText(ti.query_results.identityText);
+			if(query_results.identityText) {
+				Perspectives.setFaviconText(query_results.identityText);
 			}
-		} catch (err) {
-			Pers_util.pers_alert("process_notary_results error: " + err);
+		} catch(err) {
+			Pers_util.pers_alert("process_results_main error: " + err);
 		}
+
+		// TODO: extract UI changes from notary querying functionality
+		Pers_debug.d_print("main", "Set status in process_results_main().");
+		Pers_statusbar.setStatus(ti.state, ti.tooltip);
 	},
 
-	is_whitelisted_by_user : function(host) {
+	is_whitelisted_by_user: function(host) {
 		try {
 			/* be cautious in case we got a bad user edit to the whitelist */
 			var whitelist = Perspectives.root_prefs.
-				    getCharPref("perspectives.whitelist").split(",");
-			for(var entry in whitelist) {
-				if(whitelist.hasOwnProperty(entry)) {
-					var e = whitelist[entry];
-					if(e.length === 0) {
-						continue;
-					}
-					var r = new RegExp(e);
-					if(host.match(r)) {
-						return true;
-					}
-				}
-			}
-		} catch(e) { /* ignore */ }
+				getCharPref("perspectives.whitelist").split(",");
+			return _.any(whitelist, function(entry) {
+				return entry.length > 0 ? host.match(new RegExp(entry)) : false;
+			});
+		} catch(ex) { /* ignore */
+		}
 		return false;
 	},
 
 	// See Documentation for nsIWebProgressListener at:
 	// https://developer.mozilla.org/en/nsIWebProgressListener
+	notaryListener: {
+		query_notaries_by_tabinfo_IO : function(uri, ti, browser) {
+			var ret = function() {};
 
-	// The current approach is to clear the previous status
-	// icon during onLocationChange.  For each call to
-	// onSecurityChange, we call updateStatus.
-	// Then, when onStateChange is called with STATE_STOP
-	// we call updateStatus one last time just for good
-	// measure, as this should be the last thing that happens.
-	//
-	// NOTE: this code needs some TLC
+			// clear cache if it is stale
+			var unix_time = Pers_util.get_unix_time();
+			var max_cache_age_sec = Perspectives.root_prefs.getIntPref("extensions.perspectives.max_cache_age_sec");
+			if(ti.query_results != null && ti.query_results.created < (unix_time - max_cache_age_sec)) {
+				Pers_debug.d_print("main", "Cached query results are stale. Re-evaluate security.");
+				ti.query_results = null;
+			}
 
-	//note can use request to suspend the loading
-	notaryListener : {
+			if(ti.query_results == null) {
+				Pers_debug.d_print("main", uri.asciiHost + " needs a request");
 
-   		// Note: We intentionally do NOT call updateStatus from here, as this
-   		// was causing a bug that caused us to get the previous website's cert
-   		// instead of the correct cert.
-   		onLocationChange: function(aWebProgress, aRequest, aURI) {
+				var notaries = Perspectives.getNotaryList();
+				if(notaries.length > 0) {
+					var needs_perm = Perspectives.root_prefs.getBoolPref("perspectives.require_user_permission");
+					if(!needs_perm) {
+						// respect private browsing mode
+						var is_private = false;
+						var contact_private = Perspectives.root_prefs.getBoolPref("extensions.perspectives.contact_in_private_browsing_mode");
+						if(!contact_private) {
+							is_private = true; // default to true, better err on the safe side
+							try { // Firefox 20+
+								Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
+								is_private = PrivateBrowsingUtils.isWindowPrivate(window);
+							} catch(e) { // pre Firefox 20
+								try {
+									is_private = Cc["@mozilla.org/privatebrowsing;1"].
+										getService(Ci.nsIPrivateBrowsingService).
+										privateBrowsingEnabled;
+								} catch(e) {
+									Pers_debug.d_print("error", "Can't retrieve private browsing mode. Assume 'private browsing mode activated'.");
+								}
+							}
+						}
+
+						if(!is_private) {
+							Pers_debug.d_print("main", "Contacting notaries.");
+							ti.state   = Pers_statusbar.STATE_QUERY;
+							ti.tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [uri.asciiHost]);
+
+							ret = Perspectives.queryNotaries(uri, notaries, ti.await_obj.publish_serverresultlist);
+						} else {
+							Pers_debug.d_print("main", "Don't contact notaries in private browsing mode.");
+							ti.state   = Pers_statusbar.STATE_NEUT;
+							ti.tooltip = Perspectives.strbundle.getString("privateBrowsingQueriesDisabled");
+						}
+					} else {
+						if(ti.has_user_permission) {
+							Pers_debug.d_print("main", "Contacting notaries because user gave permission before.");
+							ti.state   = Pers_statusbar.STATE_QUERY;
+							ti.tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [uri.asciiHost]);
+
+							ret = Perspectives.queryNotaries(uri, notaries, ti.await_obj.publish_serverresultlist);
+						}
+						else {
+							Pers_debug.d_print("main", "Don't contact notaries because we need user permission.");
+							ti.state   = Pers_statusbar.STATE_NEUT;
+							ti.tooltip = Perspectives.strbundle.getString("needsPermission");
+
+							Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_NEEDS_PERMISSION);
+							ti.last_banner_type = Pers_notify.TYPE_NEEDS_PERMISSION;
+						}
+					}
+				} else {
+					Pers_debug.d_print("main", "List of notaries is empty.");
+					ti.state   = Pers_statusbar.STATE_NEUT;
+					ti.tooltip = Perspectives.strbundle.getString("listOfNotariesIsEmpty");
+				}
+			} else {
+				Pers_debug.d_print("main", uri.asciiHost + " doesn't need a request. Using cached results.");
+				ti.state   = Pers_statusbar.STATE_NEUT;
+				ti.tooltip = uri.asciiHost + " doesn't need a request. Using cached results."; // TODO: localization
+
+				setTimeout(function() {
+					Pers_debug.d_print("main", "Publish server_result_list in query_notaries_by_tabinfo_IO() cached.");
+					ti.await_obj.publish_serverresultlist(ti.query_results.server_result_list);
+				}, 0); // simulate asynchronous call to make behaviour consistent
+			}
+
+			return ret;
+		},
+		onSecurityChange    : function(aBrowser, aWebProgress, aRequest, aState) {
+			Pers_debug.d_print("main", "onSecurityChange( " +
+				"aBrowser"      + (aBrowser     != null ? ".currentURI=" + aBrowser.currentURI.asciiHost     : "=" + null)                                   + ", " +
+				"aWebProgress"  + (aWebProgress != null ? ".currentURI=" + aWebProgress.currentURI.asciiHost : "=" + null)                                   + ", " +
+				"aRequest"      + (aRequest     != null ? (aRequest.URI != null ? ".URI=" + aRequest.URI.asciiHost : ".name=" + aRequest.name) : "=" + null) + ", " +
+				"aState="       + aState                                                                                                                     + ")"
+			);
+
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
 			}
 
-			try {
-				Pers_debug.d_print("main", "Location change " + aURI.spec);
-				var state = Pers_statusbar.STATE_NEUT;
-				var tooltip = "Perspectives";
+			if(aWebProgress.currentURI != null && aWebProgress.currentURI.asciiHost !== "") {
+				var uri = aWebProgress.currentURI;
+				var ti = null;
 
-				if(aURI != null && aURI.scheme === 'https') {
-					// we'll actually send a query for https connections, so update the UI.
-					state = Pers_statusbar.STATE_QUERY;
-					// use the asciiHost: sometimes the host contains invalid characters, or is unset.
-					// in those cases getFormattedString() will throw an exception,
-					// which causes the error icon to be displayed.
-					tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
-						[aURI.asciiHost]);
-					// TODO: can we start sending the query from right here, to begin sooner?
+				var redirect = _.findWhere(Perspectives.redirects, {webprogress : aWebProgress});
+				if(redirect != null) {
+					Perspectives.redirects.splice(_.indexOf(Perspectives.redirects, redirect), 1);
+					ti = Perspectives.getCurrentTabInfo(redirect.uri);
+					ti.service_id = Perspectives.getServiceId(uri);
+
+					Pers_debug.d_print("main", "Redirect detected from " + ti.service_id_original + " to " + ti.service_id + ".");
+				} else {
+					ti = Perspectives.getCurrentTabInfo(uri);
 				}
-				Pers_statusbar.setStatus(aURI, state, tooltip);
-			} catch(err) {
-				Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
-				Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR,
-					Perspectives.strbundle.getFormattedString("internalError", ["onLocationChange - " + err]));
-			}
-   		},
 
-   		// we only call updateStatus on STATE_STOP, as a catch all in case
-   		// onSecurityChange was never called.
-   		onStateChange: function(aWebProgress, aRequest, aFlag, aStatus) {
-			if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) {
 				try {
-					var uri = window.gBrowser.currentURI;
-					Pers_debug.d_print("main", "State change " + uri.spec);
-					Perspectives.updateStatus(window,false);
-				} catch (err) {
-					if(Perspectives.strbundle == null) {
-						Perspectives.strbundle = document.getElementById("notary_strings");
-					}
+					if(uri.scheme === 'https') {
+						// TODO (lambdor): the Perspectives.recentSSLStatus state variable can probably be removed and solved in a cleaner way.
+						// This was just a dirty hotfix to make 4.6 work with FF33 again thus I leave it like this for now.
+						// But as I see it we could just pass aWebProgress along and read the actual SSLStatus, removing getCertificate entirely.
+						Perspectives.recentSSLStatus = aWebProgress.securityInfo.QueryInterface(Ci.nsISSLStatusProvider).SSLStatus;
+						
+						// TODO: "there is a bug that causes getting the cert from another tab" => check if still the case
+						var cert = Perspectives.getCertificate(aBrowser);
+						if(cert) {
+							ti.is_override_cert = Perspectives.overrideService.isCertUsedForOverrides(cert, true, true);
 
-					Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
-					Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR,
-						Perspectives.strbundle.getFormattedString("internalError", ["onStateChange - " + err]));
-				  }
+							// see if the browser has this cert installed prior to this browser session
+							// seems like we can't tell the difference between an exception added by the user
+							// manually and one we installed permanently during a previous browser run.
+							ti.already_trusted = !(aBrowser.securityUI.state & Perspectives.state.STATE_IS_INSECURE) && !ti.is_override_cert;
+
+							Pers_debug.d_print("main", "is_override_cert=" + ti.is_override_cert + ", already_trusted=" + ti.already_trusted);
+
+							var is_whitelisted = Perspectives.is_whitelisted_by_user(uri.host);
+							if(!is_whitelisted) {
+								if(ti.await_obj == null) {
+									// don't change the _.partial(Perspectives.process_results_main, ti) part
+									// this will later be used for embedded content processing
+									ti.await_obj = Perspectives.await_serverresultlist_and_cert(uri, _.partial(Perspectives.process_results_main, ti));
+								}
+
+								if(!ti.await_obj.is_stopped()) {
+									var check_good = Perspectives.root_prefs.getBoolPref("perspectives.check_good_certificates");
+									if(!check_good && !ti.already_trusted) {
+										Pers_debug.d_print("main", "query_notaries_by_tabinfo_IO() in onSecurityChange() now that a certificate security error exists.");
+										ti.state   = Pers_statusbar.STATE_QUERY;
+										ti.tooltip = Perspectives.strbundle.getString("noProbeRequestedError");
+
+										ti.query_publish_cert = Perspectives.notaryListener.query_notaries_by_tabinfo_IO(uri, ti, aBrowser);
+									}
+
+									Pers_debug.d_print("main", "Publish cert in onSecurityChange(). state is: " + ti.state);
+									var security_state = aBrowser.securityUI.state;
+									ti.await_obj.publish_cert(aBrowser, cert, security_state);
+
+									var q_required = Perspectives.getQuorumAsInt();
+									var required_duration = Perspectives.root_prefs.getIntPref("perspectives.required_duration");
+									ti.query_publish_cert(cert, q_required, required_duration);
+								}
+							} else {
+								Pers_debug.d_print("main", uri.asciiHost + " is whitelisted");
+								ti.state   = Pers_statusbar.STATE_WHITELIST;
+								ti.tooltip = Perspectives.strbundle.getFormattedString("configuredToWhitelistWithHost", [uri.asciiHost]);
+
+								if(!ti.already_trusted && !ti.is_override_cert) {
+									Pers_debug.d_print("main", "Override certificate security error.");
+									var isTemp = !Perspectives.root_prefs.getBoolPref("perspectives.exceptions.permanent");
+
+									setTimeout(function() {
+										var flags = Perspectives.do_override(cert, uri, isTemp);
+										if(flags) {
+											Perspectives.setFaviconText(ti.tooltip);
+											Pers_notify.do_notify(gBrowser, ti.last_banner_type, Pers_notify.TYPE_WHITELIST);
+											ti.last_banner_type = Pers_notify.TYPE_WHITELIST;
+											aBrowser.loadURIWithFlags(uri.spec, flags);
+										}
+									}, 0);
+								}
+							}
+						} else {
+							Pers_debug.d_print("main", "No certificate provided for " + uri.asciiHost);
+							ti.state   = Pers_statusbar.STATE_NEUT;
+							ti.tooltip = Perspectives.strbundle.getFormattedString("noCertError", [uri.asciiHost]);
+						}
+					} else {
+						Pers_debug.d_print("main", uri.asciiHost + " has non-HTTPS scheme '" + uri.scheme + "', so don't query.");
+						ti.state   = Pers_statusbar.STATE_NEUT;
+						ti.tooltip = Perspectives.strbundle.getFormattedString("nonHTTPSError", [uri.asciiHost, uri.scheme]);
+					}
+				} catch(err) {
+					ti.state   = Pers_statusbar.STATE_ERROR;
+					ti.tooltip = Perspectives.strbundle.getFormattedString("internalError", ["onSecurityChange - " + err]);
 				}
-  		},
 
-  		// this is the main function we key off of.  It seems to work well, even though
-  		// the docs do not explicitly say when it will be called.
-  		onSecurityChange: function() {
-			var uri = null;
-			try{
-				uri = window.gBrowser.currentURI;
-				Pers_debug.d_print("main", "Security change " + uri.spec);
-				Perspectives.updateStatus(window,false);
-			} catch(err) {
-				Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
-				if(uri) {
+				Pers_debug.d_print("main", "Set status in onSecurityChange().");
+				Pers_statusbar.setStatus(ti.state, ti.tooltip);
+			}
+		},
+		onStateChange       : function(aBrowser, aWebProgress, aRequest, aStateFlags, aStatus) {
+			Pers_debug.d_print("main", "onStateChange   ( " +
+				"aBrowser"     + (aBrowser     != null ? ".currentURI=" + aBrowser.currentURI.asciiHost     : "=" + null)                                                      + ", " +
+				"aWebProgress" + (aWebProgress != null ? ".currentURI=" + aWebProgress.currentURI.asciiHost : "=" + null)                                                      + ", " +
+				"aRequest"     + (aRequest     != null ? (aRequest.URI != null ? ".URI=" + aRequest.URI.asciiHost : ".name=" + aRequest.name) : "=" + null)                    + ", " +
+				"aStateFlags=" + (aStateFlags & Ci.nsIWebProgressListener.STATE_START ? "START" : (aStateFlags & Ci.nsIWebProgressListener.STATE_STOP ? "STOP" : aStateFlags)) + ", " +
+				"aStatus="     + aStatus                                                                                                                                       + ")"
+			);
+
+			if(aRequest.URI != null && aRequest.URI.asciiHost !== "") {
+				var uri = aRequest.URI;
+				var ti = Perspectives.getCurrentTabInfo(uri);
+
+				if(aStateFlags & Ci.nsIWebProgressListener.STATE_START) {
 					if(Perspectives.strbundle == null) {
 						Perspectives.strbundle = document.getElementById("notary_strings");
 					}
 
-					Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR,
-						Perspectives.strbundle.getFormattedString("internalError", ["onSecurityChange - " + err]));
+					try {
+						if(uri.scheme === 'https') {
+							var is_routed = !Perspectives.is_nonrouted_ip(uri.host);
+							if(is_routed) {
+								var is_whitelisted = Perspectives.is_whitelisted_by_user(uri.host);
+								if(!is_whitelisted) {
+									if(ti.await_obj == null) {
+										var query_immediately = Perspectives.root_prefs.getBoolPref("perspectives.check_good_certificates");
+										if(query_immediately) {
+											// don't change the _.partial(Perspectives.process_results_main, ti) part
+											// this will later be used for embedded content processing
+											ti.await_obj = Perspectives.await_serverresultlist_and_cert(uri, _.partial(Perspectives.process_results_main, ti));
+
+											Perspectives.redirects.push({webprogress: aWebProgress, uri: uri});
+
+											// only query when no await_obj exists
+											// otherwise this would trigger an infinite loop of do_override -> onStateChange events
+											// if the site has been verified before
+											Pers_debug.d_print("main", "query_notaries_by_tabinfo_IO() in onStateChange().");
+											ti.query_publish_cert = Perspectives.notaryListener.query_notaries_by_tabinfo_IO(uri, ti, aBrowser);
+										} else {
+											Pers_debug.d_print("main", "Don't query notaries already because user preference is set to wait for certificate security error.");
+											ti.state   = Pers_statusbar.STATE_NEUT;
+											ti.tooltip = Perspectives.strbundle.getString("noProbeRequestedError");
+										}
+									} else {
+										Pers_debug.d_print("main", "Query notaries already started so don't query again.");
+										// leave state and tooltip untouched
+									}
+								} else {
+									Pers_debug.d_print("main", uri.asciiHost + " is whitelisted. Certificate security error will be overriden once we retrieved the cert in onSecurityChange.");
+									ti.state   = Pers_statusbar.STATE_WHITELIST;
+									ti.tooltip = Perspectives.strbundle.getFormattedString("configuredToWhitelistWithHost", [uri.asciiHost]);
+								}
+							} else {
+								Pers_debug.d_print("main", uri.asciiHost + " is not a non-routed IP (intranet).");
+								ti.state   = Pers_statusbar.STATE_NEUT;
+								ti.tooltip = Perspectives.strbundle.getFormattedString("rfc1918Error", [uri.asciiHost]);
+							}
+						} else {
+							Pers_debug.d_print("main", uri.asciiHost + " has non-HTTPS scheme '" + uri.scheme + "', so don't query.");
+							ti.state   = Pers_statusbar.STATE_NEUT;
+							ti.tooltip = Perspectives.strbundle.getFormattedString("nonHTTPSError", [uri.asciiHost, uri.scheme]);
+						}
+					} catch(err) {
+						Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
+						ti.state   = Pers_statusbar.STATE_ERROR;
+						ti.tooltip = Perspectives.strbundle.getFormattedString("internalError", ["onStateChange - " + err]);
+					}
+
+					Pers_debug.d_print("main", "Set status in onStateChange().");
+					Pers_statusbar.setStatus(ti.state, ti.tooltip);
+				} else if(aStateFlags & Ci.nsIWebProgressListener.STATE_STOP) {
+					if(ti.await_obj.is_stopped()) {
+						ti.await_obj = null;
+					}
 				}
 			}
-  		},
-
-		onStatusChange     : function() { },
-		onProgressChange   : function() { },
-		onLinkIconAvailable: function() { }
+		}
 	},
 
-	requeryAllTabs: function(b) {
-		/*
-		alert("requeryAllTabs is disabled");
-		var num = b.browsers.length;
-		for(var i = 0; i < num; i++) {
-			var browser = b.getBrowserAtIndex(i);
-			Perspectives.updateStatus(window,false);
-		}
-		*/
+	await_serverresultlist_and_cert: function(uri, process_callback) {
+		return (function() {
+			var server_result_list_  = null;
+			var browser_             = null;
+			var cert_                = null;
+			var security_state_      = null;
+			var is_stopped           = false;
+
+			return { publish_serverresultlist: function(server_result_list) {
+				if(!is_stopped) {
+					if(server_result_list != null) {
+						server_result_list_ = server_result_list;
+					}
+
+					if(server_result_list_ != null && browser_ != null && cert_ != null && security_state_ != null) {
+						this.stop(); // TODO: for some reason onSecurityChange is called twice so only call once
+
+						// publish_serverresultlist is already called as asynchronous request
+						Pers_debug.d_print("main", "Calling notaryQueriesComplete() in publish_serverresultlist().");
+						Perspectives.notaryQueriesComplete(uri, server_result_list_, cert_, _.partial(process_callback, browser_, security_state_));
+					}
+				}
+			}, publish_cert: function(browser, cert, security_state) {
+				if(!is_stopped) {
+					if(browser != null && cert != null && security_state != null) {
+						browser_ = browser;
+						cert_ = cert;
+						security_state_ = security_state;
+					}
+
+					if(server_result_list_ != null && browser_ != null && cert_ != null && security_state_ != null) {
+						// this may call process_results_main within onSecurityChange which may override ti.state and ti.tooltip
+						// thus make it asychnchronous
+						// TODO: remove asynchronous call once UI changes are extracted from process_results_main
+						this.stop();
+						setTimeout(function() {
+							Pers_debug.d_print("main", "Calling notaryQueriesComplete() in publish_cert().");
+							Perspectives.notaryQueriesComplete(uri, server_result_list_, cert_, _.partial(process_callback, browser_, security_state_));
+						}, 0);
+					}
+				}
+			}, stop: function() {
+				is_stopped = true;
+			}, is_stopped: function() {
+				return is_stopped;
+			}
+			};
+		})();
 	},
 
 	initNotaries: function() {
 		try {
-			Pers_debug.d_print("main", "\nPerspectives Initialization\n");
+			Pers_debug.d_print("main", "Perspectives Initialization");
 
 			var auto_update = this.root_prefs.getBoolPref("perspectives.enable_default_list_auto_update");
 			if(auto_update) {
-				Pers_util.update_default_notary_list_from_web(this.root_prefs);
+				Pers_util.update_default_notary_list_from_web (this.root_prefs);
 			} else {
 				Pers_util.update_default_notary_list_from_file(this.root_prefs);
 			}
-			Pers_debug.d_print("main", Perspectives.notaries);
-			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
-			getBrowser().addProgressListener(Perspectives.notaryListener,
-			Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
-			setTimeout(function() { Perspectives.requeryAllTabs(gBrowser); }, 4000);
-			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
+			Pers_debug.d_print("main", _.pluck(Perspectives.getNotaryList(), "host").join("\n"));
+
+			window.gBrowser.addTabsProgressListener(Perspectives.notaryListener);
+
+			// https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Tabbed_browser#Notification_when_a_tab_is_added_or_removed
+			window.gBrowser.tabContainer.addEventListener("TabOpen"  , function(event) {
+				var uri = gBrowser.getBrowserForTab(event.target).currentURI;
+				Pers_debug.d_print("main", "TabOpen '" + uri.asciiHost + "'");
+				if(uri != null && uri.asciiHost !== "") {
+					var ti = Perspectives.getCurrentTabInfo(uri);
+					Pers_statusbar.setStatus(ti.state, ti.tooltip);
+				} else {
+					Pers_statusbar.setStatus(Pers_statusbar.STATE_NEUT);
+				}
+			});
+			window.gBrowser.tabContainer.addEventListener("TabSelect", function(event) {
+				var uri = gBrowser.getBrowserForTab(event.target).currentURI;
+				Pers_debug.d_print("main", "TabSelect '" + uri.asciiHost + "'");
+				if(uri != null && uri.asciiHost !== "") {
+					var ti = Perspectives.getCurrentTabInfo(uri);
+					Pers_statusbar.setStatus(ti.state, ti.tooltip);
+				}
+			}, false);
+
+			Pers_debug.d_print("main", "Perspectives finished initialization.");
 		} catch(e) {
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
@@ -1049,22 +1066,17 @@ var Perspectives = {
 		}
 	},
 
-	detectInvalidURI : function(win) {
+	detectInvalidURI: function(uri) {
 		if(Perspectives.strbundle == null) {
 			Perspectives.strbundle = document.getElementById("notary_strings");
 		}
 
-		if(!win.gBrowser) {
-			Pers_debug.d_print("error","No Browser!!\n");
-			return Perspectives.strbundle.getString("noBrowserObject");
-		}
-
-		var uri = win.gBrowser.currentURI;
 		if(!uri) {
 			return Perspectives.strbundle.getString("noDataError");
 		}
 
 		// sometimes things blow up because accessing uri.host throws an exception
+		// TODO: is this still true? -- lambdor
 		try {
 			var ignore = uri.host;
 			if(!uri.host) {
@@ -1076,48 +1088,70 @@ var Perspectives = {
 		return null;
 	},
 
-	getCurrentTabInfo : function(win) {
-		var uri = win.gBrowser.currentURI;
-		var port = (uri.port == -1) ? 443 : uri.port;
-		var service_id = uri.host + ":" + port + ",2";
+	getCurrentTabInfo: function(uri) {
+		var ti_cached = _.find(Perspectives.tab_info_cache, function(ti) {
+			var service_id = Perspectives.getServiceId(uri);
+			return (ti.service_id === service_id || ti.service_id_original === service_id);
+		});
 
-		var ti = Perspectives.tab_info_cache[service_id];
-		if(!ti) {
-			ti = {};
+		var ti = {};
+		if(ti_cached) {
+			ti = ti_cached;
+			ti.is_cached = true;
+		} else {
 			// defaults
-			ti.firstLook = true;
-			ti.override_used = false;
+			ti.is_override_cert    = false;
+			ti.already_trusted     = false;
 			ti.has_user_permission = false;
-			ti.last_banner_type = null;
-			Perspectives.tab_info_cache[service_id] = ti;
-			ti.is_cached = false;
+			ti.last_banner_type    = null;
+			ti.state               = Pers_statusbar.STATE_NEUT;
+			ti.tooltip             = "";
+			ti.query_results       = null; // SslCert
+			ti.await_obj           = null; // we can start querying already in onStateChange but still have to wait for cert in onSecurityChange
+			ti.query_publish_cert  = null; // cert is not yet known in onStateChange but we stop querying when quorum is reached.
+			ti.service_id          = Perspectives.getServiceId(uri);
+			ti.service_id_original = ti.service_id; // in case of redirect
+			Perspectives.tab_info_cache.push(ti);
+			ti.is_cached           = false;
 		}
-		ti.uri = uri;
-		ti.host = uri.host;
-		ti.service_id = service_id;
-		ti.browser = win.gBrowser;
-		ti.reason_str = "";
 		return ti;
 	},
 
-	forceStatusUpdate : function(win) {
+	force_status_update: function(browser) {
 		if(Perspectives.strbundle == null) {
 			Perspectives.strbundle = document.getElementById("notary_strings");
 		}
-		var error_text = Perspectives.detectInvalidURI(win);
+
+		var uri = browser.currentURI;
+		var error_text = Perspectives.detectInvalidURI(uri);
 		if(error_text) {
-			Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI")
-				+ " (" + error_text + ")");
+			Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI") + " (" + error_text + ")");
 			return;
 		}
-		var ti = Perspectives.getCurrentTabInfo(win);
+		var ti = Perspectives.getCurrentTabInfo(uri);
 		if(ti) {
-			Pers_debug.d_print("main", "Forced request, clearing cache for '" + ti.uri.host + "'");
-			delete ti.query_results;
+			Pers_debug.d_print("main", "Forced request, clearing cache for '" + uri.asciiHost + "'");
 			ti.has_user_permission = true; // forcing a check is implicit permission
-			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY,
-				Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [ ti.uri.host ]));
-			Perspectives.updateStatus(win, true);
+			ti.query_results       = null;
+
+			ti.state   = Pers_statusbar.STATE_QUERY;
+			ti.tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [uri.asciiHost]);
+			Pers_debug.d_print("main", "Set status in force_status_update().");
+			Pers_statusbar.setStatus(ti.state, ti.tooltip);
+
+			var cert = Perspectives.getCertificate(browser);
+			var security_state = browser.securityUI.state;
+
+			if(ti.await_obj != null) {
+				ti.await_obj.stop();
+			}
+			ti.await_obj = Perspectives.await_serverresultlist_and_cert(uri, _.partial(Perspectives.process_results_main, ti));
+			ti.await_obj.publish_cert(browser, cert, security_state);
+			ti.query_publish_cert = Perspectives.queryNotaries(uri, Perspectives.getNotaryList(), ti.await_obj.publish_serverresultlist);
+
+			var q_required = Perspectives.getQuorumAsInt();
+			var required_duration = Perspectives.root_prefs.getIntPref("perspectives.required_duration");
+			ti.query_publish_cert(cert, q_required, required_duration);
 		} else {
 			Pers_debug.d_print("main", "Requested force check with valid URI, but no tab_info is found");
 		}
@@ -1129,28 +1163,22 @@ var Perspectives = {
 	// ask them if they would now prefer to check all https websites.
 	prompt_update: function() {
 		try {
-			//NOTE: Firefox pre-defines Cc and Ci, but SeaMonkey does not.
-			//We create local variables here so SeaMonkey clients don't throw 'variable is not defined' exceptions
-			const Cc = Components.classes, Ci = Components.interfaces;
-
 			//'prompt_update_all_https_setting' stores a value for "have we already asked the user about this?"
 			var ask_update = Perspectives.root_prefs.
-	                getBoolPref("perspectives.prompt_update_all_https_setting");
+				getBoolPref("perspectives.prompt_update_all_https_setting");
 
 			if(ask_update === true) {
-
 				var check_good = Perspectives.root_prefs.
-						getBoolPref("perspectives.check_good_certificates");
+					getBoolPref("perspectives.check_good_certificates");
 
 				if(!check_good) {
-
 					var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-							.getService(Components.interfaces.nsIPromptService);
-					var check = {value:false};
+						.getService(Ci.nsIPromptService);
+					var check = {value: false};
 					var buttons =
-							prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_IS_STRING
-							+ prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING
-							+ prompts.BUTTON_POS_0_DEFAULT;
+						prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_IS_STRING +
+							prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING +
+							prompts.BUTTON_POS_0_DEFAULT;
 
 					if(Perspectives.strbundle == null) {
 						Perspectives.strbundle = document.getElementById("notary_strings");
@@ -1165,12 +1193,12 @@ var Perspectives = {
 					if(answer === 0) {
 						Perspectives.root_prefs.
 							setBoolPref("perspectives.check_good_certificates",
-										true);
+								true);
 					}
 				}
 			}
 		}
-		catch (e) {
+		catch(e) {
 			Pers_debug.d_print("error", "Error: could not prompt to update preferences about check_good_certificates: " + e);
 		}
 		finally {
@@ -1178,9 +1206,8 @@ var Perspectives = {
 			//this way even in the worst case the user will only get a popup once.
 			//they can always change their preferences later through the prefs dialog if they wish.
 			Perspectives.root_prefs.
-						setBoolPref("perspectives.prompt_update_all_https_setting",
-									false);
+				setBoolPref("perspectives.prompt_update_all_https_setting",
+					false);
 		}
 	}
 };
-

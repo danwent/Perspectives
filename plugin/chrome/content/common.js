@@ -45,12 +45,12 @@ var Pers_debug = {
 			/* ignore, this will blow up if Firebug is not installed */
 		}
 	}
-}
+};
 
 var Pers_util = {
 	get_unix_time: function() {
 		var unixtime_ms = (new Date()).getTime(); // Returns milliseconds since the epoch
-		return parseInt(unixtime_ms / 1000);
+		return Math.round(unixtime_ms / 1000);
 	},
 
 	SEC2DAY: function(sec) { return sec / (3600 * 24); },
@@ -88,7 +88,7 @@ var Pers_util = {
 		}
 
 		for(var i = 0; i < start_arr.length; i++) {
-			if (start_arr[i].length > 0 && start_arr[i][0] != "#") {
+			if(start_arr[i].length > 0 && start_arr[i][0] !== "#") {
 				// ignore lines that contain only whitespace -
 				// makes the file easier to parse cross-platform
 				if (/^\s+$/g.test(start_arr[i]) === false) {
@@ -116,7 +116,7 @@ var Pers_util = {
 			while (i < filtered_arr.length && filtered_arr[i].indexOf(end_string) === -1) {
 				key += filtered_arr[i];
 				i += 1;
-				if(i == filtered_arr.length) {
+				if(i === filtered_arr.length) {
 					throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
 						' - ' +  Pers_util.notarystr.getFormattedString("couldNotFindLine", [ end_string ]));
 				}
@@ -167,19 +167,18 @@ var Pers_util = {
 
 	// stolen from: http://stackoverflow.com/questions/130404/javascript-data-formatting-pretty-printer
 	pretty_print_json : function(obj, indent) {
-
-		function IsArray(array) { return !( !array || (!array.length || array.length == 0) || typeof array !== 'object' || !array.constructor || array.nodeType || array.item ); }
-
   		var result = "";
-  		if (indent == null) indent = "";
+  		if(indent == null) { indent = ""; }
 
   		for (var property in obj){
+			if(obj.hasOwnProperty(property)) {
     			var value = obj[property];
 			var txt = "<unknown type>";
 			var t = typeof value;
-    			if (t == 'string' || t == 'boolean' || t == 'number')
+    			if(t === 'string' || t === 'boolean' || t === 'number') {
       				txt = "'" + value + "'";
-    			else if (t == 'object'){
+				}
+    			else if(t === 'object') {
       			/*	if (IsArray(value)){
         				txt = "[ \n";
 					//alert("array " + property + " has length " + obj[property].length);
@@ -199,6 +198,7 @@ var Pers_util = {
       				}
     			}
     			result += indent + "'" + property + "' : " + txt + ",\n";
+  		}
   		}
   		return result.replace(/,\n$/, "");
 	},
@@ -247,7 +247,6 @@ var Pers_util = {
 			Pers_util.pers_alert(Perspectives.strbundle.
 				getFormattedString("updateDefaultListWebError", [e]));
 		}
-
 	},
 
 	update_default_notary_list_from_file : function(root_prefs) {
@@ -297,7 +296,7 @@ var Pers_util = {
 			Pers_util.pers_alert("error opening link: " + e);
 		}
 	}
-}
+};
 
 var Pers_keypress = {
 
@@ -315,4 +314,4 @@ var Pers_keypress = {
         }
         return true;
     }
-}
+};

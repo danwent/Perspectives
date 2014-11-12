@@ -16,12 +16,12 @@
   </stringbundleset>
 
   <groupbox minheight="400">
-  <description> 
+  <description>
     &ReportAttackMessage;
  </description>
-  <radiogroup 
-    id      = "full-radio" 
-    orient  = "horizontal" 
+  <radiogroup
+    id      = "full-radio"
+    orient  = "horizontal"
     onclick = 'Pers_report.refresh_report_dialog()'>
     <radio  label="&SendFullReport;" selected="true" />
     <radio  label="&SendPrivacyReport;" />
@@ -34,16 +34,16 @@
       value     = ""/>
     <label value="&Optional;: &AdditionalInfoMessage;" />
     <textbox id = "additional-info"
-      multiline = "true" 
+      multiline = "true"
       flex      = "1"
       onblur    = "Pers_report.refresh_report_dialog()"
       value     = ""/>
     <groupbox minheight="200">
     <checkbox hidden="true" label="&ShowDetailedReportText;" id="show_full" checked="true"
-	oncommand="Pers_report.refresh_report_dialog()" /> 
-    <label id="full-text-label" /> 
+	oncommand="Pers_report.refresh_report_dialog()" />
+    <label id="full-text-label" />
     <textbox id = "full-text"
-      multiline = "true" 
+      multiline = "true"
       readonly  = "true"
       flex      = "1"
       value     = ""/>
@@ -56,9 +56,10 @@
     </hbox>
   </groupbox>
 
-    <script type="application/x-javascript" src="common.js"/>
-    <script type="application/x-javascript" src="notaries.js"/>
-    <script type="application/x-javascript" src="report.js"/>
+    <script type="application/x-javascript" src="common.js"></script>
+    <script type="application/x-javascript" src="notaries.js"></script>
+    <script type="application/x-javascript" src="report.js"></script>
+    <script type="application/x-javascript" src="extlib/underscore-min.js"></script>
 
 </window>
 

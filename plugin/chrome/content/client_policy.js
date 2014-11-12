@@ -28,6 +28,7 @@ sort_number_list_desc : function(list) {
 	list.sort(sortNumber);
 },
 
+
 find_key_at_time : function(server_results, desired_time) {
 	for(var i = 0; i < server_results.obs.length; i++) {
 		var cur_obs = server_results.obs[i];
@@ -62,7 +63,7 @@ find_most_recent : function(server_results) {
 // returns the date (in seconds since the epoch) of the oldest possible valid key we should use.
 // any keys older than that won't be trusted.
 find_oldest_most_recent : function(results, stale_limit_secs, cur_time) {
-	var stale_limit        = cur_time - stale_limit_secs;
+	var stale_limit = cur_time - stale_limit_secs;
 	var oldest_most_recent = cur_time + stale_limit_secs;
 	for(var i = 0; i < results.length; i++) {
 		var most_recent = Pers_client_policy.find_most_recent(results[i]);
@@ -75,6 +76,7 @@ find_oldest_most_recent : function(results, stale_limit_secs, cur_time) {
 	return oldest_most_recent;
 },
 
+
 // counts the number of notaries that have results within the allowed time range
 get_num_valid_notaries: function(test_key, results, stale_limit_secs, cur_time) {
 	var stale_limit = cur_time - stale_limit_secs;
@@ -86,7 +88,7 @@ get_num_valid_notaries: function(test_key, results, stale_limit_secs, cur_time) 
 			continue;
 		}
 		var cur_key = Pers_client_policy.find_key_at_time(results[i], mr_time);
-		Pers_debug.d_print("policy", "cur_key  : " + cur_key );
+		Pers_debug.d_print("policy", "cur_key : " + cur_key);
 		Pers_debug.d_print("policy", "test_key : " + test_key);
 		if(cur_key === test_key) {
 			Pers_debug.d_print("policy", "match for server: " +
@@ -106,14 +108,14 @@ get_all_key_changes : function(results) {
 			for(var k = 0; k < results[i].obs[j].timestamps.length; k++) {
 				var ts = results[i].obs[j].timestamps[k];
 				change_set[ts.start] = "";
-				change_set[ts.end  ] = "";
+				change_set[ts.end] = "";
 			}
 		}
 	}
 	var change_list = [];
 	for(var x in change_set) {
 		if(change_set.hasOwnProperty(x)) {
-			change_list.push(parseInt(x, 10));
+			change_list.push(x);
 		}
 	}
 	return change_list;
@@ -148,10 +150,12 @@ has_quorum_at_time : function(test_key, results, quorum_size, time) {
 		var cur_key = Pers_client_policy.find_key_at_time(results[i], time);
 		if(cur_key == null) {
 			Pers_debug.d_print("policy", results[i].server + " has no key");
-		} else if(cur_key === test_key) {
+			continue;
+		}
+		if(cur_key === test_key) {
 			Pers_debug.d_print("policy", results[i].server + " matched");
 			total_valid++;
-		} else {
+		}else {
 			Pers_debug.d_print("policy", results[i].server +
 				" had different key: " + cur_key);
 		}
@@ -159,21 +163,23 @@ has_quorum_at_time : function(test_key, results, quorum_size, time) {
 	return total_valid >= quorum_size;
 } ,
 
+
 // returns duration in seconds - i.e. days * 24 * 3600.
 get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs, unixtime) {
+
 	if(quorum_size < 1) {
 		Pers_debug.d_print("error", "ERROR: quorum size cannot be less than 1.");
 		return 0;
 	}
 
-	if(!Pers_client_policy.check_current_consistency(test_key, results, quorum_size,
+	if(! Pers_client_policy.check_current_consistency(test_key, results, quorum_size,
 					stale_limit_secs, unixtime)) {
 		Pers_debug.d_print("policy", "current_consistency_failed");
 		return -1;
 	}
-	var oldest_valid_ts    = unixtime;
+	var oldest_valid_ts = unixtime;
 	var oldest_most_recent = Pers_client_policy.find_oldest_most_recent(results, stale_limit_secs, unixtime);
-  	var time_changes       = Pers_client_policy.get_all_key_changes(results);
+  	var time_changes = Pers_client_policy.get_all_key_changes(results);
 	Pers_client_policy.sort_number_list_desc(time_changes);
 	Pers_debug.d_print("policy", "sorted times: " + time_changes);
   	var test_time = null;
@@ -184,7 +190,8 @@ get_quorum_duration : function(test_key, results, quorum_size, stale_limit_secs,
 			continue;
 		}
 		if(!Pers_client_policy.has_quorum_at_time(test_key, results, quorum_size, test_time)) {
-			Pers_debug.d_print("policy", "quorum failed for time " + test_time + ", key " + test_key);
+			Pers_debug.d_print("policy",
+				"quorum failed for time " + test_time + ", key " + test_key);
 			break;
 		}
 		oldest_valid_ts = test_time;
@@ -256,12 +263,12 @@ key_weakly_seen_by_quorum : function(test_key, results, quorum_size, check_lengt
 	return (seen_count >= quorum_size);
 },
 
+
 // return true if 'results' contains replies that are all 'inconsistent'.
 // inconsistent means:
 //   1) more than one key has been seen
 //   2) there was no timespan longer than 'max_timespan' in the last 'check_length' days
 inconsistency_check : function(results, max_timespan, check_length) {
-
 	if (max_timespan > check_length) {
 		Pers_debug.d_print("error",
 				"Inconsistency check max timespan '" + max_timespan +
@@ -269,17 +276,11 @@ inconsistency_check : function(results, max_timespan, check_length) {
 		return false;
 	}
 
-	var unique_keys = {}; 	
-	for(var i = 0; i < results.length; i++) {
-		for(var j = 0; j < results[i].obs.length; j++) { 
-			var k = results[i].obs[j].key; 
-			unique_keys[k] = ""; 
-		} 
-	}
-	var key_count = 0; 
-	for(var k in unique_keys) { 
-		key_count++; 
-	}  
+	var key_count = _.unique(_.map(results, function(r) {
+		_.map(r.obs, function(o) {
+			return o.key;
+		})
+	})).length;
 	if(key_count <= 1) {
 		return false;
 	}

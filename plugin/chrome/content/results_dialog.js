@@ -79,6 +79,7 @@ var Pers_results = {
 			var ti = win.Perspectives.getCurrentTabInfo(uri);
 			var query_results  = ti.query_results;
 			host.label = ti ? uri.host + ": " + Pers_results.getActionStr(uri, ti) : uri.host;
+			host.label += (ti.is_cached ? " " + Pers_results.strbundle.getString("cachedResults") : "");
 
 			if(query_results) {
 				info.value  = query_results.summary;

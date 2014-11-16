@@ -234,6 +234,7 @@ var Perspectives = {
 		return cert;
 	},
 
+	// [{host: "example.com:8080", public_key: "base64string"}]
 	getNotaryList: function() {
 		var ret = [];
 		try {
@@ -253,16 +254,17 @@ var Perspectives = {
 			} catch(e) {
 				Pers_debug.d_print("error", "Error parsing default notaries: " + e);
 			}
+		}
 		return ret;
 	},
 
-	queryNotaries: function(uri, notaries, publish_serverresultlist) {
+	queryNotaries: function(uri, notaries, publish_serverresultlist, signature_verifier) {
 		// Creates a new closure which has to be called for every reponse.
 		// The closure keeps track of the number of tries internally
 		// and calls the provided "processResults" callback when all requests are finished.
-		var query_notaries_closure = (function(notaries, uri, publish_serverresultlist) {
+		var query_notaries_closure = (function(notaries, uri, publish_serverresultlist, signature_verifier) {
 			var server_result_list = _.map(notaries, function(notary) {
-				return {server: notary.host, obs: []};
+				return {server: notary.host, obs: [], is_valid: false};
 			});
 
 			var cert_              = null;
@@ -275,11 +277,11 @@ var Perspectives = {
 			var timeout = function() {
 				Pers_debug.d_print("query", "timeout #" + (Perspectives.root_prefs.getIntPref("extensions.perspectives.query_retries") - num_tries) +
 					" querying for '" + timeout_id + "'");
-				Pers_debug.d_print("query", server_result_list);
 
+				num_tries--;
 				if(num_tries > 0) {
-					num_tries--;
-					timeout_id = setTimeout(timeout, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms"));
+					var timeout_ms = Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms");
+					timeout_id = setTimeout(timeout, timeout_ms);
 
 					var hostsTodo    = _.pluck(_.filter(server_result_list, function(server_result) {
 						return server_result.obs.length === 0;
@@ -287,87 +289,99 @@ var Perspectives = {
 					var notariesTodo = _.filter(notaries, function(notary) {
 						return _.contains(hostsTodo, notary.host);
 					});
+					Pers_debug.d_print("query", "Still need to query: " + _.pluck(notariesTodo, 'host') + " tab=" + uri.host + " timeout_ms=" + timeout_ms);
 					_.each(notariesTodo, function(notary) {
-						Perspectives.querySingleNotary(uri, notary.host, publish_server_result);
+						Perspectives.querySingleNotary(uri, notary, publish_server_result, signature_verifier);
 					});
 				}
 				else {
-					Pers_debug.d_print("main", "Publish server_result_list in query_notaries_closure() (timeout).");
+					Pers_debug.d_print("main", "Publish server_result_list in query_notaries_closure() (timed out).");
 					publish_serverresultlist(server_result_list);
 				}
 			};
 			timeout_id = setTimeout(timeout, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms"));
 
 			var publish_server_result = function(notary_host, new_server_result) {
-					if(num_tries > 0) {
-						if(new_server_result != null) {
-							var old_server_result = _.find(server_result_list, function(sr) {
-								return sr.server === notary_host;
-							});
-							if(old_server_result.obs.length === 0 && !old_server_result.is_valid) {
-								Pers_debug.d_print("query", "adding result from: " + notary_host);
-								old_server_result.obs      = new_server_result.obs;
-								old_server_result.is_valid = new_server_result.is_valid;
-							}
-							else {
-								Pers_debug.d_print("query",
-									"Ignoring duplicate or invalid reply for '" +
-										Perspectives.getServiceId(uri) + "' from '" +
-										new_server_result.server + "'");
-							}
+				if(timeout_id !== null) {
+					window.clearTimeout(timeout_id);
+				}
+
+				if(num_tries >= 0) {
+					if(new_server_result != null) {
+						var old_server_result = _.find(server_result_list, function(sr) {
+							return sr.server === notary_host;
+						});
+						if(old_server_result.obs.length === 0 || !old_server_result.is_valid) {
+							Pers_debug.d_print("query", "adding result from: " + notary_host);
+							old_server_result.obs      = new_server_result.obs;
+							old_server_result.is_valid = new_server_result.is_valid;
 						}
-
-						var strong_trust = false;
-						if(cert_ != null) {
-							// check current results against quorum
-							// TODO: extract as function
-							// code snippet taken from notaryQueriesComplete
-							var test_key = cert_.md5Fingerprint.toLowerCase();
-							var max_stale_sec = 2 * 24 * 3600; // 2 days (FIXME: make this a pref)
-							var unixtime = Pers_util.get_unix_time();
-							var quorum_duration = Pers_client_policy.get_quorum_duration(test_key,
-								server_result_list, q_required_, max_stale_sec, unixtime);
-							var is_cur_consistent = quorum_duration !== -1;
-							var qd_days = quorum_duration / (3600 * 24);
-
-							// code snippet taken from process_results_main
-							strong_trust = is_cur_consistent && (qd_days >= required_duration_);
-
-							if(strong_trust) {
-								Pers_debug.d_print("main", "Ermahgerd - Reached strong_trust already!");
-							}
-						}
-
-						// check if all notaries answered already
-						var num_finished = _.find(server_result_list, function(sr) {
-							return sr.obs.length > 0;
-						}).length;
-
-						if(strong_trust || num_finished === notaries.length) {
-							window.clearTimeout(timeout_id);
-							Pers_debug.d_print("main", "Publish server_result_list in query_notaries_closure() (all or quorum reached).");
-							publish_serverresultlist(server_result_list);
+						else {
+							Pers_debug.d_print("query",
+								"Ignoring duplicate or invalid reply for '" +
+									Perspectives.getServiceId(uri) + "' from '" +
+									new_server_result.server + "'");
 						}
 					}
-				};
+
+					var strong_trust = false;
+					if(cert_ != null) {
+						// check current results against quorum
+						// TODO: extract as function
+						// code snippet taken from notaryQueriesComplete
+						var test_key;
+						if (cert_.md5Fingerprint !== undefined) {
+							test_key = cert_.md5Fingerprint.toLowerCase();
+						}
+						else {
+							test_key = Perspectives.calculateMD5(cert_.getRawDER({}));
+						}
+
+						var max_stale_sec = 2 * 24 * 3600; // 2 days (FIXME: make this a pref)
+						var unixtime = Pers_util.get_unix_time();
+						var quorum_duration = Pers_client_policy.get_quorum_duration(test_key,
+							server_result_list, q_required_, max_stale_sec, unixtime);
+						var is_cur_consistent = quorum_duration !== -1;
+						var qd_days = quorum_duration / (3600 * 24);
+
+						// code snippet taken from process_results_main
+						strong_trust = is_cur_consistent && (qd_days >= required_duration_);
+					}
+
+					// check if all notaries answered already
+					var num_finished = _.filter(server_result_list, function(sr) {
+						return sr.obs.length > 0;
+					}).length;
+
+					if(strong_trust || num_finished === notaries.length) {
+						if(strong_trust && num_finished === notaries.length) {
+							Pers_debug.d_print("main", "Publish server_result_list in query_notaries_closure() (shortcircuited).");
+						} else {
+							Pers_debug.d_print("main", "Publish server_result_list in query_notaries_closure() (all results).");
+						}
+						publish_serverresultlist(server_result_list);
+						num_tries = -1;
+					}
+				}
+			};
 
 			var publish_cert = function(cert, q_required, required_duration) {
-					cert_              = cert;
-					q_required_        = q_required;
-					required_duration_ = required_duration;
-				};
+				cert_              = cert;
+				q_required_        = q_required;
+				required_duration_ = required_duration;
+			};
 
 			return { publish_server_result: publish_server_result, publish_cert: publish_cert };
-		})(notaries, uri, publish_serverresultlist);
+		})(notaries, uri, publish_serverresultlist, signature_verifier);
 
 		_.each(notaries, function(notary) {
-			Perspectives.querySingleNotary(uri, notary, query_notaries_closure.publish_server_result);
+			Perspectives.querySingleNotary(uri, notary, query_notaries_closure.publish_server_result, signature_verifier);
 		});
 
 		return query_notaries_closure.publish_cert;
 	},
 
-	querySingleNotary: function(uri, notary, publish_server_result) {
+	querySingleNotary: function(uri, notary, publish_server_result, signature_verifier) {
 		var full_url = notary.host +
 			"?host=" + uri.host + "&port=" + ((uri.port === -1) ? 443 : uri.port) + "&service_type=2&";
 		if(full_url.substring(0, 4) !== 'http') {
@@ -379,12 +393,12 @@ var Perspectives = {
 		var req = new XMLHttpRequest();
 		req.open("GET", full_url, true);
 		req.onreadystatechange = function() {
-			Perspectives.notaryAjaxCallback(req, notary, Perspectives.getServiceId(uri), publish_server_result);
+			Perspectives.notaryAjaxCallback(req, notary, Perspectives.getServiceId(uri), publish_server_result, signature_verifier);
 		};
 		req.send(null);
 	},
 
-	notaryAjaxCallback: function(req, notary, service_id, publish_server_result) {
+	notaryAjaxCallback: function(req, notary, service_id, publish_server_result, signature_verifier) {
 		if(req.readyState === 4) {
 			if(req.status === 200) {
 				try {
@@ -396,9 +410,9 @@ var Perspectives = {
 						pack_result_as_binary(server_result, service_id);
 					Pers_debug.d_print("querylarge",
 						Pers_xml.resultToString(server_result));
-					var verifier =
+					var verifier = signature_verifier == null ?
 						Cc["@mozilla.org/security/datasignatureverifier;1"].
-							createInstance(Ci.nsIDataSignatureVerifier);
+							createInstance(Ci.nsIDataSignatureVerifier) : signature_verifier;
 					var result = verifier.verifyData(bin_result,
 						server_result.signature, notary.public_key);
 					if(result && _.isArray(server_result.obs)) {
@@ -463,12 +477,13 @@ var Perspectives = {
 			Pers_debug.d_print("main", "all notary queries complete");
 
 			var test_key;
-			if (ti.cert["md5Fingerprint"] !== undefined) {
-				test_key = ti.cert.md5Fingerprint.toLowerCase();
+			if (cert.md5Fingerprint !== undefined) {
+				test_key = cert.md5Fingerprint.toLowerCase();
 			}
 			else {
-				test_key = this.calculateMD5(ti.cert.getRawDER({}));
-			}			// 2 days (FIXME: make this a pref)
+				test_key = Perspectives.calculateMD5(cert.getRawDER({}));
+			}
+
 			var max_stale_sec = 2 * 24 * 3600;
 			var q_required = Perspectives.getQuorumAsInt();
 			var unixtime = Pers_util.get_unix_time();
@@ -714,6 +729,7 @@ var Perspectives = {
 
 			if(ti.query_results == null) {
 				Pers_debug.d_print("main", uri.asciiHost + " needs a request");
+				ti.is_cached = false;
 
 				var notaries = Perspectives.getNotaryList();
 				if(notaries.length > 0) {
@@ -773,6 +789,7 @@ var Perspectives = {
 				}
 			} else {
 				Pers_debug.d_print("main", uri.asciiHost + " doesn't need a request. Using cached results.");
+				ti.is_cached = true;
 				ti.state   = Pers_statusbar.STATE_NEUT;
 				ti.tooltip = uri.asciiHost + " doesn't need a request. Using cached results."; // TODO: localization
 
@@ -816,8 +833,11 @@ var Perspectives = {
 						// TODO (lambdor): the Perspectives.recentSSLStatus state variable can probably be removed and solved in a cleaner way.
 						// This was just a dirty hotfix to make 4.6 work with FF33 again thus I leave it like this for now.
 						// But as I see it we could just pass aWebProgress along and read the actual SSLStatus, removing getCertificate entirely.
-						Perspectives.recentSSLStatus = aWebProgress.securityInfo.QueryInterface(Ci.nsISSLStatusProvider).SSLStatus;
-						
+						if(aRequest.securityInfo != null)
+						{
+							Perspectives.recentSSLStatus = aRequest.securityInfo.QueryInterface(Ci.nsISSLStatusProvider).SSLStatus;
+						}
+
 						// TODO: "there is a bug that causes getting the cert from another tab" => check if still the case
 						var cert = Perspectives.getCertificate(aBrowser);
 						if(cert) {
@@ -976,11 +996,11 @@ var Perspectives = {
 
 	await_serverresultlist_and_cert: function(uri, process_callback) {
 		return (function() {
-			var server_result_list_  = null;
-			var browser_             = null;
-			var cert_                = null;
-			var security_state_      = null;
-			var is_stopped           = false;
+			var server_result_list_ = null;
+			var browser_            = null;
+			var cert_               = null;
+			var security_state_     = null;
+			var is_stopped          = false;
 
 			return { publish_serverresultlist: function(server_result_list) {
 				if(!is_stopped) {
@@ -1016,6 +1036,7 @@ var Perspectives = {
 					}
 				}
 			}, stop: function() {
+				Pers_debug.d_print("main", "Stopping awaitObj for " + uri );
 				is_stopped = true;
 			}, is_stopped: function() {
 				return is_stopped;
@@ -1099,7 +1120,6 @@ var Perspectives = {
 		var ti = {};
 		if(ti_cached) {
 			ti = ti_cached;
-			ti.is_cached = true;
 		} else {
 			// defaults
 			ti.is_override_cert    = false;
@@ -1114,7 +1134,6 @@ var Perspectives = {
 			ti.service_id          = Perspectives.getServiceId(uri);
 			ti.service_id_original = ti.service_id; // in case of redirect
 			Perspectives.tab_info_cache.push(ti);
-			ti.is_cached           = false;
 		}
 		return ti;
 	},
@@ -1135,6 +1154,7 @@ var Perspectives = {
 			Pers_debug.d_print("main", "Forced request, clearing cache for '" + uri.asciiHost + "'");
 			ti.has_user_permission = true; // forcing a check is implicit permission
 			ti.query_results       = null;
+			ti.is_cached           = false;
 
 			ti.state   = Pers_statusbar.STATE_QUERY;
 			ti.tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [uri.asciiHost]);

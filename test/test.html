@@ -999,15 +999,20 @@ function notary_replies() {
     // fake AJAX requests
     var oldXMLHttpRequest = XMLHttpRequest;
     window.timeouts = 0;
+    window.timeout_host = "";
     window.XMLHttpRequest = function() {
+        this.url;
         this.readyState;
         this.status;
         this.responseText;
         this.responseXML = window.responseXML;
 
-        this.open = function(__, __, __) {}
-        this.send = function(__) {
-            if(window.timeouts <= 0) {
+        this.open = function(_0, url, _2) {
+            this.url = url;
+        }
+        this.send = function(_0) {
+            var host = this.url.replace('http://', '').substr(0, this.url.indexOf('?') - "http://".length);
+            if(window.timeouts <= 0 && host !== window.timeout_host) {
                 setTimeout(_.bind(function() { this.onreadystatechange(null); }, this), 0);
             }
             else {
@@ -1210,7 +1215,17 @@ function notary_replies() {
         }, signature_verifier);
         publish_cert(cert_match, q_required100, required_duration);
     setTimeoutAux( function() {
+        window.timeouts = 0;
+        window.timeout_host = notaries[0].host;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.filter(server_result_list, function(server_result) {
+                return server_result.obs.length > 0;
+            }).length === (notaries.length - 1), "multiple notaries 100%: cert + no answer from 1. notary => some results" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required100, required_duration);
+    setTimeoutAux( function() {
         write_string("Finished");
+    });
     });
     });
     });

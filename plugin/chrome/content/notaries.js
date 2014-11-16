@@ -302,10 +302,6 @@ var Perspectives = {
 			timeout_id = setTimeout(timeout, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms"));
 
 			var publish_server_result = function(notary_host, new_server_result) {
-				if(timeout_id !== null) {
-					window.clearTimeout(timeout_id);
-				}
-
 				if(num_tries >= 0) {
 					if(new_server_result != null) {
 						var old_server_result = _.find(server_result_list, function(sr) {
@@ -354,6 +350,11 @@ var Perspectives = {
 					}).length;
 
 					if(strong_trust || num_finished === notaries.length) {
+						if(timeout_id !== null) {
+							window.clearTimeout(timeout_id);
+							timeout_id = null;
+						}
+
 						if(strong_trust && num_finished === notaries.length) {
 							Pers_debug.d_print("main", "Publish server_result_list in query_notaries_closure() (shortcircuited).");
 						} else {
@@ -418,15 +419,22 @@ var Perspectives = {
 					if(result && _.isArray(server_result.obs)) {
 						server_result.is_valid = _.all(server_result.obs, function(o) {
 							return (_.isArray(o.timestamps) && _.all(o.timestamps, function(ts) {
-								return ts.end > ts.start;
+								return ts.end >= ts.start;
 							}));
 						});
+						if(!server_result.is_valid) {
+							Pers_debug.d_print("error", "Invalid timestamps from : " + notary.host);
+						}
 					} else {
-						Pers_debug.d_print("error", "Invalid signature from : " +
-							notary.host);
+						Pers_debug.d_print("error", "Invalid signature from : " + notary.host);
 						server_result.is_valid = false;
 					}
 					server_result.server = notary.host;
+					// if server_result didn't validate set observations to empty
+					// otherwise invalid results are included in quorum count
+					if(!server_result.is_valid) {
+						server_result.obs = [];
+					}
 
 					publish_server_result(notary.host, server_result);
 				} catch(e) {

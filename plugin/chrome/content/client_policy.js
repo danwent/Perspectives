@@ -119,7 +119,7 @@ get_all_key_changes : function(results) {
 		}
 	}
 	return change_list;
-} ,
+},
 
 check_current_consistency : function(test_key, results, quorum_size, stale_limit_secs, cur_time) {
 	if(quorum_size < 1) {
@@ -161,7 +161,7 @@ has_quorum_at_time : function(test_key, results, quorum_size, time) {
 		}
 	}
 	return total_valid >= quorum_size;
-} ,
+},
 
 
 // returns duration in seconds - i.e. days * 24 * 3600.

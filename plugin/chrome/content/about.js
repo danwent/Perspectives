@@ -49,7 +49,7 @@ var Pers_about = {
 			var translators  = Pers_util.readFileFromURI("chrome://perspectives/content/credits/translators.txt");
 
 			document.getElementById("contributors-list").value = contributors;
-			document.getElementById("translators-list").value = translators;
+			document.getElementById("translators-list" ).value = translators;
 		} catch(e) {
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
@@ -59,4 +59,4 @@ var Pers_about = {
 				getFormattedString("loadingCreditsError", [e]));
 		}
 	}
-}
+};

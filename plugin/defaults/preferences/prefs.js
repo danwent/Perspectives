@@ -21,8 +21,8 @@ pref("perspectives.whitelist"                    , "");
 pref("extensions.perspectives.whitelist_disabled", "");
 pref("perspectives.prompt_update_all_https_setting", true);
 pref("perspectives.additional_notary_list", "");
-pref("perspectives.default_notary_list","");
-pref("perspectives.use_default_notary_list",true);
-pref("perspectives.enable_default_list_auto_update",false);
+pref("perspectives.default_notary_list", "");
+pref("perspectives.use_default_notary_list", true);
+pref("perspectives.enable_default_list_auto_update", false);
 pref("perspectives.first_run", true);
 

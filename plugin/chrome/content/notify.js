@@ -16,69 +16,57 @@
 *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 var Pers_notify = {
-
 	// unique identifier for each notification
 	// this is used to determine whether we need to
 	// show a notification, or whether it is a duplication
 	// of the last notification we showed the user for that
 	// website.
-	TYPE_OVERRIDE : 1,
-	TYPE_OVERRIDE_MIXED : 2,
-	TYPE_WHITELIST : 3,
-	TYPE_FAILED : 4,
+	TYPE_OVERRIDE         : 1,
+	TYPE_OVERRIDE_MIXED   : 2,
+	TYPE_WHITELIST        : 3,
+	TYPE_FAILED           : 4,
 	TYPE_NEEDS_PERMISSION : 5,
-	TYPE_NO_REPLIES : 6,
+	TYPE_NO_REPLIES       : 6,
 
-	do_notify : function(ti, type) {
-		if(ti.last_banner_type == type) {
+	do_notify : function(browser, last_banner_type, type) {
+		if(last_banner_type === type) {
 			return;
 		}
-		ti.last_banner_type = type;
 		switch(type) {
-			case this.TYPE_OVERRIDE :
-				this.notifyOverride(ti.browser, false); break;
-			case this.TYPE_OVERRIDE_MIXED :
-				this.notifyOverride(ti.browser, true); break;
-			case this.TYPE_WHITELIST :
-				this.notifyWhitelist(ti.browser); break;
-			case this.TYPE_FAILED :
-				this.notifyFailed(ti.browser); break;
-			case this.TYPE_NEEDS_PERMISSION :
-				this.notifyNeedsPermission(ti); break;
-			case this.TYPE_NO_REPLIES :
-				this.notifyNoReplies(ti.browser); break;
+			case this.TYPE_OVERRIDE         : this.notifyOverride       (browser, false); break;
+			case this.TYPE_OVERRIDE_MIXED   : this.notifyOverride       (browser, true ); break;
+			case this.TYPE_WHITELIST        : this.notifyWhitelist      (browser       ); break;
+			case this.TYPE_FAILED           : this.notifyFailed         (browser       ); break;
+			case this.TYPE_NEEDS_PERMISSION : this.notifyNeedsPermission(browser       ); break;
+			case this.TYPE_NO_REPLIES       : this.notifyNoReplies      (browser       ); break;
 			default:
 				Pers_debug.d_print("error", "Unknown notify type: " + type);
 		}
 	},
 
 	// generic notify function used by all other notify functions
-	notifyGeneric: function(b, priority, message, buttons){
+	notifyGeneric: function(b, priority, message, buttons) {
 		//Happens on requeryAllTabs
 
-		try{
+		try {
 			var notificationBox = b.getNotificationBox();
 		}
-		catch(e){
+		catch(e) {
 			return;
 		}
-		var notificationBox = b.getNotificationBox();
 		this.clear_existing_banner(b, "Perspectives");
 
 		notificationBox.appendNotification(message, "Perspectives", null, notificationBox[priority], buttons);
 	},
 
-	notifyOverride: function(b,mixed_security){
-
+	notifyOverride: function(b, mixed_security) {
 		var priority = "PRIORITY_INFO_LOW";
 		var message = mixed_security ? Perspectives.strbundle.getString("validatedButInsecureEmbedded") :  Perspectives.strbundle.getString("verificationSuccess");
 		var buttons = [{
-			accessKey : "",
-			label: Perspectives.strbundle.getString("learnMore"),
-			accessKey : "",
-			callback: function() {
+			label    : Perspectives.strbundle.getString("learnMore"),
+			accessKey: "",
+			callback : function() {
 				b.loadOneTab("chrome://perspectives/content/help.xhtml", null,
 							 null, null, false);
 			}
@@ -86,39 +74,37 @@ var Pers_notify = {
    		this.notifyGeneric(b, priority, message, buttons);
 	},
 
-	notifyWhitelist: function(b){
-
+	notifyWhitelist: function(b) {
 		var priority = "PRIORITY_INFO_LOW";
 		var message = Perspectives.strbundle.getString("configuredToWhitelist");
 		var buttons = [
 			{
-			accessKey : "",
-			label: Perspectives.strbundle.getString("removeFromWhitelist"),
-			accessKey : "",
-			callback: function() {
-				Pers_whitelist_dialog.remove_from_whitelist(b);
-			}
+				label    : Perspectives.strbundle.getString("removeFromWhitelist"),
+				accessKey: "",
+				callback : function() {
+					Pers_whitelist_dialog.remove_from_whitelist();
+				}
 			}
 		];
    		this.notifyGeneric(b, priority, message, buttons);
 	},
 
-	notifyFailed: function(b){
+	notifyFailed: function(b) {
 		var priority = "PRIORITY_CRITICAL_LOW";
 		var message = Perspectives.strbundle.getString("unableToVerify");
 		var buttons = [
 // Report attack always fails at the moment. Hide it until we fix it. issue #122
 //			{
-//				label: Perspectives.strbundle.getString("reportThis"),
+//				label    : Perspectives.strbundle.getString("reportThis"),
 //				accessKey: "",
-//				callback: function () {
+//				callback : function () {
 //					Pers_report.report_attack();
 //				}
 //			},
 			{
-				label: Perspectives.strbundle.getString("addToWhitelist"),
+				label    : Perspectives.strbundle.getString("addToWhitelist"),
 				accessKey: "",
-				callback: function () {
+				callback : function() {
 					Pers_whitelist_dialog.add_to_whitelist();
 				}
 			}
@@ -128,34 +114,30 @@ var Pers_notify = {
 
 	// this is the drop down which is shown if preferences indicate
 	// that notaries should only be queried with user permission
-	notifyNeedsPermission: function(ti){
+	notifyNeedsPermission: function(browser) {
 
 		var show_box = Perspectives.root_prefs.
 			getBoolPref("extensions.perspectives.show_permission_reminder");
 
-		if (show_box){
+		if(show_box) {
 			var priority = "PRIORITY_WARNING_HIGH";
 			var message = Perspectives.strbundle.getString("needsPermission");
-			var buttons = null;
 			var buttons = [
 				{
-					label: Perspectives.strbundle.getString("yesContactNotaries"),
-					accessKey : "",
-					callback: function() {
+					label    : Perspectives.strbundle.getString("yesContactNotaries"),
+					accessKey: "",
+					callback : function() {
 						try {
-
 							//Happens on requeryAllTabs
-							try{
-								var notificationBox = ti.browser.getNotificationBox();
-								}
-							catch(e){
+							try {
+								var nbox = browser.getNotificationBox();
+							}
+							catch(e) {
 								return;
 							}
-
-							var nbox = ti.browser.getNotificationBox();
 							nbox.removeCurrentNotification();
 						}
-						catch (err) {
+						catch(err) {
 							// sometimes, this doesn't work.  why?
 							// well, we'll just have to remove them all
 							try {
@@ -163,7 +145,7 @@ var Pers_notify = {
 								Pers_debug.d_print("main",
 										"successfully removed all notifications\n");
 							}
-							catch (err2) {
+							catch(err2) {
 								Pers_debug.d_print("error",
 										"probe_permission error2:" + err2 + "\n");
 							}
@@ -173,39 +155,52 @@ var Pers_notify = {
 						try {
 							// run probe
 							Pers_debug.d_print("main", "User gives probe permission");
+
+							var uri = browser.currentURI;
+							var ti = Perspectives.getCurrentTabInfo(uri)
+
 							ti.has_user_permission = true;
-								Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY,
-								Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
-								 [ ti.uri.host ]));
-							Perspectives.updateStatus(window,false);
-						} catch (e) {
+							ti.state   = Pers_statusbar.STATE_QUERY;
+							ti.tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [uri.host]);
+							Pers_debug.d_print("main", "Set status in notifyNeedsPermission().");
+							Pers_statusbar.setStatus(ti.state, ti.tooltip);
+
+							var cert = Perspectives.getCertificate(browser);
+							var security_state = browser.securityUI.state;
+							ti.await_obj.publish_cert(browser, cert, security_state);
+							ti.query_publish_cert = Perspectives.queryNotaries(uri, Perspectives.getNotaryList(), ti.await_obj.publish_serverresultlist);
+
+							var q_required = Perspectives.getQuorumAsInt();
+							var required_duration = Perspectives.root_prefs.getIntPref("perspectives.required_duration");
+							ti.query_publish_cert(cert, q_required, required_duration);
+						} catch(e) {
 							Pers_debug.d_print("main", "Error on UpdateStatus: " + e);
 						}
 					}
 				},
 				{
-					label: Perspectives.strbundle.getString("learnMore"),
-					accessKey : "",
-					callback: function() {
-						ti.browser.loadOneTab("chrome://perspectives/content/help.xhtml",
+					label    : Perspectives.strbundle.getString("learnMore"),
+					accessKey: "",
+					callback : function() {
+						browser.loadOneTab("chrome://perspectives/content/help.xhtml",
 									 null, null, null, false);
 					}
 				},
 				{
-					label: Perspectives.strbundle.getString("hideNotificationReminders"),
-					accessKey : "",
-					callback: function() {
+					label    : Perspectives.strbundle.getString("hideNotificationReminders"),
+					accessKey: "",
+					callback : function() {
 						Perspectives.root_prefs.
 							setBoolPref("extensions.perspectives.show_permission_reminder", false);
 					}
 				}
 			];
-			this.notifyGeneric(ti.browser, priority, message, buttons);
+			this.notifyGeneric(browser, priority, message, buttons);
 		}
 	},
 
 	// this is the drop down which is shown if we receive no notary replies.
-	notifyNoReplies: function(b){
+	notifyNoReplies: function(b) {
 		var priority = "PRIORITY_CRITICAL_LOW";
 		var message = Perspectives.strbundle.getString("noRepliesReceived");
 		var buttons = [
@@ -218,18 +213,18 @@ var Pers_notify = {
 //				}
 //			},
 			{
-				label: Perspectives.strbundle.getString("firewallHelp"),
+				label    : Perspectives.strbundle.getString("firewallHelp"),
 				accessKey: "",
-				callback: function () {
+				callback : function() {
 					b.loadOneTab(
 						"chrome://perspectives/content/firewall.xhtml",
 						null, null, null, false);
 				}
 			},
 			{
-				label: Perspectives.strbundle.getString("addToWhitelist"),
+				label    : Perspectives.strbundle.getString("addToWhitelist"),
 				accessKey: "",
-				callback: function () {
+				callback : function() {
 					Pers_whitelist_dialog.add_to_whitelist();
 				}
 			}
@@ -241,20 +236,19 @@ var Pers_notify = {
 		try {
 			//Happens on requeryAllTabs
 
-			try{
+			try {
 				var notificationBox = b.getNotificationBox();
 			}
-			catch(e){
+			catch(e) {
 				return;
 			}
 			var oldNotification =
 				notificationBox.getNotificationWithValue(value_text);
-			if(oldNotification != null)
+			if(oldNotification != null) {
 				notificationBox.removeNotification(oldNotification);
+			}
 		} catch(err) {
-			Pers_debug.d_print("error","clear_existing_banner error: " + err);
+			Pers_debug.d_print("error", "clear_existing_banner error: " + err);
 		}
 	}
-
-}
-
+};

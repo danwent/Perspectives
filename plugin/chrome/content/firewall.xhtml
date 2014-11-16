@@ -23,10 +23,10 @@
 
 	// all of the other Perspectives windows close when the user presses Esc
 	// make this window do the same, to keep behaviour consistent
-	if (window.addEventListener) {
+	if(window.addEventListener) {
 		window.addEventListener("keypress", Pers_keypress.press_esc_to_close, false);
 	}
-	else if (window.attachEvent) {
+	else if(window.attachEvent) {
 		window.attachEvent("onkeypress", Pers_keypress.press_esc_to_close)
 	}
 

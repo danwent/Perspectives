@@ -17,91 +17,89 @@
 */
 
 
-var Pers_report = { 
+var Pers_report = {
 
-     REPORT_URI : "https://www.networknotary.org/report.php", 
+     REPORT_URI : "https://www.networknotary.org/report.php",
 
-     // An attack may have happened due to an DNS attack.  Thus, it is 
-     // useful to gather this data.  
+     // An attack may have happened due to an DNS attack.  Thus, it is
+     // useful to gather this data.
      get_ips : function(hostname) {
         var cls = Components.classes['@mozilla.org/network/dns-service;1'];
         var iface = Components.interfaces.nsIDNSService;
         var dns = cls.getService(iface);
-        var ips = Array();
+        var ips = [];
         var nsrecord = dns.resolve(hostname, true);
 
-        while (nsrecord && nsrecord.hasMore()) {
+        while(nsrecord && nsrecord.hasMore()) {
             ips[ips.length] = nsrecord.getNextAddrAsString();
         }
 
         return ips;
-    },  
- 
+    },
+
     get_ip_str : function(hostname) {
         var ips    = this.get_ips(hostname);
         var ip_str = "";
 
-        if (ips.length <= 0 ) {
+        if(ips.length <= 0 ) {
             return ip_str;
         }
 
         ip_str = ips[0];
 
-        if (ips.length == 1) {
+        if(ips.length === 1) {
             return ip_str;
         }
 
-        for (var i = 1; i < ips.length; i++) {
+        for(var i = 1; i < ips.length; i++) {
             ip_str= ip_str + "," + ips[i];
         }
 
         return ip_str;
-    }, 
+    },
 
     get_report_json : function() {
-	var b = window.opener.gBrowser; 
-	var cert = window.arguments[0];  
-	var res = window.arguments[1]; 
-	var host = b.currentURI.host;
-	var additional_text = document.getElementById("additional-info").value;
-	var email_address = document.getElementById("email-address").value;
-	var full_report = !document.getElementById("full-radio").selectedIndex;
-	var ip_str = ""; 
-	if(full_report) { 
-		ip_str = this.get_ip_str(host); 
-	} 	
-        report_data      = {
-		"host" : host, 
-		"port" : b.currentURI.port,  
-		"record_ip" : full_report, 
-		"cert" :  { 
-        		"commanName" 		 : cert.commonName, 
-		        "organization"           : cert.organization, 
-		        "organizationalUnit"     : cert.organizationalUnit,
-		        "serialNumber"           : cert.serialNumber,
-		        "sha1Fingerprint"        : cert.sha1Fingerprint,
-		        "md5Fingerprint"         : cert.md5Fingerprint,
-		        "notBeforeLocalDay"      : cert.validity.notBeforeLocalDay,
-		        "notAfterLocalDay"       : cert.validity.notAfterLocalDay,
-		        "issuerCommonName"       : cert.issuerCommonName,
-		        "issuerOrganization"     : cert.issuerOrganization,
-		        "issuerOrganizationUnit" : cert.issuerOrganizationUnit,
-		}, 
-		"ips" : ip_str,  
-		"results" : { 
-			"cur_consistent" : res.cur_consistent, 
-			"inconsistent_results" : res.inconsistent_results, 
-			"weakly_seen" : res.weakly_seen, 
-			"duration" : res.duration,
-			"server_result_list" : res.server_result_list, 
-			"created" : res.created  
-		}, 
-		"addition_text" : additional_text, 
-		"email_address" : email_address
-		
-	}; 
-	return report_data; 
-    }, 
+		var b = window.opener.gBrowser;
+		var cert = window.arguments[0];
+		var res  = window.arguments[1];
+		var host = b.currentURI.host;
+		var additional_text =  document.getElementById("additional-info").value;
+		var email_address   =  document.getElementById("email-address").value;
+		var full_report     = !document.getElementById("full-radio").selectedIndex;
+		var ip_str = "";
+		if(full_report) {
+			ip_str = this.get_ip_str(host);
+		}
+		return {
+			"host" : host,
+			"port" : b.currentURI.port,
+			"record_ip" : full_report,
+			"cert" :  {
+				"commonName" 			 : cert.commonName,
+				"organization"           : cert.organization,
+				"organizationalUnit"     : cert.organizationalUnit,
+				"serialNumber"           : cert.serialNumber,
+				"sha1Fingerprint"        : cert.sha1Fingerprint,
+				"md5Fingerprint"         : cert.md5Fingerprint,
+				"notBeforeLocalDay"      : cert.validity.notBeforeLocalDay,
+				"notAfterLocalDay"       : cert.validity.notAfterLocalDay,
+				"issuerCommonName"       : cert.issuerCommonName,
+				"issuerOrganization"     : cert.issuerOrganization,
+				"issuerOrganizationUnit" : cert.issuerOrganizationUnit
+			},
+			"ips" : ip_str,
+			"results" : {
+				"cur_consistent"       : res.cur_consistent,
+				"inconsistent_results" : res.inconsistent_results,
+				"weakly_seen"          : res.weakly_seen,
+				"duration"             : res.duration,
+				"server_result_list"   : res.server_result_list,
+				"created"              : res.created
+			},
+			"addition_text" : additional_text,
+			"email_address" : email_address
+		};
+    },
 
 	submit_data : function() {
 		// don't close the window here through code -
@@ -127,7 +125,7 @@ var Pers_report = {
 			// synchronous request
 			req.open("POST", this.REPORT_URI + "?record_ip=" + full_report, false);
 			req.send(report_json_str);
-			if(req.status != 200) {
+			if(req.status !== 200) {
 				Pers_util.pers_alert(
 					Pers_report.strbundle.getString("FailedToReport") +
 					" '" + this.REPORT_URI + "'. " +
@@ -142,8 +140,6 @@ var Pers_report = {
 			document.getElementById("SubmitReport").disabled = false;
 			document.getElementById("Close").disabled = false;
 		}
-
-
 	},
 
     // note: this function is called in the scope of the main window, which is able to grab the cert.
@@ -153,20 +149,21 @@ var Pers_report = {
 			Perspectives.strbundle = document.getElementById("notary_strings");
 		}
 		try {
-			var error_text = Perspectives.detectInvalidURI(window);
+			var uri = window.gBrowser.currentURI;
+			var error_text = Perspectives.detectInvalidURI(uri);
 			if(error_text) {
 				Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI")
 					+ " (" + error_text + ")");
 				return;
 			}
 
-			var ti = Perspectives.getCurrentTabInfo(window);
+			var ti = Perspectives.getCurrentTabInfo(uri);
 
 			var cert = Perspectives.getCertificate(window.gBrowser);
 			if(!cert) {
 				// FIXME - is this check correct?
 				Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("notEncryptedNoReport",
-					[ ti.uri.host ]));
+					[uri.host]));
 				return;
 			}
 
@@ -176,19 +173,18 @@ var Pers_report = {
 			}
 
 			window.openDialog("chrome://perspectives/content/report.xul", "", "centerscreen, resizable",
-			cert, cached_results).focus();
-
+				cert, cached_results).focus();
 		} catch(e) {
 			var text = "";
-			if (Perspectives.strbundle != null) {
+			if(Perspectives.strbundle != null) {
 				text = Perspectives.strbundle.getString("unableToMakeReport") + " - ";
 			}
 			Pers_util.pers_alert(text + e);
 		}
-    }, 
+    },
 
     // this function is called by the 'report attack' window once it is opened
-    // or when one of the controls was toggled. 
+    // or when one of the controls was toggled.
     refresh_report_dialog : function() {
 		if(Pers_report.strbundle == null) {
 			Pers_report.strbundle = document.getElementById("report_strings");
@@ -203,17 +199,15 @@ var Pers_report = {
 			}
 			if(show_full) {
 				document.getElementById("full-text-label").value = label;
-				var txt = Pers_util.pretty_print_json(this.get_report_json());
-				document.getElementById("full-text").value = txt;
+				document.getElementById("full-text"      ).value = Pers_util.pretty_print_json(this.get_report_json());
 			}
 		} catch(e) {
 			var text = "";
-			if (Perspectives.strbundle != null) {
+			if(Perspectives.strbundle != null) {
 				text = Perspectives.strbundle.getString("unableToMakeReport") + " - ";
 			}
 			Pers_util.pers_alert(text + e);
 		}
     }
-
-}
+};
 

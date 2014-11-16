@@ -17,8 +17,8 @@
   <description style="width: 500px">
   &Whitelistmessage;
  </description>
-  <radiogroup 
-    id      = "whitelist-radio" 
+  <radiogroup
+    id      = "whitelist-radio"
     orient  = "vertical" >
     <!-- label text is set via code -->
     <radio  id="whitelist-radio-1" label="" selected="true" />
@@ -33,9 +33,10 @@
     </hbox>
   </groupbox>
 
-    <script type="application/x-javascript" src="common.js"/>
-    <script type="application/x-javascript" src="notaries.js"/>
-    <script type="application/x-javascript" src="whitelist_dialog.js"/>
+    <script type="application/x-javascript" src="common.js"></script>
+    <script type="application/x-javascript" src="notaries.js"></script>
+    <script type="application/x-javascript" src="whitelist_dialog.js"></script>
+    <script type="application/x-javascript" src="extlib/underscore-min.js"></script>
 
 </window>
 

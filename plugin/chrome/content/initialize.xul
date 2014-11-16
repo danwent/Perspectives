@@ -2,16 +2,17 @@
 
 <overlay id="perspectives-init"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="extlib/spark-md5.min.js"/>
-
-  <script type="application/x-javascript" src="common.js"/>
-  <script type="application/x-javascript" src="notaries.js"/>
+  <script type="application/x-javascript" src="notaries.js"></script>
+  <script type="application/x-javascript" src="common.js"></script>
+  <script type="application/x-javascript" src="extlib/spark-md5.min.js"></script>
+  <script type="application/x-javascript" src="extlib/underscore-min.js"></script>
+  
   <script type="text/javascript">
-				
-    // don't load or run anything until after the page has loaded
-    window.addEventListener('load',evtLoad,false);
 
-    function evtLoad(evt){
+    // don't load or run anything until after the page has loaded
+    window.addEventListener('load', evtLoad, false);
+
+    function evtLoad(evt) {
       Perspectives.init_data();
       Perspectives.initNotaries();
       var root_prefs = Components.classes["@mozilla.org/preferences-service;1"]
@@ -22,11 +23,11 @@
       Perspectives.prompt_update();
 
       var firstrun = root_prefs.getBoolPref("perspectives.first_run");
-      if (firstrun) {
+      if(firstrun) {
           root_prefs.setBoolPref("perspectives.first_run", false);
           var bname = "perspectives-status-button";
 
-          if (!document.getElementById(bname)) {
+          if(!document.getElementById(bname)) {
             // user has just installed the extension and has no button. add one
             addToolbarButton("nav-bar", bname, "urlbar-container");
           }
@@ -34,7 +35,7 @@
           // we don't want to touch it
       }
 
-      if(!Perspectives.root_prefs.getBoolPref("perspectives.show_label")){
+      if(!Perspectives.root_prefs.getBoolPref("perspectives.show_label")) {
         document.getElementById("perspective-statusbar-label").hidden = true;
       }
     }
@@ -54,14 +55,14 @@
           return;
         }
         var toolbar = document.getElementById(toolbarId);
-        if (toolbar) {
-            if (toolbar.firstChild) {
+        if(toolbar) {
+            if(toolbar.firstChild) {
                 var before = toolbar.firstChild;
-                if (beforeId) {
+                if(beforeId) {
                     var elem = document.getElementById(beforeId);
-                    if (elem) {
-                        if (elem.parentNode) {
-                            if (elem.parentNode == toolbar) {
+                    if(elem) {
+                        if(elem.parentNode) {
+                            if(elem.parentNode === toolbar) {
                                 before = elem;
                             }
                             else {
@@ -85,7 +86,7 @@
                       "" + beforeId + " doesn't exist.");
                 }
 
-                try{
+                try {
                   toolbar.insertItem(buttonId, before);
                 }
                 catch(e) {
@@ -96,7 +97,7 @@
                 toolbar.setAttribute("currentset", toolbar.currentSet);
                 document.persist(toolbar.id, "currentset");
 
-                if (toolbarId == "addon-bar")  {
+                if(toolbarId === "addon-bar")  {
                     toolbar.collapsed = false;
                 }
             }

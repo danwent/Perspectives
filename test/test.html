@@ -5,6 +5,7 @@
 <title>Perspectives - Test cases</title>
 
 <!-- Include every file so we can verify that all of the objects are testable in meta_test() -->
+<script type="text/javascript" src="../extlib/underscore-min.js"></script>
 <script type="text/javascript" src="../extlib/spark-md5.min.js"></script>
 
 <script type="text/javascript" src="../about.js"             ></script>
@@ -24,8 +25,28 @@
 <script type="text/javascript">
     // if on browser fake objects and make at least some tests work
     if( typeof Components.classes === "undefined") {
-        Perspectives =
-        { root_prefs :
+        Components.interfaces.nsIWebProgressListener = {
+            STATE_IS_BROKEN   : 0,
+            STATE_IS_INSECURE : 1,
+            STATE_IS_SECURE   : 2
+        }
+    }
+</script>
+
+<script type="text/javascript" src="../plugin/chrome/content/notaries.js"          ></script>
+<script type="text/javascript">
+    // if on browser fake objects and make at least some tests work
+    if( typeof Components.classes === "undefined") {
+        Perspectives.strbundle = {
+            getString : function(key) {
+                return key;
+            },
+            getFormattedString : function(key, args) {
+                return key;
+            }
+        }
+
+        Perspectives.root_prefs =
           { getIntPref  : function(key) { return Perspectives.root_prefs[key]; }
           , getCharPref : function(key) { return Perspectives.root_prefs[key]; }
           , getBoolPref : function(key) { return Perspectives.root_prefs[key]; }
@@ -33,7 +54,7 @@
           , setCharPref : function(key, value) { Perspectives.root_prefs[key] = value; }
           , setBoolPref : function(key, value) { Perspectives.root_prefs[key] = value; }
           }
-        , getNotaryList: function() {
+        Perspectives.getNotaryList = function() {
             return [
                 {"host": "heimdal.herokuapp.com:80"            , "public_key": "MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAGhzbwVcnEaT2Hb9WD9Wvh9CVYu86w+8ZMdO4KG506K77IsERfIuh84YkE4qoDnjfR7TCQBvreVl81lIh5UE0kzO84X673risoBebbGCNjXQNu5mWkq2Qp7SuuemeXaYFmkpc06t2n6NvNcS9JVm8KJRqBKqlwqlFgDuDZPUcYmWoIL4sF9w/3ep9nPSIJYburTdpCaeXPGhMiMzh4E2GnJc3Y2beezGWtciXUCAwEAAQ=="},
                	{"host": "nine-eyes.herokuapp.com:80"          , "public_key": "MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAEw+W1dv0a00gzVqvHa8SafHhpYESsCIB8kj4bb1ccXr7u6vaiBN83ssaPi1N/ZNDlyOnqZwopoZGkgzUxMUNzg9P6Vph9l7ldMu8XGuwmFoHBgEys633EPcrJcs46lfvNz5JRrYnjh0WMkj0VXvVlYla2g6aAA80+C7u56D2FodNxWscPNpQWUAHDJOnAWr1CI9CNU/rbl5c85KJ7cW6u+LFBmpXk2xzJ2tq8CAwEAAQ=="},
@@ -45,11 +66,12 @@
                	{"host": "perspectives7.networknotary.org:8080", "public_key": "MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAFndaQshFiJmW9FDgmGQ8SgVs/5F8e1LQAyTyt2iW9J1Kavu2hisFhIShU2rOkv0w3j9JanO+FbaA0vrqoWN0dnwRpc41JQtjzhNZgE0j78w4nu5lxwMiJ16OlZh7p6L/hoZsDGNYrtGIEm4w8NurncFlAQ5JZPmcbhKkXikVjYi/sNM5G2osRxAZjimscvDpLqWxzDjLv4VpbXXMGY1WsvQwca/ScQhTV/uu0CAwEAAQ=="},
                	{"host": "perspectives8.networknotary.org:8080", "public_key": "MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAHrtkVD3O4XCkOdFwMqlEDVYTW6W82QQomSb9Pa/OGeRvbupk/d1iNNbBAs7B2Irg3Xk+OValBf29cUwXsYbpm3lEKGOqVhwas7YaHz4cnztkQJ5N+fW2eGe7iD1k1/wB7aPECPYVQgXOSpYcmg4999JGxjPE6LWmIu3KQfk1YtZBjGOI9Sa5wNhECvVoIMYGH1oG+oXkACpd6AgUJMfIOdG7BkwW9YFRKHPJkCAwEAAQ=="}
             ];
-        }, getQuorumAsInt: function() { return 7; }
-        };
+        }
+        Perspectives.getQuorumAsInt = function() { return 7; }
 
         pref = function(key, value) {
-            console.log(key + ": " + value);
+            Perspectives.root_prefs[key] = value;
+            //console.log(key + ": " + value);
         };
 
         Pers_pref             = null;
@@ -58,12 +80,15 @@
     }
 </script>
 
+<script type="text/javascript" src="../plugin/chrome/content/extlib/underscore-min.js"></script>
+<script type="text/javascript" src="../plugin/chrome/content/extlib/spark-md5.min.js"></script>
+
 <script type="text/javascript" src="../plugin/defaults/preferences/prefs.js"       ></script>
 <script type="text/javascript" src="../plugin/chrome/content/about.js"             ></script>
 <script type="text/javascript" src="../plugin/chrome/content/client_policy.js"     ></script>
 <script type="text/javascript" src="../plugin/chrome/content/common.js"            ></script>
 <script type="text/javascript" src="../plugin/chrome/content/generate_svg.js"      ></script>
-<!--<script type="text/javascript" src="../plugin/chrome/content/notaries.js"          ></script>-->
+
 <script type="text/javascript" src="../plugin/chrome/content/notify.js"            ></script>
 <!--<script type="text/javascript" src="../plugin/chrome/content/preferences_dialog.js"></script>-->
 <script type="text/javascript" src="../plugin/chrome/content/report.js"            ></script>
@@ -335,7 +360,7 @@ function client_sanity() {
                 { "key": key2,
                     "timestamps": [
                         { "start": old_start, "end": old_end  }
-                    ] },
+                    ] }
             ]
         }
     ];
@@ -971,9 +996,261 @@ function notary_replies() {
     //we can test this by temporarily allowing duplicates and sending out two responses.
     //but it's even better if we can just do it in code.
 
-    write_string("Finished");
-}
+    // fake AJAX requests
+    var oldXMLHttpRequest = XMLHttpRequest;
+    window.timeouts = 0;
+    window.timeout_host = "";
+    window.XMLHttpRequest = function() {
+        this.url;
+        this.readyState;
+        this.status;
+        this.responseText;
+        this.responseXML = window.responseXML;
 
+        this.open = function(_0, url, _2) {
+            this.url = url;
+        }
+        this.send = function(_0) {
+            var host = this.url.replace('http://', '').substr(0, this.url.indexOf('?') - "http://".length);
+            if(window.timeouts <= 0 && host !== window.timeout_host) {
+                setTimeout(_.bind(function() { this.onreadystatechange(null); }, this), 0);
+            }
+            else {
+                window.timeouts -= 1;
+            }
+        }
+    };
+
+    var response_valid =
+        '<notary_reply sig="base64string" sig_type="rsa-md5" version="1">' +
+        '	<key fp="01:23:45:67:89:ab:cd:ef:01:23:45:67:89:ab:cd:ef" type="ssl">' +
+        '		<timestamp start=  "0" end="100" />' +
+        '		<timestamp start="200" end="300" />' +
+        '		<timestamp start="400" end="500" />' +
+        '	</key>' +
+        '</notary_reply>';
+    var response_invalid =
+        '<notary_reply sig="base64string" sig_type="rsa-md5" version="1">' +
+        '	<key fp="01:23:45:67:89:ab:cd:ef:01:23:45:67:89:ab:cd:ef" type="ssl">' +
+        '		<timestamp end=  "0" start="100" />' +
+        '		<timestamp end="200" start="300" />' +
+        '		<timestamp end="400" start="500" />' +
+        '	</key>' +
+        '</notary_reply>';
+    var responseXML_valid   = (new DOMParser()).parseFromString(response_valid  , "text/xml");
+    var responseXML_invalid = (new DOMParser()).parseFromString(response_invalid, "text/xml");
+
+    XMLHttpRequest.prototype.readyState   =   4;
+    XMLHttpRequest.prototype.status       = 200;
+    XMLHttpRequest.prototype.responseText = "fake response text";
+
+    var uri    = {host: "www.example.com", port: "42"}
+    var notary_valid   = {host: "notary_valid.fake"  , public_key: "true" }
+    var notary_invalid = {host: "notary_invalid.fake", public_key: "false"}
+    var signature_verifier = {
+        verifyData : function(bin_result, signature, public_key) {
+            return (public_key === "true");
+        }
+    };
+
+    window.timeouts = 0;
+    var timeout_ms = 100;
+    Perspectives.root_prefs.setIntPref("extensions.perspectives.query_timeout_ms", timeout_ms);
+    var query_retries = 3;
+    Perspectives.root_prefs.setIntPref("extensions.perspectives.query_retries", query_retries);
+
+    var setTimeoutAux = function(func) { setTimeout(func, timeout_ms * (query_retries + 1) + 10); }
+
+    write_string("querySingleNotary()");
+
+    window.responseXML = responseXML_valid;
+    setTimeoutAux( function() {
+        Perspectives.querySingleNotary(uri, notary_valid, function(notary_host, new_server_result) {
+            assert( new_server_result.is_valid, "valid public keys and timestamps result in is_valid=true")
+        }, signature_verifier);
+    setTimeoutAux( function() {
+        Perspectives.querySingleNotary(uri, notary_invalid, function(notary_host, new_server_result) {
+            assert( !new_server_result.is_valid, "invalid public keys result in is_valid=false")
+        }, signature_verifier);
+    setTimeoutAux( function() {
+        window.responseXML = responseXML_invalid;
+        Perspectives.querySingleNotary(uri, notary_valid, function(notary_host, new_server_result) {
+            assert( !new_server_result.is_valid, "invalid timestamps result in is_valid=false")
+        }, signature_verifier);
+    setTimeoutAux( function() {
+        Perspectives.querySingleNotary(uri, notary_invalid, function(notary_host, new_server_result) {
+            assert( !new_server_result.is_valid, "invalid public keys and invalid timestamps result in is_valid=false")
+        }, signature_verifier);
+    setTimeoutAux( function() {
+
+    write_string("queryNotaries() with one notary");
+
+    var cert_match   = {md5Fingerprint: "01:23:45:67:89:ab:cd:ef:01:23:45:67:89:ab:cd:ef"};
+    var cert_nomatch = {md5Fingerprint: "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00"};
+
+    window.responseXML = responseXML_valid;
+    Pers_util.get_unix_time = function() { return 600; }
+    var required_duration = Perspectives.root_prefs.getIntPref("perspectives.required_duration");
+    var q_required = 1;
+
+    setTimeoutAux( function() {
+        window.timeouts = 0;
+        var publish_cert = Perspectives.queryNotaries(uri, [notary_valid], function(server_result_list) {
+                assert(server_result_list[0].obs.length > 0, "single notary: cert + notary result => result (and shortcircuited)");
+            }, signature_verifier);
+        publish_cert(cert_match, q_required, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = 1;
+        var publish_cert = Perspectives.queryNotaries(uri, [notary_valid], function(server_result_list) {
+                assert(server_result_list[0].obs.length > 0, "single notary: cert + 1 timeout => result (and shortcircuited)");
+            }, signature_verifier);
+        publish_cert(cert_match, q_required, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = 2;
+        var publish_cert = Perspectives.queryNotaries(uri, [notary_valid], function(server_result_list) {
+                assert(server_result_list[0].obs.length > 0, "single notary: cert + 2 timeouts => result (and shortcircuited)");
+            }, signature_verifier);
+        publish_cert(cert_match, q_required, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = query_retries;
+        var publish_cert = Perspectives.queryNotaries(uri, [notary_valid], function(server_result_list) {
+                assert(server_result_list[0].obs.length === 0, "single notary: cert + no response => empty result");
+            }, signature_verifier);
+        publish_cert(cert_match, q_required, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = 0;
+        var publish_cert = Perspectives.queryNotaries(uri, [notary_valid], function(server_result_list) {
+                assert(server_result_list[0].obs.length > 0, "single notary: no cert + notary result => result");
+            }, signature_verifier);
+    setTimeoutAux( function() {
+        window.timeouts = 1;
+        var publish_cert = Perspectives.queryNotaries(uri, [notary_valid], function(server_result_list) {
+                assert(server_result_list[0].obs.length > 0, "single notary: no cert + 1 timeout => result");
+            }, signature_verifier);
+    setTimeoutAux( function() {
+        window.timeouts = 2;
+        var publish_cert = Perspectives.queryNotaries(uri, [notary_valid], function(server_result_list) {
+                assert(server_result_list[0].obs.length > 0, "single notary: no cert + 2 timeouts => result");
+            }, signature_verifier);
+    setTimeoutAux( function() {
+        window.timeouts = query_retries;
+        var publish_cert = Perspectives.queryNotaries(uri, [notary_valid], function(server_result_list) {
+                assert(server_result_list[0].obs.length === 0, "single notary: no cert + no response => empty result");
+            }, signature_verifier);
+    setTimeoutAux( function() {
+
+    write_string("queryNotaries() with multiple notaries requiring only 50% quorum and thus shortcurcuit");
+
+    var notaries = [{host: "notary1", public_key: "true" }, {host: "notary2", public_key: "true" }, {host: "notary3", public_key: "true" }];
+
+    var q_required50 = Math.ceil( notaries.length / 2 );
+
+    setTimeoutAux( function() {
+        window.timeouts = 0;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.filter(server_result_list, function(server_result) {
+                return server_result.obs.length > 0;
+            }).length === q_required50, "multiple notaries 50%: cert + notary results no timeout => shortcircuit some results (n=" + q_required50 + ")" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required50, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = 1 * notaries.length;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.filter(server_result_list, function(server_result) {
+                return server_result.obs.length > 0;
+            }).length === q_required50, "multiple notaries 50%: cert + 1 timeout per notary => shortcircuit some results (n=" + q_required50 + ")" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required50, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = 2 * notaries.length;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.filter(server_result_list, function(server_result) {
+                return server_result.obs.length > 0;
+            }).length === q_required50, "multiple notaries 50%: cert + 2 timeouts per notary => shortcircuit some results (n=" + q_required50 + ")" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required50, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = query_retries * notaries.length;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.all(server_result_list, function(server_result) {
+                return server_result.obs.length === 0;
+            }), "multiple notaries 50%: cert + all timeouts => empty result" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required50, required_duration);
+    setTimeoutAux( function() {
+
+    write_string("queryNotaries() with multiple notaries requiring 100% quorum");
+    var q_required100 = notaries.length;
+
+    setTimeoutAux( function() {
+        window.timeouts = 0;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.all(server_result_list, function(server_result) {
+                return server_result.obs.length > 0;
+            }), "multiple notaries 100%: cert + notary results => all results" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required100, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = 1 * notaries.length;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.all(server_result_list, function(server_result) {
+                return server_result.obs.length > 0;
+            }), "multiple notaries 100%: cert + 1 timeout per notary => all results" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required100, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = 2 * notaries.length;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.all(server_result_list, function(server_result) {
+                return server_result.obs.length > 0;
+            }), "multiple notaries 100%: cert + 2 timeouts per notary => all results" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required100, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = query_retries * notaries.length;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.all(server_result_list, function(server_result) {
+                return server_result.obs.length === 0;
+            }), "multiple notaries 100%: cert + all timeouts => empty result" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required100, required_duration);
+    setTimeoutAux( function() {
+        window.timeouts = 0;
+        window.timeout_host = notaries[0].host;
+        var publish_cert = Perspectives.queryNotaries(uri, notaries, function(server_result_list) {
+            assert(_.filter(server_result_list, function(server_result) {
+                return server_result.obs.length > 0;
+            }).length === (notaries.length - 1), "multiple notaries 100%: cert + no answer from 1. notary => some results" );
+        }, signature_verifier);
+        publish_cert(cert_match, q_required100, required_duration);
+    setTimeoutAux( function() {
+        write_string("Finished");
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    }); // :D ... we may need an async library
+}
 
 function run_tests() {
     // check if we are running with chrome privileges or from within browser
@@ -1009,13 +1286,13 @@ function run_tests() {
         try {
             //Perspectives.init_data();
 
-            clear();
-            meta_tests();
-            client_sanity();
-            //nonrouted_ips();
-            quorum_basics();
-            quorum_oldkey();
-            //notary_parsing();
+//            clear();
+//            meta_tests();
+//            client_sanity();
+//            //nonrouted_ips();
+//            quorum_basics();
+//            quorum_oldkey();
+//            //notary_parsing();
             notary_replies();
 
             write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "

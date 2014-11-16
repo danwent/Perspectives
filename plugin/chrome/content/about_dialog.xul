@@ -65,9 +65,7 @@
     </hbox>
   </vbox>
 
-  <script type="application/x-javascript" src="about.js"/>
-  <script type="application/x-javascript" src="common.js"/>
-  <script type="application/x-javascript" src="notaries.js"/>
+  <script type="application/x-javascript" src="underscore-min.js" ></script>
 
 </window>
 

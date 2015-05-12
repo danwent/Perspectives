@@ -1,0 +1,68 @@
+<!-- This file contains localized strings for Perspectives .xul files. -->
+<!ENTITY NotaryResults "Результаты от Нотариуса">
+<!ENTITY ViewNotaryResults "Просмотреть результаты от Нотариусов">
+<!ENTITY Preferences "Настройки и Предпочтения">
+<!ENTITY NoQuorumInformation "Нет информации о кворуме">
+<!ENTITY ThereisnoPerspectivesinformationavailableforthislocation "Нет информации о данном местоположении в Перспективах">
+<!ENTITY Timeline "Расписание">
+<!ENTITY SecuritySettings "Уровень безопасности">
+<!ENTITY HighSecurity "Высокий уровень безопасности">
+<!ENTITY MediumSecurity "Средний уровень безопасности">
+<!ENTITY HighAvailability "Высокая доступность по критерию скорости работы">
+<!ENTITY ManualConfiguration "Ручные установки">
+<!ENTITY Percentageofnotariesthatmustagree "Процент согласных нотариусов (процент кворума): ">
+<!ENTITY Lengthoftimequorummustbeachieved  "Дней непрерывного согласия нотариусов между собой требуется (продолжительность кворума): "   >
+<!ENTITY QueryTimeout                      "Таймаут обращения к нотариусам (в милисекундах): "           >
+<!ENTITY QueryRetries                      "Количество повторных попыток в случае превышения таймаута: "               >
+<!ENTITY MaxCacheAge                       "Продолжительность кэширования результатов нотариусов (в секундах):"             >
+<!ENTITY OverridingFirefoxSecurityErrors "Переопределить ошибки безопасности Firefox">
+<!ENTITY AllowPerspectivestoautomaticallyoverridesecurityerrors "Позволить Перспективам автоматически переопределять ошибки безопасности">
+<!ENTITY PermanentlytrustcertificatesvalidatedbyPerspectives "Постоянно(перманентно) доверять сертификатам, проверенным Перспективами.">
+<!ENTITY WhentoContactNotaries "Когда связываться с Нотариусами">
+<!ENTITY ContactNotariesforallHTTPSsites "Связываться с Нотариусами для всех сайтов с зашитой шифрованием по HTTPS">
+<!ENTITY ContactNotariesonlywhenawebsitescertificatecausesasecurityerror "Связываться с Нотариусами только когда сертификат web-сайта вызывает ошибку безопасности">
+<!ENTITY AlwaysasktheuserbeforecontactingNotaries "Всегда спрашивать перед обращением к Нотариусам">
+<!ENTITY DisplayPermissionReminder "Отображать запрос на подключение к Нотариусам">
+<!ENTITY ContactNotariesInPrivateBrowsingMode "Разрешить связь с нотариусами в режиме приватного браузинга(Инкогнито)">
+<!ENTITY Certificates "Сертификаты">
+<!ENTITY Servers "Серверы Нотариусов">
+<!ENTITY Help "Помощь">
+<!ENTITY OK "OK">
+<!ENTITY Close "Закрыть">
+<!ENTITY Cancel "Отменить">
+<!ENTITY Addtowhitelist "Добавить в Белый список">
+<!ENTITY Addsitetowhitelist "Добавить сайт в Белый список">
+<!ENTITY Whitelistmessage "Экспертная настройка:Добавляя web-сайт в Ваш Белый список, Перспектива автоматически доверяет всем подключениям к нему без запросов к нотариусам. Пользуйтесь только если понимаете все риски данного режима!">
+<!ENTITY ReportPossibleAttack "Сообщить о возможной атаке">
+<!ENTITY ReportAttackMessage "Сообщая об атаке, проект Перспектив может улучшить это расширение и определить уязвимости в Internet.">
+<!ENTITY SendFullReport "Отправить полный отчет">
+<!ENTITY SendPrivacyReport "Отправить отчет с конфиденциальными данными">
+<!ENTITY Optional "Необязательно">
+<!ENTITY EmailDescription "Адрес электронной почты для последующих связанных вопросов">
+<!ENTITY AdditionalInfoMessage "Любая дополнительная информация, описывающая обстоятельства этой возможной атаки">
+<!ENTITY ShowDetailedReportText "Показать полный текст отчета со всеми деталями">
+<!ENTITY SubmitReport "Отправить Отчет">
+<!ENTITY DetailedInformation "Детальная информация">
+<!ENTITY CertificateValidation "Проверка Сертификата">
+<!ENTITY AutoTrust        "Автоматически доверять следующим сайтам">
+<!ENTITY AutoTrustDomain  "Домен">
+<!ENTITY AutoTrustRegex   "Регулярное выражение">
+<!ENTITY AutoTrustEnabled "Включено">
+<!ENTITY AutoTrustRemove  "Удалить">
+<!ENTITY DefaultNotaryServers "Сервера нотариусов по-умолчанию">
+<!ENTITY UseDefaultNotaries "Использовать список и опрашивать нотариусов по-умолчанию">
+<!ENTITY AdditionalNotaryServers "Дополнительные серверы Нотариусов">
+<!ENTITY ForceNotaryCheck "Потребовать проверку Нотариусов в обязательном порядке">
+<!ENTITY ReportAttack "Сообщить об атаке">
+<!ENTITY ViewCertificateStore "Просмотр Хранилища Сертификатов">
+<!ENTITY DistrustAllCertificates "Отозвать доверие ко всем сертификатам...">
+<!ENTITY About "О Перспективе">
+<!ENTITY AboutMainCredit "Клиент проекта Перспектива для браузера, Дэн Вендландт">
+<!ENTITY ContributorTitle "Участники">
+<!ENTITY ContributorSubTitle "(перечислены по алфавиту по фамилии)">
+<!ENTITY ContributorText "Большое спасибо следующим людям, котоые присылали отчеты об ошибках, документацию, исправления кода и/или идеи">
+<!ENTITY TranslatorTitle "Переводчики">
+<!ENTITY TranslatorSubTitle "(перечислены по алфавиту по коду локали и языка)">
+<!ENTITY TranslatorText "Большое спасибо следующим людям, которые помогли перевести проект">
+<!ENTITY ClickToVisitWebsite "Нажмите, чтобы посетит web-сайт проекта Перспектива">
+<!ENTITY HelpTranslatePerspectives "Помогите перевести Перспективу!">

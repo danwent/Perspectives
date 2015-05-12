@@ -90,6 +90,16 @@
 		</em:localized>
 		<em:localized>
 			<Description>
+				<em:locale>ru</em:locale>
+				<em:name>проект Перспектива(Perspectives)</em:name>
+				<em:description>Безопасно подключайтесь к защищенным шифрованием сайтам по протоколу HTTPS, проверяя их сертификаты безопасности посредством распределенной сети независимых Сетевых Нотариусов. Подробности читайте на http://www.perspectives-project.org</em:description>
+				<em:creator>Проект Переспектива университета Карнеги Меллона, Компьютерные Науки</em:creator>
+				<em:homepageURL>http://www.perspectives-project.org</em:homepageURL>
+				<em:translator>Alexey Vesnin</em:translator>
+			</Description>
+		</em:localized>
+		<em:localized>
+			<Description>
 				<em:name>Perspectives</em:name>
 				<em:locale>zh-CN</em:locale>
 				<em:description>使用网络认证检查安全证书，从而安全地连接到 https 网站。请查看 http://www.perspectives-project.org</em:description>

@@ -35,7 +35,7 @@
 		  <menuitem label="&ViewNotaryResults;" oncommand="Pers_statusbar.open_results_dialog()"    />
 		  <menuitem label="&ForceNotaryCheck;"  oncommand="Pers_statusbar.force_update()"           />
           <!--Report attack always fails at the moment. Hide it until we fix it. issue #122-->
-		  <!--<menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />-->
+		  <menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />
 		  <menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
 		  <menuseparator/>
 		  <menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
@@ -58,7 +58,7 @@
       			<menuitem label="&ViewNotaryResults;" oncommand="Pers_statusbar.open_results_dialog()"    />
       			<menuitem label="&ForceNotaryCheck;"  oncommand="Pers_statusbar.force_update()"           />
                 <!--Report attack always fails at the moment. Hide it until we fix it. issue #122-->
-                <!--<menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />-->
+            		<menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />
       			<menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
       			<menuseparator/>
       			<menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />
@@ -81,7 +81,7 @@
       			<menuitem label="&ViewNotaryResults;" oncommand="Pers_statusbar.open_results_dialog()"    />
       			<menuitem label="&ForceNotaryCheck;"  oncommand="Pers_statusbar.force_update()"           />
                 <!--Report attack always fails at the moment. Hide it until we fix it. issue #122-->
-     			<!--<menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />-->
+     			<menuitem label="&ReportAttack;"      oncommand="Pers_report.report_attack()"             />
       			<menuitem label="&Addtowhitelist;"    oncommand="Pers_whitelist_dialog.add_to_whitelist()"/>
       			<menuseparator/>
       			<menuitem label="&ViewCertificateStore;"    oncommand="Pers_statusbar.openCertificates()"           />

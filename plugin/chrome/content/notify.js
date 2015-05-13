@@ -108,13 +108,13 @@ var Pers_notify = {
 		var message = Perspectives.strbundle.getString("unableToVerify");
 		var buttons = [
 // Report attack always fails at the moment. Hide it until we fix it. issue #122
-//			{
-//				label: Perspectives.strbundle.getString("reportThis"),
-//				accessKey: "",
-//				callback: function () {
-//					Pers_report.report_attack();
-//				}
-//			},
+			{
+				label: Perspectives.strbundle.getString("reportThis"),
+				accessKey: "",
+				callback: function () {
+					Pers_report.report_attack();
+				}
+			},
 			{
 				label: Perspectives.strbundle.getString("addToWhitelist"),
 				accessKey: "",
@@ -210,13 +210,13 @@ var Pers_notify = {
 		var message = Perspectives.strbundle.getString("noRepliesReceived");
 		var buttons = [
 // Report attack always fails at the moment. Hide it until we fix it. issue #122
-//			{
-//				label: Perspectives.strbundle.getString("reportThis"),
-//				accessKey: "",
-//				callback: function () {
-//					Pers_report.report_attack();
-//				}
-//			},
+			{
+				label: Perspectives.strbundle.getString("reportThis"),
+				accessKey: "",
+				callback: function () {
+					Pers_report.report_attack();
+				}
+			},
 			{
 				label: Perspectives.strbundle.getString("firewallHelp"),
 				accessKey: "",

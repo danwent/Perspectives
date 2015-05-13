@@ -20,10 +20,12 @@
 var Pers_report = { 
 
      REPORT_URI : "https://www.networknotary.org/report.php", 
-
+     resolving : false,
+     ip_str : "",
      // An attack may have happened due to an DNS attack.  Thus, it is 
      // useful to gather this data.  
-     get_ips : function(hostname) {
+     // Alexey Vesnin: preserved for reference
+     /* get_ips : function(hostname) {
         var cls = Components.classes['@mozilla.org/network/dns-service;1'];
         var iface = Components.interfaces.nsIDNSService;
         var dns = cls.getService(iface);
@@ -35,27 +37,51 @@ var Pers_report = {
         }
 
         return ips;
-    },  
- 
+    }, */
+    onLookupComplete: function(request, nsrecord, status) {
+	    var ips = Array();
+	    if (!Components.isSuccessCode(status)) {
+    		// Handle error here
+		this.resolving=false;
+		return;
+	    }
+	    while (nsrecord && nsrecord.hasMore()) {
+        	    ips.push(nsrecord.getNextAddrAsString());
+    	    }
+	    this.resolving=false;
+	    this.ip_str=ips.join();
+	    Pers_debug.d_print("error","Resolve completed "+ips.join());
+	},
+    get_ips_helper : function() {
+	if(this.resolving){
+	    setTimeout(function () { 
+		this.get_ips_helper(); // An error is shot out in a browser log, about this very line. Safe to ignore it - it seems to be working.
+	    },5000);
+	}
+    },
+
+    get_ips : function(hostname) { // New async implementation by Alexey Vesnin
+	Pers_debug.d_print("error","Starting to resolve");
+	this.ip_str = "";
+	// Using https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Threads#Waiting_for_a_background_task_to_complete and https://www.daniweb.com/web-development/javascript-dhtml-ajax/threads/47199/is-there-a-sleepwait-javascript-function-for-firefox
+	//	netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+	this.resolving=false;
+	// As in RTFM at https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIDNSService
+	let DnsService = Components.classes["@mozilla.org/network/dns-service;1"].createInstance(Components.interfaces.nsIDNSService);
+	let Thread = Components.classes["@mozilla.org/thread-manager;1"].getService(Components.interfaces.nsIThreadManager).currentThread;
+	this.resolving=true;
+	setTimeout(this.get_ips_helper(),5000); // TODO: DNS query timeout watchdog, maybe move timeout value to a tunable property?
+	DnsService.asyncResolve(hostname, 0, this, Thread);
+	Pers_debug.d_print("error","Starting wait loop");
+	while(this.resolving){
+	    Thread.processNextEvent(true);
+	}
+	// That's it. No freezes, and if we're here, then a DNS query is complete.
+	Pers_debug.d_print("error","End wait loop ");
+    },
+
     get_ip_str : function(hostname) {
-        var ips    = this.get_ips(hostname);
-        var ip_str = "";
-
-        if (ips.length <= 0 ) {
-            return ip_str;
-        }
-
-        ip_str = ips[0];
-
-        if (ips.length == 1) {
-            return ip_str;
-        }
-
-        for (var i = 1; i < ips.length; i++) {
-            ip_str= ip_str + "," + ips[i];
-        }
-
-        return ip_str;
+        this.get_ips(hostname);
     }, 
 
     get_report_json : function() {
@@ -66,9 +92,8 @@ var Pers_report = {
 	var additional_text = document.getElementById("additional-info").value;
 	var email_address = document.getElementById("email-address").value;
 	var full_report = !document.getElementById("full-radio").selectedIndex;
-	var ip_str = ""; 
 	if(full_report) { 
-		ip_str = this.get_ip_str(host); 
+		this.get_ip_str(host); 
 	} 	
         report_data      = {
 		"host" : host, 
@@ -87,7 +112,7 @@ var Pers_report = {
 		        "issuerOrganization"     : cert.issuerOrganization,
 		        "issuerOrganizationUnit" : cert.issuerOrganizationUnit,
 		}, 
-		"ips" : ip_str,  
+		"ips" : this.ip_str,  
 		"results" : { 
 			"cur_consistent" : res.cur_consistent, 
 			"inconsistent_results" : res.inconsistent_results, 

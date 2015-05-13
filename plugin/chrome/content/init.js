@@ -31,9 +31,9 @@ var Pers_init = {
       // so we have access to the stringbundle from statusbar.xul
       Perspectives.prompt_update();
 
-      var firstrun = root_prefs.getBoolPref("perspectives.first_run");
+      var firstrun = root_prefs.getBoolPref("extensions.perspectives.first_run");
       if (firstrun) {
-          root_prefs.setBoolPref("perspectives.first_run", false);
+          root_prefs.setBoolPref("extensions.perspectives.first_run", false);
           var bname = "perspectives-status-button";
 
           if (!document.getElementById(bname)) {
@@ -44,9 +44,8 @@ var Pers_init = {
           // we don't want to touch it
       }
 
-      if(!Perspectives.root_prefs.getBoolPref("perspectives.show_label")){
+      if(!Perspectives.root_prefs.getBoolPref("extensions.perspectives.show_label")){
         document.getElementById("perspective-statusbar-label").hidden = true;
       }
     }
 };
-   

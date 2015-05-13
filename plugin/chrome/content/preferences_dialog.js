@@ -96,7 +96,7 @@ var Pers_pref = {
 				}
 			});
 
-			return [ {pref: "perspectives.whitelist"                    , value: whitelist_enabled .join(",")}
+			return [ {pref: "extensions.perspectives.whitelist"                    , value: whitelist_enabled .join(",")}
 				   , {pref: "extensions.perspectives.whitelist_disabled", value: whitelist_disabled.join(",")}
 				   ];
 		},
@@ -176,8 +176,8 @@ var Pers_pref = {
 		var ret = true;
 
 		try {
-			if (this.root_prefs.getIntPref("perspectives.required_duration") < 0) {
-				this.root_prefs.setIntPref("perspectives.required_duration", 0);
+			if (this.root_prefs.getIntPref("extensions.perspectives.required_duration") < 0) {
+				this.root_prefs.setIntPref("extensions.perspectives.required_duration", 0);
 			}
 		} catch (e) {
 			Pers_util.pers_alert(e);
@@ -185,10 +185,10 @@ var Pers_pref = {
 		}
 
 		try {
-			if (this.root_prefs.getIntPref("perspectives.quorum_thresh") < 1) {
-				this.root_prefs.setIntPref("perspectives.quorum_thresh", 1);
-			} else if (this.root_prefs.getIntPref("perspectives.quorum_thresh") > 100) {
-				this.root_prefs.setIntPref("perspectives.quorum_thresh", 100);
+			if (this.root_prefs.getIntPref("extensions.perspectives.quorum_thresh") < 1) {
+				this.root_prefs.setIntPref("extensions.perspectives.quorum_thresh", 1);
+			} else if (this.root_prefs.getIntPref("extensions.perspectives.quorum_thresh") > 100) {
+				this.root_prefs.setIntPref("extensions.perspectives.quorum_thresh", 100);
 			}
 		} catch (e) {
 			Pers_util.pers_alert(e);
@@ -239,12 +239,12 @@ var Pers_pref = {
 			Pers_pref.security_class_change();
 			Pers_pref.disable_reminder_box();
 
-			var whitelist          = this.root_prefs.getCharPref("perspectives.whitelist");
+			var whitelist          = this.root_prefs.getCharPref("extensions.perspectives.whitelist");
 			var whitelist_disabled = this.root_prefs.getCharPref("extensions.perspectives.whitelist_disabled");
 			Pers_pref.whitelist_treeView.init(whitelist, whitelist_disabled);
 			document.getElementById('whitelist').view = Pers_pref.whitelist_treeView;
 
-			document.getElementById("default_notary_list").value = this.root_prefs.getCharPref("perspectives.default_notary_list");
+			document.getElementById("default_notary_list").value = this.root_prefs.getCharPref("extensions.perspectives.default_notary_list");
 		} catch(e) {
 			Pers_util.pers_alert(e);
 		}

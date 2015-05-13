@@ -34,26 +34,19 @@ var Pers_report = {
         // before turning it back on.
         return ips;
     },  
- 
+
     get_ip_str : function(hostname) {
-        var ips    = this.get_ips(hostname);
-        var ip_str = "";
-
-        if (ips.length <= 0 ) {
-            return ip_str;
-        }
-
-        ip_str = ips[0];
-
-        if (ips.length == 1) {
-            return ip_str;
-        }
-
-        for (var i = 1; i < ips.length; i++) {
-            ip_str= ip_str + "," + ips[i];
-        }
-
-        return ip_str;
+	var suffixes=[".onion",".i2p"];
+	var needResolve=true;
+	for (index = 0; index < suffixes.length; ++index) {
+	    if(hostname.indexOf(suffixes[index], hostname.length - suffixes[index].length) !== -1){
+		// No name-to-IP resolution possible for darknet addresses
+		needResolve=false;
+	    }
+	}
+	if(needResolve){
+	    this.get_ips(hostname);
+	}
     }, 
 
     get_report_json : function() {

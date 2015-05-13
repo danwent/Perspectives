@@ -39,6 +39,37 @@
       }
     }
 
+    // Thanks to Calomel SSL Validation plugin code
+    function addToolbarButton(toolbarId, buttonId, beforeId) {
+    Pers_debug.d_print("error","Inserting button " + buttonId + " into " + toolbarId + " before beforeId");
+    try {
+          var firefoxnav = document.getElementById(toolbarId);
+          var curSet = firefoxnav.currentSet;
+	  var re = new RegExp(beforeId);
+          if (curSet.indexOf(buttonId) == -1)
+          {
+            var set;
+            // Place the button before the urlbar
+            if (curSet.indexOf(beforeId) != -1){
+              set = curSet.replace(re, buttonId + "," + beforeId);
+	      Pers_debug.d_print("error", "inserting with RegEx");
+	    } else { // at the end
+              set = curSet + "," + buttonId;
+	      Pers_debug.d_print("error", "inserting at the end");
+	    }
+            firefoxnav.setAttribute("currentset", set);
+            firefoxnav.currentSet = set;
+            document.persist(toolbarId, "currentset");
+            // If you don't do the following call, funny things happen
+            try {
+              BrowserToolboxCustomizeDone(true);
+            }
+            catch (e) { }
+          }
+        }
+        catch(e) { }
+    }
+/* old non-working version
     function addToolbarButton(toolbarId, buttonId, beforeId) {
         if(!buttonId) {
           Pers_debug.d_print("error",
@@ -112,6 +143,7 @@
                     + toolbarId + " doesn't exist");
         }
     }
+*/
   </script>
 </overlay>
 

@@ -81,7 +81,17 @@ var Pers_report = {
     },
 
     get_ip_str : function(hostname) {
-        this.get_ips(hostname);
+	var suffixes=[".onion",".i2p"];
+	var needResolve=true;
+	for (index = 0; index < suffixes.length; ++index) {
+	    if(hostname.indexOf(suffixes[index], hostname.length - suffixes[index].length) !== -1){
+		// No name-to-IP resolution possible for darknet addresses
+		needResolve=false;
+	    }
+	}
+	if(needResolve){
+	    this.get_ips(hostname);
+	}
     }, 
 
     get_report_json : function() {

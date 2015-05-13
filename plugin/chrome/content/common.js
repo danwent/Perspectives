@@ -238,7 +238,7 @@ var Pers_util = {
         			Pers_debug.d_print("error", "Signature verification failed on notary list update");
 				return;
 			}
-			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
+			root_prefs.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
@@ -253,7 +253,7 @@ var Pers_util = {
 	update_default_notary_list_from_file : function(root_prefs) {
 		try {
 			var notary_list_data = this.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");
-			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
+			root_prefs.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
 			if(Perspectives.strbundle == null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");

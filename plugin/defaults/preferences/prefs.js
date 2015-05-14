@@ -25,4 +25,4 @@ pref("extensions.perspectives.default_notary_list","");
 pref("extensions.perspectives.use_default_notary_list",true);
 pref("extensions.perspectives.enable_default_list_auto_update",false);
 pref("extensions.perspectives.first_run", true);
-
+pref("extensions.perspectives.preference_migration", true);

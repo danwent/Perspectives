@@ -1,8 +1,7 @@
     function evtLoad() {
       Perspectives.init_data();
       Perspectives.initNotaries();
-      var root_prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                                .getService(Components.interfaces.nsIPrefBranch);
+      var root_prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 
       // call this *after* the document has loaded
       // so we have access to the stringbundle from statusbar.xul
@@ -56,78 +55,38 @@
         }
         catch(e) { }
     }
-/* old non-working version
-    function addToolbarButton(toolbarId, buttonId, beforeId) {
-        if(!buttonId) {
-          Pers_debug.d_print("error",
-                    "Could not add Perspectives button to toolbar: "
-                    + buttonId + " doesn't exist");
-          return;
-        }
 
-        if(!toolbarId) {
-          Pers_debug.d_print("error",
-                    "Could not add Perspectives button to toolbar: "
-                    + toolbarId + " doesn't exist");
-          return;
-        }
-        var toolbar = document.getElementById(toolbarId);
-        if (toolbar) {
-            if (toolbar.firstChild) {
-                var before = toolbar.firstChild;
-                if (beforeId) {
-                    var elem = document.getElementById(beforeId);
-                    if (elem) {
-                        if (elem.parentNode) {
-                            if (elem.parentNode == toolbar) {
-                                before = elem;
-                            }
-                            else {
-                                Pers_debug.d_print("error",
-                                  "Parent node of " + beforeId +
-                                  " is not " + toolbarId);
-                            }
-                        }
-                        else {
-                            Pers_debug.d_print("error",
-                              "Could not get parent node for " + beforeId);
-                        }
-                    }
-                    else {
-                        Pers_debug.d_print("error",
-                          "Could not get element " + beforeId + "");
-                    }
-                }
-                else {
-                    Pers_debug.d_print("error",
-                      "" + beforeId + " doesn't exist.");
-                }
+    // Preference migration from old names to new ones. Written by Alexey Vesnin
+    function migrateOldSettings() {
+	var preflist_numeric=["perspectives.quorum_thresh","perspectives.required_duration","perspectives.security_settings","perspectives.max_timespan_for_inconsistency_test","perspectives.weak_consistency_time_limit","perspectives.max_cache_age_sec"];
+	var preflist_string=["perspectives.svg","perspectives.whitelist","perspectives.additional_notary_list","perspectives.default_notary_list"];
+	var preflist_bool=["perspectives.exceptions.permanent","perspectives.exceptions.enabled","perspectives.check_good_certificates","perspectives.require_user_permission","perspectives.show_label","perspectives.trust_https_with_weak_consistency","perspectives.prompt_update_all_https_setting","perspectives.enable_default_list_auto_update","perspectives.use_default_notary_list"];
+	var root_prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+	var migration_needed  = root_prefs.getBoolPref("extensions.perspectives.preference_migration");
 
-                try{
-                  toolbar.insertItem(buttonId, before);
-                }
-                catch(e) {
-                  Pers_debug.d_print("error",
-                      "Could not add Perspectives button to toolbar:" + e);
-                }
+	var tmpNum=0;
+	var tmpStr="";
+	var tmpBool=true;
 
-                toolbar.setAttribute("currentset", toolbar.currentSet);
-                document.persist(toolbar.id, "currentset");
-
-                if (toolbarId == "addon-bar")  {
-                    toolbar.collapsed = false;
-                }
-            }
-            else {
-              Pers_debug.d_print("error",
-                      "Could not add Perspectives button to toolbar: "
-                      + ToolbarId + " has no child node");
-            }
-        }
-        else {
-          Pers_debug.d_print("error",
-                    "Could not add Perspectives button to toolbar: "
-                    + toolbarId + " doesn't exist");
-        }
+	if(migration_needed){
+	    for(index = 0; index < preflist_numeric.length; ++index){
+		if(root_prefs.getPrefType(preflist_numeric[index]) !== root_prefs.PREF_INVALID){
+		    tmpNum=root_prefs.getIntPref(preflist_numeric[index]);
+		    root_prefs.setIntPref("extensions."+preflist_numeric[index],tmpNum);
+		}
+	    }
+	    for(index = 0; index < preflist_string.length; ++index){
+		if(root_prefs.getPrefType(preflist_string[index]) !== root_prefs.PREF_INVALID){
+		    tmpStr=root_prefs.getCharPref(""+preflist_string[index]);
+		    root_prefs.setCharPref("extensions."+preflist_string[index],tmpStr);
+		}
+	    }
+	    for(index = 0; index < preflist_bool.length; ++index){
+		if(root_prefs.getPrefType(preflist_bool[index]) !== root_prefs.PREF_INVALID){
+		    tmpBool=root_prefs.getBoolPref(""+preflist_bool[index]);
+		    root_prefs.setBoolPref("extensions."+preflist_bool[index],tmpBool);
+		}
+	    }
+	    root_prefs.setBoolPref("extensions.perspectives.preference_migration",false);
+	}
     }
-*/

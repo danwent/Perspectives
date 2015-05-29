@@ -13,7 +13,6 @@ Once you're confident everything works:
 - Check: do you need to/can you increase the version compatibility in plugin/install.rdf ?
 - Increment the version number in plugin/install.rdf
 - Briefly describe the changes in the CHANGELOG file
-- Add a tag in git for the new version, to make it easy to find if we ever need to republish, rebuild, or for people who build from source
 - Build a clean version ('make clean; make')
 - Upload your changes to github
 - Create a pull request to bring your changes to the main branch
@@ -23,7 +22,7 @@ Once you're confident everything works:
 
 Once the pull requst has been approved:
 
-- Add a tag in the official ('danwent') depo (if you're not a Perspectives maintainer, a maintainer will have to do this for you)
+- Add a tag in the official ('danwent') depo (if you're not a Perspectives maintainer, a maintainer will have to do this for you). This makes it easy to find if we ever need to republish, rebuild, or for people who build from source.
 - Close any github tickets/issues fixed by the current release (bonus points: add them to the correct Milestone before closing!)
 
 

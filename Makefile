@@ -24,7 +24,7 @@ loctests:
     ifeq ($(shell command -v python ; echo $$?),1)
 	    @echo -e "  python not installed; skipping localization tests.\n  WARNING: Invalid localization files may prevent Perspectives from working.\n  Install python to enable localization validation."
     else
-	    python test/extlib/checkloc.py ../../plugin/chrome/locale/
+	    python test/extlib/checkloc.py plugin
     endif
 
 setup:

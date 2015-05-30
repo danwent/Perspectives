@@ -16,11 +16,11 @@
         <preferences>
             <preference
                     id  ="quorum-thresh"
-                    name="perspectives.quorum_thresh"
+                    name="extensions.perspectives.quorum_thresh"
                     type="int"/>
             <preference
                     id  ="quorum-duration"
-                    name="perspectives.required_duration"
+                    name="extensions.perspectives.required_duration"
                     type="int"/>
             <preference
                     id  ="query-timeout"
@@ -36,23 +36,23 @@
                     type="int"/>
             <preference
                     id  ="security-settings"
-                    name="perspectives.security_settings"
+                    name="extensions.perspectives.security_settings"
                     type="int"/>
             <preference
                     id  ="exception-perm"
-                    name="perspectives.exceptions.permanent"
+                    name="extensions.perspectives.exceptions.permanent"
                     type="bool"/>
             <preference
                     id  ="exception-enabled"
-                    name="perspectives.exceptions.enabled"
+                    name="extensions.perspectives.exceptions.enabled"
                     type="bool"/>
             <preference
                     id  ="check-good"
-                    name="perspectives.check_good_certificates"
+                    name="extensions.perspectives.check_good_certificates"
                     type="bool"/>
             <preference
                     id  ="require-user-permission"
-                    name="perspectives.require_user_permission"
+                    name="extensions.perspectives.require_user_permission"
                     type="bool"/>
             <preference
                     id  ="show-permission-reminder"
@@ -64,15 +64,15 @@
                     type="bool"/>
             <preference
                     id  ="additional_notary_list"
-                    name="perspectives.additional_notary_list"
+                    name="extensions.perspectives.additional_notary_list"
                     type="string"/>
             <preference
                     id  ="use-default-notary-list"
-                    name="perspectives.use_default_notary_list"
+                    name="extensions.perspectives.use_default_notary_list"
                     type="bool"/>
             <preference
                     id  ="enable-default-list-auto-update"
-                    name="perspectives.enable_default_list_auto_update"
+                    name="extensions.perspectives.enable_default_list_auto_update"
                     type="bool"/>
         </preferences>
 

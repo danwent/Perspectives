@@ -7,6 +7,7 @@ locale perspectives fi    chrome/locale/fi/
 locale perspectives fr    chrome/locale/fr/
 locale perspectives nl    chrome/locale/nl/
 locale perspectives pl    chrome/locale/pl/
+locale perspectives ru chrome/locale/ru/
 locale perspectives zh-CN chrome/locale/zh-CN/
 
 content perspectives_main ./

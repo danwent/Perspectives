@@ -12,10 +12,11 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
-NEXT
-----
+4.6.1
+-----
+* Add (ru) Russian translation! Many thanks to Alexey V!
 * Fill in CHANGELOG history from versions before 4.3
-+ Update checkloc library: new test to check string substitutions inside .properties files
++ Update checkloc library to v2.1. Many new tests including checking string substitutions inside .properties files
 * Fix incorrect string substitution in zh-CN localization (caught by the new checkloc test)
 * Move all exteral libraries to a clear 'extlib' folder; denote licenses
 * Remove unused preference 'perspectives.svg'

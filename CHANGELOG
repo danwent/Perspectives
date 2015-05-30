@@ -18,7 +18,7 @@ We attempt to use meaningful version numbers, following semver.org:
 * Fill in CHANGELOG history from versions before 4.3
 + Update checkloc library to v2.1. Many new tests including checking string substitutions inside .properties files
 * Fix incorrect string substitution in zh-CN localization (caught by the new checkloc test)
-* Move all exteral libraries to a clear 'extlib' folder; denote licenses
+* Move all external libraries to a clear 'extlib' folder; denote licenses
 * Remove unused preference 'perspectives.svg'
 + Add Perspectives logo image to help page
 * Convert translation file to markdown format
@@ -27,7 +27,7 @@ We attempt to use meaningful version numbers, following semver.org:
 * Add a way to distinguish test setup from the tests themselves
 * Add sanity check for inconsistency function so max_timespan cannot be larger than check length
 + Add link to translation instructions from About dialog
-* Add Preferences GUI input validation to 'mix' and 'max' quorum threshold
+* Add Preferences GUI input validation to 'min' and 'max' quorum threshold
 
 
 4.6

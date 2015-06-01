@@ -1029,7 +1029,7 @@ var Perspectives = {
 			}
 			Pers_debug.d_print("main", Perspectives.notaries);
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
-			getBrowser().addProgressListener(Perspectives.notaryListener);// , 	Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT); <-- addressing bug https://bugzilla.mozilla.org/show_bug.cgi?id=608628
+			getBrowser().addProgressListener(Perspectives.notaryListener);
 			setTimeout(function() { Perspectives.requeryAllTabs(gBrowser); }, 4000);
 			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
 		} catch(e) {

@@ -28,12 +28,10 @@ var Pers_report = {
         var iface = Components.interfaces.nsIDNSService;
         var dns = cls.getService(iface);
         var ips = Array();
-        var nsrecord = dns.resolve(hostname, true);
-
-        while (nsrecord && nsrecord.hasMore()) {
-            ips[ips.length] = nsrecord.getNextAddrAsString();
-        }
-
+        // DEVELOPER NOTE:
+        // Report Attack functionality is currently puposely disabled.
+        // We need to make sure it does not violate reporter privacy
+        // before turning it back on.
         return ips;
     },  
  

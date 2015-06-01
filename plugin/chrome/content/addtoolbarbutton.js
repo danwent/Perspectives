@@ -49,11 +49,6 @@ var Pers_add_toolbar_button = {
           firefoxnav.setAttribute("currentset", set);
           firefoxnav.currentSet = set;
           document.persist(toolbarId, "currentset");
-          // If you don't do the following call, funny things happen
-          try {
-            BrowserToolboxCustomizeDone(true);
-          }
-          catch (e) { }
         }
       }
       catch(e) { }

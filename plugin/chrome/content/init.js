@@ -19,7 +19,9 @@
 // This file contains initialization code that may be run when the extension starts
 // It is held separately from initialize.xul to comply with Mozilla review policies
 
-    function evtLoad(evt){
+var Pers_init = {
+
+    evtLoad: function(evt){
       Perspectives.init_data();
       Perspectives.initNotaries();
       var root_prefs = Components.classes["@mozilla.org/preferences-service;1"]
@@ -36,7 +38,7 @@
 
           if (!document.getElementById(bname)) {
             // user has just installed the extension and has no button. add one
-            addToolbarButton("nav-bar", bname, "urlbar-container");
+            Pers_add_toolbar_button.addToolbarButton("nav-bar", bname, "urlbar-container");
           }
           // else the user has already added the button previously
           // we don't want to touch it
@@ -46,34 +48,5 @@
         document.getElementById("perspective-statusbar-label").hidden = true;
       }
     }
-
-    // Thanks to Calomel SSL Validation plugin code
-    function addToolbarButton(toolbarId, buttonId, beforeId) {
-    Pers_debug.d_print("error","Inserting button " + buttonId + " into " + toolbarId + " before beforeId");
-    try {
-          var firefoxnav = document.getElementById(toolbarId);
-          var curSet = firefoxnav.currentSet;
-	  var re = new RegExp(beforeId);
-          if (curSet.indexOf(buttonId) == -1)
-          {
-            var set;
-            // Place the button before the urlbar
-            if (curSet.indexOf(beforeId) != -1){
-              set = curSet.replace(re, buttonId + "," + beforeId);
-	      Pers_debug.d_print("error", "inserting with RegEx");
-	    } else { // at the end
-              set = curSet + "," + buttonId;
-	      Pers_debug.d_print("error", "inserting at the end");
-	    }
-            firefoxnav.setAttribute("currentset", set);
-            firefoxnav.currentSet = set;
-            document.persist(toolbarId, "currentset");
-            // If you don't do the following call, funny things happen
-            try {
-              BrowserToolboxCustomizeDone(true);
-            }
-            catch (e) { }
-          }
-        }
-        catch(e) { }
-    }
+};
+   

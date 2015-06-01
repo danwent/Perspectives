@@ -8,9 +8,11 @@
 <script type="text/javascript" src="../extlib/spark-md5.min.js"></script>
 
 <script type="text/javascript" src="../about.js"             ></script>
+<script type="text/javascript" src="../addtoolbarbutton.js"></script>
 <script type="text/javascript" src="../client_policy.js"     ></script>
 <script type="text/javascript" src="../common.js"            ></script>
 <script type="text/javascript" src="../generate_svg.js"      ></script>
+<script type="text/javascript" src="../init.js"></script>
 <script type="text/javascript" src="../notaries.js"          ></script>
 <script type="text/javascript" src="../notify.js"            ></script>
 <script type="text/javascript" src="../preferences_dialog.js"></script>
@@ -191,11 +193,13 @@ function meta_tests() {
 
     var objs =
         [ "Pers_about"
+        , "Pers_add_toolbar_button"
         , "Pers_client_policy"
         , "Pers_debug"
         , "Pers_util"
         , "Pers_keypress"
         , "Pers_gen"
+        , "Pers_init"
         , "Perspectives"
         , "Pers_notify"
         , "Pers_pref"

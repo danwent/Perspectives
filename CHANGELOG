@@ -12,6 +12,17 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.6.2
+-----
+* Fix several bugs that violate the AMO review policy so we can continue to deploy client updates through addons.mozilla.org:
+	* Move initialization script to separate file rather than holding the code inline (GH #162)
+	* Fix initial setup to add Perspectives button to the correct place (GH #161)
+	* Fix addProgressListener usage (GH #103 )
+	* Remove synchronous call to nsIDNSService.resolve() (GH #160)
+	Fixes mainly based on patches submitted by Alexey V., with slight modifications.
+	Thanks Alexey!
+
+
 4.6.1
 -----
 * Add (ru) Russian translation! Many thanks to Alexey V!

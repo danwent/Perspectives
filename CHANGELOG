@@ -12,13 +12,24 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.6.2
+-----
+* Fix several bugs that violate the AMO review policy so we can continue to deploy client updates through addons.mozilla.org:
+	* Move initialization script to separate file rather than holding the code inline (GH #162)
+	* Fix initial setup to add Perspectives button to the correct place (GH #161)
+	* Fix addProgressListener usage (GH #103 )
+	* Remove synchronous call to nsIDNSService.resolve() (GH #160)
+	Fixes mainly based on patches submitted by Alexey V., with slight modifications.
+	Thanks Alexey!
+
+
 4.6.1
 -----
 * Add (ru) Russian translation! Many thanks to Alexey V!
 * Fill in CHANGELOG history from versions before 4.3
 + Update checkloc library to v2.1. Many new tests including checking string substitutions inside .properties files
 * Fix incorrect string substitution in zh-CN localization (caught by the new checkloc test)
-* Move all exteral libraries to a clear 'extlib' folder; denote licenses
+* Move all external libraries to a clear 'extlib' folder; denote licenses
 * Remove unused preference 'perspectives.svg'
 + Add Perspectives logo image to help page
 * Convert translation file to markdown format
@@ -27,7 +38,7 @@ We attempt to use meaningful version numbers, following semver.org:
 * Add a way to distinguish test setup from the tests themselves
 * Add sanity check for inconsistency function so max_timespan cannot be larger than check length
 + Add link to translation instructions from About dialog
-* Add Preferences GUI input validation to 'mix' and 'max' quorum threshold
+* Add Preferences GUI input validation to 'min' and 'max' quorum threshold
 
 
 4.6

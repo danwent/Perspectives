@@ -49,6 +49,9 @@ var Pers_init = {
     },
 
     // Preference migration from old names to new ones. Written by Alexey Vesnin
+    // ensures prefereces match the 'extension.perspectives' naming convention
+    // required by addons.mozilla.org
+    // https://developer.mozilla.org/en-US/Add-ons/AMO/Policy/Reviews#Full_Review
     migrateOldSettings: function() {
       var preflist_numeric = ["perspectives.quorum_thresh","perspectives.required_duration","perspectives.security_settings","perspectives.max_timespan_for_inconsistency_test","perspectives.weak_consistency_time_limit","perspectives.max_cache_age_sec"];
       var preflist_string = ["perspectives.svg","perspectives.whitelist","perspectives.additional_notary_list","perspectives.default_notary_list"];

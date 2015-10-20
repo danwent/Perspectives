@@ -116,7 +116,8 @@ var Pers_report = {
 			// no feedback if request fails.
 			var req = new XMLHttpRequest();
 			// synchronous request
-			req.open("POST", this.REPORT_URI + "?record_ip=" + full_report, false);
+			// TODO: change to async request
+			req.open("POST", this.REPORT_URI + "?record_ip=" + full_report, true);
 			req.send(report_json_str);
 			if(req.status != 200) {
 				Pers_util.pers_alert(

@@ -48,7 +48,7 @@ var Pers_init = {
       }
     },
 
-    // Preference migration from old names to new ones. Written by Alexey Vesnin
+    // Preference migration from old names to new ones.
     // ensures prefereces match the 'extension.perspectives' naming convention
     // required by addons.mozilla.org
     // https://developer.mozilla.org/en-US/Add-ons/AMO/Policy/Reviews#Full_Review

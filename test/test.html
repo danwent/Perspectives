@@ -718,9 +718,9 @@ function quorum_basics() {
 
     //TODO: write code to save and restore all preferences after each test,
     //so it doesn't matter which we alter.
-    var pref_string_extra_notaries = "perspectives.additional_notary_list";
-    var pref_string_use_def_notary = "perspectives.use_default_notary_list";
-    var orig_thresh               = Perspectives.root_prefs.getIntPref ("perspectives.quorum_thresh");
+    var pref_string_extra_notaries = "extensions.perspectives.additional_notary_list";
+    var pref_string_use_def_notary = "extensions.perspectives.use_default_notary_list";
+    var orig_thresh               = Perspectives.root_prefs.getIntPref ("extensions.perspectives.quorum_thresh");
     var orig_extra_notaries       = Perspectives.root_prefs.getCharPref(pref_string_extra_notaries  );
     var orig_use_default_notaries = Perspectives.root_prefs.getBoolPref(pref_string_use_def_notary  );
 
@@ -735,7 +735,7 @@ JaJ2Lw7kRVMCAwEAAQ==\
 
     try {
         var small_quorum_thresh = 1;
-        Perspectives.root_prefs.setIntPref ("perspectives.quorum_thresh", small_quorum_thresh);
+        Perspectives.root_prefs.setIntPref ("extensions.perspectives.quorum_thresh", small_quorum_thresh);
         Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary  , false              );
         Perspectives.root_prefs.setCharPref(pref_string_extra_notaries  , single_notary      );
 
@@ -755,7 +755,7 @@ JaJ2Lw7kRVMCAwEAAQ==\
         assert(quorum_duration === 0, "Quorum size 0 gives zero duration");
 
         var full_quorum_thresh = 100;
-        Perspectives.root_prefs.setIntPref ("perspectives.quorum_thresh", full_quorum_thresh);
+        Perspectives.root_prefs.setIntPref ("extensions.perspectives.quorum_thresh", full_quorum_thresh);
         Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary  , true              );
 
         qint = Perspectives.getQuorumAsInt();
@@ -764,7 +764,7 @@ JaJ2Lw7kRVMCAwEAAQ==\
 
     }
     finally {
-        Perspectives.root_prefs.setIntPref ("perspectives.quorum_thresh", orig_thresh              );
+        Perspectives.root_prefs.setIntPref ("extensions.perspectives.quorum_thresh", orig_thresh              );
         Perspectives.root_prefs.setCharPref(pref_string_extra_notaries  , orig_extra_notaries      );
         Perspectives.root_prefs.setBoolPref(pref_string_use_def_notary  , orig_use_default_notaries);
     }
@@ -878,8 +878,8 @@ function quorum_oldkey() {
 }
 
 function notary_parsing() {
-    var pref_string_extra_notaries = "perspectives.additional_notary_list";
-    var pref_string_use_def_notary = "perspectives.use_default_notary_list";
+    var pref_string_extra_notaries = "extensions.perspectives.additional_notary_list";
+    var pref_string_use_def_notary = "extensions.perspectives.use_default_notary_list";
     var orig_extra_notaries        = null;
     var orig_use_default_notaries  = null;
 

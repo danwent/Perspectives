@@ -146,7 +146,7 @@ function error(str) {
 // placeholder function to note future tests we should implement.
 // it's here so you can easily set up tests and enable/disable them
 // by renaming the function they call.
-function assert_fixme(test, case_name) {
+function assert_writeme(test, case_name) {
     write_string_to_element('[-] <span style="color: grey">not implemented</span> : ' + case_name, 'li');
 }
 
@@ -971,7 +971,7 @@ function notary_replies() {
     write_string("Starting notary reply tests");
 
     //TODO: overwrite, or ignore?
-    assert_fixme(false, "Don't accept multiple responses from the same server");
+    assert_writeme(false, "Don't accept multiple responses from the same server");
     //we can test this by temporarily allowing duplicates and sending out two responses.
     //but it's even better if we can just do it in code.
 

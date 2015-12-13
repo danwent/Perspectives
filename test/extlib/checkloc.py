@@ -477,7 +477,12 @@ class ManifestSet:
 		try:
 			xml = etree.parse(install_rdf)
 			root = xml.getroot()
-			for locale in root.findall('.//em:locale', root.nsmap):
+			# lxml 3.5.0 raises a ValueError if the namespace map
+			# contains a 'None' entry, even if it also contains
+			# other valid mappings.
+			# Therefore explicitly add only the namespaces we need
+			ns = {'em': 'http://www.mozilla.org/2004/em-rdf#'}
+			for locale in root.findall('.//em:locale', ns):
 				loc = locale.text
 				if loc not in self.rdf_locs:
 					self.rdf_locs[loc] = True

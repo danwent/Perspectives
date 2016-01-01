@@ -40,6 +40,7 @@ var Perspectives = {
 	// Always call init_data() before working with these variables!
 	root_prefs : null,
 	overrideService : null,
+	recentSSLStatus : null, // HACK (lambdor): getRecentBadCert has been removed in FF33 thus save here
 
 	/*
 	Note: calls to Components.classes.getService() require special permissions.
@@ -136,6 +137,7 @@ var Perspectives = {
 	// cached result data
 	// FIXME: this should be merged with TabInfo, once TabInfo is made into a
 	// real object
+
 	SslCert: function(host, port, md5, summary, tooltip, svg, duration, cur_consistent,
 					inconsistent_results,weakly_seen, server_result_list) {
 		this.host     = host;  // now saved with ti, so remove this?
@@ -154,6 +156,7 @@ var Perspectives = {
 
 	get_invalid_cert_SSLStatus: function(uri) {
 		var recentCertsSvc = null;
+		var ff33 = false;
 
 		// firefox <= 19 and seamonkey
 		if(typeof Components.classes["@mozilla.org/security/recentbadcerts;1"]
@@ -177,20 +180,24 @@ var Perspectives = {
 				Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 				recentCertsSvc = certDB.getRecentBadCerts(PrivateBrowsingUtils.isWindowPrivate(window));
 			}
+			else
+			{
+				ff33 = true;
+			}
 		}
 		else {
 			Pers_debug.d_print("error", "No way to get invalid cert status!");
 			return null;
 		}
 
-		if(!recentCertsSvc) {
+		if(!recentCertsSvc && !ff33) {
 			return null;
 		}
 
 		var port = (uri.port == -1) ? 443 : uri.port;
 
 		var hostWithPort = uri.host + ":" + port;
-		var gSSLStatus = recentCertsSvc.getRecentBadCert(hostWithPort);
+		var gSSLStatus = ff33 ? Perspectives.recentSSLStatus : recentCertsSvc.getRecentBadCert(hostWithPort);
 		if(!gSSLStatus) {
 			return null;
 		}
@@ -491,9 +498,9 @@ var Perspectives = {
 				Perspectives.strbundle = document.getElementById("notary_strings");
 			}
 
-			var server_result_list = ti.partial_query_results; 
-			delete ti.partial_query_results; 
-			delete ti.timeout_id; 
+			var server_result_list = ti.partial_query_results;
+			delete ti.partial_query_results;
+			delete ti.timeout_id;
 
 			var test_key;
 			if (ti.cert["md5Fingerprint"] !== undefined) {
@@ -526,11 +533,18 @@ var Perspectives = {
 				obs_text += "\nNotary: " + server_result_list[i].server + "\n";
 				obs_text += Pers_xml.resultToString(server_result_list[i]);
 			}
-			var qd_str = is_cur_consistent
-				? (qd_days > 5 || qd_days === 0
-					? Math.round(qd_days)
-					: qd_days.toFixed(1)) + " days"
-				: "none";
+			var qd_str = "none";
+			if (is_cur_consistent)
+			{
+				if (qd_days > 5 || qd_days === 0)
+				{
+					qd_str = Math.round(qd_days) + " days";
+				}
+				else
+				{
+					qd_str = qd_days.toFixed(1) + " days";
+				}
+			}
 			var str = Perspectives.strbundle.getString("notaryLookupFor") +
 				": " + ti.service_id + "\n";
 				str += Perspectives.strbundle.getString("LegendBrowsersKey") +
@@ -622,7 +636,7 @@ var Perspectives = {
 			ti.reason_str = text;
 			return;
 		}
-  
+
 		var md5;
 		if (ti.cert["md5Fingerprint"] !== undefined) {
 			// use the built-in browser hash if available
@@ -982,11 +996,12 @@ var Perspectives = {
 
   		// this is the main function we key off of.  It seems to work well, even though
   		// the docs do not explicitly say when it will be called.
-  		onSecurityChange: function() {
+  		onSecurityChange: function(aBrowser, aWebProgress, aRequest, aState) {
 			var uri = null;
 			try{
 				uri = window.gBrowser.currentURI;
 				Pers_debug.d_print("main", "Security change " + uri.spec);
+				Perspectives.recentSSLStatus = aWebProgress.securityInfo.QueryInterface(Ci.nsISSLStatusProvider).SSLStatus;
 				Perspectives.updateStatus(window,false);
 			} catch(err) {
 				Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);

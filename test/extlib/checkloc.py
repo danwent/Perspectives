@@ -46,7 +46,7 @@ import localecodes
 # MAJOR version when you make backwards-incompatible changes,
 # MINOR version when you add functionality in a backwards-compatible manner
 # PATCH version when you make backwards-compatible bug fixes.
-VERSION = "2.1"
+VERSION = "2.1.1"
 
 # the en-US translation will have all files and strings created. Use it as the base.
 BASE_LOC = 'en-US'
@@ -477,7 +477,12 @@ class ManifestSet:
 		try:
 			xml = etree.parse(install_rdf)
 			root = xml.getroot()
-			for locale in root.findall('.//em:locale', root.nsmap):
+			# lxml 3.5.0 raises a ValueError if the namespace map
+			# contains a 'None' entry, even if it also contains
+			# other valid mappings.
+			# Therefore explicitly add only the namespaces we need
+			ns = {'em': 'http://www.mozilla.org/2004/em-rdf#'}
+			for locale in root.findall('.//em:locale', ns):
 				loc = locale.text
 				if loc not in self.rdf_locs:
 					self.rdf_locs[loc] = True

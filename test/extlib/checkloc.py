@@ -46,7 +46,7 @@ import localecodes
 # MAJOR version when you make backwards-incompatible changes,
 # MINOR version when you add functionality in a backwards-compatible manner
 # PATCH version when you make backwards-compatible bug fixes.
-VERSION = "2.1"
+VERSION = "2.1.1"
 
 # the en-US translation will have all files and strings created. Use it as the base.
 BASE_LOC = 'en-US'

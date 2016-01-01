@@ -12,6 +12,11 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+4.6.3
+-----
+* Update checkloc library to import behaviour fix, so Perspectives will build again with all tests intact. Fix for behaviour change in lxml 3.5.0 (GH #166)
+
+
 4.6.2
 -----
 * Fix several bugs that violate the AMO review policy so we can continue to deploy client updates through addons.mozilla.org:

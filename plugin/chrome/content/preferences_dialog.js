@@ -53,6 +53,12 @@ var Pers_pref = {
 		case -1:
 			Pers_pref.disable_quorum_text(false);
 			break;
+		default:
+			// user may have manually set this preference;
+			// get it back into a good state
+			this.root_prefs.setIntPref("extensions.perspectives.security_settings", 1);
+			Pers_pref.menuset(75, 0);
+			break;
 		}
 
 	},

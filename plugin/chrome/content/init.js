@@ -30,9 +30,9 @@ var Pers_init = {
       // so we have access to the stringbundle from statusbar.xul
       Perspectives.prompt_update();
 
-      var firstrun = root_prefs.getBoolPref("extensions.perspectives.first_run");
+      const FIRSTRUN_PREF = "extensions.perspectives.first_run";
+      var firstrun = root_prefs.getBoolPref(FIRSTRUN_PREF);
       if (firstrun) {
-          root_prefs.setBoolPref("extensions.perspectives.first_run", false);
           var bname = "perspectives-status-button";
 
           if (!document.getElementById(bname)) {
@@ -42,6 +42,7 @@ var Pers_init = {
           // else the user has already added the button previously
           // we don't want to touch it
 
+          root_prefs.setBoolPref(FIRSTRUN_PREF, false);
       }
     },
 

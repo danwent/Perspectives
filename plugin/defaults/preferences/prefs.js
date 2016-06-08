@@ -12,7 +12,6 @@ pref("extensions.perspectives.check_good_certificates", true);
 pref("extensions.perspectives.require_user_permission", false);
 pref("extensions.perspectives.show_permission_reminder", true);
 pref("extensions.perspectives.contact_in_private_browsing_mode", false);
-pref("extensions.perspectives.show_label", true);
 pref("extensions.perspectives.max_timespan_for_inconsistency_test", 7);
 pref("extensions.perspectives.weak_consistency_time_limit", 30);
 pref("extensions.perspectives.trust_https_with_weak_consistency", true);

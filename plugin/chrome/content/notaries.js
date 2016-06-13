@@ -113,6 +113,21 @@ var Perspectives = {
 		return Perspectives.root_prefs
 	},
 
+	// TODO: migrate everything that interacts with browser internals
+	// to a Pers_Browser object, so we can keep the interface interaction clean
+	// and make it easier to migrate to other browsers in the future.
+
+	// return the value of a boolean preference
+	getBoolPref: function(prefName) {
+		return Perspectives.getRootPrefs().getBoolPref(prefName);
+	},
+
+	// set the value of a boolean preference
+	setBoolPref: function(prefName, newVal) {
+		Perspectives.getRootPrefs().setBoolPref(prefName, newVal);
+		return;
+	},
+
 	getOverrideService: function() {
 
 		if(Perspectives.overrideService === null) {

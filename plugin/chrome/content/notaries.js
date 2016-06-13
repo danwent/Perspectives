@@ -56,6 +56,9 @@ var Perspectives = {
 	init_data: function() {
 		var success = true;
 
+		// TODO: replace everything that calls init_data
+		// or relies on root_prefs or overrideService
+		// with calls to getRootPrefs and getOverrideService
 		if(Perspectives.root_prefs === null) {
 			var prefstr = "@mozilla.org/preferences-service;1";
 			if(prefstr in Components.classes) {
@@ -93,6 +96,37 @@ var Perspectives = {
 			Components.interfaces.nsIWebProgressListener.STATE_IS_INSECURE,
 		STATE_IS_SECURE :
 			Components.interfaces.nsIWebProgressListener.STATE_IS_SECURE
+	},
+
+	getRootPrefs: function() {
+		if (Perspectives.root_prefs === null) {
+			var prefstr = "@mozilla.org/preferences-service;1";
+			if (prefstr in Components.classes) {
+				Perspectives.root_prefs = Components.classes[prefstr].
+					getService(Components.interfaces.nsIPrefBranchInternal);
+			}
+			else {
+				Pers_debug.d_print("error",
+					"Could not define Perspectives.root_prefs!");
+			}
+		}
+		return Perspectives.root_prefs
+	},
+
+	getOverrideService: function() {
+
+		if(Perspectives.overrideService === null) {
+			var servstr = "@mozilla.org/security/certoverride;1";
+			if (servstr in Components.classes) {
+				Perspectives.overrideService = Components.classes[servstr].
+					getService(Components.interfaces.nsICertOverrideService);
+			}
+			else {
+				Pers_debug.d_print("error",
+					"Could not define Perspectives.overrideServices!");
+			}
+		}
+		return Perspectives.overrideService
 	},
 
 	is_nonrouted_ip: function(ip_str) {
@@ -634,10 +668,10 @@ var Perspectives = {
 
 		ti.state      = ti.browser.securityUI.state;
 
-		ti.is_override_cert = Perspectives.overrideService.isCertUsedForOverrides(ti.cert, true, true);
+		ti.is_override_cert = Perspectives.getOverrideService().isCertUsedForOverrides(ti.cert, true, true);
 		Pers_debug.d_print("main",
 			"is_override_cert = " + ti.is_override_cert);
-		var check_good = Perspectives.root_prefs.
+		var check_good = Perspectives.getRootPrefs().
 			getBoolPref("extensions.perspectives.check_good_certificates");
 
 
@@ -1012,9 +1046,9 @@ var Perspectives = {
 
 			var auto_update = this.root_prefs.getBoolPref("extensions.perspectives.enable_default_list_auto_update");
 			if(auto_update) {
-				Pers_util.update_default_notary_list_from_web(this.root_prefs);
+				Pers_util.update_default_notary_list_from_web(Perspectives.getRootPrefs());
 			} else {
-				Pers_util.update_default_notary_list_from_file(this.root_prefs);
+				Pers_util.update_default_notary_list_from_file(Perspectives.getRootPrefs());
 			}
 			Pers_debug.d_print("main", Perspectives.notaries);
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");

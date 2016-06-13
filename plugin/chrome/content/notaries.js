@@ -1055,7 +1055,7 @@ var Perspectives = {
 			getBrowser().addProgressListener(Perspectives.notaryListener);
 			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
 		} catch(e) {
-			if(Perspectives.strbundle == null) {
+			if(Perspectives.strbundle === null) {
 				Perspectives.strbundle = document.getElementById("notary_strings");
 			}
 

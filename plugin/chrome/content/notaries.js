@@ -1052,7 +1052,10 @@ var Perspectives = {
 			}
 			Pers_debug.d_print("main", Perspectives.notaries);
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
-			getBrowser().addProgressListener(Perspectives.notaryListener);
+			var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+				   .getService(Components.interfaces.nsIWindowMediator);
+			var wnd = wm.getMostRecentWindow("navigator:browser");
+			wnd.gBrowser.addProgressListener(Perspectives.notaryListener);
 			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
 		} catch(e) {
 			if(Perspectives.strbundle === null) {

@@ -10,7 +10,6 @@
   <script type="application/x-javascript" src="notaries.js"/>
   <script type="text/javascript">
 
-    Pers_init.migrateOldSettings();
     // don't load or run anything until after the page has loaded
     window.addEventListener('load', function(){ Pers_init.evtLoad(); }, false);
 

@@ -44,6 +44,8 @@ var Pers_init = {
 
           root_prefs.setBoolPref(FIRSTRUN_PREF, false);
       }
+
+      Pers_init.migrateOldSettings();
     },
 
     // Preference migration from old names to new ones.

@@ -51,9 +51,30 @@ var Pers_init = {
     // required by addons.mozilla.org
     // https://developer.mozilla.org/en-US/Add-ons/AMO/Policy/Reviews#Full_Review
     migrateOldSettings: function() {
-      var preflist_numeric = ["perspectives.quorum_thresh","perspectives.required_duration","perspectives.security_settings","perspectives.max_timespan_for_inconsistency_test","perspectives.weak_consistency_time_limit","perspectives.max_cache_age_sec"];
-      var preflist_string = ["perspectives.svg","perspectives.whitelist","perspectives.additional_notary_list","perspectives.default_notary_list"];
-      var preflist_bool = ["perspectives.exceptions.permanent","perspectives.exceptions.enabled","perspectives.check_good_certificates","perspectives.require_user_permission","perspectives.trust_https_with_weak_consistency","perspectives.prompt_update_all_https_setting","perspectives.enable_default_list_auto_update","perspectives.use_default_notary_list"];
+      var preflist_numeric = [
+        'perspectives.quorum_thresh',
+        'perspectives.required_duration',
+        'perspectives.security_settings',
+        'perspectives.max_timespan_for_inconsistency_test',
+        'perspectives.weak_consistency_time_limit',
+        'perspectives.max_cache_age_sec'
+      ];
+      var preflist_string = [
+        'perspectives.svg',
+        'perspectives.whitelist',
+        'perspectives.additional_notary_list',
+        'perspectives.default_notary_list'
+      ];
+      var preflist_bool = [
+        'perspectives.exceptions.permanent',
+        'perspectives.exceptions.enabled',
+        'perspectives.check_good_certificates',
+        'perspectives.require_user_permission',
+        'perspectives.trust_https_with_weak_consistency',
+        'perspectives.prompt_update_all_https_setting',
+        'perspectives.enable_default_list_auto_update',
+        'perspectives.use_default_notary_list'
+      ];
       var root_prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
       var migration_needed  = root_prefs.getBoolPref("extensions.perspectives.preference_migration");
 

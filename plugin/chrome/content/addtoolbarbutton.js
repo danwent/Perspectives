@@ -38,10 +38,10 @@ var Pers_add_toolbar_button = {
         var firefoxnav = document.getElementById(toolbarId);
         var curSet = firefoxnav.currentSet;
         var re = new RegExp(beforeId);
-        if (curSet.indexOf(buttonId) == -1) {
+        if (curSet.indexOf(buttonId) === -1) {
           var set;
           // Place the button before the element
-          if (curSet.indexOf(beforeId) != -1) {
+          if (curSet.indexOf(beforeId) !== -1) {
               set = curSet.replace(re, buttonId + "," + beforeId);
           } else { // at the end
               set = curSet + "," + buttonId;

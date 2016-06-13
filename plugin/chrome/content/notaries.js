@@ -56,7 +56,7 @@ var Perspectives = {
 	init_data: function() {
 		var success = true;
 
-		if(Perspectives.root_prefs == null) {
+		if(Perspectives.root_prefs === null) {
 			var prefstr = "@mozilla.org/preferences-service;1";
 			if(prefstr in Components.classes) {
 				Perspectives.root_prefs = Components.classes[prefstr].
@@ -69,7 +69,7 @@ var Perspectives = {
 			}
 		}
 
-		if(Perspectives.overrideService == null) {
+		if(Perspectives.overrideService === null) {
 			var servstr = "@mozilla.org/security/certoverride;1";
 			if(servstr in Components.classes) {
 				Perspectives.overrideService = Components.classes[servstr].
@@ -590,7 +590,7 @@ var Perspectives = {
 	// Updates the status of the current page
 	updateStatus: function(win, is_forced) {
 
-		if(Perspectives.strbundle == null) {
+		if(Perspectives.strbundle === null) {
 			Perspectives.strbundle = document.getElementById("notary_strings");
 		}
 

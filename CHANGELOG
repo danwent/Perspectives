@@ -17,6 +17,16 @@ We attempt to use meaningful version numbers, following semver.org:
 * Fix preference storage location: migrate all prefs from 'perspectives.X' to 'extensions.perspectives.X'. This is a requirement of hosting addons on addons.mozilla.org - https://developer.mozilla.org/en-US/Add-ons/AMO/Policy/Reviews#Full_Review
 	All credit and thanks to Alexey Vesnin for the move and code to gracefully migrate existing user prefs. Thanks Alexey!
 * Mark some tests as known failures, to identify for long-term fixing
+* Add error checking for security level preference to correct invalid values
+* Remove unused preference 'show_label'
+* Internal code cleanup (fix === checks; remove dead code; fix addProgressListener usage)
+* Add functions to retrieve preferences and overrideService
+	Fixes one bug where 'root_prefs' object was not initialized;
+	but overall removes the need to intitialize the Perspectives object at all.
+	It can and should handle its own internal state.
+	This starts to isolate the usage of direct browser internals,
+	which would be required to port to other browsers.
+
 
 
 4.6.3

@@ -21,7 +21,7 @@
 
 var Pers_init = {
 
-    evtLoad: function(evt){
+    evtLoad: function(){
       Perspectives.init_data();
       Perspectives.initNotaries();
       var root_prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);

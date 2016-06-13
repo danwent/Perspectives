@@ -56,8 +56,6 @@ var Pers_notify = {
 
 	// generic notify function used by all other notify functions
 	notifyGeneric: function(b, priority, message, buttons){
-		//Happens on requeryAllTabs
-
 		try{
 			var notificationBox = b.getNotificationBox();
 		}
@@ -143,8 +141,6 @@ var Pers_notify = {
 					accessKey : "",
 					callback: function() {
 						try {
-
-							//Happens on requeryAllTabs
 							try{
 								var notificationBox = ti.browser.getNotificationBox();
 								}
@@ -239,8 +235,6 @@ var Pers_notify = {
 
 	clear_existing_banner: function(b, value_text) {
 		try {
-			//Happens on requeryAllTabs
-
 			try{
 				var notificationBox = b.getNotificationBox();
 			}

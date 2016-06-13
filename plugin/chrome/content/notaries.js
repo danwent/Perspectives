@@ -1006,17 +1006,6 @@ var Perspectives = {
 		onLinkIconAvailable: function() { }
 	},
 
-	requeryAllTabs: function(b) {
-		/*
-		alert("requeryAllTabs is disabled");
-		var num = b.browsers.length;
-		for(var i = 0; i < num; i++) {
-			var browser = b.getBrowserAtIndex(i);
-			Perspectives.updateStatus(window,false);
-		}
-		*/
-	},
-
 	initNotaries: function() {
 		try {
 			Pers_debug.d_print("main", "\nPerspectives Initialization\n");
@@ -1030,7 +1019,6 @@ var Perspectives = {
 			Pers_debug.d_print("main", Perspectives.notaries);
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");
 			getBrowser().addProgressListener(Perspectives.notaryListener);
-			setTimeout(function() { Perspectives.requeryAllTabs(gBrowser); }, 4000);
 			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
 		} catch(e) {
 			if(Perspectives.strbundle == null) {

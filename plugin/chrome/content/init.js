@@ -24,14 +24,13 @@ var Pers_init = {
     evtLoad: function(){
       Perspectives.init_data();
       Perspectives.initNotaries();
-      var root_prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 
       // call this *after* the document has loaded
       // so we have access to the stringbundle from statusbar.xul
       Perspectives.prompt_update();
 
       const FIRSTRUN_PREF = "extensions.perspectives.first_run";
-      var firstrun = root_prefs.getBoolPref(FIRSTRUN_PREF);
+      var firstrun = Perspectives.getBoolPref(FIRSTRUN_PREF);
       if (firstrun) {
           var bname = "perspectives-status-button";
 
@@ -42,7 +41,7 @@ var Pers_init = {
           // else the user has already added the button previously
           // we don't want to touch it
 
-          root_prefs.setBoolPref(FIRSTRUN_PREF, false);
+          Perspectives.setBoolPref(FIRSTRUN_PREF, false);
       }
 
       Pers_init.migrateOldSettings();
@@ -77,8 +76,8 @@ var Pers_init = {
         'perspectives.enable_default_list_auto_update',
         'perspectives.use_default_notary_list'
       ];
-      var root_prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-      var migration_needed  = root_prefs.getBoolPref("extensions.perspectives.preference_migration");
+      var root_prefs = Perspectives.getRootPrefs();
+      var migration_needed  = Perspectives.getBoolPref("extensions.perspectives.preference_migration");
 
       var tmpNum = 0;
       var tmpStr = "";
@@ -103,7 +102,7 @@ var Pers_init = {
                 root_prefs.setBoolPref("extensions." + preflist_bool[index],tmpBool);
             }
           }
-          root_prefs.setBoolPref("extensions.perspectives.preference_migration",false);
+          Perspectives.setBoolPref("extensions.perspectives.preference_migration",false);
       }
     }
 

@@ -40,6 +40,7 @@ var Perspectives = {
 	// Always call init_data() before working with these variables!
 	root_prefs : null,
 	overrideService : null,
+	notaryBundle: null,
 
 	/*
 	Note: calls to Components.classes.getService() require special permissions.
@@ -142,6 +143,28 @@ var Perspectives = {
 			}
 		}
 		return Perspectives.overrideService
+	},
+
+	// return a localized string from a string bundle
+	getString: function(name) {
+		if (Perspectives.notaryBundle === null) {
+			Perspectives.notaryBundle =
+				Components.classes["@mozilla.org/intl/stringbundle;1"]
+               .getService(Components.interfaces.nsIStringBundleService)
+               .createBundle("chrome://perspectives/locale/notaries.properties");
+        }
+        return Perspectives.notaryBundle.GetStringFromName(name);
+	},
+
+	// return a formatted localized string from a string bundle
+	getFormattedString: function(name, args) {
+		if (Perspectives.notaryBundle === null) {
+			Perspectives.notaryBundle =
+				Components.classes["@mozilla.org/intl/stringbundle;1"]
+               .getService(Components.interfaces.nsIStringBundleService)
+               .createBundle("chrome://perspectives/locale/notaries.properties");
+        }
+        return Perspectives.notaryBundle.formatStringFromName(name, args, args.length);
 	},
 
 	is_nonrouted_ip: function(ip_str) {

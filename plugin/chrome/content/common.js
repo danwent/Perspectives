@@ -235,12 +235,8 @@ var Pers_util = {
 			}
 			root_prefs.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
-			if(Perspectives.strbundle === null) {
-				Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
-			Pers_util.pers_alert(Perspectives.strbundle.
-				getFormattedString("updateDefaultListWebError", [e]));
+			Pers_debug.d_print("error", Perspectives.getFormattedString(
+				"updateDefaultListWebError", [e]));
 		}
 
 	},
@@ -250,12 +246,8 @@ var Pers_util = {
 			var notary_list_data = this.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");
 			root_prefs.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
-			if(Perspectives.strbundle === null) {
-				Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
-			Pers_util.pers_alert(Perspectives.strbundle.
-				getFormattedString("updateDefaultListFileError", [e]));
+			Pers_debug.d_print("error", Perspectives.getFormattedString(
+				"updateDefaultListFileError", [e]));
 		}
 	},
 

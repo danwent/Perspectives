@@ -1032,6 +1032,90 @@ function getStringsFromStringBundles() {
     write_string("Finished");
 }
 
+function wrappedPrefInterface() {
+    write_string("Starting preference tests");
+
+    // test each pref type can be retrieved and set
+    // preferences chosen arbitrarily
+
+    // bool
+    var bool_pref = "extensions.perspectives.show_permission_reminder";
+
+    var show_reminder_orig = Perspectives.getBoolPref(bool_pref);
+    assert(show_reminder_orig !== null, "Getting bool pref is not null");
+
+    var new_bool_val = !show_reminder_orig;
+    Perspectives.setBoolPref(bool_pref, new_bool_val);
+    var show_reminder_new = Perspectives.getBoolPref(bool_pref);
+    assert(show_reminder_orig !== show_reminder_new, "Setting bool pref works");
+
+    //return to original value
+    Perspectives.setBoolPref(bool_pref, show_reminder_orig);
+
+    // int
+    var int_pref = "extensions.perspectives.max_cache_age_sec";
+    var cache_age_orig = Perspectives.getIntPref(int_pref);
+    assert(cache_age_orig !== null, "Getting int pref is not null");
+
+    var new_int_val = cache_age_orig + 1;
+    Perspectives.setIntPref(int_pref, new_int_val);
+    var cache_age_new = Perspectives.getIntPref(int_pref);
+    assert(cache_age_orig !== cache_age_new, "Setting int pref works");
+
+    //return to original value
+    Perspectives.setIntPref(int_pref, cache_age_orig);
+
+    // char
+    var char_pref = "extensions.perspectives.whitelist";
+    var whitelist_orig = Perspectives.getCharPref(char_pref);
+    assert(whitelist_orig !== null, "Getting char pref is not null");
+
+    var new_char_val = whitelist_orig + "-changed";
+    Perspectives.setCharPref(char_pref, new_char_val);
+    var whitelist_new = Perspectives.getCharPref(char_pref);
+    assert(whitelist_orig !== whitelist_new, "Setting char pref works");
+
+    //return to original value
+    Perspectives.setCharPref(char_pref, whitelist_orig);
+
+
+    // test nonexistent prefs don't work
+    var nonExistentPref = "extensions.perspectives.thisPrefDoesNotExist";
+    var root_prefs = Perspectives.getRootPrefs();
+
+    assert_setup(root_prefs.getPrefType(nonExistentPref) === root_prefs.PREF_INVALID,
+        "nonexistent preference does not exist");
+
+    var exceptionThrown = false;
+    try {
+       Perspectives.getBoolPref(nonExistentPref);
+    } catch (e) {
+        exceptionThrown = true;
+    }
+
+    assert(exceptionThrown === true, "Trying to retrive an unknown bool pref throws an exception.");
+
+    exceptionThrown = false;
+    try {
+       Perspectives.getIntPref(nonExistentPref);
+    } catch (e) {
+        exceptionThrown = true;
+    }
+
+    assert(exceptionThrown === true, "Trying to retrive an unknown int pref throws an exception.");
+
+    exceptionThrown = false;
+    try {
+       Perspectives.getCharPref(nonExistentPref);
+    } catch (e) {
+        exceptionThrown = true;
+    }
+
+    assert(exceptionThrown === true, "Trying to retrive an unknown char pref throws an exception.");
+
+    write_string("Finished");
+}
+
 
 function run_tests() {
     // check if we are running with chrome privileges or from within browser
@@ -1052,6 +1136,7 @@ function run_tests() {
             notary_parsing();
             notary_replies();
             getStringsFromStringBundles();
+            wrappedPrefInterface();
 
             write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "
                     + g_fail_count + " failures, " + g_known_failure_count +

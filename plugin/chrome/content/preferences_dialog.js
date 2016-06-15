@@ -229,9 +229,9 @@ var Pers_pref = {
 			// list to show based on whether the checkbox is selected.
 			var auto_update = document.getElementById("enable_default_list_auto_update").checked;
 			if(auto_update) {
-				Pers_util.update_default_notary_list_from_web (this.root_prefs);
+				Pers_util.update_default_notary_list_from_web();
 			} else {
-				Pers_util.update_default_notary_list_from_file(this.root_prefs);
+				Pers_util.update_default_notary_list_from_file();
 			}
 			this.load_preferences();
 		} catch(e) {

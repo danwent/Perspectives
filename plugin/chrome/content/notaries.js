@@ -1095,9 +1095,9 @@ var Perspectives = {
 
 			var auto_update = this.root_prefs.getBoolPref("extensions.perspectives.enable_default_list_auto_update");
 			if(auto_update) {
-				Pers_util.update_default_notary_list_from_web(Perspectives.getRootPrefs());
+				Pers_util.update_default_notary_list_from_web();
 			} else {
-				Pers_util.update_default_notary_list_from_file(Perspectives.getRootPrefs());
+				Pers_util.update_default_notary_list_from_file();
 			}
 			Pers_debug.d_print("main", Perspectives.notaries);
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, "");

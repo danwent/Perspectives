@@ -221,7 +221,7 @@ var Pers_util = {
 	update_public_key : "MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAF16BJZAsESZnEq6MeCYsntL1233FVdz/6dNXptTwoKACOcnoae+/S5d9Ms2kmQMTMWkW5NdRV2/iKIdQx14Y7GZojPYvL85ZjwlTXRblqwoxnwdE+Vd2V5itxV0Okcu2+E66tvtr6aeBVt7hwtowyQPgiWz2rDgV6RsohbetiaHUMZKDdoQFzu/5CAW+7QtbFoJjNMqez6pz80xFWrIJzRC+fXlues1Af37+cCAwEAAQ==",
 	update_list_uri : "http://update.networknotary.org/http_notary_list.txt",
 	update_sig_uri : "http://update.networknotary.org/http_notary_list.sig",
-	update_default_notary_list_from_web: function(root_prefs) {
+	update_default_notary_list_from_web: function() {
 		try {
 			var notary_list_data = Pers_util.readFileFromURI(this.update_list_uri);
 			var sig_no_header = Pers_util.readFileFromURI(this.update_sig_uri);
@@ -233,7 +233,7 @@ var Pers_util = {
         			Pers_debug.d_print("error", "Signature verification failed on notary list update");
 				return;
 			}
-			root_prefs.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
+			Perspectives.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
 			Pers_debug.d_print("error", Perspectives.getFormattedString(
 				"updateDefaultListWebError", [e]));
@@ -241,10 +241,10 @@ var Pers_util = {
 
 	},
 
-	update_default_notary_list_from_file : function(root_prefs) {
+	update_default_notary_list_from_file : function() {
 		try {
 			var notary_list_data = this.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");
-			root_prefs.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
+			Perspectives.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
 			Pers_debug.d_print("error", Perspectives.getFormattedString(
 				"updateDefaultListFileError", [e]));

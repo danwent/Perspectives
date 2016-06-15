@@ -20,13 +20,14 @@ We attempt to use meaningful version numbers, following semver.org:
 * Add error checking for security level preference to correct invalid values
 * Remove unused preference 'show_label'
 * Internal code cleanup (fix === checks; remove dead code; fix addProgressListener usage)
-* Add functions to retrieve preferences and overrideService
+* Add wrapper functions to retrieve preferences, overrideService, and stringbundle strings
 	Fixes one bug where 'root_prefs' object was not initialized;
 	but overall removes the need to intitialize the Perspectives object at all.
 	It can and should handle its own internal state.
 	This starts to isolate the usage of direct browser internals,
 	which would be required to port to other browsers.
-
+	Also makes the code much more stable and testable.
+* Clean up the init code to use the new wrapped preference and stringbundle functions
 
 
 4.6.3
@@ -97,7 +98,6 @@ X Temporarily remove all 'Report Attack' functionality, until the feature is fix
 * Refactor test file so more tests can be run without installing the extension (i.e. separate chrome-dependent functionality from non-chrome-dependent functionality)
 * Many areas of code cleanup (add hasOwnProperty checks; fix === checks)
 * Remove dead statusbar elements
-* Remove unused function loadNotaryListFromURI()
 
 
 4.5.2

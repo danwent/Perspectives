@@ -140,6 +140,17 @@ var Perspectives = {
 		return;
 	},
 
+	// return the value of an int preference
+	getIntPref: function(prefName) {
+		return Perspectives.getRootPrefs().getIntPref(prefName);
+	},
+
+	// set the value of an int preference
+	setIntPref: function(prefName, newVal) {
+		Perspectives.getRootPrefs().setIntPref(prefName, newVal);
+		return;
+	},
+
 	getOverrideService: function() {
 
 		if(Perspectives.overrideService === null) {

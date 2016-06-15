@@ -86,20 +86,20 @@ var Pers_init = {
       if (migration_needed){
           for (index = 0; index < preflist_numeric.length; ++index) {
             if (root_prefs.getPrefType(preflist_numeric[index]) !== root_prefs.PREF_INVALID){
-              tmpNum=root_prefs.getIntPref(preflist_numeric[index]);
-              root_prefs.setIntPref("extensions." + preflist_numeric[index],tmpNum);
+              tmpNum=Perspectives.getIntPref(preflist_numeric[index]);
+              Perspectives.setIntPref("extensions." + preflist_numeric[index],tmpNum);
             }
           }
           for(index = 0; index < preflist_string.length; ++index) {
             if(root_prefs.getPrefType(preflist_string[index]) !== root_prefs.PREF_INVALID){
-                tmpStr = root_prefs.getCharPref("" + preflist_string[index]);
-                root_prefs.setCharPref("extensions." + preflist_string[index],tmpStr);
+                tmpStr = Perspectives.getCharPref("" + preflist_string[index]);
+                Perspectives.setCharPref("extensions." + preflist_string[index],tmpStr);
             }
           }
           for(index = 0; index < preflist_bool.length; ++index) {
             if(root_prefs.getPrefType(preflist_bool[index]) !== root_prefs.PREF_INVALID){
-                tmpBool = root_prefs.getBoolPref("" + preflist_bool[index]);
-                root_prefs.setBoolPref("extensions." + preflist_bool[index],tmpBool);
+                tmpBool = Perspectives.getBoolPref("" + preflist_bool[index]);
+                Perspectives.setBoolPref("extensions." + preflist_bool[index],tmpBool);
             }
           }
           Perspectives.setBoolPref("extensions.perspectives.preference_migration",false);

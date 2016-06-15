@@ -24,9 +24,6 @@ var Pers_init = {
     evtLoad: function(){
       Perspectives.init_data();
       Perspectives.initNotaries();
-
-      // call this *after* the document has loaded
-      // so we have access to the stringbundle from statusbar.xul
       Perspectives.prompt_update();
 
       const FIRSTRUN_PREF = "extensions.perspectives.first_run";

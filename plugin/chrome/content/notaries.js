@@ -1211,13 +1211,11 @@ var Perspectives = {
 			const Cc = Components.classes, Ci = Components.interfaces;
 
 			//'prompt_update_all_https_setting' stores a value for "have we already asked the user about this?"
-			var ask_update = Perspectives.root_prefs.
-	                getBoolPref("extensions.perspectives.prompt_update_all_https_setting");
+			var ask_update = Perspectives.getBoolPref("extensions.perspectives.prompt_update_all_https_setting");
 
 			if(ask_update === true) {
 
-				var check_good = Perspectives.root_prefs.
-						getBoolPref("extensions.perspectives.check_good_certificates");
+				var check_good = Perspectives.getBoolPref("extensions.perspectives.check_good_certificates");
 
 				if(!check_good) {
 
@@ -1229,19 +1227,14 @@ var Perspectives = {
 							+ prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING
 							+ prompts.BUTTON_POS_0_DEFAULT;
 
-					if(Perspectives.strbundle == null) {
-						Perspectives.strbundle = document.getElementById("notary_strings");
-					}
-
 					var answer = prompts.confirmEx(null,
-						Perspectives.strbundle.getString("updatePromptTitle"),
-						Perspectives.strbundle.getString("updatePrompt"), buttons,
-						Perspectives.strbundle.getString("updatePromptButtonYes"), // the default button
-						Perspectives.strbundle.getString("updatePromptButtonNo"),
+						Perspectives.getString("updatePromptTitle"),
+						Perspectives.getString("updatePrompt"), buttons,
+						Perspectives.getString("updatePromptButtonYes"), // the default button
+						Perspectives.getString("updatePromptButtonNo"),
 						"", null, check);
 					if(answer === 0) {
-						Perspectives.root_prefs.
-							setBoolPref("extensions.perspectives.check_good_certificates",
+						Perspectives.setBoolPref("extensions.perspectives.check_good_certificates",
 										true);
 					}
 				}
@@ -1254,8 +1247,7 @@ var Perspectives = {
 			//set the flag to not ask the user again, even (especially!) if something went wrong.
 			//this way even in the worst case the user will only get a popup once.
 			//they can always change their preferences later through the prefs dialog if they wish.
-			Perspectives.root_prefs.
-						setBoolPref("extensions.perspectives.prompt_update_all_https_setting",
+			Perspectives.setBoolPref("extensions.perspectives.prompt_update_all_https_setting",
 									false);
 		}
 	}

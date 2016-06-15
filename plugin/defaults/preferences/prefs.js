@@ -12,7 +12,7 @@ pref("extensions.perspectives.exceptions.permanent", false);
 pref("extensions.perspectives.first_run", true);
 pref("extensions.perspectives.max_cache_age_sec", 10000);
 pref("extensions.perspectives.max_timespan_for_inconsistency_test", 7);
-pref("extensions.perspectives.preference_migration", true);
+pref("extensions.perspectives.pref_migration_needed", true);
 pref("extensions.perspectives.prompt_update_all_https_setting", true);
 pref("extensions.perspectives.query_retries"   ,    2);
 pref("extensions.perspectives.query_timeout_ms", 5000);

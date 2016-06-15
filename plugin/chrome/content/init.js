@@ -77,7 +77,7 @@ var Pers_init = {
         'perspectives.use_default_notary_list'
       ];
       var root_prefs = Perspectives.getRootPrefs();
-      var migration_needed  = Perspectives.getBoolPref("extensions.perspectives.preference_migration");
+      var migration_needed  = Perspectives.getBoolPref("extensions.perspectives.pref_migration_needed");
 
       var tmpNum = 0;
       var tmpStr = "";
@@ -102,7 +102,7 @@ var Pers_init = {
                 Perspectives.setBoolPref("extensions." + preflist_bool[index],tmpBool);
             }
           }
-          Perspectives.setBoolPref("extensions.perspectives.preference_migration",false);
+          Perspectives.setBoolPref("extensions.perspectives.pref_migration_needed",false);
       }
     }
 

@@ -72,11 +72,6 @@ var Pers_util = {
   		return str;
 	},
 
-	// never used?
-	loadNotaryListFromURI: function(uri) {
-		return this.loadNotaryListFromString(this.readFileFromURI(uri));
-	},
-
 	loadNotaryListFromString: function(str_data) {
 		var ret = [];
 		var start_arr = str_data.split("\n");

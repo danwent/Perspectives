@@ -990,6 +990,48 @@ function notary_replies() {
     write_string("Finished");
 }
 
+function getStringsFromStringBundles() {
+    write_string("Starting string bundle tests");
+
+    // string keys chosen arbitrarily
+    var nonFormattedStringKey = "quorumDuration";
+    var notFormattedString = Perspectives.getString(nonFormattedStringKey);
+    assert(notFormattedString !== "", "Retrieving the plain string '" +
+        nonFormattedStringKey + "' was not blank: '" + notFormattedString + "'");
+
+    var formattedStringKey = "verifiedMessage";
+    var formattedString = Perspectives.getFormattedString(formattedStringKey,
+        ["firstTestParameter", "secondTestParameter"]);
+    assert(formattedString !== "", "Retrieving the formatted string '" +
+        formattedStringKey + "' was not blank: '" + formattedString + "'");
+
+    var nonExistentStringKey = "ThisKeyDoesNotExist";
+    var exceptionThrown = false;
+    try {
+        var notFormattedString = Perspectives.getString(nonExistentStringKey);
+        assert(notFormattedString !== "", "Retrieving the plain string '" +
+            nonExistentStringKey + "' was not blank: '" + notFormattedString + "'");
+    } catch (e) {
+        exceptionThrown = true;
+    }
+
+    assert(exceptionThrown === true, "Trying to retrive a plain string that doesn't exist throws an exception.");
+
+    exceptionThrown = false;
+    try {
+        var formattedString = Perspectives.getFormattedString(nonExistentStringKey,
+        ["firstTestParameter", "secondTestParameter"]);
+        assert(formattedString !== "", "Retrieving the formatted string '" +
+            nonExistentStringKey + "' was not blank: '" + formattedString + "'");
+    } catch (e) {
+        exceptionThrown = true;
+    }
+
+    assert(exceptionThrown === true, "Trying to retrive a formatted string that doesn't exist throws an exception.");
+
+    write_string("Finished");
+}
+
 
 function run_tests() {
     // check if we are running with chrome privileges or from within browser
@@ -1009,6 +1051,7 @@ function run_tests() {
             quorum_oldkey();
             notary_parsing();
             notary_replies();
+            getStringsFromStringBundles();
 
             write_string("Finished: " + g_pass_count + "/" + g_test_count + " successes, "
                     + g_fail_count + " failures, " + g_known_failure_count +

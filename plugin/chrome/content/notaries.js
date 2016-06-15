@@ -129,6 +129,17 @@ var Perspectives = {
 		return;
 	},
 
+	// return the value of a string preference
+	getCharPref: function(prefName) {
+		return Perspectives.getRootPrefs().getCharPref(prefName);
+	},
+
+	// set the value of a string preference
+	setCharPref: function(prefName, newVal) {
+		Perspectives.getRootPrefs().setCharPref(prefName, newVal);
+		return;
+	},
+
 	getOverrideService: function() {
 
 		if(Perspectives.overrideService === null) {

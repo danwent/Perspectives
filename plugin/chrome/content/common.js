@@ -76,11 +76,6 @@ var Pers_util = {
 		var ret = [];
 		var start_arr = str_data.split("\n");
 		var filtered_arr = [];
-		// the Perspectives object isn't always loaded here, so use our own
-		// to make sure it exists.
-		if(Pers_util.notarystr == null) {
-			Pers_util.notarystr = document.getElementById("notary_strings");
-		}
 
 		for(var i = 0; i < start_arr.length; i++) {
 			if (start_arr[i].length > 0 && start_arr[i][0] != "#") {
@@ -101,8 +96,8 @@ var Pers_util = {
 
 			var begin_string = "BEGIN PUBLIC KEY";
 			if (i >= filtered_arr.length || filtered_arr[i].indexOf(begin_string) === -1) {
-				throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
-					' - ' + Pers_util.notarystr.getFormattedString("couldNotFindLine", [ begin_string ]));
+				throw(Perspectives.getFormattedString("errorParsingNotaryEntry", [ host ]) +
+					' - ' + Perspectives.getFormattedString("couldNotFindLine", [ begin_string ]));
 			}
 			i += 1;
 
@@ -112,8 +107,8 @@ var Pers_util = {
 				key += filtered_arr[i];
 				i += 1;
 				if(i == filtered_arr.length) {
-					throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
-						' - ' +  Pers_util.notarystr.getFormattedString("couldNotFindLine", [ end_string ]));
+					throw(Perspectives.getFormattedString("errorParsingNotaryEntry", [ host ]) +
+						' - ' +  Perspectives.getFormattedString("couldNotFindLine", [ end_string ]));
 				}
 			}
 
@@ -151,7 +146,7 @@ var Pers_util = {
 			if(unmatchedHosts.length === 0) {
 				ret = filteredNotaries;
 			} else {
-				throw Pers_util.notarystr.getFormattedString("duplicateNotariesUnmatchedError", [unmatchedHosts.join(", ")]);
+				throw Perspectives.getFormattedString("duplicateNotariesUnmatchedError", [unmatchedHosts.join(", ")]);
 			}
 		} else {
 			ret = notary_list;

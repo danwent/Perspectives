@@ -21,19 +21,14 @@
 
 var Pers_init = {
 
-    evtLoad: function(evt){
+    evtLoad: function(){
       Perspectives.init_data();
       Perspectives.initNotaries();
-      var root_prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                                .getService(Components.interfaces.nsIPrefBranch);
-
-      // call this *after* the document has loaded
-      // so we have access to the stringbundle from statusbar.xul
       Perspectives.prompt_update();
 
-      var firstrun = root_prefs.getBoolPref("perspectives.first_run");
+      const FIRSTRUN_PREF = "extensions.perspectives.first_run";
+      var firstrun = Perspectives.getBoolPref(FIRSTRUN_PREF);
       if (firstrun) {
-          root_prefs.setBoolPref("perspectives.first_run", false);
           var bname = "perspectives-status-button";
 
           if (!document.getElementById(bname)) {
@@ -42,11 +37,70 @@ var Pers_init = {
           }
           // else the user has already added the button previously
           // we don't want to touch it
+
+          Perspectives.setBoolPref(FIRSTRUN_PREF, false);
       }
 
-      if(!Perspectives.root_prefs.getBoolPref("perspectives.show_label")){
-        document.getElementById("perspective-statusbar-label").hidden = true;
+      Pers_init.migrateOldSettings();
+    },
+
+    // Preference migration from old names to new ones.
+    // ensures prefereces match the 'extension.perspectives' naming convention
+    // required by addons.mozilla.org
+    // https://developer.mozilla.org/en-US/Add-ons/AMO/Policy/Reviews#Full_Review
+    migrateOldSettings: function() {
+      var preflist_numeric = [
+        'perspectives.quorum_thresh',
+        'perspectives.required_duration',
+        'perspectives.security_settings',
+        'perspectives.max_timespan_for_inconsistency_test',
+        'perspectives.weak_consistency_time_limit',
+        'perspectives.max_cache_age_sec'
+      ];
+      var preflist_string = [
+        'perspectives.svg',
+        'perspectives.whitelist',
+        'perspectives.additional_notary_list',
+        'perspectives.default_notary_list'
+      ];
+      var preflist_bool = [
+        'perspectives.exceptions.permanent',
+        'perspectives.exceptions.enabled',
+        'perspectives.check_good_certificates',
+        'perspectives.require_user_permission',
+        'perspectives.trust_https_with_weak_consistency',
+        'perspectives.prompt_update_all_https_setting',
+        'perspectives.enable_default_list_auto_update',
+        'perspectives.use_default_notary_list'
+      ];
+      var root_prefs = Perspectives.getRootPrefs();
+      var migration_needed  = Perspectives.getBoolPref("extensions.perspectives.pref_migration_needed");
+
+      var tmpNum = 0;
+      var tmpStr = "";
+      var tmpBool = true;
+
+      if (migration_needed){
+          for (index = 0; index < preflist_numeric.length; ++index) {
+            if (root_prefs.getPrefType(preflist_numeric[index]) !== root_prefs.PREF_INVALID){
+              tmpNum=Perspectives.getIntPref(preflist_numeric[index]);
+              Perspectives.setIntPref("extensions." + preflist_numeric[index],tmpNum);
+            }
+          }
+          for(index = 0; index < preflist_string.length; ++index) {
+            if(root_prefs.getPrefType(preflist_string[index]) !== root_prefs.PREF_INVALID){
+                tmpStr = Perspectives.getCharPref("" + preflist_string[index]);
+                Perspectives.setCharPref("extensions." + preflist_string[index],tmpStr);
+            }
+          }
+          for(index = 0; index < preflist_bool.length; ++index) {
+            if(root_prefs.getPrefType(preflist_bool[index]) !== root_prefs.PREF_INVALID){
+                tmpBool = Perspectives.getBoolPref("" + preflist_bool[index]);
+                Perspectives.setBoolPref("extensions." + preflist_bool[index],tmpBool);
+            }
+          }
+          Perspectives.setBoolPref("extensions.perspectives.pref_migration_needed",false);
       }
     }
+
 };
-   

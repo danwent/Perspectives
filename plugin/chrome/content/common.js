@@ -72,20 +72,10 @@ var Pers_util = {
   		return str;
 	},
 
-	// never used?
-	loadNotaryListFromURI: function(uri) {
-		return this.loadNotaryListFromString(this.readFileFromURI(uri));
-	},
-
 	loadNotaryListFromString: function(str_data) {
 		var ret = [];
 		var start_arr = str_data.split("\n");
 		var filtered_arr = [];
-		// the Perspectives object isn't always loaded here, so use our own
-		// to make sure it exists.
-		if(Pers_util.notarystr == null) {
-			Pers_util.notarystr = document.getElementById("notary_strings");
-		}
 
 		for(var i = 0; i < start_arr.length; i++) {
 			if (start_arr[i].length > 0 && start_arr[i][0] != "#") {
@@ -106,8 +96,8 @@ var Pers_util = {
 
 			var begin_string = "BEGIN PUBLIC KEY";
 			if (i >= filtered_arr.length || filtered_arr[i].indexOf(begin_string) === -1) {
-				throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
-					' - ' + Pers_util.notarystr.getFormattedString("couldNotFindLine", [ begin_string ]));
+				throw(Perspectives.getFormattedString("errorParsingNotaryEntry", [ host ]) +
+					' - ' + Perspectives.getFormattedString("couldNotFindLine", [ begin_string ]));
 			}
 			i += 1;
 
@@ -117,8 +107,8 @@ var Pers_util = {
 				key += filtered_arr[i];
 				i += 1;
 				if(i == filtered_arr.length) {
-					throw(Pers_util.notarystr.getFormattedString("errorParsingNotaryEntry", [ host ]) +
-						' - ' +  Pers_util.notarystr.getFormattedString("couldNotFindLine", [ end_string ]));
+					throw(Perspectives.getFormattedString("errorParsingNotaryEntry", [ host ]) +
+						' - ' +  Perspectives.getFormattedString("couldNotFindLine", [ end_string ]));
 				}
 			}
 
@@ -156,7 +146,7 @@ var Pers_util = {
 			if(unmatchedHosts.length === 0) {
 				ret = filteredNotaries;
 			} else {
-				throw Pers_util.notarystr.getFormattedString("duplicateNotariesUnmatchedError", [unmatchedHosts.join(", ")]);
+				throw Perspectives.getFormattedString("duplicateNotariesUnmatchedError", [unmatchedHosts.join(", ")]);
 			}
 		} else {
 			ret = notary_list;
@@ -226,7 +216,7 @@ var Pers_util = {
 	update_public_key : "MIHKMA0GCSqGSIb3DQEBAQUAA4G4ADCBtAKBrAF16BJZAsESZnEq6MeCYsntL1233FVdz/6dNXptTwoKACOcnoae+/S5d9Ms2kmQMTMWkW5NdRV2/iKIdQx14Y7GZojPYvL85ZjwlTXRblqwoxnwdE+Vd2V5itxV0Okcu2+E66tvtr6aeBVt7hwtowyQPgiWz2rDgV6RsohbetiaHUMZKDdoQFzu/5CAW+7QtbFoJjNMqez6pz80xFWrIJzRC+fXlues1Af37+cCAwEAAQ==",
 	update_list_uri : "http://update.networknotary.org/http_notary_list.txt",
 	update_sig_uri : "http://update.networknotary.org/http_notary_list.sig",
-	update_default_notary_list_from_web: function(root_prefs) {
+	update_default_notary_list_from_web: function() {
 		try {
 			var notary_list_data = Pers_util.readFileFromURI(this.update_list_uri);
 			var sig_no_header = Pers_util.readFileFromURI(this.update_sig_uri);
@@ -238,29 +228,21 @@ var Pers_util = {
         			Pers_debug.d_print("error", "Signature verification failed on notary list update");
 				return;
 			}
-			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
+			Perspectives.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
-			if(Perspectives.strbundle == null) {
-				Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
-			Pers_util.pers_alert(Perspectives.strbundle.
-				getFormattedString("updateDefaultListWebError", [e]));
+			Pers_debug.d_print("error", Perspectives.getFormattedString(
+				"updateDefaultListWebError", [e]));
 		}
 
 	},
 
-	update_default_notary_list_from_file : function(root_prefs) {
+	update_default_notary_list_from_file : function() {
 		try {
 			var notary_list_data = this.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");
-			root_prefs.setCharPref("perspectives.default_notary_list",notary_list_data);
+			Perspectives.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
-			if(Perspectives.strbundle == null) {
-				Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
-			Pers_util.pers_alert(Perspectives.strbundle.
-				getFormattedString("updateDefaultListFileError", [e]));
+			Pers_debug.d_print("error", Perspectives.getFormattedString(
+				"updateDefaultListFileError", [e]));
 		}
 	},
 

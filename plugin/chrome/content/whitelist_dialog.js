@@ -18,9 +18,6 @@
 
 
 var Pers_whitelist_dialog = {
-	root_prefs : Components.classes["@mozilla.org/preferences-service;1"].
-				getService(Components.interfaces.nsIPrefBranch),
-
 	add_to_whitelist : function() {
 		try {
 			// use Perspectives.strbundle because whitelist_dialog.xul isn't loaded yet
@@ -56,13 +53,13 @@ var Pers_whitelist_dialog = {
 		} else {
 			var regex = "^" + host.replace(".","\\.","g") + "$";
 		}
-		var whitelist = this.root_prefs.getCharPref("extensions.perspectives.whitelist");
+		var whitelist = Pers_browser.getCharPref("extensions.perspectives.whitelist");
 		if(whitelist.length == 0) {
 			whitelist = regex;
 		} else {
 			whitelist = whitelist + "," + regex;
 		}
-		this.root_prefs.setCharPref("extensions.perspectives.whitelist",whitelist);
+		Pers_browser.setCharPref("extensions.perspectives.whitelist",whitelist);
 		window.opener.Perspectives.forceStatusUpdate(window.opener);
 		} catch(e) { Pers_util.pers_alert("confirm_add: " + e); }
 	},
@@ -141,7 +138,7 @@ var Pers_whitelist_dialog = {
 			}
 
 			var host = window.gBrowser.currentURI.host;
-			var old_whitelist = Perspectives.root_prefs.getCharPref("extensions.perspectives.whitelist").split(",");
+			var old_whitelist = Pers_browser.getCharPref("extensions.perspectives.whitelist").split(",");
 			var new_whitelist = [];
 			for(var entry in old_whitelist) {
 				var e = old_whitelist[entry];
@@ -159,7 +156,7 @@ var Pers_whitelist_dialog = {
 				}
 				new_whitelist.push(e);
 			}
-			Perspectives.root_prefs.setCharPref("extensions.perspectives.whitelist",new_whitelist.join(","));
+			Pers_browser.setCharPref("extensions.perspectives.whitelist",new_whitelist.join(","));
 			window.Perspectives.forceStatusUpdate(window);
 		} catch(e) { Pers_util.pers_alert("remove_from_whitelist:" + e); }
 	}

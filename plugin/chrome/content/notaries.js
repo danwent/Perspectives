@@ -994,12 +994,8 @@ var Perspectives = {
 			} catch(err) {
 				Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
 				if(uri) {
-					if(Perspectives.strbundle == null) {
-						Perspectives.strbundle = document.getElementById("notary_strings");
-					}
-
 					Pers_statusbar.setStatus(uri, Pers_statusbar.STATE_ERROR,
-						Perspectives.strbundle.getFormattedString("internalError", ["onSecurityChange - " + err]));
+						Pers_browser.getFormattedString("internalError", ["onSecurityChange - " + err]));
 				}
 			}
   		},

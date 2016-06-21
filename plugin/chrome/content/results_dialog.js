@@ -17,10 +17,6 @@
 */
 
 var Pers_results = {
-	root_prefs : Components.classes["@mozilla.org/preferences-service;1"].
-				getService(Components.interfaces.nsIPrefBranch),
-
-
 	switchResultForm: function(){
 		var sel = document.getElementById("info-radio").selectedIndex;
 		document.getElementById("perspective-svg-box").hidden     = sel;

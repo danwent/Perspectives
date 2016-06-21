@@ -17,9 +17,6 @@
 */
 
 var Pers_pref = {
-	root_prefs: Components.classes["@mozilla.org/preferences-service;1"].
-				getService(Components.interfaces.nsIPrefBranch),
-
 	disable_quorum_text: function(is_disabled) {
 		document.getElementById("quorum-thresh-text").disabled=is_disabled;
 		document.getElementById("quorum-duration-text").disabled=is_disabled;
@@ -56,7 +53,7 @@ var Pers_pref = {
 		default:
 			// user may have manually set this preference;
 			// get it back into a good state
-			this.root_prefs.setIntPref("extensions.perspectives.security_settings", 1);
+			Pers_browser.setIntPref("extensions.perspectives.security_settings", 1);
 			Pers_pref.menuset(75, 0);
 			break;
 		}
@@ -182,8 +179,8 @@ var Pers_pref = {
 		var ret = true;
 
 		try {
-			if (this.root_prefs.getIntPref("extensions.perspectives.required_duration") < 0) {
-				this.root_prefs.setIntPref("extensions.perspectives.required_duration", 0);
+			if (Pers_browser.getIntPref("extensions.perspectives.required_duration") < 0) {
+				Pers_browser.setIntPref("extensions.perspectives.required_duration", 0);
 			}
 		} catch (e) {
 			Pers_util.pers_alert(e);
@@ -191,10 +188,10 @@ var Pers_pref = {
 		}
 
 		try {
-			if (this.root_prefs.getIntPref("extensions.perspectives.quorum_thresh") < 1) {
-				this.root_prefs.setIntPref("extensions.perspectives.quorum_thresh", 1);
-			} else if (this.root_prefs.getIntPref("extensions.perspectives.quorum_thresh") > 100) {
-				this.root_prefs.setIntPref("extensions.perspectives.quorum_thresh", 100);
+			if (Pers_browser.getIntPref("extensions.perspectives.quorum_thresh") < 1) {
+				Pers_browser.setIntPref("extensions.perspectives.quorum_thresh", 1);
+			} else if (Pers_browser.getIntPref("extensions.perspectives.quorum_thresh") > 100) {
+				Pers_browser.setIntPref("extensions.perspectives.quorum_thresh", 100);
 			}
 		} catch (e) {
 			Pers_util.pers_alert(e);
@@ -204,7 +201,7 @@ var Pers_pref = {
 		try {
 			var whitelist_prefs = Pers_pref.whitelist_treeView.serialize();
 			for(var i = 0; i < whitelist_prefs.length; i++) {
-				this.root_prefs.setCharPref(whitelist_prefs[i].pref, whitelist_prefs[i].value);
+				Pers_browser.setCharPref(whitelist_prefs[i].pref, whitelist_prefs[i].value);
 			}
 		} catch (e) {
 			Pers_util.pers_alert(e);
@@ -245,12 +242,12 @@ var Pers_pref = {
 			Pers_pref.security_class_change();
 			Pers_pref.disable_reminder_box();
 
-			var whitelist          = this.root_prefs.getCharPref("extensions.perspectives.whitelist");
-			var whitelist_disabled = this.root_prefs.getCharPref("extensions.perspectives.whitelist_disabled");
+			var whitelist          = Pers_browser.getCharPref("extensions.perspectives.whitelist");
+			var whitelist_disabled = Pers_browser.getCharPref("extensions.perspectives.whitelist_disabled");
 			Pers_pref.whitelist_treeView.init(whitelist, whitelist_disabled);
 			document.getElementById('whitelist').view = Pers_pref.whitelist_treeView;
 
-			document.getElementById("default_notary_list").value = this.root_prefs.getCharPref("extensions.perspectives.default_notary_list");
+			document.getElementById("default_notary_list").value = Pers_browser.getCharPref("extensions.perspectives.default_notary_list");
 		} catch(e) {
 			Pers_util.pers_alert(e);
 		}

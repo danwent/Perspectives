@@ -286,7 +286,7 @@ var Perspectives = {
 
 		ti.timeout_id = window.setTimeout(function() {
 			Perspectives.notaryQueryTimeout(ti,0);
-		}, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms") );
+		}, Pers_browser.getIntPref("extensions.perspectives.query_timeout_ms") );
 	},
 
 	querySingleNotary: function(notary_server, ti) {
@@ -334,7 +334,7 @@ var Perspectives = {
 					}
 				}
 
-				var is_final_timeout = (num_timeouts == Perspectives.root_prefs.getIntPref("extensions.perspectives.query_retries"));
+				var is_final_timeout = (num_timeouts == Pers_browser.getIntPref("extensions.perspectives.query_retries"));
 				if(is_final_timeout) {
 					// time is up, so just add empty results for missing
 					// notaries and begin processing results
@@ -355,7 +355,7 @@ var Perspectives = {
 
 					ti.timeout_id = window.setTimeout(function() {
 						Perspectives.notaryQueryTimeout(ti, num_timeouts + 1);
-					}, Perspectives.root_prefs.getIntPref("extensions.perspectives.query_timeout_ms") );
+					}, Pers_browser.getIntPref("extensions.perspectives.query_timeout_ms") );
 				}
 
 			} catch (e) {
@@ -515,9 +515,9 @@ var Perspectives = {
 					server_result_list, q_required, max_stale_sec,unixtime);
 			var is_cur_consistent = quorum_duration !== -1;
 
-			var weak_check_time_limit = Perspectives.root_prefs.
+			var weak_check_time_limit = Pers_browser.
 						getIntPref("extensions.perspectives.weak_consistency_time_limit");
-			var inconsistent_check_max = Perspectives.root_prefs.
+			var inconsistent_check_max = Pers_browser.
 					getIntPref("extensions.perspectives.max_timespan_for_inconsistency_test");
 			var is_inconsistent = Pers_client_policy.inconsistency_check(server_result_list,
 							inconsistent_check_max, weak_check_time_limit);
@@ -545,7 +545,7 @@ var Perspectives = {
 				str += Perspectives.strbundle.getString("notaryObservations") +
 					": \n" + obs_text + "\n";
 			//Pers_debug.d_print("main","\n" + str + "\n");
-			var required_duration = Perspectives.root_prefs.
+			var required_duration = Pers_browser.
 								getIntPref("extensions.perspectives.required_duration");
 			var svg = Pers_gen.get_svg_graph(ti.service_id, server_result_list, 30,
 				unixtime, test_key, max_stale_sec);
@@ -653,7 +653,7 @@ var Perspectives = {
 			var text = Perspectives.strbundle.
 				getFormattedString("configuredToWhitelistWithHost", [ti.uri.host]);
 			if(! (ti.already_trusted || ti.is_override_cert)) {
-				var isTemp = !Perspectives.root_prefs.getBoolPref("extensions.perspectives.exceptions.permanent");
+				var isTemp = !Pers_browser.getBoolPref("extensions.perspectives.exceptions.permanent");
 				setTimeout(function() {
 					if(Perspectives.do_override(ti.browser, ti.cert, isTemp)) {
 						Perspectives.setFaviconText(text);
@@ -689,7 +689,7 @@ var Perspectives = {
 
 		// clear cache if it is stale
 		var unix_time = Pers_util.get_unix_time();
-		var max_cache_age_sec = Perspectives.root_prefs.getIntPref("extensions.perspectives.max_cache_age_sec");
+		var max_cache_age_sec = Pers_browser.getIntPref("extensions.perspectives.max_cache_age_sec");
 		if(ti.query_results && ti.query_results.created < (unix_time - max_cache_age_sec)) {
 			Pers_debug.d_print("main", "Cached query results are stale.  Re-evaluate security.");
 			delete ti.query_results;
@@ -704,7 +704,7 @@ var Perspectives = {
 			Perspectives.process_notary_results(ti);
 		} else {
 			Pers_debug.d_print("main", ti.uri.host + " needs a request");
-			var needs_perm = Perspectives.root_prefs
+			var needs_perm = Pers_browser
 					.getBoolPref("extensions.perspectives.require_user_permission");
 
 			if(needs_perm && !ti.has_user_permission) {
@@ -717,7 +717,8 @@ var Perspectives = {
 			}
 
 			// respect private browsing mode
-			var contact_private = Perspectives.root_prefs
+			//TODO: move to browser object
+			var contact_private = Pers_browser
 				.getBoolPref("extensions.perspectives.contact_in_private_browsing_mode");
 			if(!contact_private) {
 				var is_private = true; // default to true, better err on the safe side
@@ -769,12 +770,12 @@ var Perspectives = {
 					"\n\n" + Perspectives.strbundle.getString("verificationSuccess"));
 			}
 			var required_duration   =
-				Perspectives.root_prefs.
+				Pers_browser.
 					getIntPref("extensions.perspectives.required_duration");
 
 			var strong_trust = ti.query_results.cur_consistent &&
 						(ti.query_results.duration >= required_duration);
-			var pref_https_weak = Perspectives.root_prefs.
+			var pref_https_weak = Pers_browser.
 					getBoolPref("extensions.perspectives.trust_https_with_weak_consistency");
 			var weak_trust = ti.query_results.inconsistent_results && ti.query_results.weakly_seen;
 
@@ -782,11 +783,11 @@ var Perspectives = {
 				// FIXME: need to clear any contrary banners
 				var mixed_security =  ti.state & Perspectives.state.STATE_IS_BROKEN;
 				if(!ti.is_override_cert && (ti.state & Perspectives.state.STATE_IS_INSECURE)) {
-					ti.exceptions_enabled = Perspectives.root_prefs.
+					ti.exceptions_enabled = Pers_browser.
 						getBoolPref("extensions.perspectives.exceptions.enabled");
 					if(ti.exceptions_enabled) {
 						ti.override_used = true;
-						var isTemp = !Perspectives.root_prefs.
+						var isTemp = !Pers_browser.
 							getBoolPref("extensions.perspectives.exceptions.permanent");
 						Perspectives.do_override(ti.browser, ti.cert, isTemp);
 						ti.query_results.identityText = Perspectives.strbundle.
@@ -899,7 +900,7 @@ var Perspectives = {
 	is_whitelisted_by_user : function(host) {
 		try {
 			/* be cautious in case we got a bad user edit to the whitelist */
-			var whitelist = Perspectives.root_prefs.
+			var whitelist = Pers_browser.
 				    getCharPref("extensions.perspectives.whitelist").split(",");
 			for(var entry in whitelist) {
 				if(whitelist.hasOwnProperty(entry)) {
@@ -1009,7 +1010,7 @@ var Perspectives = {
 		try {
 			Pers_debug.d_print("main", "\nPerspectives Initialization\n");
 
-			var auto_update = this.root_prefs.getBoolPref("extensions.perspectives.enable_default_list_auto_update");
+			var auto_update = Pers_browser.getBoolPref("extensions.perspectives.enable_default_list_auto_update");
 			if(auto_update) {
 				Pers_util.update_default_notary_list_from_web();
 			} else {
@@ -1112,11 +1113,11 @@ var Perspectives = {
 			const Cc = Components.classes, Ci = Components.interfaces;
 
 			//'prompt_update_all_https_setting' stores a value for "have we already asked the user about this?"
-			var ask_update = Perspectives.getBoolPref("extensions.perspectives.prompt_update_all_https_setting");
+			var ask_update = Pers_browser.getBoolPref("extensions.perspectives.prompt_update_all_https_setting");
 
 			if(ask_update === true) {
 
-				var check_good = Perspectives.getBoolPref("extensions.perspectives.check_good_certificates");
+				var check_good = Pers_browser.getBoolPref("extensions.perspectives.check_good_certificates");
 
 				if(!check_good) {
 
@@ -1129,13 +1130,13 @@ var Perspectives = {
 							+ prompts.BUTTON_POS_0_DEFAULT;
 
 					var answer = prompts.confirmEx(null,
-						Perspectives.getString("updatePromptTitle"),
-						Perspectives.getString("updatePrompt"), buttons,
-						Perspectives.getString("updatePromptButtonYes"), // the default button
-						Perspectives.getString("updatePromptButtonNo"),
+						Pers_browser.getString("updatePromptTitle"),
+						Pers_browser.getString("updatePrompt"), buttons,
+						Pers_browser.getString("updatePromptButtonYes"), // the default button
+						Pers_browser.getString("updatePromptButtonNo"),
 						"", null, check);
 					if(answer === 0) {
-						Perspectives.setBoolPref("extensions.perspectives.check_good_certificates",
+						Pers_browser.setBoolPref("extensions.perspectives.check_good_certificates",
 										true);
 					}
 				}
@@ -1148,7 +1149,7 @@ var Perspectives = {
 			//set the flag to not ask the user again, even (especially!) if something went wrong.
 			//this way even in the worst case the user will only get a popup once.
 			//they can always change their preferences later through the prefs dialog if they wish.
-			Perspectives.setBoolPref("extensions.perspectives.prompt_update_all_https_setting",
+			Pers_browser.setBoolPref("extensions.perspectives.prompt_update_all_https_setting",
 									false);
 		}
 	}

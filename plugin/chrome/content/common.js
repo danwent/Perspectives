@@ -230,7 +230,7 @@ var Pers_util = {
 			}
 			Perspectives.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
-			Pers_debug.d_print("error", Perspectives.getFormattedString(
+			Pers_debug.d_print("error", Pers_browser.getFormattedString(
 				"updateDefaultListWebError", [e]));
 		}
 
@@ -241,7 +241,7 @@ var Pers_util = {
 			var notary_list_data = this.readFileFromURI("chrome://perspectives/content/http_notary_list.txt");
 			Perspectives.setCharPref("extensions.perspectives.default_notary_list",notary_list_data);
 		} catch(e) {
-			Pers_debug.d_print("error", Perspectives.getFormattedString(
+			Pers_debug.d_print("error", Pers_browser.getFormattedString(
 				"updateDefaultListFileError", [e]));
 		}
 	},

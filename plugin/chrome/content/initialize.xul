@@ -5,6 +5,7 @@
   <script type="application/x-javascript" src="extlib/spark-md5.min.js"/>
 
   <script type="application/x-javascript" src="addtoolbarbutton.js" />
+  <script type="application/x-javascript" src="browser.js"/>
   <script type="application/x-javascript" src="common.js"/>
   <script type="application/x-javascript" src="init.js" />
   <script type="application/x-javascript" src="notaries.js"/>

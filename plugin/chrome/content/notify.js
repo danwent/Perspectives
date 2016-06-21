@@ -128,7 +128,7 @@ var Pers_notify = {
 	// that notaries should only be queried with user permission
 	notifyNeedsPermission: function(ti){
 
-		var show_box = Perspectives.root_prefs.
+		var show_box = Pers_browser.
 			getBoolPref("extensions.perspectives.show_permission_reminder");
 
 		if (show_box){
@@ -191,7 +191,7 @@ var Pers_notify = {
 					label: Perspectives.strbundle.getString("hideNotificationReminders"),
 					accessKey : "",
 					callback: function() {
-						Perspectives.root_prefs.
+						Pers_browser.
 							setBoolPref("extensions.perspectives.show_permission_reminder", false);
 					}
 				}

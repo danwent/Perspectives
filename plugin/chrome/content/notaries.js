@@ -38,7 +38,6 @@ var Perspectives = {
 
 	// See init_data().
 	// Always call init_data() before working with these variables!
-	root_prefs : null,
 	overrideService : null,
 	notaryBundle: null,
 
@@ -60,18 +59,6 @@ var Perspectives = {
 		// TODO: replace everything that calls init_data
 		// or relies on root_prefs or overrideService
 		// with calls to getRootPrefs and getOverrideService
-		if(Perspectives.root_prefs === null) {
-			var prefstr = "@mozilla.org/preferences-service;1";
-			if(prefstr in Components.classes) {
-				Perspectives.root_prefs = Components.classes[prefstr].
-					getService(Components.interfaces.nsIPrefBranchInternal);
-			}
-			else {
-				Pers_debug.d_print("error",
-					"Could not define Perspectives.root_prefs!");
-				success = false;
-			}
-		}
 
 		if(Perspectives.overrideService === null) {
 			var servstr = "@mozilla.org/security/certoverride;1";
@@ -85,8 +72,6 @@ var Perspectives = {
 				success = false;
 			}
 		}
-		//TODO: initialize data from other objects here too
-
 		return success;
 	},
 
@@ -97,58 +82,6 @@ var Perspectives = {
 			Components.interfaces.nsIWebProgressListener.STATE_IS_INSECURE,
 		STATE_IS_SECURE :
 			Components.interfaces.nsIWebProgressListener.STATE_IS_SECURE
-	},
-
-	getRootPrefs: function() {
-		if (Perspectives.root_prefs === null) {
-			var prefstr = "@mozilla.org/preferences-service;1";
-			if (prefstr in Components.classes) {
-				Perspectives.root_prefs = Components.classes[prefstr].
-					getService(Components.interfaces.nsIPrefBranchInternal);
-			}
-			else {
-				Pers_debug.d_print("error",
-					"Could not define Perspectives.root_prefs!");
-			}
-		}
-		return Perspectives.root_prefs
-	},
-
-	// TODO: migrate everything that interacts with browser internals
-	// to a Pers_Browser object, so we can keep the interface interaction clean
-	// and make it easier to migrate to other browsers in the future.
-
-	// return the value of a boolean preference
-	getBoolPref: function(prefName) {
-		return Perspectives.getRootPrefs().getBoolPref(prefName);
-	},
-
-	// set the value of a boolean preference
-	setBoolPref: function(prefName, newVal) {
-		Perspectives.getRootPrefs().setBoolPref(prefName, newVal);
-		return;
-	},
-
-	// return the value of a string preference
-	getCharPref: function(prefName) {
-		return Perspectives.getRootPrefs().getCharPref(prefName);
-	},
-
-	// set the value of a string preference
-	setCharPref: function(prefName, newVal) {
-		Perspectives.getRootPrefs().setCharPref(prefName, newVal);
-		return;
-	},
-
-	// return the value of an int preference
-	getIntPref: function(prefName) {
-		return Perspectives.getRootPrefs().getIntPref(prefName);
-	},
-
-	// set the value of an int preference
-	setIntPref: function(prefName, newVal) {
-		Perspectives.getRootPrefs().setIntPref(prefName, newVal);
-		return;
 	},
 
 	getOverrideService: function() {
@@ -333,18 +266,18 @@ var Perspectives = {
 	getNotaryList: function() {
 		var all_notaries = [];
 		try {
-			var list_txt = Perspectives.root_prefs.getCharPref("extensions.perspectives.additional_notary_list");
+			var list_txt = Pers_browser.getCharPref("extensions.perspectives.additional_notary_list");
 			var additional_notaries = Pers_util.loadNotaryListFromString(list_txt);
 			all_notaries = all_notaries.concat(additional_notaries);
 		} catch(e) {
 			Pers_debug.d_print("error", "Error parsing additional notaries: " + e);
 		}
 
-		var use_default_notaries = Perspectives.root_prefs.getBoolPref("extensions.perspectives.use_default_notary_list");
+		var use_default_notaries = Pers_browser.getBoolPref("extensions.perspectives.use_default_notary_list");
 		if(use_default_notaries) {
 			try {
 				var default_notaries = Pers_util.loadNotaryListFromString(
-					Perspectives.root_prefs.getCharPref("extensions.perspectives.default_notary_list"));
+					Pers_browser.getCharPref("extensions.perspectives.default_notary_list"));
 				all_notaries = all_notaries.concat(default_notaries);
 			} catch(e) {
 				Pers_debug.d_print("error", "Error parsing default notaries: " + e);
@@ -556,7 +489,7 @@ var Perspectives = {
 		var MIN_NOTARY_COUNT = 1;
 		//FIXME: we can cache the value inside getNotaryList() if calling is too slow.
 		var notary_count = this.getNotaryList().length;
-		var q_thresh = Perspectives.root_prefs.
+		var q_thresh = Pers_browser.
 				getIntPref("extensions.perspectives.quorum_thresh") / 100;
 		var q_count = Math.round(notary_count * q_thresh);
 
@@ -731,8 +664,7 @@ var Perspectives = {
 		ti.is_override_cert = Perspectives.getOverrideService().isCertUsedForOverrides(ti.cert, true, true);
 		Pers_debug.d_print("main",
 			"is_override_cert = " + ti.is_override_cert);
-		var check_good = Perspectives.getRootPrefs().
-			getBoolPref("extensions.perspectives.check_good_certificates");
+		var check_good = Pers_browser.getBoolPref("extensions.perspectives.check_good_certificates");
 
 
 		// see if the browser has this cert installed prior to this browser session

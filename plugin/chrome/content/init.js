@@ -73,7 +73,7 @@ var Pers_init = {
         'perspectives.enable_default_list_auto_update',
         'perspectives.use_default_notary_list'
       ];
-      var root_prefs = Perspectives.getRootPrefs();
+      var root_prefs = Pers_browser.getRootPrefs();
       var migration_needed  = Perspectives.getBoolPref("extensions.perspectives.pref_migration_needed");
 
       var tmpNum = 0;

@@ -1027,11 +1027,7 @@ var Perspectives = {
 			wnd.gBrowser.addProgressListener(Perspectives.notaryListener);
 			Pers_debug.d_print("main", "Perspectives Finished Initialization\n\n");
 		} catch(e) {
-			if(Perspectives.strbundle === null) {
-				Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
-			Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("internalError", ["initNotaries - " + e]));
+			Pers_util.pers_alert(Pers_browser.getFormattedString("internalError", ["initNotaries - " + e]));
 		}
 	},
 

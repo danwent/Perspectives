@@ -997,12 +997,12 @@ function getStringsFromStringBundles() {
 
     // string keys chosen arbitrarily
     var nonFormattedStringKey = "quorumDuration";
-    var notFormattedString = Perspectives.getString(nonFormattedStringKey);
+    var notFormattedString = Pers_browser.getString(nonFormattedStringKey);
     assert(notFormattedString !== "", "Retrieving the plain string '" +
         nonFormattedStringKey + "' was not blank: '" + notFormattedString + "'");
 
     var formattedStringKey = "verifiedMessage";
-    var formattedString = Perspectives.getFormattedString(formattedStringKey,
+    var formattedString = Pers_browser.getFormattedString(formattedStringKey,
         ["firstTestParameter", "secondTestParameter"]);
     assert(formattedString !== "", "Retrieving the formatted string '" +
         formattedStringKey + "' was not blank: '" + formattedString + "'");
@@ -1010,7 +1010,7 @@ function getStringsFromStringBundles() {
     var nonExistentStringKey = "ThisKeyDoesNotExist";
     var exceptionThrown = false;
     try {
-        var notFormattedString = Perspectives.getString(nonExistentStringKey);
+        var notFormattedString = Pers_browser.getString(nonExistentStringKey);
         assert(notFormattedString !== "", "Retrieving the plain string '" +
             nonExistentStringKey + "' was not blank: '" + notFormattedString + "'");
     } catch (e) {
@@ -1021,7 +1021,7 @@ function getStringsFromStringBundles() {
 
     exceptionThrown = false;
     try {
-        var formattedString = Perspectives.getFormattedString(nonExistentStringKey,
+        var formattedString = Pers_browser.getFormattedString(nonExistentStringKey,
         ["firstTestParameter", "secondTestParameter"]);
         assert(formattedString !== "", "Retrieving the formatted string '" +
             nonExistentStringKey + "' was not blank: '" + formattedString + "'");

@@ -18,8 +18,11 @@
 
 // Interface for interacting with all browser-specific functionality
 // required by Perspectives.
+// TODO: eventually we should hide the 'extensions.perspectives' prefix
+// so it's handled without callers having to worry about it
 var Pers_browser = {
 	root_prefs : null,
+	stringBundle: null,
 
 	getRootPrefs: function() {
 		if (Pers_browser.root_prefs === null) {
@@ -67,6 +70,28 @@ var Pers_browser = {
 	setIntPref: function(prefName, newVal) {
 		Pers_browser.getRootPrefs().setIntPref(prefName, newVal);
 		return;
+	},
+
+	// return a localized string from a string bundle
+	getString: function(name) {
+		if (Pers_browser.stringBundle === null) {
+			Pers_browser.stringBundle =
+				Components.classes["@mozilla.org/intl/stringbundle;1"]
+               .getService(Components.interfaces.nsIStringBundleService)
+               .createBundle("chrome://perspectives/locale/notaries.properties");
+        }
+        return Pers_browser.stringBundle.GetStringFromName(name);
+	},
+
+	// return a formatted localized string from a string bundle
+	getFormattedString: function(name, args) {
+		if (Pers_browser.stringBundle === null) {
+			Pers_browser.stringBundle =
+				Components.classes["@mozilla.org/intl/stringbundle;1"]
+               .getService(Components.interfaces.nsIStringBundleService)
+               .createBundle("chrome://perspectives/locale/notaries.properties");
+        }
+        return Pers_browser.stringBundle.formatStringFromName(name, args, args.length);
 	},
 };
 

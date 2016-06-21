@@ -38,7 +38,7 @@ var Pers_report = {
     get_ip_str : function(hostname) {
 	var suffixes=[".onion",".i2p"];
 	var needResolve=true;
-	for (index = 0; index < suffixes.length; ++index) {
+	for (var index = 0; index < suffixes.length; ++index) {
 	    if(hostname.indexOf(suffixes[index], hostname.length - suffixes[index].length) !== -1){
 		// No name-to-IP resolution possible for darknet addresses
 		needResolve=false;
@@ -61,7 +61,7 @@ var Pers_report = {
 	if(full_report) { 
 		ip_str = this.get_ip_str(host); 
 	} 	
-        report_data      = {
+        var report_data      = {
 		"host" : host, 
 		"port" : b.currentURI.port,  
 		"record_ip" : full_report, 

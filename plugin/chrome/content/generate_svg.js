@@ -83,10 +83,6 @@ var Pers_gen = {
 
 		color_info[browser_key] = "green";
 
-		if(Perspectives.strbundle == null) {
-			Perspectives.strbundle = document.getElementById("notary_strings");
-		}
-
 		var res =  '<?xml version="1.0"?>\n'
 					+ '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" '
 					+   '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n'
@@ -96,11 +92,11 @@ var Pers_gen = {
 					+ 	'height="' + height + '" fill="white" />'
 					+    '<text x="' + (x_offset + 70)
 					+	'" y="' +  y_cord + '" font-size="15" >'
-					+	Perspectives.strbundle.getString("LegendKeyHistory")
+					+	Pers_browser.getString("LegendKeyHistory")
 					+    '</text>\n'
 					+    '<text x="4" y="' + y_cord
 					+ 	'" font-size="15">'
-					+	Perspectives.strbundle.getString("LegendNotaryAndCurrentKey")
+					+	Pers_browser.getString("LegendNotaryAndCurrentKey")
 					+	'</text>\n';
 
 		y_cord += 20;

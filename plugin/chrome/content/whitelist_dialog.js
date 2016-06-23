@@ -20,13 +20,9 @@
 var Pers_whitelist_dialog = {
 	add_to_whitelist : function() {
 		try {
-			// use Perspectives.strbundle because whitelist_dialog.xul isn't loaded yet
-			if(Perspectives.strbundle == null) {
-					Perspectives.strbundle = document.getElementById("notary_strings");
-			}
 			var error_text = Perspectives.detectInvalidURI(window);
 			if(error_text) {
-				Pers_util.pers_alert(Perspectives.strbundle.getString("couldNotAddToWhitelist")
+				Pers_util.pers_alert(Pers_browser.getString("couldNotAddToWhitelist")
 					+ ": " + error_text);
 				return;
 			}
@@ -132,11 +128,6 @@ var Pers_whitelist_dialog = {
 
 	remove_from_whitelist : function() {
 		try {
-			// use Perspectives.strbundle because whitelist_dialog.xul isn't loaded yet
-			if(Perspectives.strbundle == null) {
-					Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
 			var host = window.gBrowser.currentURI.host;
 			var old_whitelist = Pers_browser.getCharPref("extensions.perspectives.whitelist").split(",");
 			var new_whitelist = [];
@@ -148,7 +139,7 @@ var Pers_whitelist_dialog = {
 				var r = RegExp(e);
 				var display_str = e.replace(/\\/g,"").replace("$","").replace("^","");
 				if (host.match(r)) {
-					var answer = confirm(Perspectives.strbundle.
+					var answer = confirm(Pers_browser.
 						getFormattedString("removeFromWhitelistQuestion", [display_str]));
 					if(answer) {
 						continue;

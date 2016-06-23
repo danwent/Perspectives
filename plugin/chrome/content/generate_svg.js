@@ -210,7 +210,7 @@ var Pers_gen = {
 				var match_text = "";
 				if(key === browser_key) {
 					match_text = " (" +
-						Perspectives.strbundle.getString("LegendBrowsersKey") + ")";
+						Pers_browser.getString("LegendBrowsersKey") + ")";
 				}
 				res += '<rect x="' + x_offset + '" y="' + y_cord
 					+ '" width="10" height="10" fill="'

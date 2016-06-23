@@ -54,11 +54,6 @@ var Pers_results = {
 	},
 
 	load_results_dialog: function(){
-
-		if(Pers_results.notaryStrings == null) {
- 			Pers_results.notaryStrings = document.getElementById("notary_strings");
- 		}
-
  		if(Pers_results.strbundle == null) {
  			Pers_results.strbundle = document.getElementById("results_strings");
  		}
@@ -72,7 +67,7 @@ var Pers_results = {
 			var error_text = win.Perspectives.detectInvalidURI(win);
 			if(error_text) {
 				info.value = "Perspectives: " +
-					Pers_results.notaryStrings.getString("invalidURI") + " (" + error_text + ")";
+					Pers_browser.getString("invalidURI") + " (" + error_text + ")";
 				return;
 			}
 			var ti = win.Perspectives.getCurrentTabInfo(win);

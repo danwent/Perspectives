@@ -139,15 +139,11 @@ var Pers_report = {
 	},
 
     // note: this function is called in the scope of the main window, which is able to grab the cert.
-    // that also means we use Perspectives.strbundle rather than Pers_report.strbundle.
     report_attack : function() {
-		if(Perspectives.strbundle == null) {
-			Perspectives.strbundle = document.getElementById("notary_strings");
-		}
 		try {
 			var error_text = Perspectives.detectInvalidURI(window);
 			if(error_text) {
-				Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI")
+				Pers_util.pers_alert(Pers_browser.getString("invalidURI")
 					+ " (" + error_text + ")");
 				return;
 			}
@@ -157,24 +153,21 @@ var Pers_report = {
 			var cert = Perspectives.getCertificate(window.gBrowser);
 			if(!cert) {
 				// FIXME - is this check correct?
-				Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("notEncryptedNoReport",
+				Pers_util.pers_alert(Pers_browser.getFormattedString("notEncryptedNoReport",
 					[ ti.uri.host ]));
 				return;
 			}
 
 			var cached_results = ti.query_results;
 			if(!cached_results) {
-				throw(Perspectives.strbundle.getString("noResultsNoReport"));
+				throw(Pers_browser.getString("noResultsNoReport"));
 			}
 
 			window.openDialog("chrome://perspectives/content/report.xul", "", "centerscreen, resizable",
 			cert, cached_results).focus();
 
 		} catch(e) {
-			var text = "";
-			if (Perspectives.strbundle != null) {
-				text = Perspectives.strbundle.getString("unableToMakeReport") + " - ";
-			}
+			var text = Pers_browser.getString("unableToMakeReport") + " - ";
 			Pers_util.pers_alert(text + e);
 		}
     }, 
@@ -199,10 +192,7 @@ var Pers_report = {
 				document.getElementById("full-text").value = txt;
 			}
 		} catch(e) {
-			var text = "";
-			if (Perspectives.strbundle != null) {
-				text = Perspectives.strbundle.getString("unableToMakeReport") + " - ";
-			}
+			var text = Pers_browser.getString("unableToMakeReport") + " - ";
 			Pers_util.pers_alert(text + e);
 		}
     }

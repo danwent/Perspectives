@@ -119,18 +119,14 @@ var Pers_statusbar = {
 	},
 
 	distrust_all_certificates : function() {
-		if(Perspectives.strbundle == null) {
-			Perspectives.strbundle = document.getElementById("notary_strings");
-		}
-
 		try
 		{
 			var prompt = window.prompt(
-				Perspectives.strbundle.getString("distrustAllWarning"    ) + "\n" +
-				Perspectives.strbundle.getString("distrustAllDescription") + "\n" +
-				Perspectives.strbundle.getString("distrustAllPrompt"     ) + "\n\"" +
-				Perspectives.strbundle.getString("distrustAllPhrase") + "\"");
-			var phrase = Perspectives.strbundle.getString("distrustAllPhrase");
+				Pers_browser.getString("distrustAllWarning"    ) + "\n" +
+				Pers_browser.getString("distrustAllDescription") + "\n" +
+				Pers_browser.getString("distrustAllPrompt"     ) + "\n\"" +
+				Pers_browser.getString("distrustAllPhrase") + "\"");
+			var phrase = Pers_browser.getString("distrustAllPhrase");
 			if(prompt.toLowerCase() === phrase.toLowerCase()) {
 				var Cc = Components.classes
 				var Ci = Components.interfaces
@@ -159,16 +155,16 @@ var Pers_statusbar = {
 					nCerts += 1;
 				}
 
-				Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("distrustAllSuccess", ['' + nCerts, '' + nDistrusted]));
+				Pers_util.pers_alert(Pers_browser.getFormattedString("distrustAllSuccess", ['' + nCerts, '' + nDistrusted]));
 			}
 			else
 			{
-				Pers_util.pers_alert(Perspectives.strbundle.getString("distrustAllPhraseWrong"));
+				Pers_util.pers_alert(Pers_browser.getString("distrustAllPhraseWrong"));
 			}
 		} catch(e)
 		{
 			Pers_debug.d_print("error", "Perspectives had an internal error in distrust_all_certificates(): " + e);
-			Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("internalError", ["distrust_all_certificates - " + e]));
+			Pers_util.pers_alert(Pers_browser.getFormattedString("internalError", ["distrust_all_certificates - " + e]));
 		}
 	},
 

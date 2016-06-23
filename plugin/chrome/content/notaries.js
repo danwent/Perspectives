@@ -18,8 +18,6 @@
 
 var Perspectives = {
  	MY_ID: "perspectives@cmu.edu",
-	strbundle : null, // this isn't loaded when things are initialized
-
 
 	// IP addresses that can't be queried by notary machines
 	// (unless the notary is specifically set up on a private network)
@@ -56,8 +54,8 @@ var Perspectives = {
 		var success = true;
 
 		// TODO: replace everything that calls init_data
-		// or relies on root_prefs or overrideService
-		// with calls to getRootPrefs and getOverrideService
+		// or relies on overrideService
+		// with calls to getOverrideService
 
 		if(Perspectives.overrideService === null) {
 			var servstr = "@mozilla.org/security/certoverride;1";
@@ -491,10 +489,6 @@ var Perspectives = {
 
 	notaryQueriesComplete: function(ti) {
 		try {
-			if(Perspectives.strbundle == null) {
-				Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
 			var server_result_list = ti.partial_query_results; 
 			delete ti.partial_query_results; 
 			delete ti.timeout_id; 
@@ -535,14 +529,14 @@ var Perspectives = {
 					? Math.round(qd_days)
 					: qd_days.toFixed(1)) + " days"
 				: "none";
-			var str = Perspectives.strbundle.getString("notaryLookupFor") +
+			var str = Pers_browser.getString("notaryLookupFor") +
 				": " + ti.service_id + "\n";
-				str += Perspectives.strbundle.getString("LegendBrowsersKey") +
+				str += Pers_browser.getString("LegendBrowsersKey") +
 					" = '" + test_key + "'\n";
-				str += Perspectives.strbundle.getString("results") + ":\n";
-				str += Perspectives.strbundle.getString("quorumDuration") +
+				str += Pers_browser.getString("results") + ":\n";
+				str += Pers_browser.getString("quorumDuration") +
 					": " + qd_str + "\n";
-				str += Perspectives.strbundle.getString("notaryObservations") +
+				str += Pers_browser.getString("notaryObservations") +
 					": \n" + obs_text + "\n";
 			//Pers_debug.d_print("main","\n" + str + "\n");
 			var required_duration = Pers_browser.
@@ -593,23 +587,18 @@ var Perspectives = {
 
 	// Updates the status of the current page
 	updateStatus: function(win, is_forced) {
-
-		if(Perspectives.strbundle === null) {
-			Perspectives.strbundle = document.getElementById("notary_strings");
-		}
-
 		Pers_debug.d_print("main", "Update Status");
 
 		var error_text = Perspectives.detectInvalidURI(win);
 		if(error_text) {
-			var text = Perspectives.strbundle.
+			var text = Pers_browser.
 				getFormattedString("waitingOnURLData", [ error_text ]);
 			Pers_statusbar.setStatus(null, Pers_statusbar.STATE_NEUT, text);
 			return;
 		}
 		var ti = Perspectives.getCurrentTabInfo(win);
 		if(ti.uri.scheme !== "https") {
-			var text = Perspectives.strbundle.
+			var text = Pers_browser.
 				getFormattedString("nonHTTPSError", [ ti.uri.host, ti.uri.scheme ]);
 			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 			ti.reason_str = text;
@@ -620,7 +609,7 @@ var Perspectives = {
 
 		ti.cert       = Perspectives.getCertificate(ti.browser);
 		if(!ti.cert) {
-			var text = Perspectives.strbundle.
+			var text = Pers_browser.
 				getFormattedString("noCertError", [ti.uri.host]);
 			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 			ti.reason_str = text;
@@ -650,7 +639,7 @@ var Perspectives = {
 		ti.already_trusted = !(ti.state & Perspectives.state.STATE_IS_INSECURE) && !(ti.is_override_cert);
 
 		if(Perspectives.is_whitelisted_by_user(ti.uri.host)) {
-			var text = Perspectives.strbundle.
+			var text = Pers_browser.
 				getFormattedString("configuredToWhitelistWithHost", [ti.uri.host]);
 			if(! (ti.already_trusted || ti.is_override_cert)) {
 				var isTemp = !Pers_browser.getBoolPref("extensions.perspectives.exceptions.permanent");
@@ -671,7 +660,7 @@ var Perspectives = {
 			// anonymizers like Tor.  It was always just an insecure guess anyway.
 			var unreachable = Perspectives.is_nonrouted_ip(ti.uri.host);
 			if(unreachable) {
-				var text = Perspectives.strbundle.
+				var text = Pers_browser.
 					getFormattedString("rfc1918Error", [ti.uri.host]);
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 				ti.reason_str = text;
@@ -680,7 +669,7 @@ var Perspectives = {
 		}
 
 		if(!check_good && ti.already_trusted && !is_forced) {
-			var text = Perspectives.strbundle.
+			var text = Pers_browser.
 				getString("noProbeRequestedError");
 			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 			ti.reason_str = text;
@@ -710,7 +699,7 @@ var Perspectives = {
 			if(needs_perm && !ti.has_user_permission) {
 				Pers_debug.d_print("main", "needs user permission");
 				Pers_notify.do_notify(ti, Pers_notify.TYPE_NEEDS_PERMISSION);
-				var text = Perspectives.strbundle.getString("needsPermission");
+				var text = Pers_browser.getString("needsPermission");
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 				ti.reason_str = text;
 				return;
@@ -737,7 +726,7 @@ var Perspectives = {
 
 				if(is_private) {
 					Pers_debug.d_print("main", "don't contact notaries in private browsing mode");
-					var text = Perspectives.strbundle.getString("privateBrowsingQueriesDisabled");
+					var text = Pers_browser.getString("privateBrowsingQueriesDisabled");
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 					ti.reason_str = text;
 					return;
@@ -747,7 +736,7 @@ var Perspectives = {
 			// make sure we're using the most recent notary list
 			Perspectives.all_notaries = this.getNotaryList();
 			if(Perspectives.all_notaries.length === 0) {
-				var text = Perspectives.strbundle.
+				var text = Pers_browser.
 					getString("listOfNotariesIsEmpty");
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, text);
 				return;
@@ -767,7 +756,7 @@ var Perspectives = {
 				Perspectives.getFaviconText().indexOf("Perspectives") < 0) {
 				ti.query_results.identityText =
 					Perspectives.setFaviconText(Perspectives.getFaviconText() +
-					"\n\n" + Perspectives.strbundle.getString("verificationSuccess"));
+					"\n\n" + Pers_browser.getString("verificationSuccess"));
 			}
 			var required_duration   =
 				Pers_browser.
@@ -790,7 +779,7 @@ var Perspectives = {
 						var isTemp = !Pers_browser.
 							getBoolPref("extensions.perspectives.exceptions.permanent");
 						Perspectives.do_override(ti.browser, ti.cert, isTemp);
-						ti.query_results.identityText = Perspectives.strbundle.
+						ti.query_results.identityText = Pers_browser.
 							getString("exceptionAdded");
 						// don't give drop-down if user gave explicit
 						// permission to query notaries
@@ -812,7 +801,7 @@ var Perspectives = {
 					// from applying the results and can add better tests for these,
 					// wrap setting the status and the tooltip in their own function
 					// so no steps are forgotten
-					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedButInsecureEmbedded");
+					ti.query_results.tooltip = Pers_browser.getString("trustedButInsecureEmbedded");
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT, ti.query_results.tooltip);
 					// this will flicker, as we can't rely on just doing it on 'firstLook'
 					// due to Firefox oddness
@@ -820,7 +809,7 @@ var Perspectives = {
 						Pers_notify.do_notify(ti, Pers_notify.TYPE_OVERRIDE_MIXED);
 					}
 				}  else {
-					ti.query_results.tooltip = Perspectives.strbundle.
+					ti.query_results.tooltip = Pers_browser.
 						getFormattedString("verifiedMessage", [ti.query_results.duration.toFixed(1), required_duration]);
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC,
 						ti.query_results.tooltip);
@@ -828,18 +817,18 @@ var Perspectives = {
 			} else if(ti.already_trusted && weak_trust && pref_https_weak) {
 				// FIXME: need to clear any contrary banners
 				if(ti.state & Perspectives.state.STATE_IS_BROKEN) {
-					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedWeaklyButInsecureEmbedded");
+					ti.query_results.tooltip = Pers_browser.getString("trustedWeaklyButInsecureEmbedded");
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NEUT,
 						ti.query_results.tooltip);
 				}  else {
-					ti.query_results.tooltip = Perspectives.strbundle.getString("trustedMultipleByBrowser");
+					ti.query_results.tooltip = Pers_browser.getString("trustedMultipleByBrowser");
 					Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_SEC,
 						ti.query_results.tooltip);
 				}
-			} else if(ti.query_results.summary.indexOf(Perspectives.strbundle.getString("sslKey")) === -1) {
+			} else if(ti.query_results.summary.indexOf(Pers_browser.getString("sslKey")) === -1) {
 				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip =
-					Perspectives.strbundle.getString("noRepliesWarning");
+					Pers_browser.getString("noRepliesWarning");
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC,
 					ti.query_results.tooltip);
 				if(!ti.already_trusted) {
@@ -847,14 +836,14 @@ var Perspectives = {
 				}
 			} else if(ti.query_results.inconsistent_results && !ti.query_results.weakly_seen) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = Perspectives.strbundle.getString("untrustedMultipleNotSeen");
+				ti.query_results.tooltip = Pers_browser.getString("untrustedMultipleNotSeen");
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, ti.query_results.tooltip);
 				if(!ti.already_trusted) {
 					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
 				}
 			} else if(ti.query_results.inconsistent_results) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = Perspectives.strbundle.getString("untrustedMultipleNotVerifiable");
+				ti.query_results.tooltip = Pers_browser.getString("untrustedMultipleNotVerifiable");
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC, ti.query_results.tooltip);
 				if(!ti.already_trusted) {
 					Pers_notify.do_notify(ti, Pers_notify.TYPE_FAILED);
@@ -862,7 +851,7 @@ var Perspectives = {
 			} else if(!ti.query_results.cur_consistent) {
 				// FIXME: need to clear any contrary banners
 				ti.query_results.tooltip =
-					Perspectives.strbundle.getString("inconsistentWarning");
+					Pers_browser.getString("inconsistentWarning");
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC,
 					ti.query_results.tooltip);
 				// we may reconsider this in the future, but currently we don't do a
@@ -872,7 +861,7 @@ var Perspectives = {
 				}
 			} else if(ti.query_results.duration < required_duration) {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = Perspectives.strbundle.
+				ti.query_results.tooltip = Pers_browser.
 					getFormattedString("thresholdWarning", [ti.query_results.duration.toFixed(1), required_duration]);
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_NSEC,
 					ti.query_results.tooltip);
@@ -881,7 +870,7 @@ var Perspectives = {
 				}
 			} else {
 				// FIXME: need to clear any contrary banners
-				ti.query_results.tooltip = Perspectives.strbundle.
+				ti.query_results.tooltip = Pers_browser.
 					getFormattedString("errorParsingNotaryEntry", [ti.uri.host]);
 				Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_ERROR,
 					ti.query_results.tooltip);
@@ -937,10 +926,6 @@ var Perspectives = {
    		// was causing a bug that caused us to get the previous website's cert
    		// instead of the correct cert.
    		onLocationChange: function(aWebProgress, aRequest, aURI) {
-			if(Perspectives.strbundle == null) {
-				Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
 			try {
 				Pers_debug.d_print("main", "Location change " + aURI.spec);
 				var state = Pers_statusbar.STATE_NEUT;
@@ -952,7 +937,7 @@ var Perspectives = {
 					// use the asciiHost: sometimes the host contains invalid characters, or is unset.
 					// in those cases getFormattedString() will throw an exception,
 					// which causes the error icon to be displayed.
-					tooltip = Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
+					tooltip = Pers_browser.getFormattedString("contactingNotariesAbout",
 						[aURI.asciiHost]);
 					// TODO: can we start sending the query from right here, to begin sooner?
 				}
@@ -960,7 +945,7 @@ var Perspectives = {
 			} catch(err) {
 				Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
 				Pers_statusbar.setStatus(aURI, Pers_statusbar.STATE_ERROR,
-					Perspectives.strbundle.getFormattedString("internalError", ["onLocationChange - " + err]));
+					Pers_browser.getFormattedString("internalError", ["onLocationChange - " + err]));
 			}
    		},
 
@@ -973,13 +958,9 @@ var Perspectives = {
 					Pers_debug.d_print("main", "State change " + uri.spec);
 					Perspectives.updateStatus(window,false);
 				} catch (err) {
-					if(Perspectives.strbundle == null) {
-						Perspectives.strbundle = document.getElementById("notary_strings");
-					}
-
 					Pers_debug.d_print("error", "Perspectives had an internal exception: " + err);
 					Pers_statusbar.setStatus(Pers_statusbar.STATE_ERROR,
-						Perspectives.strbundle.getFormattedString("internalError", ["onStateChange - " + err]));
+						Pers_browser.getFormattedString("internalError", ["onStateChange - " + err]));
 				  }
 				}
   		},
@@ -1029,18 +1010,14 @@ var Perspectives = {
 	},
 
 	detectInvalidURI : function(win) {
-		if(Perspectives.strbundle == null) {
-			Perspectives.strbundle = document.getElementById("notary_strings");
-		}
-
 		if(!win.gBrowser) {
 			Pers_debug.d_print("error","No Browser!!\n");
-			return Perspectives.strbundle.getString("noBrowserObject");
+			return Pers_browser.getString("noBrowserObject");
 		}
 
 		var uri = win.gBrowser.currentURI;
 		if(!uri) {
-			return Perspectives.strbundle.getString("noDataError");
+			return Pers_browser.getString("noDataError");
 		}
 
 		// sometimes things blow up because accessing uri.host throws an exception
@@ -1050,7 +1027,7 @@ var Perspectives = {
 				throw "";
 			}
 		} catch(e) {
-			return Perspectives.strbundle.getString("notValidRemoteServer");
+			return Pers_browser.getString("notValidRemoteServer");
 		}
 		return null;
 	},
@@ -1080,12 +1057,9 @@ var Perspectives = {
 	},
 
 	forceStatusUpdate : function(win) {
-		if(Perspectives.strbundle == null) {
-			Perspectives.strbundle = document.getElementById("notary_strings");
-		}
 		var error_text = Perspectives.detectInvalidURI(win);
 		if(error_text) {
-			Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI")
+			Pers_util.pers_alert(Pers_browser.getString("invalidURI")
 				+ " (" + error_text + ")");
 			return;
 		}
@@ -1095,7 +1069,7 @@ var Perspectives = {
 			delete ti.query_results;
 			ti.has_user_permission = true; // forcing a check is implicit permission
 			Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY,
-				Perspectives.strbundle.getFormattedString("contactingNotariesAbout", [ ti.uri.host ]));
+				Pers_browser.getFormattedString("contactingNotariesAbout", [ ti.uri.host ]));
 			Perspectives.updateStatus(win, true);
 		} else {
 			Pers_debug.d_print("main", "Requested force check with valid URI, but no tab_info is found");

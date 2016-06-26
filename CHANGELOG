@@ -22,7 +22,7 @@ We attempt to use meaningful version numbers, following semver.org:
 * Internal code cleanup (fix === checks; remove dead code; fix addProgressListener usage)
 * Add wrapper functions to retrieve preferences, overrideService, and stringbundle strings
 	Fixes one bug where 'root_prefs' object was not initialized;
-	but overall removes the need to intitialize the Perspectives object at all.
+	but overall removes the need to initialize the Perspectives object at all.
 	It can and should handle its own internal state.
 	This starts to isolate the usage of direct browser internals,
 	which would be required to port to other browsers.

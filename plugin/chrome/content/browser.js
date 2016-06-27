@@ -23,6 +23,7 @@
 var Pers_browser = {
 	root_prefs : null,
 	stringBundle: null,
+	overrideService : null,
 
 	getRootPrefs: function() {
 		if (Pers_browser.root_prefs === null) {
@@ -90,6 +91,21 @@ var Pers_browser = {
 	// return a formatted localized string from a string bundle
 	getFormattedString: function(name, args) {
         return Pers_browser.loadStringBundle().formatStringFromName(name, args, args.length);
+	},
+
+	getOverrideService: function() {
+		if (Pers_browser.overrideService === null) {
+			var servstr = "@mozilla.org/security/certoverride;1";
+			if (servstr in Components.classes) {
+				Pers_browser.overrideService = Components.classes[servstr].
+					getService(Components.interfaces.nsICertOverrideService);
+			}
+			else {
+				Pers_debug.d_print("error",
+					"Could not define Pers_browser.overrideServices!");
+			}
+		}
+		return Pers_browser.overrideService
 	},
 };
 

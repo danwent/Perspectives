@@ -34,10 +34,6 @@ var Perspectives = {
 
 	// Data
 
-	// See init_data().
-	// Always call init_data() before working with these variables!
-	overrideService : null,
-
 	/*
 	Note: calls to Components.classes.getService() require special permissions.
 	If we set the value of data properties at object creation time,
@@ -79,22 +75,6 @@ var Perspectives = {
 			Components.interfaces.nsIWebProgressListener.STATE_IS_INSECURE,
 		STATE_IS_SECURE :
 			Components.interfaces.nsIWebProgressListener.STATE_IS_SECURE
-	},
-
-	getOverrideService: function() {
-
-		if(Perspectives.overrideService === null) {
-			var servstr = "@mozilla.org/security/certoverride;1";
-			if (servstr in Components.classes) {
-				Perspectives.overrideService = Components.classes[servstr].
-					getService(Components.interfaces.nsICertOverrideService);
-			}
-			else {
-				Pers_debug.d_print("error",
-					"Could not define Perspectives.overrideServices!");
-			}
-		}
-		return Perspectives.overrideService
 	},
 
 	is_nonrouted_ip: function(ip_str) {
@@ -568,16 +548,16 @@ var Perspectives = {
 		}
 		var flags = 0;
 		if(gSSLStatus.isUntrusted) {
-			flags |= Perspectives.overrideService.ERROR_UNTRUSTED;
+			flags |= Pers_browser.getOverrideService().ERROR_UNTRUSTED;
 		}
 		if(gSSLStatus.isDomainMismatch) {
-			flags |= Perspectives.overrideService.ERROR_MISMATCH;
+			flags |= Pers_browser.getOverrideService().ERROR_MISMATCH;
 		}
 		if(gSSLStatus.isNotValidAtThisTime) {
-			flags |= Perspectives.overrideService.ERROR_TIME;
+			flags |= Pers_browser.getOverrideService().ERROR_TIME;
 		}
 
-		Perspectives.overrideService.rememberValidityOverride(
+		Pers_browser.getOverrideService().rememberValidityOverride(
 			uri.asciiHost, uri.port, cert, flags, isTemp);
 
 		setTimeout(function() { browser.loadURIWithFlags(uri.spec, flags); }, 25); // TODO: magic number
@@ -627,7 +607,7 @@ var Perspectives = {
 
 		ti.state      = ti.browser.securityUI.state;
 
-		ti.is_override_cert = Perspectives.getOverrideService().isCertUsedForOverrides(ti.cert, true, true);
+		ti.is_override_cert = Pers_browser.getOverrideService().isCertUsedForOverrides(ti.cert, true, true);
 		Pers_debug.d_print("main",
 			"is_override_cert = " + ti.is_override_cert);
 		var check_good = Pers_browser.getBoolPref("extensions.perspectives.check_good_certificates");

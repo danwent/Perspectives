@@ -101,14 +101,11 @@ var Pers_report = {
 		// temporarily disable the buttons until we're done.
 		var orig_label = document.getElementById("SubmitReport").label; //TODO: test with other localizations
 
-		if(Pers_report.strbundle == null) {
-			Pers_report.strbundle = document.getElementById("report_strings");
-		}
 		try {
 			document.getElementById("SubmitReport").disabled = true;
 			document.getElementById("Close").disabled = true;
 			document.getElementById("SubmitReport").label =
-				Pers_report.strbundle.getString("SubmittingReport");
+				Pers_browser.getString("SubmittingReport");
 
 			var report_json_str = JSON.stringify(this.get_report_json());
 			var full_report = !document.getElementById("full-radio").selectedIndex;
@@ -121,13 +118,13 @@ var Pers_report = {
 			req.send(report_json_str);
 			if(req.status != 200) {
 				Pers_util.pers_alert(
-					Pers_report.strbundle.getString("FailedToReport") +
+					Pers_browser.getString("FailedToReport") +
 					" '" + this.REPORT_URI + "'. " +
-					Pers_report.strbundle.getString("ErrorCode") +
+					Pers_browser.getString("ErrorCode") +
 					"  = " + req.status);
 			}
 		} catch(e) {
-			Pers_util.pers_alert(Pers_report.strbundle.getString("ErrorSubmittingReport") +
+			Pers_util.pers_alert(Pers_browser.getString("ErrorSubmittingReport") +
 				": " + e);
 		} finally {
 			document.getElementById("SubmitReport").label = orig_label;
@@ -175,16 +172,13 @@ var Pers_report = {
     // this function is called by the 'report attack' window once it is opened
     // or when one of the controls was toggled. 
     refresh_report_dialog : function() {
-		if(Pers_report.strbundle == null) {
-			Pers_report.strbundle = document.getElementById("report_strings");
-		}
 		try {
 			var show_full = document.getElementById("show_full").checked;
 			document.getElementById("full-text").hidden = !show_full;
 			document.getElementById("full-text-label").hidden = !show_full;
-			var label = Pers_report.strbundle.getString("FullReportText");
+			var label = Pers_browser.getString("FullReportText");
 			if(document.getElementById("full-radio").selectedIndex) {
-				label = Pers_report.strbundle.getString("PrivateReportText");
+				label = Pers_browser.getString("PrivateReportText");
 			}
 			if(show_full) {
 				document.getElementById("full-text-label").value = label;

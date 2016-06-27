@@ -98,27 +98,23 @@ var Pers_whitelist_dialog = {
 
 	fill_dialog: function(){
 		try {
-			if(Pers_whitelist_dialog.strbundle == null) {
-					Pers_whitelist_dialog.strbundle = document.getElementById("whitelist_strings");
-			}
-
 			var host = window.arguments[0];
 			document.getElementById("whitelist-radio-1").label =
-				Pers_whitelist_dialog.strbundle.getString("whitelistWebsite") + " '" + host + "'";
+				Pers_browser.getString("whitelistWebsite") + " '" + host + "'";
 
 			document.getElementById("whitelist-radio-2").hidden = true;
 			if(this.is_ip_address(host)) {
 				var host_text = this.get_ip_domain_text(host);
 				if(host_text) {
 					document.getElementById("whitelist-radio-2").label =
-						Pers_whitelist_dialog.strbundle.getString("whitelistAllWebsitesInIP") + " '" + host_text + "'";
+						Pers_browser.getString("whitelistAllWebsitesInIP") + " '" + host_text + "'";
 					document.getElementById("whitelist-radio-2").hidden = false;
 				}
 			} else {
 				var dns_text = this.get_dns_domain_text(host);
 				if(dns_text) {
 					document.getElementById("whitelist-radio-2").label =
-						Pers_whitelist_dialog.strbundle.getString("whitelistAllWebsitesInDomain") + " '" + dns_text + "'";
+						Pers_browser.getString("whitelistAllWebsitesInDomain") + " '" + dns_text + "'";
 					document.getElementById("whitelist-radio-2").hidden = false;
 				}
 			}

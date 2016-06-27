@@ -72,26 +72,24 @@ var Pers_browser = {
 		return;
 	},
 
-	// return a localized string from a string bundle
-	getString: function(name) {
+	loadStringBundle: function() {
 		if (Pers_browser.stringBundle === null) {
 			Pers_browser.stringBundle =
 				Components.classes["@mozilla.org/intl/stringbundle;1"]
                .getService(Components.interfaces.nsIStringBundleService)
                .createBundle("chrome://perspectives/locale/notaries.properties");
         }
-        return Pers_browser.stringBundle.GetStringFromName(name);
+        return Pers_browser.stringBundle;
+	},
+
+	// return a localized string from a string bundle
+	getString: function(name) {
+        return Pers_browser.loadStringBundle().GetStringFromName(name);
 	},
 
 	// return a formatted localized string from a string bundle
 	getFormattedString: function(name, args) {
-		if (Pers_browser.stringBundle === null) {
-			Pers_browser.stringBundle =
-				Components.classes["@mozilla.org/intl/stringbundle;1"]
-               .getService(Components.interfaces.nsIStringBundleService)
-               .createBundle("chrome://perspectives/locale/notaries.properties");
-        }
-        return Pers_browser.stringBundle.formatStringFromName(name, args, args.length);
+        return Pers_browser.loadStringBundle().formatStringFromName(name, args, args.length);
 	},
 };
 

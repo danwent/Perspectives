@@ -34,40 +34,6 @@ var Perspectives = {
 
 	// Data
 
-	/*
-	Note: calls to Components.classes.getService() require special permissions.
-	If we set the value of data properties at object creation time,
-	(i.e. as part of the variable definition statements, above)
-	anything that doesn't have permission, such as an HTML file including
-	notaries.js as a script, will fail and not be able to use this object.
-	Thus, we initialize data properties inside a function instead,
-	so the caller can have control over when that happens
-	and ask for permission beforehand if necessary.
-	This helps to ensure Perspectives can be properly parsed and used
-	in many situations.
-	*/
-	init_data: function() {
-		var success = true;
-
-		// TODO: replace everything that calls init_data
-		// or relies on overrideService
-		// with calls to getOverrideService
-
-		if(Perspectives.overrideService === null) {
-			var servstr = "@mozilla.org/security/certoverride;1";
-			if(servstr in Components.classes) {
-				Perspectives.overrideService = Components.classes[servstr].
-					getService(Components.interfaces.nsICertOverrideService);
-			}
-			else {
-				Pers_debug.d_print("error",
-					"Could not define Perspectives.overrideServices!");
-				success = false;
-			}
-		}
-		return success;
-	},
-
 	state : {
 		STATE_IS_BROKEN :
 			Components.interfaces.nsIWebProgressListener.STATE_IS_BROKEN,

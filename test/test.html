@@ -1126,8 +1126,6 @@ function run_tests() {
         Pers_debug.d_print_flags["error"] = true;
 
         try {
-            Perspectives.init_data();
-
             clear();
             meta_tests();
             hash_tests();
@@ -1154,8 +1152,6 @@ function run_tests() {
         error("You are probably running the test from browser context, but you need to run it from chrome context. Use 'make test' to to build and install the Perspectives extension and open chrome://perspectives/content/test/test.html");
 
         try {
-            //Perspectives.init_data();
-
             clear();
             meta_tests();
             client_sanity();

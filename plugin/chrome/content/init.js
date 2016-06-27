@@ -22,7 +22,6 @@
 var Pers_init = {
 
     evtLoad: function(){
-      Perspectives.init_data();
       Perspectives.initNotaries();
 
       const FIRSTRUN_PREF = "extensions.perspectives.first_run";

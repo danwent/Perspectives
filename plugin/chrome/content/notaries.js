@@ -1075,57 +1075,5 @@ var Perspectives = {
 			Pers_debug.d_print("main", "Requested force check with valid URI, but no tab_info is found");
 		}
 	},
-
-	// In Perspectives v4.0 the default settings were changed to check with notaries for *all* https websites,
-	// rather than only querying for sites that showed a certificate error.
-	// If the user has upgraded from an old version of Perspectives (<4.0) to a newer version (>=4.0),
-	// ask them if they would now prefer to check all https websites.
-	prompt_update: function() {
-		try {
-			//NOTE: Firefox pre-defines Cc and Ci, but SeaMonkey does not.
-			//We create local variables here so SeaMonkey clients don't throw 'variable is not defined' exceptions
-			const Cc = Components.classes, Ci = Components.interfaces;
-
-			//'prompt_update_all_https_setting' stores a value for "have we already asked the user about this?"
-			var ask_update = Pers_browser.getBoolPref("extensions.perspectives.prompt_update_all_https_setting");
-
-			if(ask_update === true) {
-
-				var check_good = Pers_browser.getBoolPref("extensions.perspectives.check_good_certificates");
-
-				if(!check_good) {
-
-					var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-							.getService(Components.interfaces.nsIPromptService);
-					var check = {value:false};
-					var buttons =
-							prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_IS_STRING
-							+ prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING
-							+ prompts.BUTTON_POS_0_DEFAULT;
-
-					var answer = prompts.confirmEx(null,
-						Pers_browser.getString("updatePromptTitle"),
-						Pers_browser.getString("updatePrompt"), buttons,
-						Pers_browser.getString("updatePromptButtonYes"), // the default button
-						Pers_browser.getString("updatePromptButtonNo"),
-						"", null, check);
-					if(answer === 0) {
-						Pers_browser.setBoolPref("extensions.perspectives.check_good_certificates",
-										true);
-					}
-				}
-			}
-		}
-		catch (e) {
-			Pers_debug.d_print("error", "Error: could not prompt to update preferences about check_good_certificates: " + e);
-		}
-		finally {
-			//set the flag to not ask the user again, even (especially!) if something went wrong.
-			//this way even in the worst case the user will only get a popup once.
-			//they can always change their preferences later through the prefs dialog if they wish.
-			Pers_browser.setBoolPref("extensions.perspectives.prompt_update_all_https_setting",
-									false);
-		}
-	}
 };
 

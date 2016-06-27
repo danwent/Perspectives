@@ -24,7 +24,6 @@ var Pers_init = {
     evtLoad: function(){
       Perspectives.init_data();
       Perspectives.initNotaries();
-      Perspectives.prompt_update();
 
       const FIRSTRUN_PREF = "extensions.perspectives.first_run";
       var firstrun = Pers_browser.getBoolPref(FIRSTRUN_PREF);
@@ -69,7 +68,6 @@ var Pers_init = {
         'perspectives.check_good_certificates',
         'perspectives.require_user_permission',
         'perspectives.trust_https_with_weak_consistency',
-        'perspectives.prompt_update_all_https_setting',
         'perspectives.enable_default_list_auto_update',
         'perspectives.use_default_notary_list'
       ];

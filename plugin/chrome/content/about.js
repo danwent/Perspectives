@@ -51,11 +51,7 @@ var Pers_about = {
 			document.getElementById("contributors-list").value = contributors;
 			document.getElementById("translators-list").value = translators;
 		} catch(e) {
-			if(Perspectives.strbundle == null) {
-				Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
-			Pers_util.pers_alert(Perspectives.strbundle.
+			Pers_util.pers_alert(Pers_browser.
 				getFormattedString("loadingCreditsError", [e]));
 		}
 	}

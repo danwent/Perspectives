@@ -81,33 +81,29 @@ var Pers_xml = {
 
 	// Dumps all data in a server response to a string for easy debugging
 	resultToString: function(server_result, show_sig) {
-		if(Perspectives.strbundle == null) {
-				Perspectives.strbundle = document.getElementById("notary_strings");
-		}
-
 		var out = "";
 		for(var j = 0; j < server_result.obs.length; j++) {
 			var o = server_result.obs[j];
-			out += Perspectives.strbundle.getString("sslKey")
+			out += Pers_browser.getString("sslKey")
 				+ ": '" + o.key + "'\n";
 			for(var k = 0; k < o.timestamps.length; k++) {
 				var start_t = o.timestamps[k].start;
 				var end_t   = o.timestamps[k].end;
 				var start_d = new Date(1000 * start_t).toDateString();
 				var end_d   = new Date(1000 * end_t  ).toDateString();
-				out += Perspectives.strbundle.getString("keyStart") +
+				out += Pers_browser.getString("keyStart") +
 					":\t" + start_t + " - " + start_d + "\n";
-				out += Perspectives.strbundle.getString("keyEnd") +
+				out += Pers_browser.getString("keyEnd") +
 					":  \t" + end_t + " - " + end_d + "\n";
 				out += "(" + parseInt((end_t - start_t) / (3600 * 24)) + " " +
-					Perspectives.strbundle.getString("keyDays") + ")\n\n";
+					Pers_browser.getString("keyDays") + ")\n\n";
 			}
 		}
 		if(server_result.obs.length === 0) {
-			out += "[ " + Perspectives.strbundle.getString("noResults") + " ]";
+			out += "[ " + Pers_browser.getString("noResults") + " ]";
 		}
 		if(show_sig) {
-			out += "\t" + Perspectives.strbundle.getString("signature") + " = '"
+			out += "\t" + Pers_browser.getString("signature") + " = '"
 				+ server_result.signature + "'\n";
 		}
 		return out;

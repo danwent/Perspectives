@@ -17,10 +17,6 @@
 */
 
 var Pers_results = {
-	root_prefs : Components.classes["@mozilla.org/preferences-service;1"].
-				getService(Components.interfaces.nsIPrefBranch),
-
-
 	switchResultForm: function(){
 		var sel = document.getElementById("info-radio").selectedIndex;
 		document.getElementById("perspective-svg-box").hidden     = sel;
@@ -38,35 +34,23 @@ var Pers_results = {
 	// returns a string that describes whether Perspectives installed a
 	// security exception
 	getActionStr: function(ti) {
-		if(Pers_results.strbundle == null) {
- 			Pers_results.strbundle = document.getElementById("results_strings");
- 		}
 
 		if(ti.uri.scheme != "https") {
-			return Pers_results.strbundle.getFormattedString("notHTTPS", [ti.uri.scheme]);
+			return Pers_browser.getFormattedString("notHTTPS", [ti.uri.scheme]);
 		} else if(ti.is_override_cert && ti.already_trusted) {
-			return Pers_results.strbundle.getString("previouslyInstalledCert");
+			return Pers_browser.getString("previouslyInstalledCert");
 		} else if(ti.already_trusted) {
-			return Pers_results.strbundle.getString("browserTrusts");
+			return Pers_browser.getString("browserTrusts");
 		} else if(ti.is_override_cert && ti.notary_valid && ti.exceptions_enabled && ti.isTemp) {
-			return Pers_results.strbundle.getString("tempSecurityException");
+			return Pers_browser.getString("tempSecurityException");
 		} else if(ti.is_override_cert && ti.notary_valid && ti.exceptions_enabled && !ti.isTemp){
-			return Pers_results.strbundle.getString("permanentSecurityException");
+			return Pers_browser.getString("permanentSecurityException");
 		} else {
-			return Pers_results.strbundle.getString("noException");
+			return Pers_browser.getString("noException");
 		}
 	},
 
 	load_results_dialog: function(){
-
-		if(Pers_results.notaryStrings == null) {
- 			Pers_results.notaryStrings = document.getElementById("notary_strings");
- 		}
-
- 		if(Pers_results.strbundle == null) {
- 			Pers_results.strbundle = document.getElementById("results_strings");
- 		}
-
 		try {
 			var info  = document.getElementById("perspective-description");
 			var liner = document.getElementById("perspective-quorum-duration");
@@ -76,14 +60,14 @@ var Pers_results = {
 			var error_text = win.Perspectives.detectInvalidURI(win);
 			if(error_text) {
 				info.value = "Perspectives: " +
-					Pers_results.notaryStrings.getString("invalidURI") + " (" + error_text + ")";
+					Pers_browser.getString("invalidURI") + " (" + error_text + ")";
 				return;
 			}
 			var ti = win.Perspectives.getCurrentTabInfo(win);
 			var cert  = ti.query_results;
 			host.label = ti.uri.host;
 			if(ti) {
-				host.label += ": " + Pers_results.getActionStr(ti) + (ti.is_cached ? " " + Pers_results.strbundle.getString("cachedResults") : "");
+				host.label += ": " + Pers_results.getActionStr(ti) + (ti.is_cached ? " " + Pers_browser.getString("cachedResults") : "");
 			}
 			if(cert){
 				info.value  = cert.summary;
@@ -100,13 +84,10 @@ var Pers_results = {
 			}
 
 		} catch(e) {
+			var info = document.getElementById("perspective-description");
+			info.value = "Perspectives load_results error: " + e;
 			Pers_debug.d_print("error", "Error loading results dialog");
 			Pers_debug.d_print("error", e);
-			var errmsg = "";
-			if (Pers_results.strbundle != null) {
-				errmsg = Pers_results.strbundle.getString("errorLoadingResultsDialog") + ": ";
-			}
-			Pers_util.pers_alert(errmsg + e);
 		}
 
 		return true;

@@ -18,18 +18,11 @@
 
 
 var Pers_whitelist_dialog = {
-	root_prefs : Components.classes["@mozilla.org/preferences-service;1"].
-				getService(Components.interfaces.nsIPrefBranch),
-
 	add_to_whitelist : function() {
 		try {
-			// use Perspectives.strbundle because whitelist_dialog.xul isn't loaded yet
-			if(Perspectives.strbundle == null) {
-					Perspectives.strbundle = document.getElementById("notary_strings");
-			}
 			var error_text = Perspectives.detectInvalidURI(window);
 			if(error_text) {
-				Pers_util.pers_alert(Perspectives.strbundle.getString("couldNotAddToWhitelist")
+				Pers_util.pers_alert(Pers_browser.getString("couldNotAddToWhitelist")
 					+ ": " + error_text);
 				return;
 			}
@@ -56,13 +49,13 @@ var Pers_whitelist_dialog = {
 		} else {
 			var regex = "^" + host.replace(".","\\.","g") + "$";
 		}
-		var whitelist = this.root_prefs.getCharPref("extensions.perspectives.whitelist");
+		var whitelist = Pers_browser.getCharPref("extensions.perspectives.whitelist");
 		if(whitelist.length == 0) {
 			whitelist = regex;
 		} else {
 			whitelist = whitelist + "," + regex;
 		}
-		this.root_prefs.setCharPref("extensions.perspectives.whitelist",whitelist);
+		Pers_browser.setCharPref("extensions.perspectives.whitelist",whitelist);
 		window.opener.Perspectives.forceStatusUpdate(window.opener);
 		} catch(e) { Pers_util.pers_alert("confirm_add: " + e); }
 	},
@@ -105,27 +98,23 @@ var Pers_whitelist_dialog = {
 
 	fill_dialog: function(){
 		try {
-			if(Pers_whitelist_dialog.strbundle == null) {
-					Pers_whitelist_dialog.strbundle = document.getElementById("whitelist_strings");
-			}
-
 			var host = window.arguments[0];
 			document.getElementById("whitelist-radio-1").label =
-				Pers_whitelist_dialog.strbundle.getString("whitelistWebsite") + " '" + host + "'";
+				Pers_browser.getString("whitelistWebsite") + " '" + host + "'";
 
 			document.getElementById("whitelist-radio-2").hidden = true;
 			if(this.is_ip_address(host)) {
 				var host_text = this.get_ip_domain_text(host);
 				if(host_text) {
 					document.getElementById("whitelist-radio-2").label =
-						Pers_whitelist_dialog.strbundle.getString("whitelistAllWebsitesInIP") + " '" + host_text + "'";
+						Pers_browser.getString("whitelistAllWebsitesInIP") + " '" + host_text + "'";
 					document.getElementById("whitelist-radio-2").hidden = false;
 				}
 			} else {
 				var dns_text = this.get_dns_domain_text(host);
 				if(dns_text) {
 					document.getElementById("whitelist-radio-2").label =
-						Pers_whitelist_dialog.strbundle.getString("whitelistAllWebsitesInDomain") + " '" + dns_text + "'";
+						Pers_browser.getString("whitelistAllWebsitesInDomain") + " '" + dns_text + "'";
 					document.getElementById("whitelist-radio-2").hidden = false;
 				}
 			}
@@ -135,13 +124,8 @@ var Pers_whitelist_dialog = {
 
 	remove_from_whitelist : function() {
 		try {
-			// use Perspectives.strbundle because whitelist_dialog.xul isn't loaded yet
-			if(Perspectives.strbundle == null) {
-					Perspectives.strbundle = document.getElementById("notary_strings");
-			}
-
 			var host = window.gBrowser.currentURI.host;
-			var old_whitelist = Perspectives.root_prefs.getCharPref("extensions.perspectives.whitelist").split(",");
+			var old_whitelist = Pers_browser.getCharPref("extensions.perspectives.whitelist").split(",");
 			var new_whitelist = [];
 			for(var entry in old_whitelist) {
 				var e = old_whitelist[entry];
@@ -151,7 +135,7 @@ var Pers_whitelist_dialog = {
 				var r = RegExp(e);
 				var display_str = e.replace(/\\/g,"").replace("$","").replace("^","");
 				if (host.match(r)) {
-					var answer = confirm(Perspectives.strbundle.
+					var answer = confirm(Pers_browser.
 						getFormattedString("removeFromWhitelistQuestion", [display_str]));
 					if(answer) {
 						continue;
@@ -159,7 +143,7 @@ var Pers_whitelist_dialog = {
 				}
 				new_whitelist.push(e);
 			}
-			Perspectives.root_prefs.setCharPref("extensions.perspectives.whitelist",new_whitelist.join(","));
+			Pers_browser.setCharPref("extensions.perspectives.whitelist",new_whitelist.join(","));
 			window.Perspectives.forceStatusUpdate(window);
 		} catch(e) { Pers_util.pers_alert("remove_from_whitelist:" + e); }
 	}

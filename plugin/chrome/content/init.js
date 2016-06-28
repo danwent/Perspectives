@@ -22,12 +22,10 @@
 var Pers_init = {
 
     evtLoad: function(){
-      Perspectives.init_data();
       Perspectives.initNotaries();
-      Perspectives.prompt_update();
 
       const FIRSTRUN_PREF = "extensions.perspectives.first_run";
-      var firstrun = Perspectives.getBoolPref(FIRSTRUN_PREF);
+      var firstrun = Pers_browser.getBoolPref(FIRSTRUN_PREF);
       if (firstrun) {
           var bname = "perspectives-status-button";
 
@@ -38,7 +36,7 @@ var Pers_init = {
           // else the user has already added the button previously
           // we don't want to touch it
 
-          Perspectives.setBoolPref(FIRSTRUN_PREF, false);
+          Pers_browser.setBoolPref(FIRSTRUN_PREF, false);
       }
 
       Pers_init.migrateOldSettings();
@@ -69,12 +67,11 @@ var Pers_init = {
         'perspectives.check_good_certificates',
         'perspectives.require_user_permission',
         'perspectives.trust_https_with_weak_consistency',
-        'perspectives.prompt_update_all_https_setting',
         'perspectives.enable_default_list_auto_update',
         'perspectives.use_default_notary_list'
       ];
-      var root_prefs = Perspectives.getRootPrefs();
-      var migration_needed  = Perspectives.getBoolPref("extensions.perspectives.pref_migration_needed");
+      var root_prefs = Pers_browser.getRootPrefs();
+      var migration_needed  = Pers_browser.getBoolPref("extensions.perspectives.pref_migration_needed");
 
       var tmpNum = 0;
       var tmpStr = "";
@@ -83,23 +80,23 @@ var Pers_init = {
       if (migration_needed){
           for (index = 0; index < preflist_numeric.length; ++index) {
             if (root_prefs.getPrefType(preflist_numeric[index]) !== root_prefs.PREF_INVALID){
-              tmpNum=Perspectives.getIntPref(preflist_numeric[index]);
-              Perspectives.setIntPref("extensions." + preflist_numeric[index],tmpNum);
+              tmpNum=Pers_browser.getIntPref(preflist_numeric[index]);
+              Pers_browser.setIntPref("extensions." + preflist_numeric[index],tmpNum);
             }
           }
           for(index = 0; index < preflist_string.length; ++index) {
             if(root_prefs.getPrefType(preflist_string[index]) !== root_prefs.PREF_INVALID){
-                tmpStr = Perspectives.getCharPref("" + preflist_string[index]);
-                Perspectives.setCharPref("extensions." + preflist_string[index],tmpStr);
+                tmpStr = Pers_browser.getCharPref("" + preflist_string[index]);
+                Pers_browser.setCharPref("extensions." + preflist_string[index],tmpStr);
             }
           }
           for(index = 0; index < preflist_bool.length; ++index) {
             if(root_prefs.getPrefType(preflist_bool[index]) !== root_prefs.PREF_INVALID){
-                tmpBool = Perspectives.getBoolPref("" + preflist_bool[index]);
-                Perspectives.setBoolPref("extensions." + preflist_bool[index],tmpBool);
+                tmpBool = Pers_browser.getBoolPref("" + preflist_bool[index]);
+                Pers_browser.setBoolPref("extensions." + preflist_bool[index],tmpBool);
             }
           }
-          Perspectives.setBoolPref("extensions.perspectives.pref_migration_needed",false);
+          Pers_browser.setBoolPref("extensions.perspectives.pref_migration_needed",false);
       }
     }
 

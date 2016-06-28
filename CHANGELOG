@@ -12,6 +12,19 @@ We attempt to use meaningful version numbers, following semver.org:
 	PATCH version when you make backwards-compatible bug fixes.
 
 
+NEXT
+----
+* Begin extracting browser-specific functionality to its own object/interface,
+to group everything together. (GH #75)
+	* Preference gets/sets (GH #171)
+	* String bundle retrieval (GH #172)
+* Delete old code for update prompt and old preference 'prompt_update_all_https_setting'
+* Remove init_data() initialization function
+* Fix global variables left in Pers_report object (convert to local scope)
+* Combine all localized property strings into a single file
+(makes string-loading interface much easier)
+
+
 4.6.4
 -----
 * Fix preference storage location: migrate all prefs from 'perspectives.X' to 'extensions.perspectives.X'. This is a requirement of hosting addons on addons.mozilla.org - https://developer.mozilla.org/en-US/Add-ons/AMO/Policy/Reviews#Full_Review
@@ -22,7 +35,7 @@ We attempt to use meaningful version numbers, following semver.org:
 * Internal code cleanup (fix === checks; remove dead code; fix addProgressListener usage)
 * Add wrapper functions to retrieve preferences, overrideService, and stringbundle strings
 	Fixes one bug where 'root_prefs' object was not initialized;
-	but overall removes the need to intitialize the Perspectives object at all.
+	but overall removes the need to initialize the Perspectives object at all.
 	It can and should handle its own internal state.
 	This starts to isolate the usage of direct browser internals,
 	which would be required to port to other browsers.

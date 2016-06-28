@@ -11,9 +11,6 @@
 >
 
   <stringbundleset id="stringbundleset">
-    <stringbundle id="results_strings" src="chrome://perspectives/locale/results.properties" />
-    <!-- include notaries.properties so we can reference some strings rather than duplicating
-    them inside results.properties -->
     <stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" />
   </stringbundleset>
 
@@ -47,6 +44,7 @@
   <button label = "&Close;" onclick="window.close()"/>
 </hbox>
 
+<script type="application/x-javascript" src="browser.js"/>
 <script type="application/x-javascript" src="common.js"/>
 <script type="application/x-javascript" src="results_dialog.js"/>
 

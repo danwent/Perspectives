@@ -10,7 +10,7 @@
     xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
     <stringbundleset id="stringbundleset">
-      <stringbundle id="whitelist_strings" src="chrome://perspectives/locale/whitelist.properties" />
+      <stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" />
     </stringbundleset>
 
   <groupbox minheight="150">
@@ -33,6 +33,7 @@
     </hbox>
   </groupbox>
 
+    <script type="application/x-javascript" src="browser.js"/>
     <script type="application/x-javascript" src="common.js"/>
     <script type="application/x-javascript" src="notaries.js"/>
     <script type="application/x-javascript" src="whitelist_dialog.js"/>

@@ -71,10 +71,10 @@ var Pers_notify = {
 	notifyOverride: function(b,mixed_security){
 
 		var priority = "PRIORITY_INFO_LOW";
-		var message = mixed_security ? Perspectives.strbundle.getString("validatedButInsecureEmbedded") :  Perspectives.strbundle.getString("verificationSuccess");
+		var message = mixed_security ? Pers_browser.getString("validatedButInsecureEmbedded") :  Pers_browser.getString("verificationSuccess");
 		var buttons = [{
 			accessKey : "",
-			label: Perspectives.strbundle.getString("learnMore"),
+			label: Pers_browser.getString("learnMore"),
 			accessKey : "",
 			callback: function() {
 				b.loadOneTab("chrome://perspectives/content/help.xhtml", null,
@@ -87,11 +87,11 @@ var Pers_notify = {
 	notifyWhitelist: function(b){
 
 		var priority = "PRIORITY_INFO_LOW";
-		var message = Perspectives.strbundle.getString("configuredToWhitelist");
+		var message = Pers_browser.getString("configuredToWhitelist");
 		var buttons = [
 			{
 			accessKey : "",
-			label: Perspectives.strbundle.getString("removeFromWhitelist"),
+			label: Pers_browser.getString("removeFromWhitelist"),
 			accessKey : "",
 			callback: function() {
 				Pers_whitelist_dialog.remove_from_whitelist(b);
@@ -103,18 +103,18 @@ var Pers_notify = {
 
 	notifyFailed: function(b){
 		var priority = "PRIORITY_CRITICAL_LOW";
-		var message = Perspectives.strbundle.getString("unableToVerify");
+		var message = Pers_browser.getString("unableToVerify");
 		var buttons = [
 // Report attack always fails at the moment. Hide it until we fix it. issue #122
 //			{
-//				label: Perspectives.strbundle.getString("reportThis"),
+//				label: Pers_browser.getString("reportThis"),
 //				accessKey: "",
 //				callback: function () {
 //					Pers_report.report_attack();
 //				}
 //			},
 			{
-				label: Perspectives.strbundle.getString("addToWhitelist"),
+				label: Pers_browser.getString("addToWhitelist"),
 				accessKey: "",
 				callback: function () {
 					Pers_whitelist_dialog.add_to_whitelist();
@@ -128,16 +128,16 @@ var Pers_notify = {
 	// that notaries should only be queried with user permission
 	notifyNeedsPermission: function(ti){
 
-		var show_box = Perspectives.root_prefs.
+		var show_box = Pers_browser.
 			getBoolPref("extensions.perspectives.show_permission_reminder");
 
 		if (show_box){
 			var priority = "PRIORITY_WARNING_HIGH";
-			var message = Perspectives.strbundle.getString("needsPermission");
+			var message = Pers_browser.getString("needsPermission");
 			var buttons = null;
 			var buttons = [
 				{
-					label: Perspectives.strbundle.getString("yesContactNotaries"),
+					label: Pers_browser.getString("yesContactNotaries"),
 					accessKey : "",
 					callback: function() {
 						try {
@@ -171,7 +171,7 @@ var Pers_notify = {
 							Pers_debug.d_print("main", "User gives probe permission");
 							ti.has_user_permission = true;
 								Pers_statusbar.setStatus(ti.uri, Pers_statusbar.STATE_QUERY,
-								Perspectives.strbundle.getFormattedString("contactingNotariesAbout",
+								Pers_browser.getFormattedString("contactingNotariesAbout",
 								 [ ti.uri.host ]));
 							Perspectives.updateStatus(window,false);
 						} catch (e) {
@@ -180,7 +180,7 @@ var Pers_notify = {
 					}
 				},
 				{
-					label: Perspectives.strbundle.getString("learnMore"),
+					label: Pers_browser.getString("learnMore"),
 					accessKey : "",
 					callback: function() {
 						ti.browser.loadOneTab("chrome://perspectives/content/help.xhtml",
@@ -188,10 +188,10 @@ var Pers_notify = {
 					}
 				},
 				{
-					label: Perspectives.strbundle.getString("hideNotificationReminders"),
+					label: Pers_browser.getString("hideNotificationReminders"),
 					accessKey : "",
 					callback: function() {
-						Perspectives.root_prefs.
+						Pers_browser.
 							setBoolPref("extensions.perspectives.show_permission_reminder", false);
 					}
 				}
@@ -203,18 +203,18 @@ var Pers_notify = {
 	// this is the drop down which is shown if we receive no notary replies.
 	notifyNoReplies: function(b){
 		var priority = "PRIORITY_CRITICAL_LOW";
-		var message = Perspectives.strbundle.getString("noRepliesReceived");
+		var message = Pers_browser.getString("noRepliesReceived");
 		var buttons = [
 // Report attack always fails at the moment. Hide it until we fix it. issue #122
 //			{
-//				label: Perspectives.strbundle.getString("reportThis"),
+//				label: Pers_browser.getString("reportThis"),
 //				accessKey: "",
 //				callback: function () {
 //					Pers_report.report_attack();
 //				}
 //			},
 			{
-				label: Perspectives.strbundle.getString("firewallHelp"),
+				label: Pers_browser.getString("firewallHelp"),
 				accessKey: "",
 				callback: function () {
 					b.loadOneTab(
@@ -223,7 +223,7 @@ var Pers_notify = {
 				}
 			},
 			{
-				label: Perspectives.strbundle.getString("addToWhitelist"),
+				label: Pers_browser.getString("addToWhitelist"),
 				accessKey: "",
 				callback: function () {
 					Pers_whitelist_dialog.add_to_whitelist();

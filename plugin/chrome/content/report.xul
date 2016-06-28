@@ -12,7 +12,7 @@
   <!-- Note: some strings used before this .xul has loaded are stored in
   notaries.properties instead. -->
   <stringbundleset id="stringbundleset">
-      <stringbundle id="report_strings" src="chrome://perspectives/locale/report.properties" />
+      <stringbundle id="notary_strings" src="chrome://perspectives/locale/notaries.properties" />
   </stringbundleset>
 
   <groupbox minheight="400">

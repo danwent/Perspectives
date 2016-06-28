@@ -66,6 +66,7 @@
   </vbox>
 
   <script type="application/x-javascript" src="about.js"/>
+  <script type="application/x-javascript" src="browser.js"/>
   <script type="application/x-javascript" src="common.js"/>
   <script type="application/x-javascript" src="notaries.js"/>
 

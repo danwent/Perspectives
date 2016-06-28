@@ -214,6 +214,7 @@
         </hbox>
     </prefpane>
 
+    <script type="application/x-javascript" src="browser.js"></script>
+    <script type="application/x-javascript" src="common.js"></script>
     <script type="application/x-javascript" src="preferences_dialog.js"></script>
-    <script type="application/x-javascript" src="common.js"            ></script>
 </prefwindow>

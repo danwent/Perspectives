@@ -38,7 +38,7 @@ var Pers_report = {
     get_ip_str : function(hostname) {
 	var suffixes=[".onion",".i2p"];
 	var needResolve=true;
-	for (index = 0; index < suffixes.length; ++index) {
+	for (var index = 0; index < suffixes.length; ++index) {
 	    if(hostname.indexOf(suffixes[index], hostname.length - suffixes[index].length) !== -1){
 		// No name-to-IP resolution possible for darknet addresses
 		needResolve=false;
@@ -61,7 +61,7 @@ var Pers_report = {
 	if(full_report) { 
 		ip_str = this.get_ip_str(host); 
 	} 	
-        report_data      = {
+        var report_data      = {
 		"host" : host, 
 		"port" : b.currentURI.port,  
 		"record_ip" : full_report, 
@@ -101,14 +101,11 @@ var Pers_report = {
 		// temporarily disable the buttons until we're done.
 		var orig_label = document.getElementById("SubmitReport").label; //TODO: test with other localizations
 
-		if(Pers_report.strbundle == null) {
-			Pers_report.strbundle = document.getElementById("report_strings");
-		}
 		try {
 			document.getElementById("SubmitReport").disabled = true;
 			document.getElementById("Close").disabled = true;
 			document.getElementById("SubmitReport").label =
-				Pers_report.strbundle.getString("SubmittingReport");
+				Pers_browser.getString("SubmittingReport");
 
 			var report_json_str = JSON.stringify(this.get_report_json());
 			var full_report = !document.getElementById("full-radio").selectedIndex;
@@ -121,13 +118,13 @@ var Pers_report = {
 			req.send(report_json_str);
 			if(req.status != 200) {
 				Pers_util.pers_alert(
-					Pers_report.strbundle.getString("FailedToReport") +
+					Pers_browser.getString("FailedToReport") +
 					" '" + this.REPORT_URI + "'. " +
-					Pers_report.strbundle.getString("ErrorCode") +
+					Pers_browser.getString("ErrorCode") +
 					"  = " + req.status);
 			}
 		} catch(e) {
-			Pers_util.pers_alert(Pers_report.strbundle.getString("ErrorSubmittingReport") +
+			Pers_util.pers_alert(Pers_browser.getString("ErrorSubmittingReport") +
 				": " + e);
 		} finally {
 			document.getElementById("SubmitReport").label = orig_label;
@@ -139,15 +136,11 @@ var Pers_report = {
 	},
 
     // note: this function is called in the scope of the main window, which is able to grab the cert.
-    // that also means we use Perspectives.strbundle rather than Pers_report.strbundle.
     report_attack : function() {
-		if(Perspectives.strbundle == null) {
-			Perspectives.strbundle = document.getElementById("notary_strings");
-		}
 		try {
 			var error_text = Perspectives.detectInvalidURI(window);
 			if(error_text) {
-				Pers_util.pers_alert(Perspectives.strbundle.getString("invalidURI")
+				Pers_util.pers_alert(Pers_browser.getString("invalidURI")
 					+ " (" + error_text + ")");
 				return;
 			}
@@ -157,24 +150,21 @@ var Pers_report = {
 			var cert = Perspectives.getCertificate(window.gBrowser);
 			if(!cert) {
 				// FIXME - is this check correct?
-				Pers_util.pers_alert(Perspectives.strbundle.getFormattedString("notEncryptedNoReport",
+				Pers_util.pers_alert(Pers_browser.getFormattedString("notEncryptedNoReport",
 					[ ti.uri.host ]));
 				return;
 			}
 
 			var cached_results = ti.query_results;
 			if(!cached_results) {
-				throw(Perspectives.strbundle.getString("noResultsNoReport"));
+				throw(Pers_browser.getString("noResultsNoReport"));
 			}
 
 			window.openDialog("chrome://perspectives/content/report.xul", "", "centerscreen, resizable",
 			cert, cached_results).focus();
 
 		} catch(e) {
-			var text = "";
-			if (Perspectives.strbundle != null) {
-				text = Perspectives.strbundle.getString("unableToMakeReport") + " - ";
-			}
+			var text = Pers_browser.getString("unableToMakeReport") + " - ";
 			Pers_util.pers_alert(text + e);
 		}
     }, 
@@ -182,16 +172,13 @@ var Pers_report = {
     // this function is called by the 'report attack' window once it is opened
     // or when one of the controls was toggled. 
     refresh_report_dialog : function() {
-		if(Pers_report.strbundle == null) {
-			Pers_report.strbundle = document.getElementById("report_strings");
-		}
 		try {
 			var show_full = document.getElementById("show_full").checked;
 			document.getElementById("full-text").hidden = !show_full;
 			document.getElementById("full-text-label").hidden = !show_full;
-			var label = Pers_report.strbundle.getString("FullReportText");
+			var label = Pers_browser.getString("FullReportText");
 			if(document.getElementById("full-radio").selectedIndex) {
-				label = Pers_report.strbundle.getString("PrivateReportText");
+				label = Pers_browser.getString("PrivateReportText");
 			}
 			if(show_full) {
 				document.getElementById("full-text-label").value = label;
@@ -199,10 +186,7 @@ var Pers_report = {
 				document.getElementById("full-text").value = txt;
 			}
 		} catch(e) {
-			var text = "";
-			if (Perspectives.strbundle != null) {
-				text = Perspectives.strbundle.getString("unableToMakeReport") + " - ";
-			}
+			var text = Pers_browser.getString("unableToMakeReport") + " - ";
 			Pers_util.pers_alert(text + e);
 		}
     }

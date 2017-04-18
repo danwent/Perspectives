@@ -34,14 +34,14 @@ Optional (but strongly recommended!):
 ### Building
 To build, just type ```make``` (assuming of course you have make installed!). This will create a file called 'Perspectives.xpi'.
 
-###Installing local builds
+### Installing local builds
 You can install Perspectives in Firefox in many ways:
 
 * Using *Menu -> Add-ons -> Extensions -> (Tools icon) -> Install Add-On From File* and opening the ```Perspectives.xpi``` file.
 * Drag ```Perspectives.xpi``` into your browser
 * Use ```make install-fx``` from the command line to build and install in a single step. This assumes Firefox exists in your path.
 
-###Debugging
+### Debugging
 To debug the extension:
 
 * Download the latest [Firefox](https://www.mozilla.org/firefox/).

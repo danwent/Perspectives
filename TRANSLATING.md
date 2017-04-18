@@ -10,7 +10,7 @@ We're willing to work with you to make translation as easy as possible. Here are
 
 
 
-##Options for translating
+## Options for translating
 
 ### Use Babelzilla:
 
@@ -44,7 +44,7 @@ If you have questions:
 Prefer to work via IM? Encrypted email? Carrier pidgeon? Just [let us know](https://groups.google.com/group/perspectives-dev) and we can help!
 
 
-##Useful Links
+## Useful Links
 
 * [List of recognized Firefox locales](https://wiki.mozilla.org/L10n:Teams)
 * [Mozilla Developer Guide to Localization](https://developer.mozilla.org/en/Localization) (or change the URL for your language)
@@ -59,7 +59,7 @@ If you have any questions please [email us and ask](https://groups.google.com/gr
 
 ## For Perspectives developers:
 
-###How to publish a new localization
+### How to publish a new localization
 
 0. Make sure all ```.dtd``` and ```.properties``` files are saved as UTF-8 with no BOM. Otherwise many things fail horribly. The python unit tests should detect this and fail any builds that don't match, so be sure to install python.
 
